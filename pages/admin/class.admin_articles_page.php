@@ -125,7 +125,7 @@ class admin_articles_page extends page {
 						$this->articleForm->setError('Article_Date');
 					}
 					else {
-						$article->setDate(new DateTime($this->db->formatDate($v['Article_Date'])));
+						$article->setDate(new \DateTime($this->db->formatDate($v['Article_Date'])));
 					}
 				}
 
@@ -134,7 +134,7 @@ class admin_articles_page extends page {
 						$this->articleForm->setError('Display_from');
 					}
 					else {
-						$article->setDisplayFrom(new DateTime($this->db->formatDate($v['Display_from'])));
+						$article->setDisplayFrom(new \DateTime($this->db->formatDate($v['Display_from'])));
 					}
 				}
 
@@ -143,7 +143,7 @@ class admin_articles_page extends page {
 						$this->articleForm->setError('Display_until');
 					}
 					else {
-						$article->setDisplayUntil(new DateTime($this->db->formatDate($v['Display_until'])));
+						$article->setDisplayUntil(new \DateTime($this->db->formatDate($v['Display_until'])));
 					}
 				}
 
@@ -421,7 +421,7 @@ class admin_articles_page extends page {
 						$this->articleForm->setError('Article_Date');
 					}
 					else {
-						$article->setDate(new DateTime($this->db->formatDate($v['Article_Date'])));
+						$article->setDate(new \DateTime($this->db->formatDate($v['Article_Date'])));
 					}
 				}
 
@@ -430,7 +430,7 @@ class admin_articles_page extends page {
 						$this->articleForm->setError('Display_from');
 					}
 					else {
-						$article->setDisplayFrom(new DateTime($this->db->formatDate($v['Display_from'])));
+						$article->setDisplayFrom(new \DateTime($this->db->formatDate($v['Display_from'])));
 					}
 				}
 
@@ -439,7 +439,7 @@ class admin_articles_page extends page {
 						$this->articleForm->setError('Display_until');
 					}
 					else {
-						$article->setDisplayUntil(new DateTime($this->db->formatDate($v['Display_until'])));
+						$article->setDisplayUntil(new \DateTime($this->db->formatDate($v['Display_until'])));
 					}
 				}
 
