@@ -1,0 +1,17 @@
+RewriteEngine On
+
+RewriteBase /
+
+# RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^admin(|/.*)$ /admin.php [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^member(|/.*)$ /member.php [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^embedded(|/.*)$ /embedded.php [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . /index.php [NC,L]
