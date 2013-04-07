@@ -7,7 +7,7 @@ require_once 'site.config.php';
  */
 $page = $config->initPage();
 
-$admin = Admin::getInstance();
+$admin = vxPHP\User\Admin::getInstance();
 
 /**
  * HTML starten
