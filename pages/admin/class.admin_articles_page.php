@@ -121,7 +121,7 @@ class admin_articles_page extends page {
 				$v = $this->articleForm->getValidFormValues();
 
 				if($v['Article_Date'] != '') {
-					if(!DateTime::checkDateInput($v['Article_Date'])) {
+					if(!DateTime::checkDate($v['Article_Date'])) {
 						$this->articleForm->setError('Article_Date');
 					}
 					else {
@@ -130,7 +130,7 @@ class admin_articles_page extends page {
 				}
 
 				if($v['Display_from'] != '') {
-					if(!DateTime::checkDateInput($v['Display_from'])) {
+					if(!DateTime::checkDate($v['Display_from'])) {
 						$this->articleForm->setError('Display_from');
 					}
 					else {
@@ -139,7 +139,7 @@ class admin_articles_page extends page {
 				}
 
 				if($v['Display_until'] != '') {
-					if(!DateTime::checkDateInput($v['Display_until'])) {
+					if(!DateTime::checkDate($v['Display_until'])) {
 						$this->articleForm->setError('Display_until');
 					}
 					else {
@@ -417,7 +417,7 @@ class admin_articles_page extends page {
 				$v = $form->getValidFormValues();
 
 				if($v['Article_Date'] != '') {
-					if(!DateTime::checkDateInput($v['Article_Date'])) {
+					if(!DateTime::checkDate($v['Article_Date'])) {
 						$this->articleForm->setError('Article_Date');
 					}
 					else {
@@ -426,7 +426,7 @@ class admin_articles_page extends page {
 				}
 
 				if($v['Display_from'] != '') {
-					if(!DateTime::checkDateInput($v['Display_from'])) {
+					if(!DateTime::checkDate($v['Display_from'])) {
 						$this->articleForm->setError('Display_from');
 					}
 					else {
@@ -435,7 +435,7 @@ class admin_articles_page extends page {
 				}
 
 				if($v['Display_until'] != '') {
-					if(!DateTime::checkDateInput($v['Display_until'])) {
+					if(!DateTime::checkDate($v['Display_until'])) {
 						$this->articleForm->setError('Display_until');
 					}
 					else {
