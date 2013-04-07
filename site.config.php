@@ -5,7 +5,7 @@ ini_set('display_errors', '1');
 require_once 'SplClassLoader.php';
 require_once 'CustomClassLoader.php';
 
-$splClassLoader = new SplClassLoader('vxPHP', __DIR__);
+$splClassLoader = new SplClassLoader('vxPHP', $_SERVER['DOCUMENT_ROOT']);
 $splClassLoader->register();
 
 $customClassLoader = new CustomClassLoader();
