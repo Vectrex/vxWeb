@@ -1,0 +1,43 @@
+<script type="text/javascript" src="/js/admin/admin_profile.js"></script>
+
+<h1>Profil</h1>
+
+<div class="errorContainer">
+{error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
+</div>
+
+{if($success == 1)}
+<div class="success_message">Änderungen erfolgreich übernommen</div>
+{end_if}
+
+<div class="formSect">
+	<div class="formItem">
+		<label{error_Email: class="error"} for="email_input">Email</label>{input:Email}
+		<span id="error_Email"></span>{error_Email:<span class="error">Ungültige Email!</span>}
+		<span id="error_duplicate_Email"></span>{error_duplicate_Email:<span class="error">Email wird bereits verwendet!</span>}
+	</div>
+	<div class="formItem">
+		<label{error_Name: class="error"} for="name_input">Admin Name</label>{input:Name}
+	</div>
+	<div class="formItem">
+		<label for="pwd_input">Neues Passwort</label>{input:new_PWD}
+		<span id="error_new_PWD"></span>{error_new_PWD:<span class="error">Passwort zu kurz!</span>}
+	</div>
+	<div class="formItem">
+		<label for="pwd2_input">Passwort wiederholen</label>{input:new_PWD_verify}
+		<span id="error_PWD_mismatch"></span>{error_PWD_mismatch:<span class="error">Passwörter stimmen nicht überein!</span>}
+	</div>
+</div>
+
+{if($has_notifications == 1)}
+<div class="formSect">
+	<h3>Benachrichtigungen</h3>
+	{html:notifications}	
+</div>
+{end_if}
+
+<div class="formBase">
+	<div class="formItem">
+		{button:submit_profile}
+	</div>
+</div>

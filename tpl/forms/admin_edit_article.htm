@@ -1,0 +1,35 @@
+{error_general:<div class="error_message">Ein oder mehrere Eingaben sind fehlerhaft!<br>Der Eintrag in der Datenbank wurde nicht aktualisiert.</div>}
+{error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
+
+{if($success == 1)}
+<div class="success_message">Änderungen oder Neuanlage erfolgreich übernommen.</div>
+{end_if}
+
+<div class="formSect">
+ 	<div class="formItem">
+		<label{error_Article_Date: class="error"}>Artikeldatum (optional)</label>{input:Article_Date}<span class="calendarPopper"></span>
+	</div>
+ 	<div class="formItem">
+		<label{error_Display_from: class="error"}>Anzeige von (optional)</label>{input:Display_from}<span class="calendarPopper"></span>
+	</div>
+ 	<div class="formItem">
+		<label{error_Display_until: class="error"}>Anzeige bis (optional)</label>{input:Display_until}<span class="calendarPopper"></span>
+	</div>
+ 	<div class="formItem">
+		<label{error_articlecategoriesID: class="error"}><strong>*Kategorie</strong></label>{dropdown:articlecategoriesID}
+	</div>
+	<div class="formItem">
+		<label{error_Headline: class="error"}><strong>*Überschrift/Titel</strong></label>{textarea:Headline}
+	</div>
+	<div class="formItem">
+		<label{error_Teaser: class="error"} style="vertical-align: top;">Anrisstext</label>{textarea:Teaser}
+	</div>
+	<div class="formItem">
+		<label{error_Content: class="error"} style="vertical-align: top;"><strong>*Seiteninhalt</strong></label>{textarea:Content}
+	</div>
+</div>
+<div class="formBase">
+	<div class="formItem">
+			<label></label>{input:submit_article}
+	</div>
+</div>

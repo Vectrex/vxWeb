@@ -1,0 +1,49 @@
+<div class="errorContainer">
+{error_general:<div class="error_message">Ein oder mehrere Eingaben sind fehlerhaft!<br>Der Eintrag in der Datenbank wurde nicht aktualisiert.</div>}
+{error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
+</div>
+
+<div class="formSect">
+	{if($add == 1)}
+	<div class="formItem">
+		<label class="label{error_File: error}">Datei*</label>{input:File}
+	</div>
+	<div class="formItem">
+		<label class="label">Archivdatei entpacken?</label>{checkbox:unpack_archives} <span class="smaller">(die Informationen der folgenden Felder werden dann ignoriert)</span>
+	</div>
+	{else}
+	<div class="fileInfo">
+		{html:Fileinfo}
+	</div>
+	{end_if}
+
+	<div class="formItem">
+		<label class="label{error_Title: error}">Titel</label>{input:Title}
+	</div>
+	<div class="formItem">
+		<label class="label">Untertitel</label>{input:Subtitle}
+	</div>
+	<div class="formItem">
+		<label class="label">Beschreibung</label>{textarea:Description}
+	</div>
+</div>
+
+<div style="font-weight: bold; font-size: 90%; color: #fff; margin-top: 0.5em;">erweiterte Einstellungen</div>
+
+<div class="formSect extras">
+	<div class="formItem">
+		<label class="label{error_customSort: error}">Sortierwert</label>{input:customSort}
+	</div>
+	<div class="formItem">
+		<label class="label{error_referenced_Table: error}">Referenzierte Tabelle</label>{input:referenced_Table}
+	</div>
+	<div class="formItem">
+		<label class="label{error_referencedID: error}">Referenzierter Schlüssel</label>{input:referencedID}
+	</div>
+</div>
+
+<div class="formBase">
+	<div class="formItem">
+		{image:submit_cancel}{image:submit_add}{image:submit_edit}
+	</div>
+</div>

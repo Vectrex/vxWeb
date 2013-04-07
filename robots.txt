@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /errordocs/
+Disallow: /css/
+Disallow: /files/
+Disallow: /fonts/
+Disallow: /img/
+Disallow: /ini/
+Disallow: /js/
+Disallow: /log/
+Disallow: /pages/
+Disallow: /tpl/

@@ -1,0 +1,40 @@
+<script type="text/javascript">
+	var selectFile = function(filename) {
+		window.opener.CKEDITOR.tools.callFunction(<?php echo $tpl->ckEditorCallbackParam; ?>, filename);
+		window.close();
+	} 
+</script>
+
+<script type="text/javascript" src="/js/admin/admin_files.js"></script>
+
+<div id="files">
+
+	<div id="directoryBar"></div>
+
+	<div id="filesList">
+		<table>
+			<thead>
+				<tr>
+					<th class="sortableHeader">Dateiname</th>
+					<th class="sm right sortableHeader">Größe</th>
+					<th class="sm center sortableHeader">Typ/Vorschau</th>
+					<th class="sm right sortableHeader">Erstellt</th>
+					<th class="sm center sortableHeader">referenziert</th>
+					<th class="m"></th>
+				</tr>
+			</thead>
+		
+			<tbody>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</div>

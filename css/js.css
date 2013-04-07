@@ -1,0 +1,172 @@
+/* list */
+
+ul.vxJS_list					{ margin: 0; padding: 0;  list-style-type: none; }
+.vxJS_list li					{ cursor: pointer; }
+.vxJS_list .current				{ background: #131a44; color: #fff; }
+
+/* autoSuggest */
+
+div.smaller .hiLite,
+div.mainRow .hiLite				{ background: #f08000; font-weight: bold; color: #fff; }
+
+.vxJS_autoSuggest				{ position: absolute; border: 1px solid #808080; box-shadow: 0 0 8px #808080; -moz-box-shadow: 0 0 8px #808080; -webkit-box-shadow: 0 0 8px #808080; max-height: 100px; overflow: auto;}
+.vxJS_autoSuggest ul			{ color: #000; background: #fff; margin: 0; padding: 0;  list-style-type: none; max-height: 100px; overflow: auto; }
+.vxJS_autoSuggest li			{ cursor: pointer; margin: 0; padding: 0.25em 0.5em; font-size: 90%; }
+.vxJS_autoSuggest li span		{ padding: 0 0.5em; }
+.vxJS_autoSuggest li span.hiLite{ padding: 0; }
+.vxJS_autoSuggest div.mainRow	{ }
+.vxJS_autoSuggest div.smaller,
+.vxJS_autoSuggest div.auxRow	{ font-size: 90%; color: #808080; }
+
+/* Popup Calendar */
+
+.calendarSkin					{ background: #fff; color: #e80; -moz-box-shadow: 1px 1px 10px #000; -webkit-box-shadow: 1px 1px 10px #000; box-shadow: 1px 1px 10px #000; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; }
+.calendarSkin div				{ padding: 4px; }
+.calendarSkin .vxJS_dragBar		{ font-size: 80%; position: relative; padding: 0; margin: 0.25em 0.5em; }
+.calendarSkin .mon				{ display: block; text-align: center; }
+.calendarSkin .prevMon,
+.calendarSkin .nextMon			{ cursor: pointer; display: block; position: absolute; top: 0; }
+.calendarSkin .nextMon			{ right: 0; text-align: right; }
+.calendarSkin .prevMon			{ left: 0; }
+.calendarSkin table	   			{ font-size: 80%; border-collapse: separate; border-spacing: 2px; }
+.calendarSkin th				{ padding: 0.125em 0.25em; text-align: center; color: #fff; vertical-align: middle; width: 1.75em; background: #c0c0c0; }
+.calendarSkin td				{ padding: 0.125em 0.25em; text-align: center; vertical-align: middle; cursor: pointer; background: #fff; height: 2.5em; }
+.calendarSkin input				{ width: 2.5em; font-size: 100%; background: #909090; border: solid 1px; border-color: #445 #ccd #ccd #445; color: #fff; padding: 0 0.25em; }
+.calendarSkin .trail			{ color: #c0c0c0; }
+.calendarSkin .weekCell			{ cursor: pointer; background: #99A5BD; }
+.calendarSkin .today			{ background: #c0c0c0; color: #fff; -moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px; }
+.calendarSkin .marked			{ background-color: #e80; color: #fff; -moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px; }
+.calendarSkin .disabled			{ color: #808080; cursor: default; }
+.calendarSkin .prevMon:before	{ font-family: icomoon-essential; content: "\e025"; }
+.calendarSkin .nextMon:before	{ font-family: icomoon-essential; content: "\e023"; }
+
+/* imagezoom */
+
+.vxJS_imageZoom_a					{ cursor: -moz-zoom-in; cursor: -webkit-zoom-in; }
+.vxJS_imageZoom_a .activityLayer	{ position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url(../js/assets/xhr_activity_white.gif) no-repeat 50% 50%; }
+.vxJS_imageZoom_stage	{
+	z-index: 20;
+	margin: -8px -8px;
+	padding: 8px 8px;
+	background: #e0e0e0;
+	line-height: 0;
+	overflow: hidden;
+}
+.vxJS_imageZoom_stage .activityLayer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: url(../js/assets/xhr_activity_large.gif) no-repeat 50% 50%;
+}
+
+.fullyZoomed {
+	-moz-box-shadow: 0px 0px 16px #131a44; -webkit-box-shadow: 0px 0px 16px #131a44; box-shadow: 0px 0px 16px #131a44;
+	border: solid 1px #c0c0c0;
+	background: #fff;
+	cursor: -moz-zoom-out; cursor: -webkit-zoom-out;
+}
+
+.vxJS_imageZoom_stage .infoPanel {
+	position: absolute;
+	line-height: 150%;
+	bottom: 0;
+	margin: 0 0 16px 8px;
+	color: #fff;
+	text-shadow: 0 0 3px #131a44; -moz-text-shadow: 0 0 3px #131a44; -webkit-text-shadow: 0 0 3px #131a44;
+}
+
+/* simpletabs */
+
+.vxJS_tabBar ul				{ padding: 0; margin: 1em 0 0 0; list-style-type: none; font-size: 100%; }
+.vxJS_tabThis				{ }	
+.vxJS_tabThis .section		{ clear: both; overflow: auto; }
+.vxJS_tabBar li				{ float: left; font-weight: bold; font-size: 100%; cursor: pointer; margin: 0; padding: 0.5em 0.75em 0.25em 0.75em; border-left: solid 2px #eee; }
+.vxJS_tabBar li:first-child	{ border-left: none; }
+.vxJS_tabBar li.shown		{ cursor: default; }
+.vxJS_tabBar a				{ outline: none; }
+.vxJS_tabBar a:hover,
+.vxJS_tabBar a:active		{ text-decoration: none; }
+.vxJS_tabBar .shown a		{ color: #808080; }
+.vxJS_tabBar.disabled a		{ color: #808080; cursor: default; }
+
+.vxJS_tabSpacer				{ clear: both; font-size: 0.01%; line-height: 0%; height: 2px; }
+
+/* tree */
+
+#folderTreeContainer			{ min-width: 15em; }
+#folderTreeContainer .formBase	{ border-top: solid 1px #fff; padding: 0.5em 0; margin-top: 0.5em; text-align: center; }
+#folderTreeContainer button		{ }
+#folderTreeContainer > ul		{ max-height: 20em; overflow: auto; font-size: 90%; }
+
+.vxJS_tree						{ list-style-type: none; margin: 0; padding: 0; font-size: 100%; }
+.vxJS_tree li					{ padding: 0; margin: 0 0 0 32px; background: url(../js/assets/tree_guide.gif) repeat-y 0% 0%; }
+.vxJS_tree li.lastBranch		{ background-image: none; }
+
+.vxJS_tree li img,
+.vxJS_tree li span				{ vertical-align: middle; }
+
+.vxJS_tree .leafNode,
+.vxJS_tree .subTreeExpanded,
+.vxJS_tree .subTreeCollapsed,
+.vxJS_tree .checked,
+.vxJS_tree .unChecked,
+.vxJS_tree .partChecked			{ display: inline-block; width: 24px; height: 24px; background: url(../js/assets/tree_plus.gif) no-repeat 50% 50%; } 
+.vxJS_tree .leafNode			{ background-image: url(../js/assets/leaf_node.gif); }  
+.vxJS_tree .subTreeExpanded		{ background-image: url(../js/assets/tree_minus.gif); }  
+.vxJS_tree .checked				{ background-image: url(../js/assets/checked.gif); }
+.vxJS_tree .unChecked			{ background-image: url(../js/assets/un_checked.gif); }
+.vxJS_tree .partChecked			{ background-image: url(../js/assets/part_checked.gif); }
+
+.vxJS_tree div.__label__		{ display: inline; cursor: pointer; }
+.vxJS_tree li span.current		{ font-weight: bold; cursor: default; }
+.vxJS_tree .disabled			{ opacity: 0.5; }
+
+div.vxJS_xhrThrobber {
+	position: absolute;
+	z-index: 100;
+	padding: 0.5em;
+	animation: load 1.5s infinite linear;
+	-webkit-animation:  webkit-load 1.5s infinite linear;
+	text-align: center;
+	visibility: hidden;
+}
+div.vxJS_xhrThrobber.active {
+	visibility: visible;
+}
+
+div.vxJS_xhrThrobber:before {
+	font-family: icomoon-essential; font-size: 16px;
+	content: "\e02f";
+}
+
+div.vxJS_xhrThrobberFileOperation {
+	padding: 0.125em 0.5em;
+	color: #808080;
+	text-align: center;
+	opacity: 0.2;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+div.vxJS_xhrThrobberFileOperation.active {
+	animation: load 2s infinite linear;
+	-webkit-animation:  webkit-load 2s infinite linear;
+}
+
+div.vxJS_xhrThrobberFileOperation:before {
+	font-family: icomoon-essential; font-size: 2em;
+	content: "\e030";
+}
+
+@keyframes load {
+	0%		{ transform: rotate(0); color: #808080; }
+	50%		{ transform: rotate(180deg); color: #4a0; }
+	100%	{ transform: rotate(360deg); color: #808080; }
+}
+@-webkit-keyframes webkit-load {
+	0%		{ -webkit-transform: rotate(0); color: #808080; }
+	50%		{ -webkit-transform: rotate(180deg); color: #4a0; }
+	100%	{ -webkit-transform: rotate(360deg); color: #808080; }
+}
