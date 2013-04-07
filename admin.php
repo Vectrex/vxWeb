@@ -21,7 +21,6 @@ $admin = Admin::getInstance();
 	'Admin',
 	array(
 		'admin.css',
-		'js.css',
 		'admin_site_specific.css'
 	),
 	array(
@@ -35,7 +34,6 @@ $admin = Admin::getInstance();
 		'widgets/calendar.js',
 		'widgets/sortable.js',
 		'widgets/tree.js',
-		'widgets/autosuggest.js',
 		'widgets/simpletabs.js',
 	)
 );
