@@ -1,15 +1,18 @@
 vxJS.event.addDomReadyListener(function() {
 	"use strict";
 
-	var	articleXhrForm, filesXhrForm, st,
+	var	articleXhrForm, id,
+		filesXhrForm, st,
 		sortXhr = vxJS.xhr( { command: "sortFiles" }),
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
 		mBox = document.getElementById("messageBox"), messageBox = vxJS.element.register(mBox);
 
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
+	vxJS.event.addListener(articleXhrForm, "beforeSubmit", function() { if(id) { this.setPayload( { id: id }); } });
 
-	var initFilesFunc = function(id) {
+	var initFilesFunc = function() {
+
 		filesXhrForm = vxJS.widget.xhrForm(document.forms[1], { command: "handleFiles" });
 		filesXhrForm.addSubmit(filesXhrForm.element.elements["submit_file"]);
 		filesXhrForm.enableIframeUpload();
@@ -40,6 +43,11 @@ vxJS.event.addDomReadyListener(function() {
 				vxJS.dom.deleteChildNodes(tabs.tabs[1].page);
 				tabs.tabs[1].page.appendChild(vxJS.dom.parse(r.markup));
 				initFilesFunc();
+			}
+
+			if(r.id) {
+				id = r.id;
+				articleXhrForm.element.elements["submit_article"].firstChild.nodeValue = "Änderungen übernehmen";
 			}
 		}
 

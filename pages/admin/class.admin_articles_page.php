@@ -231,27 +231,6 @@ class admin_articles_page extends page {
 		return $cat;
 	}
 
-	private function sortFiles(array $newOrder, $id) {
-		if(count($newOrder) > 1) {
-			$filesSorted = MetaFile::getFilesForReference((int) $id, 'articles', 'sortByCustomSort');
-
-			$oldPos = 0;
-
-			foreach($filesSorted as $file) {
-				$newPos = array_search($oldPos++, $newOrder);
-
-				$this->db->preparedExecute("
-					UPDATE
-						files
-					SET
-						customSort = ?
-					WHERE
-						filesID = ?
-				", array((int) $newPos, $file->getId()));
-			}
-		}
-	}
-
 	private function getThumbPath(MetaFile $f) {
 
 		// check and - if required - generate thumbnail
@@ -391,10 +370,19 @@ class admin_articles_page extends page {
 				return;
 			}
 		}
+
+		else if(isset($this->validatedRequests['elements']) && isset($this->validatedRequests['elements']['id'])) {
+			try {
+				$article = Article::getInstance($this->validatedRequests['elements']['id']);
+			}
+			catch(ArticleException $e) {
+				return;
+			}
+		}
+
 		else {
 			$article = new Article();
 		}
-
 
 		switch($this->validatedRequests['httpRequest']) {
 
