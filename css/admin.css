@@ -313,12 +313,13 @@ button.loginButton:after			{ font-family: icomoon-essential; font-size: 16px; co
 
 .editArticleForm .fileInfo		{ margin: 0.5em 0 0.5em 10em; }
 span.calendarPopper				{ display: inline-block; cursor: pointer; vertical-align: middle; margin: 0 4px; }
-span.calendarPopper:before		{ font-family: icomoon-essential; content: "\e00c"; font-size: 16px; color: #1D6589; }
+span.calendarPopper:before		{ font-family: icomoon-essential; content: "\e00c"; font-size: 1.5em; color: #1D6589; }
 
 .imageTable						{ }
 .imageTable th+th+th+th,
 .imageTable td+td+td+td			{ text-align: center; }
-.imageTable .dndColumn			{ background: url("../img/site/icons/darkgray/cursor_H_split_icon&16.png") no-repeat scroll 50% 50% transparent; cursor: move; }
+.imageTable .dndColumn			{ vertical-align: middle; text-align: center; cursor: move; }
+.imageTable .dndColumn:before	{ font-family: icomoon-essential; content: "\e038"; font-size: 2em; color: #1D6589; }
 .imageTable .dragged			{ background: #ff6000; }
 .imageTable .insertAbove		{ border-top: solid 2px #808080; }
 .imageTable .insertBelow		{ border-bottom: solid 2px #808080; }

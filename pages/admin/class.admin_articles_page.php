@@ -88,8 +88,8 @@ class admin_articles_page extends page {
 				$this->articleForm->setInitFormValues(array(
 					'articlecategoriesID'	=> $article->getCategory()->getId(),
 					'Headline'				=> $article->getHeadline(),
-					'Teaser'				=> $data['Teaser'],
-					'Content'				=> htmlspecialchars($data['Content'], ENT_NOQUOTES, 'UTF-8'),
+					'Teaser'				=> isset($data['Teaser']) ? $data['Teaser'] : '',
+					'Content'				=> isset($data['Content']) ? htmlspecialchars($data['Content'], ENT_NOQUOTES, 'UTF-8') : '',
 					'Article_Date'			=> is_null($article->getDate())			? '' : $article->getDate()->format('d.m.Y'),
 					'Display_from'			=> is_null($article->getDisplayFrom())	? '' : $article->getDisplayFrom()->format('d.m.Y'),
 					'Display_until'			=> is_null($article->getDisplayUntil())	? '' : $article->getDisplayUntil()->format('d.m.Y')
