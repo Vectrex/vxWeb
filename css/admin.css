@@ -19,21 +19,22 @@ a:active		{ text-decoration: underline; }
 
 input,
 textarea,
-select					{ padding: 0.125em; font-family: Ubuntu, Trebuchet MS, Tahoma, Arial, Helvetica, sans-serif; font-size: 100%; }
-button					{ padding: 0.25em 0.75em; background: #808080; color: #fff; font-weight: bold; border: solid 1px #666; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
+select							{ padding: 0.125em; font-family: Ubuntu, Trebuchet MS, Tahoma, Arial, Helvetica, sans-serif; font-size: 100%; }
+button							{ padding: 0.25em 0.75em; background: #808080; color: #fff; font-weight: bold; border: solid 1px #666; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
 button:hover,
-button:active			{ box-shadow: 0 0 4px 1px #4a0; color: #6e0; }
+button:active					{ box-shadow: 0 0 4px 1px #4a0; color: #6e0; }
 /*
 button::-moz-focus-inner{ border: 0; }
 button:focus			{ outline: none; }
 */
-input[type="checkbox"] { vertical-align: middle; }
+input[type="checkbox"]			{ vertical-align: middle; }
 
-table					{ font-size: 0.8em; border-collapse: collapse; margin-bottom: 1em; }
-th, td					{ padding: 0.25em 0.35em; text-align: left; vertical-align: middle; }
-th						{ padding-top: 0.5em; background: #c0c0c0; font-weight: bold; }
-table *					{ font-size: 100%; }
-
+table							{ font-size: 0.8em; border-collapse: collapse; margin-bottom: 1em; }
+th, td							{ padding: 0.25em 0.35em; text-align: left; vertical-align: middle; }
+th								{ padding-top: 0.5em; background: #c0c0c0; font-weight: bold; }
+table *							{ font-size: 100%; }
+table.list tr th				{ border-left: solid 1px #fff; }
+table.list tr th:first-child	{ border-left: none; }
 /*
  * Containers
  */
@@ -176,7 +177,7 @@ form						{ background: #eee; padding: 0.75em 1.5em; border-radius: 4px; -moz-bo
 form div.formSect			{ margin-bottom: 0.25em; font-size: 80%; }
 form div.formBase			{ font-size: 80%; }
 form div.formItem			{ padding: 0.5em 0; }
-form label					{ display: inline-block; vertical-align: middle; width: 10em; }
+form label					{ display: inline-block; vertical-align: middle; width: 11em; }
 form div.formSect * 		{ font-size: 100%; }
 form div.formBase * 		{ font-size: 100%; }
 
@@ -184,7 +185,7 @@ form div.formBase * 		{ font-size: 100%; }
  * Profile
  */
 
-.editProfileForm label		{ vertical-align: top; width: 8em; }
+.editProfileForm label		{ vertical-align: middle; width: 8em; }
 .editProfileForm .formBase	{ margin-left: 8em; }
 
 /*

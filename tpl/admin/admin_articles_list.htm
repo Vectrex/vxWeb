@@ -12,6 +12,9 @@
 					null,
 					"no_sort",
 					"date_iso",
+					"date_iso",
+					"date_iso",
+					"float",
 					null,
 					"no_sort"
 				]
@@ -38,25 +41,32 @@
 
 <table class="list">
 	<tr>
-		<th class="ml">Kategorie</th>
+		<th class="m">Kategorie</th>
 		<th class="l">Titel</th>
 		<th class="center">Inhalt</th>
-		<th class="right">Newsdatum</th>
+		<th class="right">Artikeldatum</th>
+		<th class="right">Anzeige von</th>
+		<th class="right">Anzeige bis</th>
+		<th class="centered">Sortierziffer</th>
 		<th class="right">Angelegt/aktualisiert</th>
 		<th>&nbsp;</th>
 	</tr>
 <?php if(!empty($tpl->articles)): ?>
 	<?php $color = 0; ?>
-	<?php foreach($tpl->articles as $v): ?>
+	<?php foreach($tpl->articles as $article): ?>
 		<tr class="row<?php echo $color++ % 2; ?>">
-			<td><?php echo $v['Title']; ?></td>
-			<td><?php echo $v['Headline']; ?></td>
-			<td><?php echo vxPHP\Template\SimpleTemplate::shortenText(strip_tags($v['Content']), 30); ?></td>
-			<td class="right"><?php echo $v['Article_Date']; ?></td>
-			<td class="right"><?php echo $v['lastUpdated']; ?></td>
+			<?php $data = $article->getData(); ?>
+			<td><?php echo $article->getCategory()->getTitle(); ?></td>
+			<td><?php echo $article->getHeadline(); ?></td>
+			<td><?php echo empty($data['Content']) ? '' : vxPHP\Template\SimpleTemplate::shortenText(strip_tags($data['Content']), 30); ?></td>
+			<td class="right"><?php echo is_null($article->getDate()) ? '' : $article->getDate()->format('Y-m-d'); ?></td>
+			<td class="right"><?php echo is_null($article->getDisplayFrom()) ? '' : $article->getDisplayFrom()->format('Y-m-d'); ?></td>
+			<td class="right"><?php echo is_null($article->getDisplayUntil()) ? '' : $article->getDisplayUntil()->format('Y-m-d'); ?></td>
+			<td class="centered"><?php echo $article->getCustomSort(); ?></td>
+			<td class="right"><?php echo is_null($article->getLastUpdated()) ? '' : $article->getLastUpdated()->format('Y-m-d H:i:s'); ?></td>
 			<td>
-				<a class="iconButton editButton" href="$<?php echo $tpl->page; ?>&amp;id=<?php echo $v['articlesID']; ?>" title="Bearbeiten"></a>
-				<a class="iconButton deleteButton" href="$<?php echo $tpl->page; ?>&amp;action=del&amp;id=<?php echo $v['articlesID']; ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+				<a class="iconButton editButton" href="$<?php echo $tpl->page; ?>&amp;id=<?php echo $article->getId(); ?>" title="Bearbeiten"></a>
+				<a class="iconButton deleteButton" href="$<?php echo $tpl->page; ?>&amp;action=del&amp;id=<?php echo $article->getId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

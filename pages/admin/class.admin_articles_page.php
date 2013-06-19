@@ -25,8 +25,10 @@ use vxPHP\Orm\Custom\Article;
 use vxPHP\Orm\Custom\ArticleCategory;
 use vxPHP\Orm\Custom\Exception\ArticleException;
 use vxPHP\Orm\Custom\Exception\ArticleCategoryException;
+use vxPHP\Orm\Custom\ArticleQuery;
 
 class admin_articles_page extends page {
+
 	protected $pageRequests = array(
 		'id'		=> Rex::INT_EXCL_NULL,
 		'action'	=> array('new', 'del')
@@ -88,7 +90,8 @@ class admin_articles_page extends page {
 				$this->articleForm->setInitFormValues(array(
 					'articlecategoriesID'	=> $article->getCategory()->getId(),
 					'Headline'				=> $article->getHeadline(),
-					'Teaser'				=> isset($data['Teaser']) ? $data['Teaser'] : '',
+					'customSort'			=> $article->getCustomSort(),
+					'Teaser'				=> $data['Teaser'],
 					'Content'				=> isset($data['Content']) ? htmlspecialchars($data['Content'], ENT_NOQUOTES, 'UTF-8') : '',
 					'Article_Date'			=> is_null($article->getDate())			? '' : $article->getDate()->format('d.m.Y'),
 					'Display_from'			=> is_null($article->getDisplayFrom())	? '' : $article->getDisplayFrom()->format('d.m.Y'),
@@ -115,57 +118,14 @@ class admin_articles_page extends page {
 			$this->articleForm->addElement(FormElementFactory::create('input', 'Article_Date', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')));
 			$this->articleForm->addElement(FormElementFactory::create('input', 'Display_from', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')));
 			$this->articleForm->addElement(FormElementFactory::create('input', 'Display_until', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')));
+			$this->articleForm->addElement(FormElementFactory::create('input', 'customSort', NULL, array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)));
 
 			if($this->articleForm->wasSubmittedByName('submit_article')) {
-				$this->articleForm->validate();
-				$v = $this->articleForm->getValidFormValues();
 
-				if($v['Article_Date'] != '') {
-					if(!DateTime::checkDate($v['Article_Date'])) {
-						$this->articleForm->setError('Article_Date');
-					}
-					else {
-						$article->setDate(new \DateTime($this->db->formatDate($v['Article_Date'])));
-					}
+				if($this->validateFormAndSaveArticle($this->articleForm, $article) === TRUE) {
+					$this->redirect("admin.php?page=articles&id={$article->getId()}");
 				}
 
-				if($v['Display_from'] != '') {
-					if(!DateTime::checkDate($v['Display_from'])) {
-						$this->articleForm->setError('Display_from');
-					}
-					else {
-						$article->setDisplayFrom(new \DateTime($this->db->formatDate($v['Display_from'])));
-					}
-				}
-
-				if($v['Display_until'] != '') {
-					if(!DateTime::checkDate($v['Display_until'])) {
-						$this->articleForm->setError('Display_until');
-					}
-					else {
-						$article->setDisplayUntil(new \DateTime($this->db->formatDate($v['Display_until'])));
-					}
-				}
-
-				if(!$this->articleForm->getFormErrors()) {
-					try {
-
-						// validate submitted category id - replacing default method allows user privilege considerations
-
-						$article->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesID'])));
-						$article->setHeadline($v['Headline']);
-						$article->setData(array('Teaser' => $v['Teaser'], 'Content' => $v['Content']));
-
-						$article->save();
-						$this->redirect("admin.php?page=articles&id={$article->getId()}");
-					}
-					catch(ArticleException $e) {
-						$this->articleForm->setError('system');
-					}
-					catch(ArticleCategoryException $e) {
-						$this->articleForm->setError('system');
-					}
-				}
 			}
 
 			if(isset($this->filesForm) && $this->filesForm->wasSubmittedByName('submit_file')) {
@@ -185,19 +145,12 @@ class admin_articles_page extends page {
 		}
 
 		$admin = Admin::getInstance();
-		$restrictingWhere = $admin->hasSuperAdminPrivileges() ? '1 = 1' : "a.createdBy = {$admin->getAdminId()}";
+		$restrictingWhere = $admin->hasSuperAdminPrivileges() ? '1 = 1' : "createdBy = {$admin->getAdminId()}";
 
-		$this->data['articles'] = $this->db->doQuery("
-			SELECT
-				articlesID, Headline, Content, Article_Date, a.lastUpdated, a.firstCreated, c.Alias, c.Title
-			FROM
-				articles a
-				INNER JOIN articlecategories c ON a.articlecategoriesID = c.articlecategoriesID
-			WHERE
-				$restrictingWhere
-			ORDER BY
-				lastUpdated DESC
-		", TRUE, array('htmlspecialchars'));
+		$this->data['articles'] = ArticleQuery::create($this->db)
+			->where($restrictingWhere)
+			->sortBy('lastUpdated', FALSE)
+			->select();
 	}
 
 	public function content() {
@@ -217,6 +170,73 @@ class admin_articles_page extends page {
 		return $html;
 	}
 
+	private function validateFormAndSaveArticle(HtmlForm $form, Article $article) {
+
+		$form->validate();
+
+		$v = $form->getValidFormValues();
+
+		if($v['Article_Date'] != '') {
+			if(!DateTime::checkDate($v['Article_Date'])) {
+				$form->setError('Article_Date');
+			}
+			else {
+				$article->setDate(new \DateTime($this->db->formatDate($v['Article_Date'])));
+			}
+		}
+
+		if($v['Display_from'] != '') {
+			if(!DateTime::checkDate($v['Display_from'])) {
+				$form->setError('Display_from');
+			}
+			else {
+				$article->setDisplayFrom(new \DateTime($this->db->formatDate($v['Display_from'])));
+			}
+		}
+
+		if($v['Display_until'] != '') {
+			if(!DateTime::checkDate($v['Display_until'])) {
+				$form->setError('Display_until');
+			}
+			else {
+				$article->setDisplayUntil(new \DateTime($this->db->formatDate($v['Display_until'])));
+			}
+		}
+
+		if(!$this->articleForm->getFormErrors()) {
+
+			try {
+
+				// validate submitted category id - replacing default method allows user privilege considerations
+
+				$article->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesID'])));
+				$article->setHeadline($v['Headline']);
+				$article->setData(array('Teaser' => $v['Teaser'], 'Content' => $v['Content']));
+				$article->setCustomSort($v['customSort']);
+
+				if($article->wasChanged()) {
+					$article->save();
+				}
+
+				return TRUE;
+
+			}
+
+			catch(ArticleException $e) {
+				$this->articleForm->setError('system');
+			}
+			catch(ArticleCategoryException $e) {
+				$this->articleForm->setError('system');
+			}
+		}
+
+		return FALSE;
+
+	}
+
+	/**
+	 * @return array
+	 */
 	private function getArticleCategories() {
 		$categories = array('-1' => 'Bitte Kategorie wählen...');
 
@@ -227,10 +247,18 @@ class admin_articles_page extends page {
 		return $categories;
 	}
 
+	/**
+	 * @param ArticleCategory $cat
+	 * @return ArticleCategory
+	 */
 	private function validateArticleCategory(ArticleCategory $cat) {
 		return $cat;
 	}
 
+	/**
+	 * @param MetaFile $f
+	 * @return string
+	 */
 	private function getThumbPath(MetaFile $f) {
 
 		// check and - if required - generate thumbnail
@@ -262,6 +290,15 @@ class admin_articles_page extends page {
 		return str_replace(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR), '', $dest);
 	}
 
+	/**
+	 * @param Article $article
+	 * @param array $metaData
+	 *
+	 * @throws MetaFolderException
+	 * @throws FilesystemFileException
+	 *
+	 * @return MetaFile
+	 */
 	private function uploadArticleFile(Article $article, array $metaData) {
 
 		$parentFolder = FilesystemFolder::getInstance(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR).FILES_ARTICLES_PATH);
@@ -320,6 +357,9 @@ class admin_articles_page extends page {
 		}
 	}
 
+	/**
+	 * @param Article $article
+	 */
 	private function initFilesForm(Article $article) {
 
 		$cbValues		= array();
@@ -360,6 +400,12 @@ class admin_articles_page extends page {
 		$this->filesForm->addElement($fileSubmit);
 	}
 
+	/**
+	 * (non-PHPdoc)
+	 * @see page::handleHttpRequest()
+	 *
+	 * @todo "unify" form validation and saving
+	 */
 	protected function handleHttpRequest() {
 
 		if(isset($this->validatedRequests['id'])) {
@@ -400,13 +446,14 @@ class admin_articles_page extends page {
 				$form->addElement(FormElementFactory::create('input', 'Article_Date', NULL, array(), array(), FALSE, array('trim')));
 				$form->addElement(FormElementFactory::create('input', 'Display_from', NULL, array(), array(), FALSE, array('trim')));
 				$form->addElement(FormElementFactory::create('input', 'Display_until', NULL, array(), array(), FALSE, array('trim')));
+				$form->addElement(FormElementFactory::create('input', 'customSort', NULL, array(), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)));
 
 				$form->validate();
 				$v = $form->getValidFormValues();
 
 				if($v['Article_Date'] != '') {
 					if(!DateTime::checkDate($v['Article_Date'])) {
-						$this->articleForm->setError('Article_Date');
+						$form->setError('Article_Date');
 					}
 					else {
 						$article->setDate(new \DateTime($this->db->formatDate($v['Article_Date'])));
@@ -415,7 +462,7 @@ class admin_articles_page extends page {
 
 				if($v['Display_from'] != '') {
 					if(!DateTime::checkDate($v['Display_from'])) {
-						$this->articleForm->setError('Display_from');
+						$form->setError('Display_from');
 					}
 					else {
 						$article->setDisplayFrom(new \DateTime($this->db->formatDate($v['Display_from'])));
@@ -424,7 +471,7 @@ class admin_articles_page extends page {
 
 				if($v['Display_until'] != '') {
 					if(!DateTime::checkDate($v['Display_until'])) {
-						$this->articleForm->setError('Display_until');
+						$form->setError('Display_until');
 					}
 					else {
 						$article->setDisplayUntil(new \DateTime($this->db->formatDate($v['Display_until'])));
@@ -450,6 +497,7 @@ class admin_articles_page extends page {
 					$article->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesID'])));
 					$article->setHeadline($v['Headline']);
 					$article->setData(array('Teaser' => $v['Teaser'], 'Content' => $v['Content']));
+					$article->setCustomSort((int) $v['customSort']);
 
 					$id = $article->getId();
 
