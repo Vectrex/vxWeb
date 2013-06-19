@@ -10,7 +10,6 @@
 				columnFormat: [
 					null,
 					null,
-					"no_sort",
 					"date_iso",
 					"date_iso",
 					"date_iso",
@@ -43,7 +42,6 @@
 	<tr>
 		<th class="m">Kategorie</th>
 		<th class="l">Titel</th>
-		<th class="center">Inhalt</th>
 		<th class="right">Artikeldatum</th>
 		<th class="right">Anzeige von</th>
 		<th class="right">Anzeige bis</th>
@@ -55,10 +53,8 @@
 	<?php $color = 0; ?>
 	<?php foreach($tpl->articles as $article): ?>
 		<tr class="row<?php echo $color++ % 2; ?>">
-			<?php $data = $article->getData(); ?>
 			<td><?php echo $article->getCategory()->getTitle(); ?></td>
 			<td><?php echo $article->getHeadline(); ?></td>
-			<td><?php echo empty($data['Content']) ? '' : vxPHP\Template\SimpleTemplate::shortenText(strip_tags($data['Content']), 30); ?></td>
 			<td class="right"><?php echo is_null($article->getDate()) ? '' : $article->getDate()->format('Y-m-d'); ?></td>
 			<td class="right"><?php echo is_null($article->getDisplayFrom()) ? '' : $article->getDisplayFrom()->format('Y-m-d'); ?></td>
 			<td class="right"><?php echo is_null($article->getDisplayUntil()) ? '' : $article->getDisplayUntil()->format('Y-m-d'); ?></td>
