@@ -312,18 +312,22 @@ button.loginButton:after			{ font-family: icomoon-essential; font-size: 16px; co
  * Articles
  */
 
-.editArticleForm .fileInfo		{ margin: 0.5em 0 0.5em 10em; }
-span.calendarPopper				{ display: inline-block; cursor: pointer; vertical-align: middle; margin: 0 4px; }
-span.calendarPopper:before		{ font-family: icomoon-essential; content: "\e00c"; font-size: 1.5em; color: #1D6589; }
+.editArticleForm .fileInfo			{ margin: 0.5em 0 0.5em 10em; }
+span.calendarPopper					{ display: inline-block; cursor: pointer; vertical-align: middle; margin: 0 4px; }
+span.calendarPopper:before			{ font-family: icomoon-essential; content: "\e00c"; font-size: 1.5em; color: #1D6589; }
 
-.imageTable						{ }
+.imageTable							{ }
 .imageTable th+th+th+th,
-.imageTable td+td+td+td			{ text-align: center; }
-.imageTable .dndColumn			{ vertical-align: middle; text-align: center; cursor: move; }
-.imageTable .dndColumn:before	{ font-family: icomoon-essential; content: "\e038"; font-size: 2em; color: #1D6589; }
-.imageTable .dragged			{ background: #ff6000; }
-.imageTable .insertAbove		{ border-top: solid 2px #808080; }
-.imageTable .insertBelow		{ border-bottom: solid 2px #808080; }
+.imageTable td+td+td+td				{ text-align: center; }
+.imageTable .dragged				{ background: #ff6000; }
+.imageTable .insertAbove			{ border-top: solid 2px #808080; }
+.imageTable .insertBelow			{ border-bottom: solid 2px #808080; }
+
+.imageTable td.dndColumn			{ vertical-align: middle; text-align: center; cursor: move; visibility: hidden; }
+.imageTable td.dndColumn:before		{ font-family: icomoon-essential; content: "\e03a"; font-size: 2em; color: #c0c0c0; }
+
+.imageTable tr.dragged td.dndColumn,
+.imageTable tr:hover td.dndColumn	{ visibility: visible; }
 
 img.thumb						{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3px #808080; -webkit-box-shadow: 1px 1px 3px #808080; }
 
