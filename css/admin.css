@@ -1,5 +1,5 @@
 @CHARSET "UTF-8";
-@import "../fonts/ubuntu/webfont.css";
+@import "../fonts/verb_condensed/webfont.css";
 @import "../fonts/icomoon/webfont.css";
 
 /*
@@ -7,10 +7,9 @@
  */
 
 *				{ margin: 0; padding: 0; }
-html, body		{ font-family: Ubuntu, Trebuchet MS, Tahoma, Arial, Helvetica, sans-serif; font-size: 100%; background: #fff; color: #000; height: 100%; }
+html, body		{ font-family: verbcond, sans-serif; font-size: 100%; background: #fff; color: #000; height: 100%; }
 body			{ }
 
-h1, h2, h3		{ font-family: Ubuntu, Trebuchet MS, Tahoma, Arial, Helvetica, sans-serif; }
 img				{ border: none; }
 p				{ font-size: 80%; line-height: 200%; margin-bottom: 0.5em; padding: 0; }
 a				{ text-decoration: none; color: #1D6589; }
@@ -19,7 +18,7 @@ a:active		{ text-decoration: underline; }
 
 input,
 textarea,
-select							{ padding: 0.125em; font-family: Ubuntu, Trebuchet MS, Tahoma, Arial, Helvetica, sans-serif; font-size: 100%; }
+select							{ padding: 0.125em; font-family: verbcond, sans-serif; font-size: 100%; }
 button							{ padding: 0.25em 0.75em; background: #808080; color: #fff; font-weight: bold; border: solid 1px #666; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
 button:hover,
 button:active					{ box-shadow: 0 0 4px 1px #4a0; color: #6e0; }
@@ -30,7 +29,7 @@ button:focus			{ outline: none; }
 input[type="checkbox"]			{ vertical-align: middle; }
 
 table							{ font-size: 0.8em; border-collapse: collapse; margin-bottom: 1em; }
-th, td							{ padding: 0.25em 0.35em; text-align: left; vertical-align: middle; }
+th, td							{ padding: 0.25em 0.5em; text-align: left; vertical-align: middle; }
 th								{ padding-top: 0.5em; background: #c0c0c0; font-weight: bold; }
 table *							{ font-size: 100%; }
 table.list tr th				{ border-left: solid 1px #fff; }
