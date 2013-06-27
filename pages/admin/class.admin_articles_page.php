@@ -437,7 +437,7 @@ class admin_articles_page extends page {
 			case 'checkForm':
 				$_POST = $this->validatedRequests['elements'];
 
-				$form = new HtmlForm('admin_edit_article.htm');
+				$form = new HtmlForm();
 
 				$form->addElement(FormElementFactory::create('select', 'articlecategoriesID', NULL, array(), array(), FALSE, array(), array(Rex::INT_EXCL_NULL)));
 				$form->addElement(FormElementFactory::create('input', 'Headline', NULL, array(), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)));
@@ -459,6 +459,9 @@ class admin_articles_page extends page {
 						$article->setDate(new \DateTime($this->db->formatDate($v['Article_Date'])));
 					}
 				}
+				else {
+					$article->setDate();
+				}
 
 				if($v['Display_from'] != '') {
 					if(!DateTime::checkDate($v['Display_from'])) {
@@ -468,6 +471,9 @@ class admin_articles_page extends page {
 						$article->setDisplayFrom(new \DateTime($this->db->formatDate($v['Display_from'])));
 					}
 				}
+				else {
+					$article->setDisplayFrom();
+				}
 
 				if($v['Display_until'] != '') {
 					if(!DateTime::checkDate($v['Display_until'])) {
@@ -476,6 +482,9 @@ class admin_articles_page extends page {
 					else {
 						$article->setDisplayUntil(new \DateTime($this->db->formatDate($v['Display_until'])));
 					}
+				}
+				else {
+					$article->setDisplayUntil();
 				}
 
 				$errors	= $form->getFormErrors();
@@ -497,7 +506,7 @@ class admin_articles_page extends page {
 					$article->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesID'])));
 					$article->setHeadline($v['Headline']);
 					$article->setData(array('Teaser' => $v['Teaser'], 'Content' => $v['Content']));
-					$article->setCustomSort((int) $v['customSort']);
+					$article->setCustomSort($v['customSort']);
 
 					$id = $article->getId();
 
