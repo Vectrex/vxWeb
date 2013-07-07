@@ -1,10 +1,13 @@
 <?php
 use vxPHP\User\UserAbstract;
 use vxPHP\User\Admin;
+use vxPHP\User\Util;
 use vxPHP\User\Notification\Notification;
+
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\FormElement\CheckboxElement;
+
 use vxPHP\Util\Rex;
 
 class admin_profile_page extends page {
@@ -64,7 +67,7 @@ class admin_profile_page extends page {
 
 				if(!$this->form->getFormErrors()) {
 					if(!empty($v['new_PWD'])) {
-						$v['PWD'] = sha1($v['new_PWD']);
+						$v['PWD'] = Util::hashPassword($v['new_PWD']);
 					}
 
 					if($admin->restrictedUpdate($v)) {
@@ -127,14 +130,14 @@ class admin_profile_page extends page {
 			if(!empty($v['new_PWD']) && $v['new_PWD'] != $v['new_PWD_verify']) {
 				$f->setError('PWD_mismatch');
 			}
-			if($v['Email'] != $admin->getId() && !UserAbstract::isAvailableId($v['Email'])) {
+			if($v['Email'] != $admin->getId() && !Util::isAvailableId($v['Email'])) {
 				$f->setError('duplicate_Email');
 			}
 
 			if(!$f->getFormErrors()) {
 
 				if(!empty($v['new_PWD'])) {
-					$v['PWD'] = sha1($v['new_PWD']);
+					$v['PWD'] = Util::hashPassword($v['new_PWD']);
 				}
 				if($admin->restrictedUpdate($v)) {
 					$add = array();
