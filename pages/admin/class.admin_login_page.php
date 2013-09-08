@@ -32,6 +32,8 @@ class admin_login_page extends page {
 		$button->setInnerHTML('Login');
 		$this->form->addElement($button);
 
+		$this->form->bindRequestParameters();
+
 		if($this->form->wasSubmittedByName('submit_login')) {
 			$values = array_map(array($this->db, 'escapeString'), $this->form->getValidFormValues());
 
@@ -71,15 +73,18 @@ class admin_login_page extends page {
 
 	protected function handleHttpRequest() {
 
-		$_POST = $this->validatedRequests['elements'];
+		$this->request->request->add($this->request->request->get('elements'));
 
 		$this->form = new HtmlForm('admin_login.htm');
 		$this->form->addElement(FormElementFactory::create('input',		'UID', '', array(), array(), FALSE, array('trim')));
 		$this->form->addElement(FormElementFactory::create('password',	'pwd'));
 
+		$this->form->bindRequestParameters($this->request->request);
+
 		$values = array_map(array($this->db, 'escapeString'), $this->form->getValidFormValues());
 
 		$admin = Admin::getInstance();
+
 		try {
 			$admin->setUser($values['UID']);
 			$admin->authenticate($values['pwd']);
