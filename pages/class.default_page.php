@@ -1,11 +1,28 @@
 <?php
+
+use vxPHP\Template\Exception\SimpleTemplateException;
+use vxPHP\Template\SimpleTemplate;
+
 class default_page extends page {
 
 	public function __construct() {
+
 		parent::__construct();
 
-		$this->contentTpl = new vxPHP\Template\SimpleTemplate("{$this->currentPage}.htm");
-		if(!empty($this->contentTpl->error) || $this->contentTpl->containsPHP()) {
+		$pathSegments = $this->pathSegments;
+
+		// pick page from the end of the segments sequence
+
+		$page = array_pop($pathSegments);
+
+		try {
+			$this->contentTpl = new SimpleTemplate(preg_replace('~[^a-z0-9_-]~i', '', $page) . '.htm');
+		}
+		catch(SimpleTemplateException $e) {
+			$this->generateHttpError();
+		}
+
+		if($this->contentTpl->containsPHP()) {
 			$this->generateHttpError();
 		}
 	}
@@ -18,4 +35,3 @@ class default_page extends page {
 		return $html;
 	}
 }
-?>

@@ -9,7 +9,10 @@ require_once 'site.config.php';
 use vxPHP\User\Admin;
 use vxPHP\Request\NiceURI;
 
-$page = $config->initPage();
+$route = vxPHP\Request\Router::getRouteFromPathInfo();
+$controllerClass = $route->getController();
+$page = new $controllerClass;
+
 $page->overrideMetaValue('robots', 'noindex, nofollow');
 
 $admin = Admin::getInstance();
@@ -39,11 +42,11 @@ $admin = Admin::getInstance();
 );
 ?>
 	<div id="page">
-		<?php if($page->currentPage !== 'login'): ?>
+		<?php if($page->route->getRouteId() !== 'login'): ?>
 			<div id="statusBar">
 				<p>
 					<span class="userInfo">Angemeldet <strong><?php echo $admin->getName(); ?></strong> (<?php echo $admin->getId(); ?>)</span> &bull;
-					<a class="logoutLink" href="<?php echo NiceURI::autoConvert("admin.php?page=logout"); ?>">Abmelden</a> &bull;
+					<a class="logoutLink" href="<?php echo NiceURI::autoConvert("admin.php/logout"); ?>">Abmelden</a> &bull;
 					Gehe zu <a href="/" class="homeLink"><?php echo $_SERVER['HTTP_HOST']; ?></a>
 				</p>
 			</div>

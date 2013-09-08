@@ -14,13 +14,13 @@ class admin_login_page extends page {
 
 		$admin = Admin::getInstance();
 
-		if($this->currentPage == 'logout') {
+		if($this->route->getRouteId() == 'logout') {
 			$admin->removeFromSession();
-			$this->redirect('admin.php');
+			$this->redirect();
 		}
 
 		if($admin->isAuthenticated()) {
-			$this->redirect('admin.php?page=profile');
+			$this->redirect('profile');
 		}
 
 		$this->form = new HtmlForm('admin_login.htm');
@@ -50,7 +50,7 @@ class admin_login_page extends page {
 						$_SESSION['authViolatingUri'] = NULL;
 						$this->redirect($redir);
 					}
-					$this->redirect('admin.php?page=profile');
+					$this->redirect('profile');
 				}
 			}
 
@@ -70,6 +70,7 @@ class admin_login_page extends page {
 	}
 
 	protected function handleHttpRequest() {
+
 		$_POST = $this->validatedRequests['elements'];
 
 		$this->form = new HtmlForm('admin_login.htm');
