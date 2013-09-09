@@ -1,6 +1,6 @@
 <h1>Artikel &amp; News</h1>
 
-<a class="button addButton" href="$<?php echo $tpl->page; ?>&amp;action=new">Artikel anlegen</a>
+<a class="button addButton" href="$articles/new">Artikel anlegen</a>
 
 <script type="text/javascript">
 	vxJS.event.addDomReadyListener(function() {
@@ -61,8 +61,8 @@
 			<td class="centered"><?php echo $article->getCustomSort(); ?></td>
 			<td class="right"><?php echo is_null($article->getLastUpdated()) ? '' : $article->getLastUpdated()->format('Y-m-d H:i:s'); ?></td>
 			<td>
-				<a class="iconButton editButton" href="$<?php echo $tpl->page; ?>&amp;id=<?php echo $article->getId(); ?>" title="Bearbeiten"></a>
-				<a class="iconButton deleteButton" href="$<?php echo $tpl->page; ?>&amp;action=del&amp;id=<?php echo $article->getId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+				<a class="iconButton editButton" href="$articles?id=<?php echo $article->getId(); ?>" title="Bearbeiten"></a>
+				<a class="iconButton deleteButton" href="$articles/del?id=<?php echo $article->getId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

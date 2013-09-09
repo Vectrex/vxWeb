@@ -29,50 +29,65 @@ use vxPHP\Orm\Custom\ArticleQuery;
 
 class admin_articles_page extends page {
 
-	protected $pageRequests = array(
-		'id'		=> Rex::INT_EXCL_NULL,
-		'action'	=> array('new', 'del')
-	);
 	protected	$categories,
 				$categoriesAlias;
 
+				/**
+				 * @var HtmlForm
+				 */
 	private		$articleForm,
+
+				/**
+				 * @var HtmlForm
+				 */
 				$filesForm;
+
 
 	public function __construct() {
 		parent::__construct();
 
 		$admin = Admin::getInstance();
 
-		// check permission of non superadmin
 
-		if(isset($this->validatedRequests['id'])) {
+		// editing something?
+
+		if($this->request->query->get('id')) {
+
 			try {
-				$article = Article::getInstance($this->validatedRequests['id']);
+				$article = Article::getInstance($this->request->query->get('id'));
 			}
 			catch(ArticleException $e) {
-				$this->redirect('?page=articles');
+				$this->redirect('articles');
 			}
+
+			// check permission of non superadmin
+
 			if(!$admin->hasSuperAdminPrivileges() && $admin->getAdminId() != $article->getCreatedBy()->getAdminId()) {
-				$this->redirect('?page=articles');
+				$this->redirect('articles');
 			}
 		}
 
-		if(isset($this->validatedRequests['id']) && isset($this->validatedRequests['action']) && $this->validatedRequests['action'] == 'del') {
+		// delete article
+
+		if(isset($article) && count($this->pathSegments) > 1 && $this->pathSegments[1] == 'del') {
+
 			$files = $article->getReferencingFiles();
+
 			try {
 				$article->delete();
 			}
 			catch(ArticleException $e) {
-				$this->redirect('admin.php?page=articles');
+				$this->redirect('articles');
 			}
 			foreach($files as $f) {
 				$f->delete();
 			}
-			$this->redirect('admin.php?page=articles');
+			$this->redirect('articles');
 		}
 
-		if(isset($this->validatedRequests['action']) && $this->validatedRequests['action'] === 'new' || isset($this->validatedRequests['id'])) {
+		// edit or add article
+
+		if(isset($article) || count($this->pathSegments) > 1 && $this->pathSegments[1] == 'new') {
 
 			// fill category related properties - replacing default method allows user privilege considerations
 
@@ -99,7 +114,10 @@ class admin_articles_page extends page {
 				));
 
 				$submitButton->setInnerHTML('Änderungen übernehmen');
-				$this->initFilesForm($article);
+
+				$this->filesForm = $this->initFilesForm($article);
+
+				$this->filesForm->bindRequestParameters();
 			}
 
 			else {
@@ -120,10 +138,12 @@ class admin_articles_page extends page {
 			$this->articleForm->addElement(FormElementFactory::create('input', 'Display_until', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')));
 			$this->articleForm->addElement(FormElementFactory::create('input', 'customSort', NULL, array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)));
 
+			$this->articleForm->bindRequestParameters();
+
 			if($this->articleForm->wasSubmittedByName('submit_article')) {
 
 				if($this->validateFormAndSaveArticle($this->articleForm, $article) === TRUE) {
-					$this->redirect("admin.php?page=articles&id={$article->getId()}");
+					$this->redirect("articles?id={$article->getId()}");
 				}
 
 			}
@@ -139,8 +159,9 @@ class admin_articles_page extends page {
 					}
 				}
 				$this->uploadArticleFile($article, $vals);
-				$this->redirect("admin.php?page=articles&id={$this->validatedRequests['id']}");
+				$this->redirect("articles?id={$this->validatedRequests['id']}");
 			}
+
 			return;
 		}
 
@@ -156,14 +177,14 @@ class admin_articles_page extends page {
 	public function content() {
 		if(isset($this->articleForm)) {
 			$tpl = new SimpleTemplate('admin_articles_edit.htm');
-			$tpl->assign('backlink', $this->currentPage);
+			$tpl->assign('backlink', $this->pathSegments[0]);
 			$tpl->assign('article_form', $this->articleForm->render());
 			$tpl->assign('files_form', isset($this->filesForm) ? $this->filesForm->render() : '');
 		}
 		else {
 			$tpl = new SimpleTemplate('admin_articles_list.htm');
 			$tpl->assign('articles', $this->data['articles']);
-			$tpl->assign('page', $this->currentPage);
+			$tpl->assign('page', $this->pathSegments[0]);
 		}
 		$html = $tpl->display();
 		$this->html .= $html;
@@ -287,7 +308,7 @@ class admin_articles_page extends page {
 			$imgEdit->export($dest);
 		}
 
-		return str_replace(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR), '', $dest);
+		return str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest);
 	}
 
 	/**
@@ -301,7 +322,7 @@ class admin_articles_page extends page {
 	 */
 	private function uploadArticleFile(Article $article, array $metaData) {
 
-		$parentFolder = FilesystemFolder::getInstance(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR).FILES_ARTICLES_PATH);
+		$parentFolder = FilesystemFolder::getInstance(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR) . FILES_ARTICLES_PATH);
 
 		// @todo avoid collision of folder names with existing file names
 
@@ -359,6 +380,7 @@ class admin_articles_page extends page {
 
 	/**
 	 * @param Article $article
+	 * @return vxPHP\Form\HtmlForm
 	 */
 	private function initFilesForm(Article $article) {
 
@@ -367,13 +389,13 @@ class admin_articles_page extends page {
 		$descriptions	= array();
 		$filenames		= array();
 
-		$this->filesForm = new HtmlForm('admin_edit_article_files.htm');
+		$form = new HtmlForm('admin_edit_article_files.htm');
 
-		$this->filesForm->setEncType('multipart/form-data');
-		$this->filesForm->setAttribute('class', 'editArticleForm');
+		$form->setEncType('multipart/form-data');
+		$form->setAttribute('class', 'editArticleForm');
 
 		if(!is_null($article->getId())) {
-			$this->filesForm->addElement(FormElementFactory::create('input', 'id', $article->getId(), array('type' => 'hidden')));
+			$form->addElement(FormElementFactory::create('input', 'id', $article->getId(), array('type' => 'hidden')));
 
 			foreach($article->getReferencingFiles() as $f) {
 				$data = $f->getData();
@@ -385,19 +407,21 @@ class admin_articles_page extends page {
 			}
 		}
 
-		$this->filesForm->initVar	('files_count',		count($filenames));
-		$this->filesForm->addMiscHtml('mimetypes',		$mimetypes);
-		$this->filesForm->addMiscHtml('descriptions',	$descriptions);
-		$this->filesForm->addMiscHtml('filenames',		$filenames);
+		$form->initVar	('files_count',		count($filenames));
+		$form->addMiscHtml('mimetypes',		$mimetypes);
+		$form->addMiscHtml('descriptions',	$descriptions);
+		$form->addMiscHtml('filenames',		$filenames);
 
-		$this->filesForm->addElementArray(FormElementFactory::create('checkbox', 'delete_file', $cbValues));
-		$this->filesForm->addElement(FormElementFactory::create('input', 'upload_file', '', array('type' => 'file')));
-		$this->filesForm->addElement(FormElementFactory::create('textarea', 'file_description', '', array('rows' => 2, 'cols' => 40, 'class' => 'xl')));
+		$form->addElementArray(FormElementFactory::create('checkbox', 'delete_file', $cbValues));
+		$form->addElement(FormElementFactory::create('input', 'upload_file', '', array('type' => 'file')));
+		$form->addElement(FormElementFactory::create('textarea', 'file_description', '', array('rows' => 2, 'cols' => 40, 'class' => 'xl')));
 
 		$fileSubmit = FormElementFactory::create('button', 'submit_file', '', array('type' => 'submit'));
 		$fileSubmit->setInnerHTML('Datei(en) hinzufügen/löschen');
 
-		$this->filesForm->addElement($fileSubmit);
+		$form->addElement($fileSubmit);
+
+		return $form;
 	}
 
 	/**
@@ -408,18 +432,20 @@ class admin_articles_page extends page {
 	 */
 	protected function handleHttpRequest() {
 
-		if(isset($this->validatedRequests['id'])) {
+		if(($id = $this->request->query->get('id'))) {
+
 			try {
-				$article = Article::getInstance($this->validatedRequests['id']);
+				$article = Article::getInstance($id);
 			}
 			catch(ArticleException $e) {
 				return;
 			}
+
 		}
 
-		else if(isset($this->validatedRequests['elements']) && isset($this->validatedRequests['elements']['id'])) {
+		else if(($elements = $this->request->request->get('elements')) && isset($elements['id'])) {
 			try {
-				$article = Article::getInstance($this->validatedRequests['elements']['id']);
+				$article = Article::getInstance($elements['id']);
 			}
 			catch(ArticleException $e) {
 				return;
@@ -430,12 +456,11 @@ class admin_articles_page extends page {
 			$article = new Article();
 		}
 
-		switch($this->validatedRequests['httpRequest']) {
+		switch($this->request->request->get('httpRequest')) {
 
 			// check article data
 
 			case 'checkForm':
-				$_POST = $this->validatedRequests['elements'];
 
 				$form = new HtmlForm();
 
@@ -447,6 +472,9 @@ class admin_articles_page extends page {
 				$form->addElement(FormElementFactory::create('input', 'Display_from', NULL, array(), array(), FALSE, array('trim')));
 				$form->addElement(FormElementFactory::create('input', 'Display_until', NULL, array(), array(), FALSE, array('trim')));
 				$form->addElement(FormElementFactory::create('input', 'customSort', NULL, array(), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)));
+
+				$this->request->request->add($this->request->request->get('elements'));
+				$form->bindRequestParameters($this->request->request);
 
 				$form->validate();
 				$v = $form->getValidFormValues();
@@ -536,8 +564,8 @@ class admin_articles_page extends page {
 				$success = TRUE;
 				$errorMsg = '';
 
-				if(isset($_POST['delete_file'])) {
-					foreach(array_keys($_POST['delete_file']) as $id) {
+				if(($delIds = array_keys($this->request->request->get('delete_file')))) {
+					foreach($delIds as $id) {
 						try {
 							MetaFile::getInstance(NULL, (int) $id)->delete();
 						}
@@ -550,7 +578,7 @@ class admin_articles_page extends page {
 
 				$this->getArticleCategories();
 				try {
-					$this->uploadArticleFile($article, array('file_description' => $_POST['file_description']));
+					$this->uploadArticleFile($article, array('file_description' => $this->request->request->get('file_description')));
 				}
 				catch(MetaFileException $e) {
 					$success = FALSE;
@@ -575,13 +603,13 @@ class admin_articles_page extends page {
 				return array('success' => $success, 'message' => $errorMsg, 'files' => $rows);
 
 			case 'sortFiles':
-				if(count($this->validatedRequests['sortOrder']) > 1) {
+				if(($sortOrder = $this->request->request->get('sortOrder')) && count($sortOrder) > 1) {
 					$filesSorted = $article->getReferencingFiles();
 
 					$oldPos = 0;
 
 					foreach($filesSorted as $file) {
-						$newPos = array_search($oldPos++, $this->validatedRequests['sortOrder']);
+						$newPos = array_search($oldPos++, $sortOrder);
 
 						$this->db->preparedExecute("
 							UPDATE
