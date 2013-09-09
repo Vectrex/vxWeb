@@ -73,15 +73,14 @@ class admin_login_page extends page {
 
 	protected function handleHttpRequest() {
 
+		$f = new HtmlForm('admin_login.htm');
+		$f->addElement(FormElementFactory::create('input',		'UID', '', array(), array(), FALSE, array('trim')));
+		$f->addElement(FormElementFactory::create('password',	'pwd'));
+
 		$this->request->request->add($this->request->request->get('elements'));
+		$f->bindRequestParameters($this->request->request);
 
-		$this->form = new HtmlForm('admin_login.htm');
-		$this->form->addElement(FormElementFactory::create('input',		'UID', '', array(), array(), FALSE, array('trim')));
-		$this->form->addElement(FormElementFactory::create('password',	'pwd'));
-
-		$this->form->bindRequestParameters($this->request->request);
-
-		$values = array_map(array($this->db, 'escapeString'), $this->form->getValidFormValues());
+		$values = array_map(array($this->db, 'escapeString'), $f->getValidFormValues());
 
 		$admin = Admin::getInstance();
 
@@ -100,4 +99,3 @@ class admin_login_page extends page {
 		return array('message' => 'Ungültige Email oder ungültiges Passwort!');
 	}
 }
-?>

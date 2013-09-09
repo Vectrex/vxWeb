@@ -43,13 +43,15 @@ class admin_profile_page extends page {
 		$this->form->addElement(FormElementFactory::create('password',	'new_PWD',			'',						array('maxlength' => 128, 'class' => 'xl', 'id' => 'pwd_input'),	array(),	FALSE, array(),						array('/^(|[^\s]{6,})$/')));
 		$this->form->addElement(FormElementFactory::create('password',	'new_PWD_verify',	'',						array('maxlength' => 128, 'class' => 'xl', 'id' => 'pwd2_input')));
 
-		if(isset($this->validatedRequests['success'])) {
+		if(end($this->pathSegments) === 'success') {
 			$this->form->initVar('success', 1);
 		}
 
 		if(!empty($this->notificationCheckBoxes)) {
 			$this->form->initVar('has_notifications', 1);
 		}
+
+		$this->form->bindRequestParameters();
 
 		if($this->form->wasSubmittedByName('submit_profile')) {
 			$this->form->validate();
@@ -78,7 +80,7 @@ class admin_profile_page extends page {
 							}
 						}
 						$admin->setNotifications($add);
-						$this->redirect('admin.php?page=profile&success');
+						$this->redirect('profile/success');
 					}
 					else {
 						$this->form->setError('system');
@@ -105,7 +107,6 @@ class admin_profile_page extends page {
 	}
 
 	protected function handleHttpRequest() {
-		$_POST = $this->validatedRequests['elements'];
 
 		$admin					= Admin::getInstance();
 		$availableNotifications	= Notification::getAvailableNotifications($admin->getAdmingroup());
@@ -121,6 +122,9 @@ class admin_profile_page extends page {
 		$f->addElement(FormElementFactory::create('input',		'Name',				$admin->getName(),		array(),	array(),	FALSE, array('trim'),				array(Rex::NOT_EMPTY_TEXT)));
 		$f->addElement(FormElementFactory::create('password',	'new_PWD',			'',						array(),	array(),	FALSE, array(),						array('/^(|[^\s]{6,})$/')));
 		$f->addElement(FormElementFactory::create('password',	'new_PWD_verify',	'',						array()));
+
+		$this->request->request->add($this->request->request->get('elements'));
+		$f->bindRequestParameters($this->request->request);
 
 		$f->validate();
 		if(!$f->getFormErrors()) {
@@ -162,4 +166,3 @@ class admin_profile_page extends page {
 		return array('elements' => $response);
 	}
 }
-?>
