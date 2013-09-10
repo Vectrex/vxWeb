@@ -18,7 +18,7 @@
 
 		<tr class="row<?php echo $rowCount++ % 2;?>">
 			<td>
-				<a class="folderLink" href="$files&amp;folder=<?php echo $parent->getId(); ?>&amp;force=htmlonly" onclick="gotoFolder(<?php echo $parent->getId(); ?>, event)">
+				<a class="folderLink" href="$files?folder=<?php echo $parent->getId(); ?>&amp;force=htmlonly" onclick="gotoFolder(<?php echo $parent->getId(); ?>, event)">
 					<img src="$/icons/darkgray/round_and_up_icon&amp;24.png" alt="übergeordneter Ordner" title="übergeordneter Ordner"> &bull;&bull;
 				</a>
 			</td>
@@ -35,7 +35,7 @@
 
 		<tr class="folderRow row<?php echo $rowCount++ % 2;?>">
 			<td>
-				<a class="folderLink" href="$files&amp;folder=<?php echo $f->getId(); ?>&amp;force=htmlonly"><?php echo $f->getName(); ?></a>
+				<a class="folderLink" href="$files?folder=<?php echo $f->getId(); ?>&amp;force=htmlonly"><?php echo $f->getName(); ?></a>
 			</td>
 			<td></td>
 			<td></td>
@@ -88,10 +88,10 @@
 				<?php else: ?>
 
 				<?php if($tpl->editing != $f->getId()): ?>
-				<a href='$files&amp;file=<?php echo $f->getId(); ?>&amp;action=edit&amp;force=htmlonly' onclick="editFile(<?php echo $f->getId(); ?>, event)">
+				<a href='$files/edit?file=<?php echo $f->getId(); ?>&amp;force=htmlonly'>
 					<img src="/img/site/icons/darkgray/doc_edit_icon&amp;24.png" alt="Metadaten ändern" title="Metadaten ändern">
 				</a>
-				<a href='$files&amp;file=<?php echo $f->getId(); ?>&amp;action=del&amp;force=htmlonly' onclick="delFile(<?php echo $f->getId(); ?>, event)">
+				<a href='$files/del?file=<?php echo $f->getId(); ?>&amp;force=htmlonly'>
 					<img src="/img/site/icons/darkgray/doc_delete_icon&amp;24.png" alt="Löschen" title="Löschen">
 				</a>
 				<?php endif; ?>

@@ -21,21 +21,30 @@ use vxPHP\Form\FormElement\ButtonElement;
 
 use vxPHP\Image\ImageModifier;
 
+/**
+ *
+ * @author Gregor Kofler
+ *
+ */
 class admin_files_page extends page {
 
-	protected $pageRequests = array(
-		'folder' => Rex::INT_EXCL_NULL,
-		'file' => Rex::INT_EXCL_NULL,
-		'action' => array('add', 'del', 'edit'),
-		'filter' => array('image'),
-	);
+				/**
+				 * @var \vxPHP\File\MetaFolder
+				 */
+	private		$currentFolder,
 
-	private		$redirectTo;
+				$redirectTo,
+
+				/**
+				 * @var Array
+				 */
+				$directoryBar;
 
 	public function __construct() {
+
 		parent::__construct();
 
-		if(!isset($this->validatedRequests['force']) || $this->currentDocument == 'embedded.php') {
+		if(is_null($this->request->query->get('force')) || $this->currentDocument == 'embedded.php') {
 			return;
 		}
 
@@ -43,21 +52,23 @@ class admin_files_page extends page {
 		$this->getFoldersAndFiles();
 
 		// set target for redirect after successful operation
-		$this->redirectTo = "{$this->currentDocument}?page={$this->currentPage}&folder={$this->data['folder']->getId()}&force=htmlonly";
+		$this->redirectTo = "files?folder={$this->currentFolder->getId()}&force=htmlonly";
 
 		// delete file
-		if(isset($this->validatedRequests['file']) && isset($this->validatedRequests['action']) && $this->validatedRequests['action'] === 'del') {
-			MetaFile::getInstance(NULL, $this->validatedRequests['file'])->delete();
+		if(end($this->pathSegments) === 'del' && is_numeric(($id = $this->request->query->get('file')))) {
+			MetaFile::getInstance(NULL, $id)->delete();
 			$this->redirect($this->redirectTo);
 		}
 
 		// edit file
-		if(isset($this->validatedRequests['file']) && isset($this->validatedRequests['action']) && $this->validatedRequests['action'] === 'edit') {
+		if(end($this->pathSegments) === 'edit' && is_numeric(($id = $this->request->query->get('file')))) {
 
 			// cacheinfo not used yet
 
-			$file = MetaFile::getInstance(NULL, $this->validatedRequests['file']);
+			$file = MetaFile::getInstance(NULL, $id);
 			$form = $this->getEditForm($file);
+
+			$form->bindRequestParameters();
 
 			if($form->wasSubmittedByName('submit_cancel')) {
 				$this->redirect($this->redirectTo);
@@ -83,9 +94,10 @@ class admin_files_page extends page {
 
 		// add file
 
-		if(isset($this->validatedRequests['action']) && $this->validatedRequests['action'] === 'add') {
+		if(end($this->pathSegments) === 'add') {
 
 			$form = $this->getAddForm();
+			$form->bindRequestParameters();
 
 			if($form->wasSubmittedByName('submit_cancel')) {
 				$this->redirect($this->redirectTo);
@@ -97,7 +109,7 @@ class admin_files_page extends page {
 
 				if(! $form->getFormErrors()) {
 
-					$upload = FilesystemFile::uploadFile('File', $this->data['folder']->getFilesystemFolder());
+					$upload = FilesystemFile::uploadFile('File', $this->currentFolder->getFilesystemFolder());
 
 					if($upload === FALSE) {
 						$form->setError('system');
@@ -127,20 +139,20 @@ class admin_files_page extends page {
 	public function content() {
 		if($this->currentDocument == 'embedded.php') {
 			$tpl = new SimpleTemplate('admin_files.htm');
-			$tpl->assign('ckEditorCallbackParam', $this->config->_get['CKEditorFuncNum']);
+			$tpl->assign('ckEditorCallbackParam', $this->request->query->get('CKEditorFuncNum'));
 		}
 
-		else if(!isset($this->validatedRequests['force'])) {
+		else if(is_null($this->request->query->get('force'))) {
 			$tpl = new SimpleTemplate('admin_files_js.htm');
 		}
 
 		else {
 			$tpl = new SimpleTemplate('admin_files.htm');
 
-			$tpl->assign('directoryBar', $this->data['directoryBar']);
-			$tpl->assign('filesTable', $this->getFileTableHtml($this->data['folder'], isset($this->validatedRequests['file']) ? $this->validatedRequests['file'] : - 1));
-			$tpl->assign('folderID', $this->data['folder']->getId());
-			$tpl->assign('folderName', $this->data['folder']->getName());
+			$tpl->assign('directoryBar', $this->directoryBar);
+			$tpl->assign('filesTable', $this->getFileTableHtml($this->currentFolder, $this->request->query->get('file')));
+			$tpl->assign('folderID', $this->currentFolder->getId());
+			$tpl->assign('folderName', $this->currentFolder->getName());
 
 			if(isset($this->data['form'])) {
 				$tpl->assign('form', $this->data['form']);
@@ -163,27 +175,21 @@ class admin_files_page extends page {
 		$tpl = new SimpleTemplate('admin_files_filestable.htm');
 		$files = MetaFile::getMetaFilesInFolder($folder);
 		$folders = $folder->getMetafolders();
-		usort($folders, array($this, 'folderSort'));
-		usort($files, array($this, 'fileSort'));
+
+		usort($folders, function($a, $b) { return strcasecmp($a->getFullPath(), $b->getFullPath()); });
+		usort($files, function($a, $b) { return strcasecmp($a->getMetaFilename(), $b->getMetaFilename()); });
 
 		$tpl->assign('currentFolder', $folder);
 		$tpl->assign('files', $files);
 		$tpl->assign('folders', $folders);
-		$tpl->assign('filter', isset($this->validatedRequests['filter']) ? $this->validatedRequests['filter'] : FALSE);
+		$tpl->assign('filter', $this->request->query->get('filter'));
 		$tpl->assign('editing', $fileId);
 
 		return $tpl->display();
 	}
 
-	private function folderSort($a, $b) {
-		return strcasecmp($a->getFullPath(), $b->getFullPath());
-	}
-
-	private function fileSort($a, $b) {
-		return strcasecmp($a->getMetaFilename(), $b->getMetaFilename());
-	}
-
 	private function getAddForm() {
+
 		$form = new HtmlForm('admin_file.htm');
 		$form->setEncType('multipart/form-data');
 		$form->setAttribute('class', 'editFileForm');
@@ -210,6 +216,7 @@ class admin_files_page extends page {
 	}
 
 	private function getEditForm(MetaFile $file) {
+
 		$data = $file->getData();
 
 		$form = new HtmlForm('admin_file.htm');
@@ -322,7 +329,7 @@ class admin_files_page extends page {
 								$imgEdit->export($dest);
 							}
 
-							$file['columns'][] = array('html' => '<img class="thumb" src="'.htmlspecialchars(str_replace(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR), '', $dest)).'" alt="" />');
+							$file['columns'][] = array('html' => '<img class="thumb" src="'.htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)).'" alt="" />');
 						}
 
 						else {
@@ -336,7 +343,7 @@ class admin_files_page extends page {
 					!$this->config->_get['filter'] == 'image' ||
 					$isImage
 				)) {
-					$file['forward'] = array('filename' => '/'.$f->getRelativePath(), 'ckEditorFuncNum' => (int) $this->config->_get['CKEditorFuncNum']);
+					$file['forward'] = array('filename' => '/'.$f->getRelativePath(), 'ckEditorFuncNum' => (int) $this->request->query->get('CKEditorFuncNum'));
 				}
 			}
 
@@ -347,21 +354,22 @@ class admin_files_page extends page {
 	}
 
 	protected function handleHttpRequest() {
-		if(isset($this->validatedRequests['folder'])) {
-			$folder = MetaFolder::getInstance(NULL, $this->validatedRequests['folder']);
+
+		if(($id = $this->request->request->get('folder'))) {
+			$folder = MetaFolder::getInstance(NULL, $id);
 		}
 		else {
-			$folder = MetaFolder::getInstance(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR).FILES_PATH);
+			$folder = MetaFolder::getInstance(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR) . FILES_PATH);
 		}
 
-		switch($this->validatedRequests['httpRequest']) {
+		switch($this->request->request->get('httpRequest')) {
 
 			// rename file
 
 			case 'renameFile':
 				try {
-					$file = MetaFile::getInstance(NULL, $this->validatedRequests['id']);
-					$file->rename(trim($this->validatedRequests['filename']));
+					$file = MetaFile::getInstance(NULL, $this->request->request->get('id'));
+					$file->rename(trim($this->request->request->get('filename')));
 				}
 				catch(MetaFileException $e) {
 					return array('error' => TRUE);
@@ -380,7 +388,7 @@ class admin_files_page extends page {
 
 			case 'addFolder':
 				try {
-					$folder->createFolder(preg_replace('~[^a-z0-9_-]~', '_', $this->validatedRequests['folderName']));
+					$folder->createFolder(preg_replace('~[^a-z0-9_-]~', '_', $this->request->request->get('folderName')));
 				}
 				catch(Exception $e) {
 					return array('error' => TRUE);
@@ -391,32 +399,12 @@ class admin_files_page extends page {
 					'files'		=> $this->getFileList($folder)
 				);
 
-			// move a file
-
-			case 'moveFile':
-				if(isset($this->validatedRequests['id'])) {
-
-					$file = MetaFile::getInstance(NULL, $this->validatedRequests['id']);
-					$folder = $file->getMetafolder();
-
-					try {
-						$file->move(MetaFolder::getInstance(NULL, $this->validatedRequests['destination']));
-						return array(
-								'folders'	=> $this->getFolderList($folder),
-								'files'		=> $this->getFileList($folder)
-						);
-					}
-					catch(MetaFileException $e) {
-					}
-				}
-				break;
-
 			// empty and delete a subdirectory
 
 			case 'delFolder':
-				if(isset($this->validatedRequests['id'])) {
+				if(is_numeric($this->request->request->get('id'))) {
 
-					$folder = MetaFolder::getInstance(NULL, $this->validatedRequests['id']);
+					$folder = MetaFolder::getInstance(NULL, $this->request->request->get('id'));
 
 					if(($parent = $folder->getParentMetafolder())) {
 						$folder->delete();
@@ -425,6 +413,26 @@ class admin_files_page extends page {
 							'folders'	=> $this->getFolderList($parent),
 							'files'		=> $this->getFileList($parent)
 						);
+					}
+				}
+				break;
+
+			// move a file
+
+			case 'moveFile':
+				if(is_numeric($this->request->request->get('id'))) {
+					try {
+
+						$file = MetaFile::getInstance(NULL, $this->request->request->get('id'));
+						$folder = $file->getMetafolder();
+						$file->move(MetaFolder::getInstance(NULL, $this->request->request->get('destination')));
+
+						return array(
+								'folders'	=> $this->getFolderList($folder),
+								'files'		=> $this->getFileList($folder)
+						);
+					}
+					catch(MetaFileException $e) {
 					}
 				}
 				break;
@@ -452,8 +460,8 @@ class admin_files_page extends page {
 			// delete file and return new folder content
 
 			case 'delFile':
-				if(isset($this->validatedRequests['id'])) {
-					$file = MetaFile::getInstance(NULL, $this->validatedRequests['id']);
+				if(is_numeric($this->request->request->get('id'))) {
+					$file = MetaFile::getInstance(NULL, $this->request->request->get('id'));
 					$file->delete();
 
 					return array(
@@ -471,8 +479,8 @@ class admin_files_page extends page {
 			// return form for editing file
 
 			case 'requestEditForm':
-				if(isset($this->validatedRequests['id'])) {
-					$markup = $this->getEditForm(MetaFile::getInstance(NULL, $this->validatedRequests['id']))->render();
+				if(is_numeric($this->request->request->get('id'))) {
+					$markup = $this->getEditForm(MetaFile::getInstance(NULL, $this->request->request->get('id')))->render();
 					SimpleTemplate::parseImageCaches($markup);
 					return array(array('html' => $markup));
 				}
@@ -530,7 +538,7 @@ class admin_files_page extends page {
 				case 'ifuSubmit':
 					$this->getFoldersAndFiles();
 
-					$upload = FilesystemFile::uploadFile('File', $this->data['folder']->getFilesystemFolder());
+					$upload = FilesystemFile::uploadFile('File', $this->currentFolder->getFilesystemFolder());
 
 					if($upload === FALSE) {
 						return array('msgBoxes' => array(array('id' => 'general', 'elements' => array(array('node' => 'div', 'properties' => array('className' => 'errorBox'), 'childnodes' => array(array('text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!')))))));
@@ -608,33 +616,33 @@ class admin_files_page extends page {
 		}
 		catch(Exception $e) {}
 
-		if(isset($this->validatedRequests['folder'])) {
-			$this->data['folder'] = MetaFolder::getInstance(NULL, $this->validatedRequests['folder']);
+		if(($id = $this->request->query->get('folder'))) {
+			$this->currentFolder = MetaFolder::getInstance(NULL, $id);
 		}
 
-		else if(isset($this->validatedRequests['file'])) {
-			$this->data['folder'] = MetaFile::getInstance(NULL, $this->validatedRequests['file'])->getMetaFolder();
+		else if(($id = $this->request->query->get('file'))) {
+			$this->currentFolder = MetaFile::getInstance(NULL, $id)->getMetaFolder();
 		}
 
 		else {
 			try {
-				$this->data['folder'] = MetaFolder::getInstance(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR).FILES_PATH);
+				$this->currentFolder = MetaFolder::getInstance(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR).FILES_PATH);
 			}
 			catch(MetaFolderException $e) {
-				$this->data['folder'] = MetaFolder::create(FilesystemFolder::getInstance(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR).FILES_PATH));
+				$this->currentFolder = MetaFolder::create(FilesystemFolder::getInstance(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR).FILES_PATH));
 			}
 		}
 
-		$this->cleanUpFolder($this->data['folder']);
+		$this->cleanUpFolder($this->currentFolder);
 
-		$folder = $this->data['folder'];
+		$folder = $this->currentFolder;
 		$pathSegs = array($folder);
 
 		while(($folder = $folder->getParentMetafolder())) {
 			array_unshift($pathSegs, $folder);
 		}
 
-		$this->data['directoryBar'] = $pathSegs;
+		$this->directoryBar = $pathSegs;
 	}
 
 	/**
@@ -659,7 +667,7 @@ class admin_files_page extends page {
 		$this->db->autocommit(FALSE);
 
 		foreach($mFolders as $d) {
-			if(!is_dir(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$d['Path'])) {
+			if(!is_dir(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $d['Path'])) {
 
 				$l = $d['l'];
 				$r = $d['r'];
@@ -743,7 +751,7 @@ class admin_files_page extends page {
 
 				// obscure file if folder has the Obscure_Files attribute set
 
-				if($this->data['folder']->obscuresFiles()) {
+				if($this->currentFolder->obscuresFiles()) {
 					$this->obscureUpload($mfFile);
 				}
 			}
@@ -768,7 +776,7 @@ class admin_files_page extends page {
 
 					// obscure file if folder has the Obscure_Files attribute set
 
-					if($this->data['folder']->obscuresFiles()) {
+					if($this->currentFolder->obscuresFiles()) {
 						$mfFile->obscureTo(uniqid());
 						$this->obscureUpload($mfFile);
 					}
