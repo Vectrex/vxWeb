@@ -55,13 +55,13 @@ class admin_files_page extends page {
 		$this->redirectTo = "files?folder={$this->currentFolder->getId()}&force=htmlonly";
 
 		// delete file
-		if(end($this->pathSegments) === 'del' && is_numeric(($id = $this->request->query->get('file')))) {
+		if(end($this->pathSegments) === 'del' && ($id = $this->request->query->getInt('file'))) {
 			MetaFile::getInstance(NULL, $id)->delete();
 			$this->redirect($this->redirectTo);
 		}
 
 		// edit file
-		if(end($this->pathSegments) === 'edit' && is_numeric(($id = $this->request->query->get('file')))) {
+		if(end($this->pathSegments) === 'edit' && ($id = $this->request->query->getInt('file'))) {
 
 			// cacheinfo not used yet
 
@@ -221,7 +221,6 @@ class admin_files_page extends page {
 
 		$form = new HtmlForm('admin_file.htm');
 		$form->setAttribute('class', 'editFileForm');
-		$form->setInitFormValues($data);
 
 		$form->addElement(FormElementFactory::create('input', 'Title', NULL, array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')));
 		$form->addElement(FormElementFactory::create('input', 'Subtitle', NULL, array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')));
@@ -229,6 +228,8 @@ class admin_files_page extends page {
 		$form->addElement(FormElementFactory::create('textarea', 'Description', NULL, array('rows' => 5, 'cols' => 40, 'class' => 'xl')));
 		$form->addElement(FormElementFactory::create('input', 'referencedID', $file->getReferencedId(), array('maxlength' => 5, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)));
 		$form->addElement(FormElementFactory::create('input', 'referenced_Table', $file->getReferencedTable(), array('maxlength' => 32, 'class' => 'm'), array(), FALSE, array('trim')));
+
+		$form->setInitFormValues($data);
 
 		if(($cacheInfo = $file->getFilesystemFile()->getCacheInfo())) {
 			$cacheText = ", Cache: {$cacheInfo['count']} Files/gesamt ".number_format($cacheInfo['totalSize'] / 1024, 1, ',', '.').'kB';
@@ -382,8 +383,6 @@ class admin_files_page extends page {
 					'error' => FALSE
 				);
 
-				break;
-
 			// create a new subdirectory
 
 			case 'addFolder':
@@ -402,9 +401,9 @@ class admin_files_page extends page {
 			// empty and delete a subdirectory
 
 			case 'delFolder':
-				if(is_numeric($this->request->request->get('id'))) {
+				if(($id = $this->request->request->getInt('id'))) {
 
-					$folder = MetaFolder::getInstance(NULL, $this->request->request->get('id'));
+					$folder = MetaFolder::getInstance(NULL, $id);
 
 					if(($parent = $folder->getParentMetafolder())) {
 						$folder->delete();
@@ -420,12 +419,12 @@ class admin_files_page extends page {
 			// move a file
 
 			case 'moveFile':
-				if(is_numeric($this->request->request->get('id'))) {
+				if(($id = $this->request->request->getInt('id'))) {
 					try {
 
-						$file = MetaFile::getInstance(NULL, $this->request->request->get('id'));
+						$file = MetaFile::getInstance(NULL, $id);
 						$folder = $file->getMetafolder();
-						$file->move(MetaFolder::getInstance(NULL, $this->request->request->get('destination')));
+						$file->move(MetaFolder::getInstance(NULL, $this->request->request->getInt('destination')));
 
 						return array(
 								'folders'	=> $this->getFolderList($folder),
@@ -460,8 +459,8 @@ class admin_files_page extends page {
 			// delete file and return new folder content
 
 			case 'delFile':
-				if(is_numeric($this->request->request->get('id'))) {
-					$file = MetaFile::getInstance(NULL, $this->request->request->get('id'));
+				if(($id = $this->request->request->getInt('id'))) {
+					$file = MetaFile::getInstance(NULL, $id);
 					$file->delete();
 
 					return array(
@@ -469,7 +468,6 @@ class admin_files_page extends page {
 						'files'		=> $this->getFileList($folder)
 					);
 				}
-				break;
 
 			// return form for adding new file(delivered only once)
 
@@ -479,8 +477,8 @@ class admin_files_page extends page {
 			// return form for editing file
 
 			case 'requestEditForm':
-				if(is_numeric($this->request->request->get('id'))) {
-					$markup = $this->getEditForm(MetaFile::getInstance(NULL, $this->request->request->get('id')))->render();
+				if(($id =$this->request->request->getInt('id'))) {
+					$markup = $this->getEditForm(MetaFile::getInstance(NULL, $id))->render();
 					SimpleTemplate::parseImageCaches($markup);
 					return array(array('html' => $markup));
 				}
@@ -489,15 +487,17 @@ class admin_files_page extends page {
 			// check and update edit data
 
 			case 'checkEditForm':
-				$_POST = $this->validatedRequests['elements'];
+				$this->request->request->add($this->request->request->get('elements'));
 
-				$file = MetaFile::getInstance(NULL, $this->validatedRequests['elements']['id']);
+				$file = MetaFile::getInstance(NULL, $this->request->request->getInt('id'));
 
 				$form = $this->getEditForm($file);
+
+				$form->bindRequestParameters($this->request->request);
 				$form->validate();
 
 				if(!($errors = $form->getFormErrors())) {
-					$file->setMetaData($this->validatedRequests['elements']);
+					$file->setMetaData($this->request->request->all());
 
 					return array(
 						'folders'	=> $this->getFolderList($file->getMetafolder()),
@@ -511,15 +511,29 @@ class admin_files_page extends page {
 						$e[] = array('name' => $k, 'error' => 1);
 					}
 
-					return array('elements' => $e, 'msgBoxes' => array(array('id' => 'general', 'elements' => array(array('html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>')))));
+					return array(
+						'elements' => $e,
+						'msgBoxes' => array(
+							array(
+								'id' => 'general',
+								'elements' => array(
+									array(
+										'html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>'
+									)
+								)
+							)
+						)
+					);
 				}
 
 				// validate new file data before upload
 
 				case 'checkUpload':
-					$_POST = $this->validatedRequests['elements'];
+
+					$this->request->request->add($this->request->request->get('elements'));
 
 					$form = $this->getAddForm();
+					$form->bindRequestParameters($this->request->request);
 					$form->validate();
 
 					if(!($errors = $form->getFormErrors())) {
@@ -530,22 +544,73 @@ class admin_files_page extends page {
 						foreach($errors as $k => $v) {
 							$e[] = array('name' => $k, 'error' => 1);
 						}
-						return array('elements' => $e, 'msgBoxes' => array(array('id' => 'general', 'elements' => array(array('html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>')))));
+						return array(
+							'elements' => $e,
+							'msgBoxes' => array(
+								array(
+									'id' => 'general',
+									'elements' => array(
+										array(
+											'html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>'
+										)
+									)
+								)
+							)
+						);
 					}
 
 				// do upload
 
 				case 'ifuSubmit':
+
 					$this->getFoldersAndFiles();
 
 					$upload = FilesystemFile::uploadFile('File', $this->currentFolder->getFilesystemFolder());
 
 					if($upload === FALSE) {
-						return array('msgBoxes' => array(array('id' => 'general', 'elements' => array(array('node' => 'div', 'properties' => array('className' => 'errorBox'), 'childnodes' => array(array('text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!')))))));
+						return array(
+							'msgBoxes' => array(
+								array(
+									'id' => 'general',
+									'elements' => array(
+										array(
+											'node' => 'div',
+											'properties' => array(
+												'className' => 'errorBox'
+											),
+											'childnodes' => array(
+												array(
+													'text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'
+												)
+											)
+										)
+									)
+								)
+							)
+						);
 					}
 
 					else if($upload === NULL) {
-						return array('msgBoxes' => array(array('id' => 'general', 'elements' => array(array('node' => 'div', 'properties' => array('className' => 'errorBox'), 'childnodes' => array(array('text' => 'Es wurde keine Datei zum Upload angegeben!')))))));
+						return array(
+							'msgBoxes' => array(
+								array(
+									'id' => 'general',
+									'elements' => array(
+										array(
+											'node' => 'div',
+											'properties' => array(
+												'className' => 'errorBox'
+											),
+											'childnodes' => array(
+												array(
+													'text' => 'Es wurde keine Datei zum Upload angegeben!'
+												)
+											)
+										)
+									)
+								)
+							)
+						);
 					}
 
 					$form = new HtmlForm();
@@ -562,10 +627,33 @@ class admin_files_page extends page {
 						return array('success' => TRUE);
 					}
 
-					return array('msgBoxes' => array(array('id' => 'general', 'elements' => array(array('node' => 'div', 'properties' => array('className' => 'errorBox'), 'childnodes' => array(array('text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!')))))));
+					return array(
+						'msgBoxes' => array(
+							array(
+								'id' => 'general',
+								'elements' => array(
+									array(
+										'node' => 'div',
+										'properties' => array(
+											'className' => 'errorBox'
+										),
+										'childnodes' => array(
+											array(
+												'text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'
+											)
+										)
+									)
+								)
+							)
+						)
+					);
 
 				case 'getFolderTree':
-					return array('branches' => array($this->getFolderTree(isset($this->validatedRequests['id']) ? MetaFile::getInstance(NULL, $this->validatedRequests['id'])->getMetafolder() : NULL)));
+					return array(
+						'branches' => array(
+							$this->getFolderTree(($id = $this->request->request->getInt('id')) ? MetaFile::getInstance(NULL, $id)->getMetafolder() : NULL)
+						)
+					);
 		}
 	}
 
@@ -616,11 +704,11 @@ class admin_files_page extends page {
 		}
 		catch(Exception $e) {}
 
-		if(($id = $this->request->query->get('folder'))) {
+		if(($id = $this->request->query->getInt('folder')) || ($id = $this->request->request->getInt('folder'))) {
 			$this->currentFolder = MetaFolder::getInstance(NULL, $id);
 		}
 
-		else if(($id = $this->request->query->get('file'))) {
+		else if(($id = $this->request->query->getInt('file')) || ($id = $this->request->request->getInt('file'))) {
 			$this->currentFolder = MetaFile::getInstance(NULL, $id)->getMetaFolder();
 		}
 
@@ -721,11 +809,13 @@ class admin_files_page extends page {
 	 *
 	 * @param HtmlForm $form
 	 * @param FilesystemFile $upload
-	 * @throws FilesystemFileException::
+	 * @throws FilesystemFileException
+	 *
 	 * @return boolean success
 	 */
 	private function processFileUpload(HtmlForm $form, FilesystemFile $upload) {
 
+		$form->bindRequestParameters($this->request->request);
 		$values = $form->getValidFormValues();
 
 		// check for archive

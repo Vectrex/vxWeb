@@ -1,7 +1,4 @@
 <?php
-
-use vxPHP\Util\Rex;
-
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Template\Util\SimpleTemplateUtil;
 
@@ -9,13 +6,7 @@ use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\FormElement\ButtonElement;
 
-
-
 class admin_pages_page extends page {
-	protected $pageRequests = array(
-		'id'		=> Rex::INT_EXCL_NULL,
-		'action'	=> array('del')
-	);
 
 	private $allowNiceEdit = TRUE;
 
@@ -24,9 +15,9 @@ class admin_pages_page extends page {
 
 		SimpleTemplateUtil::syncTemplates();
 
-		if(isset($this->validatedRequests['id'])) {
-			$rows = $this->db->doQuery("
-				select
+		if(($id = $this->request->query->getInt('id'))) {
+			$rows = $this->db->doPreparedQuery("
+				SELECT
 					p.pagesID,
 					p.Alias,
 					p.Template,
@@ -35,17 +26,20 @@ class admin_pages_page extends page {
 					r.Markup,
 					r.Description,
 					r.Locale,
-					date_format(r.templateUpdated, '%Y-%m-%d %H:%i:%s') as lastUpdate
+					DATE_FORMAT(r.templateUpdated, '%Y-%m-%d %H:%i:%s') as lastUpdate
 				FROM
 					revisions r
-					inner join pages p on p.pagesID = r.pagesID
+					INNER JOIN pages p ON p.pagesID = r.pagesID
 				WHERE
 					(p.Locked IS NULL OR p.Locked = 0) AND
-					r.revisionsID = {$this->validatedRequests['id']}
-				", TRUE);
+					r.revisionsID = ?
+				", array(
+					(int) $id
+				)
+			);
 
 			if(empty($rows)) {
-				$this->redirect('admin.php?page=pages');
+				$this->redirect('pages');
 			}
 
 			$page = $rows[0];
@@ -62,6 +56,8 @@ class admin_pages_page extends page {
 
 			$this->editForm->initVar('success', isset($this->validatedRequests['success']) ? 1 : 0);
 			$this->editForm->initVar('nochange', isset($this->validatedRequests['nochange']) ? 1 : 0);
+
+			$this->editForm->bindRequestParameters();
 
 			if($this->editForm->wasSubmittedByName('submit_edit')) {
 				$v = $this->editForm->getValidFormValues();
@@ -87,7 +83,7 @@ class admin_pages_page extends page {
 					'pagesID' => $page['pagesID'],
 					'Locale' => $page['Locale']
 				)))) {
-					$this->redirect("admin.php?page=pages&id=$newId&success");
+					$this->redirect("pages?id=$newId&success");
 				}
 				$this->editForm->setError('system');
 			}
@@ -95,12 +91,12 @@ class admin_pages_page extends page {
 		}
 
 		$this->data['pages'] = $this->db->doQuery("
-			select
+			SELECT
 				pg.*,
 				rev.revisionsID,
 				rev.Rawtext,
-				IFNULL(rev.Title, pg.PageTitle) as `Title`
-			from
+				IFNULL(rev.Title, pg.PageTitle) AS `Title`
+			FROM
 				(SELECT
 					p.pagesID,
 					p.Template,
@@ -139,4 +135,3 @@ class admin_pages_page extends page {
 		return $html;
 	}
 }
-?>

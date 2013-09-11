@@ -5,9 +5,12 @@ require_once 'site.config.php';
  * Parameter prüfen/initalisieren
  * passende Seite wählen
  */
-$page = $config->initPage();
-
 $admin = vxPHP\User\Admin::getInstance();
+
+$route = vxPHP\Request\Router::getRouteFromPathInfo();
+$controllerClass = $route->getController();
+$page = new $controllerClass;
+
 
 /**
  * HTML starten
