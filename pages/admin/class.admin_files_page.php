@@ -497,7 +497,7 @@ class admin_files_page extends page {
 				$form->validate();
 
 				if(!($errors = $form->getFormErrors())) {
-					$file->setMetaData($this->request->request->all());
+					$file->setMetaData($form->getValidFormValues());
 
 					return array(
 						'folders'	=> $this->getFolderList($file->getMetafolder()),
