@@ -5,12 +5,17 @@ require_once 'site.config.php';
  * Parameter prüfen/initalisieren
  * passende Seite wählen
  */
+
+use vxPHP\Webpage\Webpage;
+
+if(!($route = vxPHP\Request\Router::getRouteFromPathInfo())){
+	Webpage::generateHttpError();
+}
+
 $admin = vxPHP\User\Admin::getInstance();
 
-$route = vxPHP\Request\Router::getRouteFromPathInfo();
 $controllerClass = $route->getController();
 $page = new $controllerClass;
-
 
 /**
  * HTML starten
