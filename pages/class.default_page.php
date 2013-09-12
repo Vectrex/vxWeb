@@ -19,11 +19,11 @@ class default_page extends page {
 			$this->contentTpl = new SimpleTemplate(preg_replace('~[^a-z0-9_-]~i', '', $page) . '.htm');
 		}
 		catch(SimpleTemplateException $e) {
-			$this->generateHttpError();
+			self::generateHttpError();
 		}
 
 		if($this->contentTpl->containsPHP()) {
-			$this->generateHttpError();
+			self::generateHttpError();
 		}
 	}
 

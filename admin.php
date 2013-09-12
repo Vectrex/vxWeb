@@ -8,8 +8,12 @@ require_once 'site.config.php';
 
 use vxPHP\User\Admin;
 use vxPHP\Request\NiceURI;
+use vxPHP\Webpage\Webpage;
 
-$route = vxPHP\Request\Router::getRouteFromPathInfo();
+if(!($route = vxPHP\Request\Router::getRouteFromPathInfo())){
+	Webpage::generateHttpError();
+}
+
 $controllerClass = $route->getController();
 $page = new $controllerClass;
 
