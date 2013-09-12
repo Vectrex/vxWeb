@@ -1,8 +1,6 @@
 <?php
 
 use vxPHP\Webpage\Webpage;
-use vxPHP\Util\Rex;
-use vxPHP\Template\SimpleTemplate;
 
 class page extends Webpage {
 
