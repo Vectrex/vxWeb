@@ -15,6 +15,12 @@ class default_page extends page {
 
 		$page = array_pop($pathSegments);
 
+		// alternatively fall back to the route id (for example on splash pages)
+
+		if(empty($page)) {
+			$page = $this->route->getRouteId();
+		}
+
 		try {
 			$this->contentTpl = new SimpleTemplate(preg_replace('~[^a-z0-9_-]~i', '', $page) . '.htm');
 		}
