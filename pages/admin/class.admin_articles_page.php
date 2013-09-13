@@ -564,8 +564,8 @@ class admin_articles_page extends page {
 				$success = TRUE;
 				$errorMsg = '';
 
-				if(($delIds = array_keys($this->request->request->get('delete_file')))) {
-					foreach($delIds as $id) {
+				if(($delIds = $this->request->request->get('delete_file'))) {
+					foreach(array_keys($delIds) as $id) {
 						try {
 							MetaFile::getInstance(NULL, (int) $id)->delete();
 						}
