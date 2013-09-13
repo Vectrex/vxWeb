@@ -116,6 +116,7 @@ class admin_articles_page extends page {
 				$submitButton->setInnerHTML('Änderungen übernehmen');
 
 				$this->filesForm = $this->initFilesForm($article);
+				$this->filesForm->bindRequestParameters();
 
 			}
 
