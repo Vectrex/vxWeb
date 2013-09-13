@@ -51,10 +51,10 @@ class admin_articles_page extends page {
 
 		// editing something?
 
-		if($this->request->query->get('id')) {
+		if(($id = $this->request->query->get('id'))) {
 
 			try {
-				$article = Article::getInstance($this->request->query->get('id'));
+				$article = Article::getInstance($id);
 			}
 			catch(ArticleException $e) {
 				$this->redirect('articles');
@@ -117,7 +117,6 @@ class admin_articles_page extends page {
 
 				$this->filesForm = $this->initFilesForm($article);
 
-				$this->filesForm->bindRequestParameters();
 			}
 
 			else {
@@ -143,7 +142,7 @@ class admin_articles_page extends page {
 			if($this->articleForm->wasSubmittedByName('submit_article')) {
 
 				if($this->validateFormAndSaveArticle($this->articleForm, $article) === TRUE) {
-					$this->redirect("articles?id={$article->getId()}");
+					$this->redirect('articles?id=' . $article->getId());
 				}
 
 			}
@@ -159,7 +158,7 @@ class admin_articles_page extends page {
 					}
 				}
 				$this->uploadArticleFile($article, $vals);
-				$this->redirect("articles?id={$this->validatedRequests['id']}");
+				$this->redirect('articles?id=' . $article->getId());
 			}
 
 			return;
