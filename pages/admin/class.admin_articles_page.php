@@ -541,8 +541,7 @@ class admin_articles_page extends page {
 					if($article->wasChanged()) {
 						$article->save();
 						if(!$id) {
-							$this->initFilesForm($article);
-							return array('success' => TRUE, 'markup' => array('html' => $this->filesForm->render()), 'id' => $article->getId());
+							return array('success' => TRUE, 'markup' => array('html' => $this->initFilesForm($article)->render()), 'id' => $article->getId());
 						}
 						else {
 							return array('success' => TRUE);
