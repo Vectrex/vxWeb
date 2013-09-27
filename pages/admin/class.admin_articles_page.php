@@ -432,7 +432,15 @@ class admin_articles_page extends page {
 	 */
 	protected function handleHttpRequest() {
 
-		if(($id = $this->request->query->get('id'))) {
+		// id comes either via URL or as an extra form field
+
+		$id = $this->request->query->get('id');
+
+		if(!$id) {
+			$id = $this->request->request->get('id');
+		}
+
+		if($id) {
 
 			try {
 				$article = Article::getInstance($id);
