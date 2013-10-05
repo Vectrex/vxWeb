@@ -33,7 +33,7 @@ class admin_files_page extends page {
 				 */
 	private		$currentFolder,
 
-				$redirectTo,
+				$redirectQuery,
 
 				/**
 				 * @var Array
@@ -52,12 +52,15 @@ class admin_files_page extends page {
 		$this->getFoldersAndFiles();
 
 		// set target for redirect after successful operation
-		$this->redirectTo = "files?folder={$this->currentFolder->getId()}&force=htmlonly";
+		$this->redirectQuery = array(
+			'folder'	=> $this->currentFolder->getId(),
+			'force'		=> 'htmlonly'
+		);
 
 		// delete file
 		if(end($this->pathSegments) === 'del' && ($id = $this->request->query->getInt('file'))) {
 			MetaFile::getInstance(NULL, $id)->delete();
-			$this->redirect($this->redirectTo);
+			$this->redirect($this->route->getRouteId(), NULL, $this->redirectQuery);
 		}
 
 		// edit file
@@ -71,7 +74,7 @@ class admin_files_page extends page {
 			$form->bindRequestParameters();
 
 			if($form->wasSubmittedByName('submit_cancel')) {
-				$this->redirect($this->redirectTo);
+				$this->redirect($this->route->getRouteId(), NULL, $this->redirectQuery);
 			}
 			if($form->wasSubmittedByName('submit_edit')) {
 
@@ -80,8 +83,9 @@ class admin_files_page extends page {
 				if(! $form->getFormErrors()) {
 					try {
 						$file->setMetaData($form->getValidFormValues());
-						$this->redirect($this->redirectTo);
-					} catch(Exception $e) {
+						$this->redirect($this->route->getRouteId(), NULL, $this->redirectQuery);
+					}
+					catch(Exception $e) {
 						$form->setError('system');
 					}
 				}
@@ -100,7 +104,7 @@ class admin_files_page extends page {
 			$form->bindRequestParameters();
 
 			if($form->wasSubmittedByName('submit_cancel')) {
-				$this->redirect($this->redirectTo);
+				$this->redirect($this->route->getRouteId(), NULL, $this->redirectQuery);
 			}
 
 			if($form->wasSubmittedByName('submit_add')) {
@@ -120,7 +124,7 @@ class admin_files_page extends page {
 					}
 
 					if(! $form->getFormErrors() && $this->processFileUpload($form, $upload)) {
-						$this->redirect($this->redirectTo);
+						$this->redirect($this->route->getRouteId(), NULL, $this->redirectQuery);
 					}
 					else {
 						$form->setError('system');

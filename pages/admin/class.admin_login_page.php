@@ -16,7 +16,7 @@ class admin_login_page extends page {
 
 		if($this->route->getRouteId() == 'logout') {
 			$admin->removeFromSession();
-			$this->redirect();
+			$this->redirect('login');
 		}
 
 		if($admin->isAuthenticated()) {

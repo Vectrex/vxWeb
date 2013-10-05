@@ -143,7 +143,7 @@ class admin_articles_page extends page {
 			if($this->articleForm->wasSubmittedByName('submit_article')) {
 
 				if($this->validateFormAndSaveArticle($this->articleForm, $article) === TRUE) {
-					$this->redirect('articles?id=' . $article->getId());
+					$this->redirect('articles', NULL, array('id' => $article->getId()));
 				}
 
 			}
@@ -159,7 +159,7 @@ class admin_articles_page extends page {
 					}
 				}
 				$this->uploadArticleFile($article, $vals);
-				$this->redirect('articles?id=' . $article->getId());
+				$this->redirect('articles', NULL, array('id' => $article->getId()));
 			}
 
 			return;

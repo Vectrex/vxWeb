@@ -7,10 +7,10 @@ require_once 'site.config.php';
 //$purifier = new HTMLPurifier($conf);
 
 use vxPHP\User\Admin;
-use vxPHP\Request\NiceURI;
-use vxPHP\Webpage\Webpage;
+use vxPHP\Application\Webpage\NiceURI;
+use vxPHP\Application\Webpage;
 
-if(!($route = vxPHP\Request\Router::getRouteFromPathInfo())){
+if(!($route = vxPHP\Http\Router::getRouteFromPathInfo())) {
 	Webpage::generateHttpError();
 }
 
