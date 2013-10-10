@@ -9,7 +9,7 @@ require_once 'CustomClassLoader.php';
 $splClassLoader = new SplClassLoader('vxPHP', rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR));
 $splClassLoader->register();
 
-$customClassLoader = new CustomClassLoader();
+$customClassLoader = new CustomClassLoader(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR));
 $customClassLoader->register();
 
 session_start();

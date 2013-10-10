@@ -1,14 +1,19 @@
 <?php
 class CustomClassLoader {
 
-	public function __construct() {
-		$includePaths = array(
-			'classes',
+	private $includePath;
+	private $subDirs;
+
+	public function __construct($includePath = '') {
+		
+		$this->includePath = rtrim($includePath, DIRECTORY_SEPARATOR);
+
+		$this->subDirs = array(
+			'src',
 			'pages',
 			'pages' . DIRECTORY_SEPARATOR . 'admin'
 		);
 
-		set_include_path(get_include_path().PATH_SEPARATOR.implode(PATH_SEPARATOR, $includePaths));
 	}
 
 	/**
@@ -32,6 +37,21 @@ class CustomClassLoader {
 	 * @return void
 	 */
 	public function loadClass($className) {
-		require_once('class.' . strtoLower($className) . '.php');
+
+		foreach($this->subDirs as $subdir) {
+			$path = $this->includePath . DIRECTORY_SEPARATOR . $subdir . DIRECTORY_SEPARATOR;
+
+			if(file_exists($path . $className . '.php')) {
+				require_once($path . $className . '.php');
+				return;
+			}
+
+			else if(file_exists($path . 'class.' . strtolower($className) . '.php')) {
+				require_once($path . 'class.' . strtolower($className) . '.php');
+				return;
+			}
+		}
+		
+		throw new \Exception("Class '$className' not found.");
 	}
 }

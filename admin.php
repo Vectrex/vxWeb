@@ -9,6 +9,7 @@ require_once 'site.config.php';
 use vxPHP\User\Admin;
 use vxPHP\Application\Webpage\NiceURI;
 use vxPHP\Application\Webpage;
+use vxPHP\Application\MenuGenerator;
 
 if(!($route = vxPHP\Http\Router::getRouteFromPathInfo())) {
 	Webpage::generateHttpError();
@@ -54,7 +55,9 @@ $admin = Admin::getInstance();
 					Gehe zu <a href="/" class="homeLink"><?php echo $_SERVER['HTTP_HOST']; ?></a>
 				</p>
 			</div>
-			<?php echo $page->mainMenu('admin', 0); ?>
+
+			<?php echo MenuGenerator::create('admin', 0)->render(); ?>
+
 			<div id="content">
 				<?php echo $page->content(); ?>
 			</div>
