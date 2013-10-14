@@ -6,7 +6,7 @@ require_once 'site.config.php';
  * passende Seite wählen
  */
 
-use vxPHP\Application\Webpage;
+use vxPHP\Webpage\Webpage;
 
 if(!($route = vxPHP\Http\Router::getRouteFromPathInfo())){
 	Webpage::generateHttpError();

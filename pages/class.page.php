@@ -1,6 +1,6 @@
 <?php
 
-use vxPHP\Application\Webpage;
+use vxPHP\Webpage\Webpage;
 
 class page extends Webpage {
 

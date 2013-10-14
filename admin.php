@@ -7,9 +7,9 @@ require_once 'site.config.php';
 //$purifier = new HTMLPurifier($conf);
 
 use vxPHP\User\Admin;
-use vxPHP\Application\Webpage\NiceURI;
-use vxPHP\Application\Webpage;
-use vxPHP\Application\MenuGenerator;
+use vxPHP\Webpage\NiceURI;
+use vxPHP\Webpage\Webpage;
+use vxPHP\Webpage\MenuGenerator;
 
 if(!($route = vxPHP\Http\Router::getRouteFromPathInfo())) {
 	Webpage::generateHttpError();
