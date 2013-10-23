@@ -2,6 +2,7 @@
 
 use vxPHP\Template\Exception\SimpleTemplateException;
 use vxPHP\Template\SimpleTemplate;
+use vxPHP\Template\Filter\TextToLinks;
 
 class default_page extends page {
 
@@ -34,7 +35,7 @@ class default_page extends page {
 	}
 
 	public function content() {
-		$this->contentTpl->addFilter('text2links');
+		$this->contentTpl->addFilter(new TextToLinks());
 
 		$html = $this->contentTpl->display();
 		$this->html .= $html;

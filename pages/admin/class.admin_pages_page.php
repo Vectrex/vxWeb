@@ -5,6 +5,7 @@ use vxPHP\Template\Util\SimpleTemplateUtil;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\FormElement\ButtonElement;
+use vxPHP\Template\Filter\ShortenText;
 
 class admin_pages_page extends page {
 
@@ -128,7 +129,7 @@ class admin_pages_page extends page {
 		else {
 			$tpl = new SimpleTemplate('admin_pages_list.htm');
 			$tpl->assign('pages', $this->data['pages']);
-			$tpl->addFilter('shortenText');
+			$tpl->addFilter(new ShortenText());
 		}
 		$html = $tpl->display();
 		$this->html .= $html;

@@ -20,6 +20,7 @@ use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\FormElement\ButtonElement;
 
 use vxPHP\Image\ImageModifier;
+use vxPHP\Template\Filter\ImageCache;
 
 /**
  *
@@ -483,7 +484,7 @@ class admin_files_page extends page {
 			case 'requestEditForm':
 				if(($id =$this->request->request->getInt('id'))) {
 					$markup = $this->getEditForm(MetaFile::getInstance(NULL, $id))->render();
-					SimpleTemplate::parseImageCaches($markup);
+					ImageCache::create()->apply($markup);
 					return array(array('html' => $markup));
 				}
 				break;
