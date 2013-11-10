@@ -5,35 +5,39 @@ class CustomClassLoader {
 	private $subDirs;
 
 	public function __construct($includePath = '') {
-		
+
 		$this->includePath = rtrim($includePath, DIRECTORY_SEPARATOR);
 
 		$this->subDirs = array(
 			'src',
-			'pages',
-			'pages' . DIRECTORY_SEPARATOR . 'admin'
+			'src' . DIRECTORY_SEPARATOR . 'menu',
+			'src' . DIRECTORY_SEPARATOR . 'controller'
 		);
 
 	}
 
+	public static function create($includePath = '') {
+		return new static($includePath);
+	}
+
 	/**
-	 * Installs this class loader on the SPL autoload stack.
+	 * Installs this class loader on the SPL autoload stack
 	 */
 	public function register() {
 		spl_autoload_register(array($this, 'loadClass'));
 	}
 
 	/**
-	 * Uninstalls this class loader from the SPL autoloader stack.
+	 * Uninstalls this class loader from the SPL autoloader stack
 	 */
 	public function unregister() {
-			spl_autoload_unregister(array($this, 'loadClass'));
+		spl_autoload_unregister(array($this, 'loadClass'));
 	}
 
 	/**
-	 * Loads the given class or interface.
+	 * Loads the given class or interface
 	 *
-	 * @param string $className The name of the class to load.
+	 * @param string $className The name of the class to load
 	 * @return void
 	 */
 	public function loadClass($className) {
@@ -43,15 +47,8 @@ class CustomClassLoader {
 
 			if(file_exists($path . $className . '.php')) {
 				require_once($path . $className . '.php');
-				return;
 			}
 
-			else if(file_exists($path . 'class.' . strtolower($className) . '.php')) {
-				require_once($path . 'class.' . strtolower($className) . '.php');
-				return;
-			}
 		}
-		
-		throw new \Exception("Class '$className' not found.");
 	}
 }

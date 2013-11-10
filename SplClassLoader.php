@@ -16,9 +16,11 @@
  * @author Matthew Weier O'Phinney <matthew@zend.com>
  * @author Kris Wallsmith <kris.wallsmith@gmail.com>
  * @author Fabien Potencier <fabien.potencier@symfony-project.org>
+ * @author Gregor Kofler
  */
 
 class SplClassLoader {
+
 	private $fileExtension = '.php';
 	private $namespace;
 	private $includePath;
@@ -28,11 +30,24 @@ class SplClassLoader {
 	 * Creates a new <tt>SplClassLoader</tt> that loads classes of the
 	 * specified namespace.
 	 *
-	 * @param string $ns The namespace to use.
+	 * @param string $ns The namespace to use
+	 * @param string $includePath root for classes folders
+	 *
 	 */
 	public function __construct($ns = NULL, $includePath = NULL) {
 			$this->namespace = $ns;
 			$this->includePath = $includePath;
+	}
+
+	/**
+	 * static method to allow chained creation and registering
+	 *
+	 * @param string $ns Namespace
+	 * @param string $includePath
+	 * @return SplClassLoader
+	 */
+	public static function create($ns = NULL, $includePath = NULL) {
+		return new static($ns, $includePath);
 	}
 
 	/**
@@ -110,7 +125,11 @@ class SplClassLoader {
 	 * @return void
 	 */
 	public function loadClass($className) {
-		if (NULL === $this->namespace || $this->namespace.$this->namespaceSeparator === substr($className, 0, strlen($this->namespace.$this->namespaceSeparator))) {
+
+		if (
+			NULL === $this->namespace ||
+			$this->namespace . $this->namespaceSeparator === substr($className, 0, strlen($this->namespace.$this->namespaceSeparator))
+		) {
 
 			$fileName	= '';
 			$namespace	= '';

@@ -1,16 +1,30 @@
 vxJS.event.addDomReadyListener(function () {
+
 	"use strict";
 
-	var folderId,
+	var uri = function() {
+			var matches = window.location.href.match(/(.*?\/admin(?:\.php)?\/)([\w]+)/);
+
+			// adapt url
+
+			if(!matches[2] || matches[2] !== "filepicker") {
+				return matches[1] + "filesXhr";
+			}
+
+			// add query parameter for filepicker with CKEditor integration
+
+			return matches[1] + "filesXhr?filepicker&" + window.location.search.substring(1);
+		}(),
+		folderId,
 		directoryBar = document.getElementById("directoryBar"), breadCrumbs = [],
 		folderInput = "input".setProp([["type", "hidden"], ["name", "folder"]]).create(),
 		throbberElement = function() {
 			return "div".setProp("class", "vxJS_xhrThrobberFileOperation").create();
 		}(),
 		xhr = vxJS.xhr(
-				{ echo: true },
-				{ columns: ["name", "size", "mime", "mTime", "reference"] },
-				{ node: throbberElement }
+			{ uri: uri, echo: true },
+			{ columns: ["name", "size", "mime", "mTime", "reference"] },
+			{ node: throbberElement }
 		),
 		form, xhrForm,
 		formInitValues = {}, filesTableListeners = [],
@@ -54,7 +68,7 @@ vxJS.event.addDomReadyListener(function () {
 			if(fra) { return -1; }
 			if(frb) { return 1; }
 		},
- 
+
 		t = vxJS.widget.sorTable(
 			filesTable, {
 			columnFormat: [
@@ -73,8 +87,7 @@ vxJS.event.addDomReadyListener(function () {
 			var e = "button".setProp({ type: "button", className: "addFileButton" }).create("Datei hinzufügen");
 			vxJS.event.addListener(e, "click", function(e) {
 				if(!form) {
-					xhr.use({ command: "requestAddForm" });
-					xhr.submit();
+					xhr.use({ command: "requestAddForm" }).submit();
 				}
 				else {
 					vxJS.dom.deleteChildNodes(confirmPayload);
@@ -111,26 +124,24 @@ vxJS.event.addDomReadyListener(function () {
 					addFolderButton.style.display = "";
 				}
 				if(e.keyCode === 13 && this.value.trim()) {
-					xhr.use({command: "addFolder"}, { folder: folderId, folderName: this.value });
-					xhr.submit();
+					xhr.use({command: "addFolder"}, { folder: folderId, folderName: this.value }).submit();
 				}
 			});
 			return elem;
 		}()),
-		
+
 		folderTree = (function() {
 			var t = vxJS.widget.tree();
 			vxJS.event.addListener(t, "labelClick", function(b) {
 				if(!b.branch.current) {
 					if(window.confirm("Datei nach " + b.branch.path + " verschieben?")) {
-						xhr.use( { command: "moveFile" }, { destination: b.branch.key } );
-						xhr.submit();
+						xhr.use( { command: "moveFile" }, { destination: b.branch.key } ).submit();
 					}
 				}
 			});
 			return t;
 		}()),
-		folderTreeContainer = (function() { 
+		folderTreeContainer = (function() {
 			var b = "button".create("Abbrechen");
 			vxJS.event.addListener(b, "click", confirm.hide);
 			return "div".setProp("id", "folderTreeContainer").create([folderTree.element, "div".setProp("class", "formBase").create(b)]);
@@ -143,7 +154,7 @@ vxJS.event.addDomReadyListener(function () {
 		}
 		form.appendChild(folderInput);
 
-		xhrForm = vxJS.widget.xhrForm(form, { command: "checkUpload"} );
+		xhrForm = vxJS.widget.xhrForm(form, { command: "checkUpload", uri: uri } );
 		xhrForm.addSubmit(form.elements["submit_add"]);
 		xhrForm.addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", form)[0], "general");
 		xhrForm.enableIframeUpload();
@@ -170,15 +181,14 @@ vxJS.event.addDomReadyListener(function () {
 							form.elements[p].value = formInitValues[p];
 						}
 					}
-					xhr.use({command: "getFiles"}, { folder: folderId });
-					xhr.submit();
+					xhr.use({command: "getFiles"}, { folder: folderId }).submit();
 				}
 			}
 		);
 	};
 
 	var focusForm = function() {
-		var forms = this.element.getElementsByTagName("form"); 
+		var forms = this.element.getElementsByTagName("form");
 		if(forms[0] && forms[0].elements[0]) {
 			forms[0].elements[0].focus();
 		}
@@ -219,8 +229,7 @@ vxJS.event.addDomReadyListener(function () {
 					"click",
 					(function(id) {
 						return function(e) {
-							xhr.use({ command: "getFiles" }, { folder: id });
-							xhr.submit();
+							xhr.use({ command: "getFiles" }, { folder: id }).submit();
 							vxJS.event.preventDefault(e);
 						};
 					}(p.id))
@@ -232,7 +241,7 @@ vxJS.event.addDomReadyListener(function () {
 		}
 
 		if((p = vxJS.dom.getElementsByClassName("currentFolder", directoryBar)[0])) {
-			vxJS.dom.removeClassName(p, "currentFolder");			
+			vxJS.dom.removeClassName(p, "currentFolder");
 		}
 		vxJS.dom.addClassName(breadCrumbs[l - 1].element, "currentFolder");
 	};
@@ -250,8 +259,7 @@ vxJS.event.addDomReadyListener(function () {
 		t.insertRow("tr".setProp("class", "folderRow").create(cells));
 
 		filesTableListeners.push(vxJS.event.addListener(a, "click", function(e) {
-			xhr.use({command: "getFiles"}, { folder: folderData.id });
-			xhr.submit();
+			xhr.use({command: "getFiles"}, { folder: folderData.id }).submit();
 			vxJS.event.preventDefault(e);
 		}));
 
@@ -261,8 +269,7 @@ vxJS.event.addDomReadyListener(function () {
 					return;
 				}
 				if(window.confirm("Ordner und Inhalt wirklich löschen?")) {
-					xhr.use({ command: "delFolder" }, { id: data.id });
-					xhr.submit();
+					xhr.use({ command: "delFolder" }, { id: data.id }).submit();
 				}
 			};
 		}(folderData))));
@@ -307,19 +314,16 @@ vxJS.event.addDomReadyListener(function () {
 				switch(this.className) {
 					case "del":
 						if(window.confirm("Datei wirklich löschen?")) {
-							xhr.use({ command: "delFile" }, { id: data.id });
-							xhr.submit();
+							xhr.use({ command: "delFile" }, { id: data.id }).submit();
 						}
 						break;
 
 					case "move":
-						xhr.use({ command: "getFolderTree" }, { id: data.id });
-						xhr.submit();
+						xhr.use({ command: "getFolderTree" }, { id: data.id }).submit();
 						break;
-						
+
 					case "edit":
-						xhr.use({ command: "requestEditForm" }, { id: data.id });
-						xhr.submit();
+						xhr.use({ command: "requestEditForm" }, { id: data.id }).submit();
 						break;
 
 					case "forward":
@@ -353,10 +357,11 @@ vxJS.event.addDomReadyListener(function () {
 										if(elem.value !== fileData.filename) {
 
 											// xhr submit
-	
+
 											elem.disabled = true;
 											vxJS.xhr(
 												{
+													uri:		uri,
 													command:	"renameFile"
 												},
 												{
@@ -367,16 +372,16 @@ vxJS.event.addDomReadyListener(function () {
 												{
 													complete: function() {
 														var r = this.response;
-	
+
 														if(r.error !== false) {
 															elem.disabled = false;
 															vxJS.dom.addClassName(elem, "error");
 														}
 														else {
 															fileData.filename = r.filename;
-	
+
 															// fill cell with new content
-	
+
 															removeInput();
 															cell.appendChild(vxJS.dom.parse(r.elements));
 															cell.appendChild(icons.rename.cloneNode(true));
@@ -450,7 +455,7 @@ vxJS.event.addDomReadyListener(function () {
 		var r = this.response, e = r.echo, f, xForm, i = 0, b, tree;
 
 		switch(e.httpRequest) {
-			
+
 			case "delFolder":
 				if(!r.response.error) {
 					buildFilesTable(r.response.folders, r.response.files);
@@ -484,7 +489,7 @@ vxJS.event.addDomReadyListener(function () {
 					}
 				}
 				break;
-				
+
 			case "requestAddForm":
 				vxJS.dom.deleteChildNodes(confirmPayload);
 				confirmPayload.appendChild(vxJS.dom.parse(r.response));
@@ -499,7 +504,7 @@ vxJS.event.addDomReadyListener(function () {
 					dnd.addDraggable(confirm.element);
 				}
 				break;
-				
+
 			case "requestEditForm":
 				vxJS.dom.deleteChildNodes(confirmPayload);
 				confirmPayload.appendChild(vxJS.dom.parse(r.response));
@@ -507,7 +512,7 @@ vxJS.event.addDomReadyListener(function () {
 				// prepare edit form
 				f = confirmPayload.getElementsByTagName("form")[0];
 
-				xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm" });
+				xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
 				xForm.addSubmit(f.elements["submit_edit"]);
 				xForm.addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", f)[0], "general");
 				xForm.setPayload( { id: e.id } );
@@ -593,7 +598,6 @@ vxJS.event.addDomReadyListener(function () {
 		dnd = vxJS.dnd.create();
 	}
 	confirm.element.appendChild(confirmPayload);
-	
-	xhr.use({command: "getFiles"});
-	xhr.submit();
+
+	xhr.use({command: "getFiles"}).submit();
 });

@@ -1,0 +1,33 @@
+<!-- { extend: admin/layout_with_menu.php @ content_block } -->
+
+<?php if($tpl->allow_nice_edit): ?>
+	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
+
+	<script type="text/javascript">
+	vxJS.event.addDomReadyListener(function() {
+		CKEDITOR.replace(document.forms[0].elements['Markup'],
+			{ toolbar:
+				[
+				    ['Maximize', '-', 'Source', '-', 'Undo', 'Redo'],
+				    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','RemoveFormat'],
+				    ['Link','Unlink','Anchor'],
+				    ['Image','Table','HorizontalRule','SpecialChar'],
+				    '/',
+				    ['Format'],
+				    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript', '-', 'TextColor','BGColor'],
+				    ['NumberedList','BulletedList','-','Blockquote', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock']
+				],
+				height: "450px", contentsCss: '/css/default.css',
+				filebrowserBrowseUrl: "/admin.php/filepicker",
+				filebrowserImageBrowseUrl: "/admin.php/filepicker?filter=image"
+			} );
+	});
+	</script>
+
+<?php endif; ?>
+
+<h1>Seiten</h1>
+
+<a class="button prevButton" href="$pages">Zurück ohne speichern</a>
+
+<?php echo $tpl->form; ?>

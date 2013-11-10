@@ -1,0 +1,29 @@
+{error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
+{if($success == 1)}
+<div class="success_message"><strong>Änderungen erfolgreich übernommen</strong></div>
+{end_if}
+{if($nochange == 1)}
+<div class="notify_message"><strong>Keine Änderungen notwendig</strong><br>Daten wurden nicht gespeichert.</div>
+{end_if}
+
+<div style="float: left; width: 70%">
+	<p style="width: 90%">
+	Titel<br>
+	{input:Title}<br>
+	Eindeutiger Name (automatisch generiert)<br>
+	{input:Alias}<br>
+	Inhalt<br>
+	{textarea:Markup}
+	</p>
+</div>
+<div style="float: left; width: 30%">
+	<p style="width: 90%">
+	Schlüsselwörter<br>
+	{textarea:Keywords}<br>
+	Beschreibung<br>
+	{textarea:Description}
+	</p>
+</div>
+<div class="clearFloat"></div>
+
+<p>{input:submit_edit}</p>

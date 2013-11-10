@@ -6,11 +6,11 @@ ini_set('display_errors', '1');
 require_once 'SplClassLoader.php';
 require_once 'CustomClassLoader.php';
 
-$splClassLoader = new SplClassLoader('vxPHP', rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR));
-$splClassLoader->register();
+$serverRoot = rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR);
 
-$customClassLoader = new CustomClassLoader(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR));
-$customClassLoader->register();
+SplClassLoader::create		('vxPHP', $serverRoot . DIRECTORY_SEPARATOR . 'vendor')->register();
+SplClassLoader::create		('vxWeb', $serverRoot . DIRECTORY_SEPARATOR . 'vendor')->register();
+CustomClassLoader::create	($serverRoot)->register();
 
 session_start();
 

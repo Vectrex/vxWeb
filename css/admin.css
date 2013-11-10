@@ -94,6 +94,7 @@ th.vxJS_sorTable_header_desc:before	{ content: "\e031"; }
 .messageBoxError				{ color: #f44; background: #fee; border-color: #f44; }
 
 .success_message     			{ border: solid 1px #080; color: #080; background: #cfc; padding: 1em; margin-bottom: 0.25em; }
+.notify_message     			{ border: solid 1px #880; color: #880; background: #ffc; padding: 1em; margin-bottom: 0.25em; }
 .error_message					{ border: solid 2px #f44; background: #fee; padding: 1.5em; font-size: 0.8em; font-weight: bold; color: #f44; margin: 1.5em 0em; line-height: 150%; }
 .error							{ color: #f00; }
 span.error						{ display: inline-block; background: #ffe0e0; padding: 0.25em; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
@@ -119,7 +120,6 @@ a.delButton:before				{ font-family: icomoon-essential; font-weight: normal; con
 
 a.button:hover,
 a.button:active					{ box-shadow: 0 0 4px 1px #4a0; }
-
 
 /*
  * Buttons without labels
