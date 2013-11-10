@@ -11,7 +11,7 @@ class DefaultController extends Controller {
 		// pick page from the end of the segments sequence
 
 		if(count($this->pathSegments)) {
-			$page = end($this->pathSegments);
+			$page = $this->pathSegments[0];
 		}
 
 		// alternatively fall back to the route id (for example on splash pages)
@@ -26,20 +26,15 @@ class DefaultController extends Controller {
 
 			$include = new SimpleTemplate('default' . DIRECTORY_SEPARATOR . preg_replace('~[^a-z0-9_-]~i', '', $page) . '.php');
 
-			// load snippet to include
-
-			$tpl = new SimpleTemplate('layout.php');
-
 			if($include->containsPHP()) {
 				$this->generateHttpError();
 			}
 
 			// replace content block with include for snippet in response
 
-			return new Response(
-				$tpl->
-				insertTemplateAt($include, 'content_block')->
-				display()
+			return new Response(SimpleTemplate::create('layout.php')
+				->insertTemplateAt($include, 'content_block')
+				->display()
 			);
 
 		}
