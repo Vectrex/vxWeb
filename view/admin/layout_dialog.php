@@ -20,6 +20,17 @@
 		<script type='text/javascript' src='/js/widgets/sortable.js'></script>
 		<script type='text/javascript' src='/js/widgets/tree.js'></script>
 
+		<script type="text/javascript">
+			if(!this.vxWeb) {
+				this.vxWeb = {};
+			}
+			if(!this.vxWeb.routes) {
+				this.vxWeb.routes = {};
+			}
+
+			this.vxWeb.routes.files = "<?php echo vxPHP\Http\Router::getRoute('filesXhr', 'admin.php')->getUrl(); ?>?filepicker";
+		</script>
+
 	</head>
 
 	<body>

@@ -4,6 +4,17 @@
 <script type="text/javascript" src="/js/admin/admin_articles.js"></script>
 
 <script type="text/javascript">
+	if(!this.vxWeb) {
+		this.vxWeb = {};
+	}
+	if(!this.vxWeb.routes) {
+		this.vxWeb.routes = {};
+	}
+
+	this.vxWeb.routes.articles = "<?php echo vxPHP\Http\Router::getRoute('articlesXhr', 'admin.php')->getUrl(); ?>";
+</script>
+
+<script type="text/javascript">
 vxJS.event.addDomReadyListener(function() {
 	CKEDITOR.replace(document.forms[0].elements['Content'],
 		{ toolbar:

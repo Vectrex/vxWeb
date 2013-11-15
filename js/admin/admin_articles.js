@@ -1,7 +1,8 @@
 vxJS.event.addDomReadyListener(function() {
+
 	"use strict";
 
-	var	uri = window.location.href.replace("articles", "articlesXhr"),
+	var	uri = vxWeb.routes.articles,
 		articleXhrForm, id,
 		filesXhrForm, st,
 		sortXhr = vxJS.xhr( { uri: uri, command: "sortFiles" }),
@@ -30,7 +31,7 @@ vxJS.event.addDomReadyListener(function() {
 		vxJS.event.addListener(st, "dragStop", function() {
 			sortXhr.use(null, { sortOrder: this.getCurrentOrder(), id: filesXhrForm.element.elements["id"].value });
 			sortXhr.submit();
-			this.initOrder();
+			this.initSort();
 		});
 
 		tabs.enable();

@@ -3,17 +3,14 @@ vxJS.event.addDomReadyListener(function () {
 	"use strict";
 
 	var uri = function() {
-			var matches = window.location.href.match(/(.*?\/admin(?:\.php)?\/)([\w]+)/);
+			var path = vxWeb.routes.files, search = window.location.search;
 
-			// adapt url
+			// add query parameter (needed for CKEditor integration)
 
-			if(!matches[2] || matches[2] !== "filepicker") {
-				return matches[1] + "filesXhr";
+			if(search) {
+				path = path + (path.indexOf("?") !== -1 ? "&" : "?") + search.substring(1);
 			}
-
-			// add query parameter for filepicker with CKEditor integration
-
-			return matches[1] + "filesXhr?filepicker&" + window.location.search.substring(1);
+			return path;
 		}(),
 		folderId,
 		directoryBar = document.getElementById("directoryBar"), breadCrumbs = [],
