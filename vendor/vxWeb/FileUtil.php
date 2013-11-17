@@ -22,15 +22,16 @@ class FileUtil {
 	/**
 	 * @param Article $article
 	 * @param array $metaData
+	 * @param string $articlesDir optional name of subdirectory, that keeps files for articles
 	 *
 	 * @throws MetaFolderException
 	 * @throws FilesystemFileException
 	 *
 	 * @return MetaFile
 	 */
-	public static function uploadFileForArticle(Article $article, array $metaData) {
+	public static function uploadFileForArticle(Article $article, array $metaData, $articlesDir = 'articles') {
 
-		$parentFolder = FilesystemFolder::getInstance(rtrim(Request::createFromGlobals()->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR) . FILES_ARTICLES_PATH);
+		$parentFolder = FilesystemFolder::getInstance(rtrim(Request::createFromGlobals()->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR) . FILES_PATH . DIRECTORY_SEPARATOR . $articlesDir);
 
 		// @todo avoid collision of folder names with existing file names
 
@@ -39,7 +40,7 @@ class FileUtil {
 		}
 		else {
 			try {
-				$metaFolder = MetaFolder::getInstance($parentFolder->getPath().$article->getCategory()->getAlias().DIRECTORY_SEPARATOR);
+				$metaFolder = MetaFolder::getInstance($parentFolder->getPath().$article->getCategory()->getAlias() . DIRECTORY_SEPARATOR);
 			}
 			catch(MetaFolderException $e) {
 				$metaFolder = $parentFolder->createMetaFolder();
