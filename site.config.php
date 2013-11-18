@@ -20,6 +20,6 @@ if(isset($_GET['__clear__session__'])) {
 
 $application = vxPHP\Application\Application::getInstance();
 
-if(!is_null($application->getAbsoluteAssetsPath()) && !is_dir($application->getAbsoluteAssetsPath())) {
+if(!is_dir($application->getAbsoluteAssetsPath())) {
 	throw new Exception("Assets path '" . $application->getRelativeAssetsPath() . "' not found.");
 }
