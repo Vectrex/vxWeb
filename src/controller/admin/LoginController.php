@@ -2,6 +2,7 @@
 
 use vxPHP\User\Admin;
 use vxPHP\User\Exception\UserException;
+use vxPHP\Application\Application;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Template\SimpleTemplate;
@@ -16,7 +17,16 @@ class LoginController extends Controller {
 		$admin = Admin::getInstance();
 
 		if($admin->isAuthenticated()) {
-			$this->redirect('profile');
+
+			foreach(Application::getInstance()->getConfig()->routes['admin.php'] as $route) {
+
+				if(in_array($route->getRouteId(), array('login', 'logout'))) {
+					continue;
+				}
+
+				$this->redirect($route->getRouteId());
+				break;
+			}
 		}
 
 		$button = FormElementFactory::create('button',	'submit_login',	'',	array('type' => 'submit', 'class' => 'm loginButton'));
@@ -25,7 +35,7 @@ class LoginController extends Controller {
 		$form =
 			HtmlForm::create('admin_login.htm')
 				->addElement($button)
-				->addElement(FormElementFactory::create('input',		'UID',	'',	array('maxlength' => 128, 'class' => 'l'),	array(),	FALSE,	array('trim')))
+				->addElement(FormElementFactory::create('input',	'UID',	'',	array('maxlength' => 128, 'class' => 'l'),	array(),	FALSE,	array('trim')))
 				->addElement(FormElementFactory::create('password',	'pwd',	'',	array('maxlength' => 128, 'class' => 'l')));
 
 		// form was submitted by XHR

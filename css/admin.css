@@ -166,6 +166,7 @@ a.iconButton:active				{
 #statusBar p					{ font-size: 100%; margin: 0; line-height: 100%; }
 #statusBar a					{ text-decoration: none; }
 #statusBar a.homeLink:before	{ font-family: icomoon-essential; font-weight: normal; content: "\e000"; padding-right: 0.25em; }
+#statusBar a.profileLink:before	{ font-family: icomoon-essential; font-weight: normal; content: "\e009"; padding-right: 0.25em; }
 #statusBar a.logoutLink:before	{ font-family: icomoon-essential; font-weight: normal; content: "\e021"; padding-right: 0.25em; }
 
 /*
