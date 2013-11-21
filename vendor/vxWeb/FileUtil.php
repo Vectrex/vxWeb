@@ -31,7 +31,7 @@ class FileUtil {
 	 */
 	public static function uploadFileForArticle(Article $article, array $metaData, $articlesDir = 'articles') {
 
-		$parentFolder = FilesystemFolder::getInstance(rtrim(Request::createFromGlobals()->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR) . FILES_PATH . DIRECTORY_SEPARATOR . $articlesDir);
+		$parentFolder = FilesystemFolder::getInstance(rtrim(Application::getInstance()->getAbsoluteAssetsPath(), DIRECTORY_SEPARATOR) . FILES_PATH . $articlesDir);
 
 		// @todo avoid collision of folder names with existing file names
 

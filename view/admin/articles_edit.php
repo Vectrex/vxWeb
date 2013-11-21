@@ -4,14 +4,7 @@
 <script type="text/javascript" src="/js/admin/admin_articles.js"></script>
 
 <script type="text/javascript">
-	if(!this.vxWeb) {
-		this.vxWeb = {};
-	}
-	if(!this.vxWeb.routes) {
-		this.vxWeb.routes = {};
-	}
-
-	this.vxWeb.routes.articles = "<?php echo vxPHP\Http\Router::getRoute('articlesXhr', 'admin.php')->getUrl(); ?>";
+	this.vxWeb.routes.articles = "<?php echo vxPHP\Http\Router::getRoute('articlesXhr', 'admin.php')->getUrl(); ?>?<?php echo vxPHP\Http\Request::createFromGlobals()->getQueryString(); ?>";
 </script>
 
 <script type="text/javascript">

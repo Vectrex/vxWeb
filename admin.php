@@ -1,5 +1,11 @@
 <?php
-require_once 'site.config.php';
+
+if(file_exists('site.config.php')) {
+	require_once 'site.config.php';
+}
+else {
+	require_once '../site.config.php';
+}
 
 //$conf = HTMLPurifier_Config::createDefault();
 //$conf->set('HTML.Doctype', 'HTML 4.01 Strict');
@@ -9,5 +15,3 @@ require_once 'site.config.php';
 $route = vxPHP\Http\Router::getRouteFromPathInfo();
 vxPHP\Application\Application::getInstance()->setCurrentRoute($route);
 $controller = $route->getController()->render();
-
-?>
