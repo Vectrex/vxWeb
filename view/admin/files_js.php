@@ -1,4 +1,9 @@
 <!-- {extend: admin/layout_with_menu.php @ content_block } -->
+
+<script type="text/javascript">
+	this.vxWeb.routes.files = "<?php echo vxPHP\Http\Router::getRoute('filesXhr', 'admin.php')->getUrl(); ?>";
+</script>
+
 <script type="text/javascript" src="/js/admin/admin_files.js"></script>
 
 <h1>Dateien</h1>
