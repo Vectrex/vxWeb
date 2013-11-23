@@ -32,11 +32,16 @@ class FilesXhrController extends Controller {
 
 	protected function execute() {
 
-		if(($id = $this->request->request->get('folder'))) {
-			$folder = MetaFolder::getInstance(NULL, $id);
+		try {
+			if(($id = $this->request->request->get('folder'))) {
+				$folder = MetaFolder::getInstance(NULL, $id);
+			}
+			else {
+				$folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
+			}
 		}
-		else {
-			$folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
+		catch(MetaFolderException $e) {
+			return new JsonResponse(array ('error' => $e->getMessage()));
 		}
 
 		switch($this->request->request->get('httpRequest')) {

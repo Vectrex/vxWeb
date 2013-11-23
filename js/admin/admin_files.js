@@ -451,116 +451,120 @@ vxJS.event.addDomReadyListener(function () {
 	var handleXhrResponse = function() {
 		var r = this.response, e = r.echo, f, xForm, i = 0, b, tree;
 
-		switch(e.httpRequest) {
+		// response is only evaluated when echo property is set
 
-			case "delFolder":
-				if(!r.response.error) {
-					buildFilesTable(r.response.folders, r.response.files);
-					while((b = breadCrumbs[i])) {
-						if(b.id === e.id) {
-							while((b = breadCrumbs[i])) {
-								vxJS.event.removeListener(b.listener);
-								b.element.parentNode.removeChild(b.element);
-								breadCrumbs.splice(i, 1);
+		if(e) {
+			switch(e.httpRequest) {
+
+				case "delFolder":
+					if(!r.response.error) {
+						buildFilesTable(r.response.folders, r.response.files);
+						while((b = breadCrumbs[i])) {
+							if(b.id === e.id) {
+								while((b = breadCrumbs[i])) {
+									vxJS.event.removeListener(b.listener);
+									b.element.parentNode.removeChild(b.element);
+									breadCrumbs.splice(i, 1);
+								}
+							}
+							++i;
+						}
+					}
+					break;
+
+				case "moveFile":
+					confirm.hide();
+				case "getFiles":
+				case "addFolder":
+				case "delFile":
+					if(!r.response.error) {
+						if(r.response.pathSegments) {
+							buildDirectoryBar(r.response.pathSegments);
+						}
+						buildFilesTable(r.response.folders, r.response.files);
+
+						if(e.folder) {
+							folderId = e.folder;
+							folderInput.value = e.folder;
+						}
+					}
+					break;
+
+				case "requestAddForm":
+					vxJS.dom.deleteChildNodes(confirmPayload);
+					confirmPayload.appendChild(vxJS.dom.parse(r.response));
+					form = confirmPayload.getElementsByTagName("form")[0];
+
+					prepareAddForm();
+
+					confirm.show();
+					form.elements[0].focus();
+
+					if(dnd) {
+						dnd.addDraggable(confirm.element);
+					}
+					break;
+
+				case "requestEditForm":
+					vxJS.dom.deleteChildNodes(confirmPayload);
+					confirmPayload.appendChild(vxJS.dom.parse(r.response));
+
+					// prepare edit form
+					f = confirmPayload.getElementsByTagName("form")[0];
+
+					xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
+					xForm.addSubmit(f.elements["submit_edit"]);
+					xForm.addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", f)[0], "general");
+					xForm.setPayload( { id: e.id } );
+
+					vxJS.event.addListener(
+						xForm,
+						"check",
+						function() {
+							var r = this.getLastXhrResponse();
+
+							if(r.elements) {
+								// possible error handling
+							}
+							else {
+								buildFilesTable(r.folders, r.files);
+								f = null;
+								xForm = null;
+								confirm.hide();
 							}
 						}
-						++i;
-					}
-				}
-				break;
+					);
 
-			case "moveFile":
-				confirm.hide();
-			case "getFiles":
-			case "addFolder":
-			case "delFile":
-				if(!r.response.error) {
-					if(r.response.pathSegments) {
-						buildDirectoryBar(r.response.pathSegments);
-					}
-					buildFilesTable(r.response.folders, r.response.files);
-
-					if(e.folder) {
-						folderId = e.folder;
-						folderInput.value = e.folder;
-					}
-				}
-				break;
-
-			case "requestAddForm":
-				vxJS.dom.deleteChildNodes(confirmPayload);
-				confirmPayload.appendChild(vxJS.dom.parse(r.response));
-				form = confirmPayload.getElementsByTagName("form")[0];
-
-				prepareAddForm();
-
-				confirm.show();
-				form.elements[0].focus();
-
-				if(dnd) {
-					dnd.addDraggable(confirm.element);
-				}
-				break;
-
-			case "requestEditForm":
-				vxJS.dom.deleteChildNodes(confirmPayload);
-				confirmPayload.appendChild(vxJS.dom.parse(r.response));
-
-				// prepare edit form
-				f = confirmPayload.getElementsByTagName("form")[0];
-
-				xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
-				xForm.addSubmit(f.elements["submit_edit"]);
-				xForm.addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", f)[0], "general");
-				xForm.setPayload( { id: e.id } );
-
-				vxJS.event.addListener(
-					xForm,
-					"check",
-					function() {
-						var r = this.getLastXhrResponse();
-
-						if(r.elements) {
-							// possible error handling
-						}
-						else {
-							buildFilesTable(r.folders, r.files);
+					vxJS.event.addListener(
+						f.elements["submit_cancel"],
+						"click",
+						function(e) {
 							f = null;
 							xForm = null;
 							confirm.hide();
+							vxJS.event.preventDefault(e);
 						}
+					);
+
+					confirm.show();
+					if(dnd) {
+						dnd.addDraggable(confirm.element);
 					}
-				);
+					break;
 
-				vxJS.event.addListener(
-					f.elements["submit_cancel"],
-					"click",
-					function(e) {
-						f = null;
-						xForm = null;
-						confirm.hide();
-						vxJS.event.preventDefault(e);
+				case "getFolderTree":
+					tree = folderTree.getRootTree();
+					tree.truncate();
+					tree.addBranches(r.response.branches);
+
+					vxJS.dom.deleteChildNodes(confirmPayload);
+					confirmPayload.appendChild(folderTreeContainer);
+					confirm.show();
+					if(dnd) {
+						dnd.addDraggable(confirm.element);
 					}
-				);
-
-				confirm.show();
-				if(dnd) {
-					dnd.addDraggable(confirm.element);
-				}
-				break;
-
-			case "getFolderTree":
-				tree = folderTree.getRootTree();
-				tree.truncate();
-				tree.addBranches(r.response.branches);
-
-				vxJS.dom.deleteChildNodes(confirmPayload);
-				confirmPayload.appendChild(folderTreeContainer);
-				confirm.show();
-				if(dnd) {
-					dnd.addDraggable(confirm.element);
-				}
-				break;
+					break;
+			}
 		}
 	};
 
