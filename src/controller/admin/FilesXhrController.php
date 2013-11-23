@@ -36,7 +36,7 @@ class FilesXhrController extends Controller {
 			$folder = MetaFolder::getInstance(NULL, $id);
 		}
 		else {
-			$folder = MetaFolder::getInstance(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR) . FILES_PATH);
+			$folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
 		}
 
 		switch($this->request->request->get('httpRequest')) {
@@ -393,7 +393,7 @@ class FilesXhrController extends Controller {
 			$infoHtml = "<strong>{$data['File']}</strong> <em>({$file->getMimetype()}$cacheText)</em><br /><span class='smaller'><a href='/{$file->getRelativePath()}'>/{$file->getRelativePath()}</a></span>";
 		}
 		else {
-			$infoHtml = "<strong>{$data['File']}</strong> <em>({$file->getMimetype()}$cacheText)</em><br /><span class='smaller'><a href='/{$file->getRelativePath()}'>/{$file->getRelativePath()}</a></span><br /><img class='thumb' src='".htmlspecialchars(str_replace(rtrim($_SERVER['DOCUMENT_ROOT'], '/'), '', $file->getPath()))."#resize 0 80' alt=''>";
+			$infoHtml = "<strong>{$data['File']}</strong> <em>({$file->getMimetype()}$cacheText)</em><br /><span class='smaller'><a href='/{$file->getRelativePath()}'>/{$file->getRelativePath()}</a></span><br /><img class='thumb' src='/". $file->getRelativePath() . "#resize 0 80' alt=''>";
 		}
 
 		$editButton = new ButtonElement('submit_edit', NULL, 'submit');
