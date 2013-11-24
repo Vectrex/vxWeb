@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
-
 <html>
 	<head>
+
 		<title> vxPHP File Browser</title>
 		<meta name='keywords' content=''>
 		<meta name='description' content=''>
@@ -11,6 +11,7 @@
 		<meta name='author' content='Gregor Kofler - Mediendesign und Webapplikationen, http://gregorkofler.com'>
 
 		<link type='text/css' rel='stylesheet' href='/css/admin.css'>
+
 		<script type='text/javascript' src='/js/core.js'></script>
 		<script type='text/javascript' src='/js/widget.js'></script>
 		<script type='text/javascript' src='/js/xhr.js'></script>

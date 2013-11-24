@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html>
 	<head>
 
@@ -10,9 +11,9 @@
 		<meta http-equiv='content-type' content='text/html; charset=UTF-8'>
 		<meta name='author' content='Gregor Kofler - Mediendesign und Webapplikationen, http://gregorkofler.com'>
 
-		<link rel='icon' type='image/x-icon' href='/favicon.ico'>
-		<link type='text/css' rel='stylesheet' href='/css/admin.css'>
-		<link type='text/css' rel='stylesheet' href='/css/admin_site_specific.css'>
+		<link rel='icon' type='image/x-icon'	href='/favicon.ico'>
+		<link type='text/css' rel='stylesheet'	href='/css/admin.css'>
+		<link type='text/css' rel='stylesheet'	href='/css/admin_site_specific.css'>
 
 		<script type='text/javascript' src='/js/core.js'></script>
 		<script type='text/javascript' src='/js/widget.js'></script>

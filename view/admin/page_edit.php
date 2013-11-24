@@ -1,6 +1,9 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
 
 <?php if($tpl->allow_nice_edit): ?>
+
+	<?php $url = vxPHP\Http\Router::getRoute('filepicker', 'admin.php')->getUrl(); ?>
+
 	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 
 	<script type="text/javascript">
@@ -18,8 +21,8 @@
 				    ['NumberedList','BulletedList','-','Blockquote', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock']
 				],
 				height: "450px", contentsCss: '/css/default.css',
-				filebrowserBrowseUrl: "/admin.php/filepicker",
-				filebrowserImageBrowseUrl: "/admin.php/filepicker?filter=image"
+				filebrowserBrowseUrl: "/<?php echo $url; ?>",
+				filebrowserImageBrowseUrl: "/<?php echo $url; ?>?filter=image"
 			} );
 	});
 	</script>

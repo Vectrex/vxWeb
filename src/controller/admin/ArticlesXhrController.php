@@ -33,6 +33,8 @@ class ArticlesXhrController extends Controller {
 
 	public function execute() {
 
+		$db = Application::getInstance()->getDb();
+
 		// id comes either via URL or as an extra form field
 
 		$id = $this->request->query->get('id', $this->request->request->get('id'));
@@ -89,7 +91,7 @@ class ArticlesXhrController extends Controller {
 						$form->setError('Article_Date');
 					}
 					else {
-						$article->setDate(new \DateTime($this->db->formatDate($v['Article_Date'])));
+						$article->setDate(new \DateTime($db->formatDate($v['Article_Date'], 'de')));
 					}
 				}
 				else {
@@ -101,7 +103,7 @@ class ArticlesXhrController extends Controller {
 						$form->setError('Display_from');
 					}
 					else {
-						$article->setDisplayFrom(new \DateTime($this->db->formatDate($v['Display_from'])));
+						$article->setDisplayFrom(new \DateTime($db->formatDate($v['Display_from'], 'de')));
 					}
 				}
 				else {
@@ -113,7 +115,7 @@ class ArticlesXhrController extends Controller {
 						$form->setError('Display_until');
 					}
 					else {
-						$article->setDisplayUntil(new \DateTime($this->db->formatDate($v['Display_until'])));
+						$article->setDisplayUntil(new \DateTime($db->formatDate($v['Display_until'], 'de')));
 					}
 				}
 				else {
@@ -215,7 +217,6 @@ class ArticlesXhrController extends Controller {
 				if(($sortOrder = $this->request->request->get('sortOrder')) && count($sortOrder) > 1) {
 
 					$filesSorted	= $article->getReferencingFiles();
-					$db				= Application::getInstance()->getDb();
 					$oldPos			= 0;
 
 					foreach($filesSorted as $file) {

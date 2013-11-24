@@ -181,7 +181,7 @@ class ArticlesController extends Controller {
 				$form->setError('Article_Date');
 			}
 			else {
-				$article->setDate(new \DateTime($db->formatDate($v['Article_Date'])));
+				$article->setDate(new \DateTime($db->formatDate($v['Article_Date'], 'de')));
 			}
 		}
 
@@ -190,7 +190,7 @@ class ArticlesController extends Controller {
 				$form->setError('Display_from');
 			}
 			else {
-				$article->setDisplayFrom(new \DateTime($db->formatDate($v['Display_from'])));
+				$article->setDisplayFrom(new \DateTime($db->formatDate($v['Display_from'], 'de')));
 			}
 		}
 
@@ -199,7 +199,7 @@ class ArticlesController extends Controller {
 				$form->setError('Display_until');
 			}
 			else {
-				$article->setDisplayUntil(new \DateTime($db->formatDate($v['Display_until'])));
+				$article->setDisplayUntil(new \DateTime($db->formatDate($v['Display_until'], 'de')));
 			}
 		}
 
@@ -274,12 +274,13 @@ class ArticlesController extends Controller {
 			$form->addElement(FormElementFactory::create('input', 'id', $article->getId(), array('type' => 'hidden')));
 
 			foreach($article->getReferencingFiles() as $f) {
+
 				$data = $f->getData();
 
 				$cbValues[$data['filesID']]	= 1;
 				$descriptions[]				= $data['Description'];
 				$filenames[]				= $data['File'];
-				$mimetypes[]				= $f->isWebImage() ? "<img class='thumb' src='/{$f->getRelativePath()}#crop 1|resize 0 40' alt=''>" : $f->getMimetype();
+				$mimetypes[]				= $f->isWebImage() ? ('<img class="thumb" src="' . $f->getRelativePath() . '#crop 1|resize 0 40" alt="">') : $f->getMimetype();
 			}
 		}
 
