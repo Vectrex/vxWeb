@@ -19,6 +19,7 @@ use vxPHP\Form\FormElement\ButtonElement;
 
 use vxPHP\Image\ImageModifier;
 use vxPHP\Template\Filter\ImageCache;
+use vxPHP\Template\Filter\AssetsPath;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
@@ -94,7 +95,10 @@ class FilesXhrController extends Controller {
 			case 'requestEditForm':
 				if(($id = $this->request->request->getInt('id'))) {
 					$markup = $this->getEditForm(MetaFile::getInstance(NULL, $id))->render();
+
 					ImageCache::create()->apply($markup);
+					AssetsPath::create()->apply($markup);
+
 					$response = array('html' => $markup);
 				}
 				else {
@@ -385,7 +389,8 @@ class FilesXhrController extends Controller {
 
 	private function getEditForm(MetaFile $file) {
 
-		$data = $file->getData();
+		$data		= $file->getData();
+		$assetsPath	= ltrim(Application::getInstance()->getRelativeAssetsPath(), '/');
 
 		if(($cacheInfo = $file->getFilesystemFile()->getCacheInfo())) {
 			$cacheText = ", Cache: {$cacheInfo['count']} Files/gesamt ".number_format($cacheInfo['totalSize'] / 1024, 1, ',', '.').'kB';
@@ -395,10 +400,10 @@ class FilesXhrController extends Controller {
 		}
 
 		if(!preg_match('~^image/(png|gif|jpeg)$~', $file->getMimeType())) {
-			$infoHtml = "<strong>{$data['File']}</strong> <em>({$file->getMimetype()}$cacheText)</em><br /><span class='smaller'><a href='/{$file->getRelativePath()}'>/{$file->getRelativePath()}</a></span>";
+			$infoHtml = "<strong>{$data['File']}</strong> <em>({$file->getMimetype()}$cacheText)</em><br /><span class='smaller'><a href='/{$file->getRelativePath()}'>/{$assetsPath}{$file->getRelativePath()}</a></span>";
 		}
 		else {
-			$infoHtml = "<strong>{$data['File']}</strong> <em>({$file->getMimetype()}$cacheText)</em><br /><span class='smaller'><a href='/{$file->getRelativePath()}'>/{$file->getRelativePath()}</a></span><br /><img class='thumb' src='/". $file->getRelativePath() . "#resize 0 80' alt=''>";
+			$infoHtml = "<strong>{$data['File']}</strong> <em>({$file->getMimetype()}$cacheText)</em><br /><span class='smaller'><a href='/{$file->getRelativePath()}'>/{$assetsPath}{$file->getRelativePath()}</a></span><br /><img class='thumb' src='/" . $file->getRelativePath() . "#resize 0 80' alt=''>";
 		}
 
 		$editButton = new ButtonElement('submit_edit', NULL, 'submit');
