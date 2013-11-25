@@ -444,6 +444,7 @@ class FilesXhrController extends Controller {
 	private function getFileList(MetaFolder $folder, array $columns = array('name', 'size', 'thumb', 'mTime', 'reference')) {
 
 		$files = array();
+		$assetsPath = ltrim(Application::getInstance()->getRelativeAssetsPath(), '/');
 
 		foreach(MetaFile::getMetaFilesInFolder($folder) as $f) {
 
@@ -480,10 +481,10 @@ class FilesXhrController extends Controller {
 							$fi			= $f->getFileInfo();
 							$actions	= array('crop 1', 'resize 0 40');
 							$dest		=
-								$folder->getFilesystemFolder()->createCache().
-								"{$fi->getFilename()}@".
-								implode('|', $actions).
-								'.'.
+								$folder->getFilesystemFolder()->createCache() .
+								"{$fi->getFilename()}@" .
+								implode('|', $actions) .
+								'.' .
 								pathinfo($fi->getFilename(), PATHINFO_EXTENSION);
 
 							if(!file_exists($dest)) {
@@ -500,7 +501,7 @@ class FilesXhrController extends Controller {
 								$imgEdit->export($dest);
 							}
 
-							$file['columns'][] = array('html' => '<img class="thumb" src="'.htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)).'" alt="" />');
+							$file['columns'][] = array('html' => '<img class="thumb" src="' . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) . '" alt="" />');
 						}
 
 						else {
@@ -517,7 +518,7 @@ class FilesXhrController extends Controller {
 					$this->request->query->get('filter') != 'image' ||
 					$isImage
 				)) {
-				$file['forward'] = array('filename' => '/'.$f->getRelativePath(), 'ckEditorFuncNum' => (int) $this->request->query->get('CKEditorFuncNum'));
+				$file['forward'] = array('filename' => '/' . $assetsPath . $f->getRelativePath(), 'ckEditorFuncNum' => (int) $this->request->query->get('CKEditorFuncNum'));
 			}
 
 			$files[] = $file;

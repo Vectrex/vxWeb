@@ -11,7 +11,7 @@ class DefaultController extends Controller {
 		// pick page from the end of the segments sequence
 
 		if(count($this->pathSegments)) {
-			$page = $this->pathSegments[0];
+			$page = array_pop($this->pathSegments);
 		}
 
 		// alternatively fall back to the route id (for example on splash pages)
