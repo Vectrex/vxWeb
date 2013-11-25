@@ -88,7 +88,6 @@ class FileUtil {
 
 	}
 
-
 	/**
 	 * add metafolder entries for filesystem subfolders
 	 * add metafile entries for filesystem files
@@ -99,12 +98,12 @@ class FileUtil {
 	 */
 	public static function cleanupMetaFolder(MetaFolder $metaFolder) {
 
-		// delete orphaned metafolders
+		$application = Application::getInstance();
 
 		$nestingInfo = $metaFolder->getNestingInformation();
 
-		$db = Application::getInstance()->getDb();
-		$fileRoot = rtrim(Request::createFromGlobals()->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+		$db = $application->getDb();
+		$fileRoot = $application->getAbsoluteAssetsPath();
 
 		$mFolders = $db->doPreparedQuery('
 			SELECT foldersID, Path, l, r FROM folders f WHERE l > ? AND r < ? AND f.level = ?
@@ -147,7 +146,7 @@ class FileUtil {
 		// delete orphaned metafile entries
 
 		foreach($mFiles as $f) {
-			if(! file_exists($metaFolder->getFullPath().$f['Filename'])) {
+			if(! file_exists($metaFolder->getFullPath() . $f['Filename'])) {
 				$db->deleteRecord('files', $f['filesID']);
 			}
 			else {
@@ -161,7 +160,7 @@ class FileUtil {
 		$missing = array_diff($fsFiles, $existing);
 
 		foreach($missing as $m) {
-			$add = FilesystemFile::getInstance($metaFolder->getFullPath().$m);
+			$add = FilesystemFile::getInstance($metaFolder->getFullPath() . $m);
 			$add->createMetaFile();
 		}
 	}
