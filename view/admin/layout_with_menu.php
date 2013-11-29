@@ -44,8 +44,8 @@
 			<div id="statusBar">
 				<p>
 					<span class="userInfo">Angemeldet <strong><?php echo vxPHP\User\Admin::getInstance()->getName(); ?></strong> (<?php echo vxPHP\User\Admin::getInstance()->getId(); ?>)</span> &bull;
-					<a class="profileLink" href="/<?php echo vxPHP\Http\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
-					<a class="logoutLink" href="/<?php echo vxPHP\Http\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
+					<a class="profileLink" href="<?php echo vxPHP\Http\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
+					<a class="logoutLink" href="<?php echo vxPHP\Http\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
 					Gehe zu <a href="/" class="homeLink"><?php echo vxPHP\Http\Request::createFromGlobals()->getHost(); ?></a>
 				</p>
 			</div>

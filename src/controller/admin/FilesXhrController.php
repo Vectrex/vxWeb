@@ -390,7 +390,14 @@ class FilesXhrController extends Controller {
 	private function getEditForm(MetaFile $file) {
 
 		$data		= $file->getData();
-		$assetsPath	= ltrim(Application::getInstance()->getRelativeAssetsPath(), '/');
+		$app		= Application::getInstance();
+
+		if(!$app->hasNiceUris()) {
+			$assetsPath	= ltrim($app->getRelativeAssetsPath(), '/');
+		}
+		else {
+			$assetsPath = '';
+		}
 
 		if(($cacheInfo = $file->getFilesystemFile()->getCacheInfo())) {
 			$cacheText = ", Cache: {$cacheInfo['count']} Files/gesamt ".number_format($cacheInfo['totalSize'] / 1024, 1, ',', '.').'kB';
@@ -423,7 +430,6 @@ class FilesXhrController extends Controller {
 			->addElement($editButton)
 			->addElement($cancelButton)
 			->addMiscHtml('Fileinfo', $infoHtml)
-			->addMiscHtml('Pathinfo', '/'.$file->getRelativePath())
 			->setInitFormValues($data);
 	}
 

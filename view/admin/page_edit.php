@@ -21,8 +21,8 @@
 				    ['NumberedList','BulletedList','-','Blockquote', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock']
 				],
 				height: "450px", contentsCss: '/css/default.css',
-				filebrowserBrowseUrl: "/<?php echo $url; ?>",
-				filebrowserImageBrowseUrl: "/<?php echo $url; ?>?filter=image"
+				filebrowserBrowseUrl: "<?php echo $url; ?>",
+				filebrowserImageBrowseUrl: "<?php echo $url; ?>?filter=image"
 			} );
 	});
 	</script>
