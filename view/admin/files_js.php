@@ -27,7 +27,7 @@
 
 			<tbody>
 				<tr>
-					<td>Der Dateimanager ist auf JavaScript Unterstützung angewiesen. Hier finden Sie <a href="$files?force=htmlonly">eine einfache Version, die kein JavaScript benötigt</a>.</td>
+					<td>Der Dateimanager ist auf JavaScript Unterstützung angewiesen.</td>
 					<td></td>
 					<td></td>
 					<td></td>

@@ -125,28 +125,6 @@ class ArticlesController extends Controller {
 
 			$articleForm->bindRequestParameters();
 
-			if($articleForm->wasSubmittedByName('submit_article')) {
-
-				if($this->validateFormAndSaveArticle($articleForm, $article) === TRUE) {
-					$this->redirect('articles', NULL, array('id' => $article->getId()));
-				}
-
-			}
-
-			if(isset($filesForm) && $filesForm->wasSubmittedByName('submit_file')) {
-				$vals	= $filesForm->getValidFormValues();
-
-				if(isset($vals['delete_file'])) {
-					foreach($vals['delete_file'] as $k => $v) {
-						if($v == 1) {
-							MetaFile::getInstance(NULL, (int) $k)->delete();
-						}
-					}
-				}
-				vxWeb\FileUtil::uploadFileForArticle($article, $vals);
-				$this->redirect('articles', NULL, array('id' => $article->getId()));
-			}
-
 			return new Response(
 				SimpleTemplate::create('admin/articles_edit.php')
 					->assign('backlink', $this->pathSegments[0])
@@ -168,70 +146,6 @@ class ArticlesController extends Controller {
 					->select())
 				->display()
 		);
-	}
-
-	private function validateFormAndSaveArticle(HtmlForm $form, Article $article) {
-
-		$v = $form->validate()->getValidFormValues();
-		$db = Application::getInstance()->getDb();
-
-
-		if($v['Article_Date'] != '') {
-			if(!DateTime::checkDate($v['Article_Date'])) {
-				$form->setError('Article_Date');
-			}
-			else {
-				$article->setDate(new \DateTime($db->formatDate($v['Article_Date'], 'de')));
-			}
-		}
-
-		if($v['Display_from'] != '') {
-			if(!DateTime::checkDate($v['Display_from'])) {
-				$form->setError('Display_from');
-			}
-			else {
-				$article->setDisplayFrom(new \DateTime($db->formatDate($v['Display_from'], 'de')));
-			}
-		}
-
-		if($v['Display_until'] != '') {
-			if(!DateTime::checkDate($v['Display_until'])) {
-				$form->setError('Display_until');
-			}
-			else {
-				$article->setDisplayUntil(new \DateTime($db->formatDate($v['Display_until'], 'de')));
-			}
-		}
-
-		if(!$form->getFormErrors()) {
-
-			try {
-
-				// validate submitted category id - replacing default method allows user privilege considerations
-
-				$article->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesID'])));
-				$article->setHeadline($v['Headline']);
-				$article->setData(array('Teaser' => $v['Teaser'], 'Content' => $v['Content']));
-				$article->setCustomSort($v['customSort']);
-
-				if($article->wasChanged()) {
-					$article->save();
-				}
-
-				return TRUE;
-
-			}
-
-			catch(ArticleException $e) {
-				$form->setError('system');
-			}
-			catch(ArticleCategoryException $e) {
-				$form->setError('system');
-			}
-		}
-
-		return FALSE;
-
 	}
 
 	/**
