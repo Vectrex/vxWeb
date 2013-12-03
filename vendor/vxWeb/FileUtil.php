@@ -264,11 +264,11 @@ class FileUtil {
 	 */
 	private static function handleArchive(FilesystemFile $f) {
 
-		$zip = new ZipArchive();
+		$zip = new \ZipArchive();
 		$status = $zip->open($f->getPath());
 
 		if($status !== TRUE) {
-			throw new Exception("Archive file reports error: $status");
+			throw new \Exception("Archive file reports error: $status");
 		}
 
 		$path = $f->getFolder()->getPath();
@@ -281,6 +281,8 @@ class FileUtil {
 			if(substr($name, - 1) == '/') {
 				continue;
 			}
+
+			// @FIXME: Util::checkFileName() is no longer available
 
 			$dest = Util::checkFileName(basename($name), $path);
 
