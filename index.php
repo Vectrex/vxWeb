@@ -1,9 +1,17 @@
 <?php
 
-require_once 'site.config.php';
+$assetsPath		= getcwd();
+$rootPath		= $assetsPath;
+
+if(file_exists('site.config.php')) {
+	require_once 'site.config.php';
+}
+
+else {
+	$rootPath = dirname($rootPath);
+	require_once '../site.config.php';
+}
 
 $route = vxPHP\Http\Router::getRouteFromPathInfo();
-vxPHP\Application\Application::getInstance()->setCurrentRoute($route);
+$application->setCurrentRoute($route);
 $controller = $route->getController()->render();
-
-?>
