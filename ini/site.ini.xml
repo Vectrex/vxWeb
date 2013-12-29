@@ -1,0 +1,73 @@
+<?xml version="1.0" standalone="yes"  ?>
+
+<config>
+	<site>
+		<default_encoding>UTF-8</default_encoding>
+		<title></title>
+		<root_document>index.php</root_document>
+
+		<keywords></keywords>
+
+		<locales>
+			<locale value="de" default="1"/>
+			<locale value="en"/>
+		</locales>
+
+		<use_nice_uris>1</use_nice_uris>
+	</site>
+
+	<db>
+		<db_connection context="local">
+			<type>mysql</type>
+			<host>localhost</host>
+			<user>user</user>
+			<pass>pass</pass>
+			<name>dbname</name>
+			<logtype>xml</logtype>
+		</db_connection>
+
+		<db_connection context="remote">
+			<type>mysql</type>
+			<host>localhost</host>
+			<user>user</user>
+			<pass>pass</pass>
+			<name>dbname</name>
+			<logtype>xml</logtype>
+		</db_connection>
+	</db>
+
+	<paths>
+		<path id="mysql_log_path" subdir="log"/>
+		<path id="css_path" subdir="css"/>
+		<path id="js_path" subdir="js"/>
+		<path id="tpl_path" subdir="view"/>
+		<path id="formtemplates_path" subdir="view/forms"/>
+		<path id="editable_tpl_path" subdir="view/default" />
+		<path id="img_site_path" subdir="img/site"/>
+		<path id="locale_path" subdir="locales"/>
+		<path id="files_path" subdir="files" />
+	</paths>
+
+	<pages />
+
+	<pages script="admin.php" default_redirect="login">
+		<page id="login"		controller="admin/login" />
+		<page id="logout"		controller="admin/logout"/>
+		<page id="profile"		controller="admin/profile"	auth="observe_row" />
+		<page id="articles"		controller="admin/articles" auth="superadmin" />
+		<page id="articlesXhr"	controller="admin/articles" method="xhrExecute" auth="superadmin" />
+		<page id="files"		controller="admin/files"	auth="superadmin" />
+		<page id="filepicker"	controller="admin/files"	auth="superadmin" />
+		<page id="filesXhr"		controller="admin/files"	method="xhrExecute" auth="superadmin" />
+		<page id="pages"		controller="admin/pages"	auth="superadmin" />
+	</pages>
+
+	<menus>
+		<menu id="admin" script="admin.php" auth="superadmin">
+			<menuentry page="articles" text="Artikel"/>
+			<menuentry page="files" text="Dateien" />
+			<menuentry page="pages" text="Seiten"/>
+		</menu>
+	</menus>
+
+</config>
