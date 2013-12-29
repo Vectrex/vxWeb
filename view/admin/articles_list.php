@@ -69,7 +69,7 @@
 	<?php endforeach; ?>
 
 <?php else: ?>
-	<tr><td colspan="5">Keine angelegt.</td></tr>
+	<tr><td colspan="8">Keine angelegt.</td></tr>
 <?php endif;?>
 
 </table>

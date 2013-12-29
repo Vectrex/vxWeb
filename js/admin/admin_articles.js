@@ -2,25 +2,23 @@ vxJS.event.addDomReadyListener(function() {
 
 	"use strict";
 
-	var	uri = vxWeb.routes.articles,
+	var	route = vxWeb.routes.articles,
 		articleXhrForm, id,
 		filesXhrForm, st,
-		sortXhr = vxJS.xhr( { uri: uri, command: "sortFiles" }),
+		sortXhr = vxJS.xhr( { uri: route, command: "sortFiles" }),
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
 		mBox = document.getElementById("messageBox"), messageBox = vxJS.element.register(mBox);
 
-	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: uri, command: "checkForm" });
+	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
 	vxJS.event.addListener(articleXhrForm, "beforeSubmit", function() { if(id) { this.setPayload( { id: id }); } });
 
 	var initFilesFunc = function() {
 		var form = document.forms[1];
 
-		//@todo: fix hack to tweak form action to point to XHR route
+		form.action = route;
 
-		form.action = form.action.replace("articles?", "articlesXhr?");
-
-		filesXhrForm = vxJS.widget.xhrForm(form, { uri: uri, command: "handleFiles" });
+		filesXhrForm = vxJS.widget.xhrForm(form, { uri: route, command: "handleFiles" });
 		filesXhrForm.addSubmit(filesXhrForm.element.elements["submit_file"]);
 		filesXhrForm.enableIframeUpload();
 		filesXhrForm.enableImmediateSubmit();

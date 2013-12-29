@@ -103,8 +103,7 @@ class ArticlesController extends Controller {
 
 				$submitButton->setInnerHTML('Änderungen übernehmen');
 
-				$filesForm = $this->initFilesForm($article);
-				$filesForm->bindRequestParameters();
+				$filesForm = $this->initFilesForm($article)->bindRequestParameters();
 
 			}
 
@@ -138,7 +137,6 @@ class ArticlesController extends Controller {
 			);
 		}
 
-		$admin = Admin::getInstance();
 		$restrictingWhere = $admin->hasSuperAdminPrivileges() ? '1 = 1' : ('createdBy = ' . $admin->getAdminId());
 
 		return new Response(
@@ -270,9 +268,9 @@ class ArticlesController extends Controller {
 						$article->save();
 						if(!$id) {
 							return new JsonResponse(array(
-									'success' => TRUE,
-									'markup' => array('html' => $this->initFilesForm($article)->render()),
-									'id' => $article->getId()
+								'success' => TRUE,
+								'markup' => array('html' => $this->initFilesForm($article)->render()),
+								'id' => $article->getId()
 							));
 						}
 						else {
@@ -308,7 +306,7 @@ class ArticlesController extends Controller {
 					}
 				}
 
-				$this->getArticleCategories();
+//				$this->getArticleCategories();
 				try {
 					vxWeb\FileUtil::uploadFileForArticle($article, array('file_description' => $this->request->request->get('file_description')));
 				}
