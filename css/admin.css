@@ -54,7 +54,7 @@ th.vxJS_sorTable_header_desc,
 th.vxJS_sorTable_header_asc,
 th.sorted							{ background: #a0a0a0; }
 th.vxJS_sorTable_header_desc:before,
-th.vxJS_sorTable_header_asc:before	{ font-family: icomoon-essential; font-weight: normal; content: "\e033"; vertical-align: middle; font-size: 150%; }
+th.vxJS_sorTable_header_asc:before	{ font-family: icomoon; font-weight: normal; content: "\e033"; vertical-align: middle; font-size: 150%; }
 th.vxJS_sorTable_header_desc:before	{ content: "\e031"; }
 
 
@@ -114,9 +114,9 @@ div.errorContainer .errorBox	{ font-size: 80%; font-weight: bold; line-height: 1
 
 a.button						{ display: inline-block; text-decoration: none; padding: 6px 8px; background: 8px 50% no-repeat #c0c0c0; text-align: center; border-radius: 3px; margin-bottom: 0.5em; border: solid 1px #888; font-weight: bold; cursor: pointer; }
 
-a.addButton:before				{ font-family: icomoon-essential; font-weight: normal; content: "\e020"; padding-right: 4px; vertical-align: middle; }
-a.prevButton:before				{ font-family: icomoon-essential; font-weight: normal; content: "\e025"; padding-right: 4px; vertical-align: middle; }
-a.delButton:before				{ font-family: icomoon-essential; font-weight: normal; content: "\e01d"; padding-right: 4px; vertical-align: middle; }
+a.addButton:before				{ font-family: icomoon; font-weight: normal; content: "\e020"; padding-right: 4px; vertical-align: middle; }
+a.prevButton:before				{ font-family: icomoon; font-weight: normal; content: "\e025"; padding-right: 4px; vertical-align: middle; }
+a.delButton:before				{ font-family: icomoon; font-weight: normal; content: "\e01d"; padding-right: 4px; vertical-align: middle; }
 
 a.button:hover,
 a.button:active					{ box-shadow: 0 0 4px 1px #4a0; }
@@ -125,7 +125,7 @@ a.button:active					{ box-shadow: 0 0 4px 1px #4a0; }
  * Buttons without labels
  */
 
-a.iconButton					{ border-radius: 3px; font-family: icomoon-essential; font-weight: normal; font-size: 16px; display: inline-block; text-decoration: none; padding: 6px 8px; text-align: center; border-radius: 3px; }
+a.iconButton					{ border-radius: 3px; font-family: icomoon; font-weight: normal; font-size: 16px; display: inline-block; text-decoration: none; padding: 6px 8px; text-align: center; border-radius: 3px; }
 a.deleteButton:before			{ content: "\e01d"; }
 a.editButton:before				{ content: "\e002"; }
 a.cancelButton:before			{ content: "\e01b"; }
@@ -165,9 +165,9 @@ a.iconButton:active				{
 #statusBar						{ top: 0; position: fixed; padding: 1em 1em 0.5em 1em; margin: 0; border-bottom: solid 1px #eee; width: 100%; background: #fff; box-shadow: 0 0 8px #888; }
 #statusBar p					{ font-size: 100%; margin: 0; line-height: 100%; }
 #statusBar a					{ text-decoration: none; }
-#statusBar a.homeLink:before	{ font-family: icomoon-essential; font-weight: normal; content: "\e000"; padding-right: 0.25em; }
-#statusBar a.profileLink:before	{ font-family: icomoon-essential; font-weight: normal; content: "\e009"; padding-right: 0.25em; }
-#statusBar a.logoutLink:before	{ font-family: icomoon-essential; font-weight: normal; content: "\e021"; padding-right: 0.25em; }
+#statusBar a.homeLink:before	{ font-family: icomoon; font-weight: normal; content: "\e000"; padding-right: 0.25em; }
+#statusBar a.profileLink:before	{ font-family: icomoon; font-weight: normal; content: "\e009"; padding-right: 0.25em; }
+#statusBar a.logoutLink:before	{ font-family: icomoon; font-weight: normal; content: "\e021"; padding-right: 0.25em; }
 
 /*
  * stock form
@@ -210,7 +210,7 @@ form div.formBase * 		{ font-size: 100%; }
 #filesList img			{ vertical-align: middle; }
 #filesList .submitImg	{ cursor: pointer; }
 
-#filesList tr.folderRow td:first-child a:before		{ font-family: icomoon-essential; font-weight: normal; content: "\e006"; padding-right: 0.25em; font-size: 150%; }
+#filesList tr.folderRow td:first-child a:before		{ font-family: icomoon; font-weight: normal; content: "\e006"; padding-right: 0.25em; font-size: 150%; }
 
 #filesList tr.fileRow td + td,
 #filesList tr.fileRow td + td + td + td				{ text-align: right; }
@@ -235,8 +235,8 @@ form div.formBase * 		{ font-size: 100%; }
 #filesList button.addFileButton				{ margin-left: 1em; }
 #filesList input.addFolderInput				{ border: solid 1px #c0c0c0; padding: 4px 4px 4px 24px; background: url(../img/site/icons/darkgray/folder_plus_icon&16.png) no-repeat 4px center; }
 
-#filesList button.addFolderButton:before	{ font-family: icomoon-essential; font-weight: normal; content: "\e007"; padding-right: 0.25em; font-size: 24px; }
-#filesList button.addFileButton:before		{ font-family: icomoon-essential; font-weight: normal; content: "\e00e"; padding-right: 0.25em; font-size: 24px; }
+#filesList button.addFolderButton:before	{ font-family: icomoon; font-weight: normal; content: "\e007"; padding-right: 0.25em; font-size: 24px; }
+#filesList button.addFileButton:before		{ font-family: icomoon; font-weight: normal; content: "\e00e"; padding-right: 0.25em; font-size: 24px; }
 
 #filesList button.rename,
 #filesList button.edit,
@@ -251,7 +251,7 @@ form div.formBase * 		{ font-size: 100%; }
 #filesList button.move,
 #filesList button.delFolder,
 #filesList button.forward,
-#filesList button.rename					{ font-family: icomoon-essential; font-weight: normal; font-size: 16px; border-radius: 2px; color: #1D6589; background: none; }
+#filesList button.rename					{ font-family: icomoon; font-weight: normal; font-size: 16px; border-radius: 2px; color: #1D6589; background: none; }
 
 #filesList button.edit:before				{ content: "\e002"; }
 #filesList button.del:before				{ content: "\e01d"; }
@@ -305,7 +305,7 @@ div#adminLogin form					{ background: #eee; border: solid 3px #808080; padding: 
 div#adminLogin .formSect			{ margin-bottom: 0.25em; font-size: 90%; border-bottom: solid 1px #fff; margin-bottom: 0.5em; padding-bottom: 0.5em; }
 div#adminLogin label				{ width: 6em; }
 div#adminLogin .formBase			{ font-size: 90%; text-align: center; }
-button.loginButton:after			{ font-family: icomoon-essential; font-size: 16px; content: "\e02e"; padding-left: 4px; vertical-align: middle; font-weight: normal; }
+button.loginButton:after			{ font-family: icomoon; font-size: 16px; content: "\e02e"; padding-left: 4px; vertical-align: middle; font-weight: normal; }
 
 
 /*
@@ -314,7 +314,7 @@ button.loginButton:after			{ font-family: icomoon-essential; font-size: 16px; co
 
 .editArticleForm .fileInfo			{ margin: 0.5em 0 0.5em 10em; }
 span.calendarPopper					{ display: inline-block; cursor: pointer; vertical-align: middle; margin: 0 4px; }
-span.calendarPopper:before			{ font-family: icomoon-essential; content: "\e00c"; font-size: 1.5em; color: #1D6589; }
+span.calendarPopper:before			{ font-family: icomoon; content: "\e00c"; font-size: 1.5em; color: #1D6589; }
 
 .imageTable							{ }
 .imageTable th+th+th+th,
@@ -324,7 +324,7 @@ span.calendarPopper:before			{ font-family: icomoon-essential; content: "\e00c";
 .imageTable .insertBelow			{ border-bottom: solid 2px #808080; }
 
 .imageTable td.dndColumn			{ vertical-align: middle; text-align: center; cursor: move; visibility: hidden; }
-.imageTable td.dndColumn:before		{ font-family: icomoon-essential; content: "\e03a"; font-size: 2em; color: #c0c0c0; }
+.imageTable td.dndColumn:before		{ font-family: icomoon; content: "\e03a"; font-size: 2em; color: #c0c0c0; }
 
 .imageTable tr.dragged td.dndColumn,
 .imageTable tr:hover td.dndColumn	{ visibility: visible; }
@@ -352,8 +352,8 @@ img.thumb						{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3px #
 .calendarSkin .today			{ background: #c0c0c0; color: #fff; -moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px; }
 .calendarSkin .marked			{ background-color: #e80; color: #fff; -moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px; }
 .calendarSkin .disabled			{ color: #808080; cursor: default; }
-.calendarSkin .prevMon:before	{ font-family: icomoon-essential; content: "\e025"; }
-.calendarSkin .nextMon:before	{ font-family: icomoon-essential; content: "\e023"; }
+.calendarSkin .prevMon:before	{ font-family: icomoon; content: "\e025"; }
+.calendarSkin .nextMon:before	{ font-family: icomoon; content: "\e023"; }
 
 /*
  * SimpleTabs
@@ -391,7 +391,7 @@ div.vxJS_xhrThrobber.active {
 }
 
 div.vxJS_xhrThrobber:before {
-	font-family: icomoon-essential; font-size: 16px;
+	font-family: icomoon; font-size: 16px;
 	content: "\e02f";
 }
 
@@ -410,7 +410,7 @@ div.vxJS_xhrThrobberFileOperation.active {
 }
 
 div.vxJS_xhrThrobberFileOperation:before {
-	font-family: icomoon-essential; font-size: 2em;
+	font-family: icomoon; font-size: 2em;
 	content: "\e030";
 }
 
