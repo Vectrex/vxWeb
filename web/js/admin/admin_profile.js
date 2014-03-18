@@ -1,12 +1,12 @@
 vxJS.event.addDomReadyListener(function() {
 	"use strict";
-	
-	var	mBox = document.getElementById("messageBox"), messageBox = vxJS.element.register(mBox);
+
+	var	mBox = document.getElementById("messageBox");
 
 	var f = vxJS.widget.xhrForm(document.forms[0], { command: "checkForm" });
 
 	var parseServerCheck = function(r) {
-		var txt, height;
+		var txt, timeoutId;
 
 		if(r.success) {
 			txt = r.message || "Daten erfolgreich übernommen!";
@@ -14,7 +14,7 @@ vxJS.event.addDomReadyListener(function() {
 			vxJS.dom.removeClassName(mBox, "messageBoxError");
 			vxJS.dom.addClassName(mBox, "messageBoxSuccess");
 		}
-		
+
 		else {
 			txt = r.message || "Fehler bei Übernahme der Daten!";
 
@@ -24,17 +24,18 @@ vxJS.event.addDomReadyListener(function() {
 
 		mBox.firstChild.nodeValue = txt;
 
-		height = vxJS.dom.getElementSize(mBox).y;
+		vxJS.dom.removeClassName(mBox, "fadeOutUp");
+		vxJS.dom.addClassName(mBox, "fadeInDown");
 
-		mBox.style.top = -height + "px";
-		messageBox.
-			clearFxQueue().
-			fx("moveRelative", { to: new Coord(0, height), duration: 0.5, transition: "decel" }).
-			pause(3).
-			fx("moveRelative", { to: new Coord(0, -height), duration: 0.5, transition: "accel" });
+		if(timeoutId) {
+			window.clearTimeout(timeoutId);
+		}
+		timeoutId = window.setTimeout(function() {
+			vxJS.dom.removeClassName(mBox, "fadeInDown");
+			vxJS.dom.addClassName(mBox, "fadeOutUp");
+		}, 2000);
 	};
 
 	f.addSubmit(f.element.elements["submit_profile"]);
 	vxJS.event.addListener(f, "check", parseServerCheck);
-	vxJS.event.addListener(messageBox, "finishFxQueue", function() { this.element.style.top = "-100em"; });
 });

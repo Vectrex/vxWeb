@@ -386,14 +386,15 @@ class SimpleTemplateUtil {
 	 */
 	private static function getPath() {
 
-		$config = Application::getInstance()->getConfig();
+		$app = Application::getInstance();
+		$config = $app->getConfig();
 
 		if(is_null($config->paths['editable_tpl_path'])) {
 			throw new \Exception('No path for templates defined.');
 		}
 
 		return
-			rtrim(Request::createFromGlobals()->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR) .
+			rtrim($app->getRootPath()) .
 			$config->paths['editable_tpl_path']['subdir'];
 	}
 

@@ -8,6 +8,7 @@ use vxPHP\Template\Filter\ShortenText;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Application\Application;
+use vxPHP\User\Admin;
 
 class PagesController extends Controller {
 
@@ -75,7 +76,7 @@ class PagesController extends Controller {
 				}
 
 				if(($newId = vxWeb\SimpleTemplateUtil::addRevision(array(
-					'authorsID' => $_SESSION['user']['ID'],
+					'authorsID' => Admin::getInstance()->getAdminId(),
 
 					'Title' => $v['Title'],
 					'Markup' => $v['Markup'],

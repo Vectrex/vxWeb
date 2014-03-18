@@ -34,6 +34,7 @@ th								{ padding-top: 0.5em; background: #c0c0c0; font-weight: bold; }
 table *							{ font-size: 100%; }
 table.list tr th				{ border-left: solid 1px #fff; }
 table.list tr th:first-child	{ border-left: none; }
+
 /*
  * Containers
  */
@@ -87,11 +88,25 @@ th.vxJS_sorTable_header_desc:before	{ content: "\e031"; }
 .leftFloat			{ float: left; }
 .clearFloat			{ height: 0em; clear: both; }
 
-.ieCompat			{ border: none; background: none; }
-
-#messageBox						{ position: fixed; width: 50%; top: -100em; padding: 0.75em; font-size: 1em; border-style: none solid solid solid; border-radius: 0 0 4px 4px; border-width: 1px; text-align: center; margin-left: 25%; }
+#messageBox						{ position: fixed; width: 50%; top: -3em; padding: 0.75em; font-size: 1em; border-style: none solid solid solid; border-radius: 0 0 4px 4px; border-width: 1px; text-align: center; margin-left: 25%; }
 .messageBoxSuccess				{ color: #080; background: #cfc; border-color: #080; }
 .messageBoxError				{ color: #f44; background: #fee; border-color: #f44; }
+#messageBox.fadeInDown			{
+	-webkit-animation-name: webkit-fadeInDown;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-fill-mode: forwards;
+	animation-name: fadeInDown;
+	animation-duration: 1s;
+	animation-fill-mode: forwards;
+}
+#messageBox.fadeOutUp			{
+	-webkit-animation-name: webkit-fadeOutUp;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-fill-mode: forwards;
+	animation-name: fadeOutUp;
+	animation-duration: 1s;
+	animation-fill-mode: forwards;
+}
 
 .success_message     			{ border: solid 1px #080; color: #080; background: #cfc; padding: 1em; margin-bottom: 0.25em; }
 .notify_message     			{ border: solid 1px #880; color: #880; background: #ffc; padding: 1em; margin-bottom: 0.25em; }
@@ -414,6 +429,10 @@ div.vxJS_xhrThrobberFileOperation:before {
 	content: "\e030";
 }
 
+/*
+ * animation keyframes
+ */
+
 @keyframes load {
 	0%		{ transform: rotate(0); color: #808080; }
 	50%		{ transform: rotate(180deg); color: #4a0; }
@@ -423,4 +442,22 @@ div.vxJS_xhrThrobberFileOperation:before {
 	0%		{ -webkit-transform: rotate(0); color: #808080; }
 	50%		{ -webkit-transform: rotate(180deg); color: #4a0; }
 	100%	{ -webkit-transform: rotate(360deg); color: #808080; }
+}
+
+@keyframes fadeInDown {
+	from	{ opacity: 0; transform: translateY(0); }
+	to		{ opacity: 1; transform: translateY(3em); }
+}
+@-webkit-keyframes webkit-fadeInDown {
+	from	{ opacity: 0; -webkit-transform: translateY(0); }
+	to		{ opacity: 1; -webkit-transform: translateY(3em); }
+}
+
+@keyframes fadeOutUp {
+	from	{ opacity: 1; transform: translateY(3em); }
+	to		{ opacity: 0; transform: translateY(0); }
+}
+@-webkit-keyframes webkit-fadeOutUp {
+	from	{ opacity: 1; -webkit-transform: translateY(3em); }
+	to		{ opacity: 0; -webkit-transform: translateY(0); }
 }

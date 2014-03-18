@@ -11,7 +11,6 @@ vxJS.event.addDomReadyListener(function() {
 
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
-	vxJS.event.addListener(articleXhrForm, "beforeSubmit", function() { if(id) { this.setPayload( { id: id }); } });
 
 	var initFilesFunc = function() {
 		var form = document.forms[1];
@@ -113,9 +112,13 @@ vxJS.event.addDomReadyListener(function() {
 	}
 
 	vxJS.event.addListener(articleXhrForm, "beforeSubmit", function() {
+		if(id) {
+			this.setPayload( { id: id });
+		}
 		if(typeof CKEDITOR != "undefined" && CKEDITOR.instances['Content']) {
 			this.element.elements['Content'].value = CKEDITOR.instances['Content'].getData();
 		}
 	});
+
 	vxJS.event.addListener(articleXhrForm, "check", parseServerCheck);
 });
