@@ -7,7 +7,7 @@ vxJS.event.addDomReadyListener(function() {
 		filesXhrForm, st,
 		sortXhr = vxJS.xhr( { uri: route, command: "sortFiles" }),
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
-		mBox = document.getElementById("messageBox"), messageBox = vxJS.element.register(mBox);
+		mBox = document.getElementById("messageBox"), timeoutId;
 
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
@@ -35,7 +35,7 @@ vxJS.event.addDomReadyListener(function() {
 	};
 
 	var parseServerCheck = function(r) {
-		var txt, height;
+		var txt;
 
 		if(r.success) {
 			txt = r.message || "Daten erfolgreich übernommen!";
@@ -64,14 +64,16 @@ vxJS.event.addDomReadyListener(function() {
 
 		mBox.firstChild.nodeValue = txt;
 
-		height = vxJS.dom.getElementSize(mBox).y;
+		vxJS.dom.removeClassName(mBox, "fadeOutUp");
+		vxJS.dom.addClassName(mBox, "fadeInDown");
 
-		mBox.style.top = -height + "px";
-		messageBox.
-			clearFxQueue().
-			fx("moveRelative", { to: new Coord(0, height), duration: 0.5, transition: "decel" }).
-			pause(3).
-			fx("moveRelative", { to: new Coord(0, -height), duration: 0.5, transition: "accel" });
+		if(timeoutId) {
+			window.clearTimeout(timeoutId);
+		}
+		timeoutId = window.setTimeout(function() {
+			vxJS.dom.removeClassName(mBox, "fadeInDown");
+			vxJS.dom.addClassName(mBox, "fadeOutUp");
+		}, 3000);
 	};
 
 	var handleUploadResponse = function(r) {

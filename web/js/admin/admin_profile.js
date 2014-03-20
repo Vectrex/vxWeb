@@ -1,12 +1,11 @@
 vxJS.event.addDomReadyListener(function() {
 	"use strict";
 
-	var	mBox = document.getElementById("messageBox");
-
-	var f = vxJS.widget.xhrForm(document.forms[0], { command: "checkForm" });
+	var	mBox = document.getElementById("messageBox"), timeoutId;
+		f = vxJS.widget.xhrForm(document.forms[0], { command: "checkForm" });
 
 	var parseServerCheck = function(r) {
-		var txt, timeoutId;
+		var txt;
 
 		if(r.success) {
 			txt = r.message || "Daten erfolgreich übernommen!";

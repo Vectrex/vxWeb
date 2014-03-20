@@ -88,7 +88,7 @@ th.vxJS_sorTable_header_desc:before	{ content: "\e031"; }
 .leftFloat			{ float: left; }
 .clearFloat			{ height: 0em; clear: both; }
 
-#messageBox						{ position: fixed; width: 50%; top: -3em; padding: 0.75em; font-size: 1em; border-style: none solid solid solid; border-radius: 0 0 4px 4px; border-width: 1px; text-align: center; margin-left: 25%; }
+#messageBox						{ position: fixed; width: 50%; top: -3em; padding: 0.75em; font-size: 1em; border-style: none solid solid solid; border-radius: 0 0 4px 4px; border-width: 1px; text-align: center; margin-left: 25%; box-shadow: 0 0 2em #888; opacity: 0; }
 .messageBoxSuccess				{ color: #080; background: #cfc; border-color: #080; }
 .messageBoxError				{ color: #f44; background: #fee; border-color: #f44; }
 #messageBox.fadeInDown			{
