@@ -44,7 +44,7 @@ class ProfileController extends Controller {
 				->addElement($button)
 				->addElement(FormElementFactory::create('input',		'Email',		$admin->getId(),		array('maxlength' => 128, 'class' => 'xl', 'id' => 'email_input'),	array(),	FALSE, array('trim', 'lowercase'),	array('/'.Rex::EMAIL.'/i')))
 				->addElement(FormElementFactory::create('input',		'Name',			$admin->getName(),		array('maxlength' => 128, 'class' => 'xl', 'id' => 'name_input'),	array(),	FALSE, array('trim'),				array(Rex::NOT_EMPTY_TEXT)))
-				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						array('maxlength' => 128, 'class' => 'xl', 'id' => 'pwd_input'),	array(),	FALSE, array(),						array('/^(|[^\s]{6,})$/')))
+				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						array('maxlength' => 128, 'class' => 'xl', 'id' => 'pwd_input'),	array(),	FALSE, array(),						array('/^(|[^\s].{4,}[^\s])$/')))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	'',						array('maxlength' => 128, 'class' => 'xl', 'id' => 'pwd2_input')))
 				->addMiscHtml('notifications', $checkBoxHtml)
 				->initVar('success', (int) end($this->pathSegments) === 'success')
