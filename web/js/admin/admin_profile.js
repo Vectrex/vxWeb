@@ -1,7 +1,7 @@
 vxJS.event.addDomReadyListener(function() {
 	"use strict";
 
-	var	mBox = document.getElementById("messageBox"), timeoutId;
+	var	mBox = document.getElementById("messageBox"), timeoutId,
 		f = vxJS.widget.xhrForm(document.forms[0], { command: "checkForm" });
 
 	var parseServerCheck = function(r) {
