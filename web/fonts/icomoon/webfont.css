@@ -4,7 +4,6 @@
 	font-family: 'icomoon';
 	src:url('icomoon.eot');
 	src:url('icomoon.eot?#iefix') format('embedded-opentype'),
-		url('icomoon.svg#icomoon') format('svg'),
 		url('icomoon.woff') format('woff'),
 		url('icomoon.ttf') format('truetype');
 	font-weight: normal;
