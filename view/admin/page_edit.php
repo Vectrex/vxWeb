@@ -8,8 +8,9 @@
 
 	<script type="text/javascript">
 	vxJS.event.addDomReadyListener(function() {
-		CKEDITOR.replace(document.forms[0].elements['Markup'],
-			{ toolbar:
+		CKEDITOR.replace(document.forms[0].elements['Markup'], {
+			extraAllowedContent: "div(*)",
+			toolbar:
 				[
 				    ['Maximize', '-', 'Source', '-', 'Undo', 'Redo'],
 				    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','RemoveFormat'],

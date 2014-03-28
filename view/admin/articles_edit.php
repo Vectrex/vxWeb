@@ -9,8 +9,9 @@
 
 <script type="text/javascript">
 vxJS.event.addDomReadyListener(function() {
-	CKEDITOR.replace(document.forms[0].elements['Content'],
-		{ toolbar:
+	CKEDITOR.replace(document.forms[0].elements['Content'], {
+		extraAllowedContent: "div(*)",
+		toolbar:
 			[
 			    ['Maximize','-','Source', '-', 'Undo','Redo'],
 			    ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord','-','RemoveFormat'],
