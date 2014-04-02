@@ -17,7 +17,7 @@ use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\FormElement\ButtonElement;
 
-use vxPHP\Image\ImageModifier;
+use vxPHP\Image\ImageModifierFactory;
 
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Template\Filter\ImageCache;
@@ -507,13 +507,13 @@ class FilesController extends Controller {
 								pathinfo($fi->getFilename(), PATHINFO_EXTENSION);
 
 							if(!file_exists($dest)) {
-								$imgEdit = new ImageModifier($f->getFilesystemFile()->getPath());
+								$imgEdit = ImageModifierFactory::create($f->getFilesystemFile()->getPath());
 
 								foreach($actions as $a) {
 									$params = preg_split('~\s+~', $a);
 
 									$method = array_shift($params);
-									if(method_exists('vxPHP\\Image\\ImageModifier', $method)) {
+									if(method_exists($imgEdit, $method)) {
 										call_user_func_array(array($imgEdit, $method), $params);
 									}
 								}

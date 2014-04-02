@@ -4,7 +4,7 @@ use vxPHP\Util\Rex;
 use vxPHP\Util\Uuid;
 
 use vxPHP\User\Admin;
-use vxPHP\Image\ImageModifier;
+use vxPHP\Image\ImageModifierFactory;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
 
@@ -440,14 +440,14 @@ class ArticlesController extends Controller {
 			pathinfo($fi->getFilename(), PATHINFO_EXTENSION);
 
 		if(!file_exists($dest)) {
-			$imgEdit = new ImageModifier($f->getFilesystemFile()->getPath());
+			$imgEdit = ImageModifierFactory::create($f->getFilesystemFile()->getPath());
 
 			foreach($actions as $a) {
 				$params = preg_split('~\s+~', $a);
 
 				$method = array_shift($params);
 
-				if(method_exists('vxPHP\\Image\\ImageModifier', $method)) {
+				if(method_exists($imgEdit, $method)) {
 					call_user_func_array(array($imgEdit, $method), $params);
 				}
 			}
