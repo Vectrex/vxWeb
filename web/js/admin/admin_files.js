@@ -19,7 +19,7 @@ vxJS.event.addDomReadyListener(function () {
 			return "div".setProp("class", "vxJS_xhrThrobberFileOperation").create();
 		}(),
 		xhr = vxJS.xhr(
-			{ uri: uri, echo: true },
+			{ uri: uri, echo: true, timeout: 10000 },
 			{ columns: ["name", "size", "mime", "mTime", "reference"] },
 			{ node: throbberElement }
 		),
@@ -570,6 +570,7 @@ vxJS.event.addDomReadyListener(function () {
 
 	// everything prepared, get things going
 
+	vxJS.event.addListener(xhr,		"timeout", function() { window.alert('Dateioperation dauert zu lange. Bitte erneut versuchen.'); });
 	vxJS.event.addListener(xhr,		"complete", handleXhrResponse);
 	vxJS.event.addListener(confirm,	"focusLost", focusForm);
 	vxJS.event.addListener(
