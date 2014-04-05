@@ -404,26 +404,37 @@ class FilesController extends Controller {
 
 		$data		= $file->getData();
 		$app		= Application::getInstance();
-
-		if(!$app->hasNiceUris()) {
-			$assetsPath	= ltrim($app->getRelativeAssetsPath(), '/');
-		}
-		else {
-			$assetsPath = '';
-		}
-
+		$assetsPath	= !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
+		
 		if(($cacheInfo = $file->getFilesystemFile()->getCacheInfo())) {
-			$cacheText = ", Cache: {$cacheInfo['count']} Files/gesamt ".number_format($cacheInfo['totalSize'] / 1024, 1, ',', '.').'kB';
+			$cacheText = sprintf(', Cache: %d Files/gesamt %skB', $cacheInfo['count'], number_format($cacheInfo['totalSize'] / 1024, 1, ',', '.'));
 		}
 		else {
 			$cacheText = '';
 		}
 
 		if(!preg_match('~^image/(png|gif|jpeg)$~', $file->getMimeType())) {
-			$infoHtml = "<strong>{$data['File']}</strong> <em>({$file->getMimetype()}$cacheText)</em><br /><span class='smaller'><a href='/{$file->getRelativePath()}'>/{$assetsPath}{$file->getRelativePath()}</a></span>";
+			$infoHtml = sprintf(
+					'<strong>%s</strong> <em>(%s%s)</em><br /><span class="smaller"><a href="/%s" target="_blank">/%s%s</a></span>',
+					$data['File'],
+					$file->getMimetype(),
+					$cacheText,
+					$file->getRelativePath(),
+					$assetsPath,
+					$file->getRelativePath()
+			);
 		}
 		else {
-			$infoHtml = "<strong>{$data['File']}</strong> <em>({$file->getMimetype()}$cacheText)</em><br /><span class='smaller'><a href='/{$file->getRelativePath()}'>/{$assetsPath}{$file->getRelativePath()}</a></span><br /><img class='thumb' src='/" . $file->getRelativePath() . "#resize 0 80' alt=''>";
+			$infoHtml = sprintf(
+					'<strong>%s</strong> <em>(%s%s)</em><br /><span class="smaller"><a href="/%s" target="_blank">/%s%s</a></span><br /><img class="thumb" src="/%s#resize 0 80" alt="">',
+					$data['File'],
+					$file->getMimetype(),
+					$cacheText,
+					$file->getRelativePath(),
+					$assetsPath,
+					$file->getRelativePath(),
+					$file->getRelativePath()
+			);
 		}
 
 		$editButton = new ButtonElement('submit_edit', NULL, 'submit');
@@ -462,8 +473,9 @@ class FilesController extends Controller {
 
 	private function getFileList(MetaFolder $folder, array $columns = array('name', 'size', 'thumb', 'mTime', 'reference')) {
 
-		$files = array();
-		$assetsPath = ltrim(Application::getInstance()->getRelativeAssetsPath(), '/');
+		$files		= array();
+		$app		= Application::getInstance();
+		$assetsPath	= !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
 
 		foreach(MetaFile::getMetaFilesInFolder($folder) as $f) {
 
@@ -475,7 +487,7 @@ class FilesController extends Controller {
 
 				switch($c) {
 					case 'name':
-						$file['columns'][] = array('html' => "<span title='{$metaData['Title']}'>{$f->getMetaFilename()}</span>");
+						$file['columns'][] = array('html' => sprintf('<span title="%s">%s</span>', $metaData['Title'], $f->getMetaFilename()));
 						break;
 
 					case 'size':
@@ -488,7 +500,7 @@ class FilesController extends Controller {
 
 					case 'reference':
 						if($f->getReferencedTable()) {
-							$file['columns'][] = array('html' => "{$f->getReferencedTable()}<br />{$f->getReferencedId()}");
+							$file['columns'][] = array('html' => sprintf('%s<br />%s', $f->getReferencedTable(), $f->getReferencedId()));
 						}
 						break;
 
