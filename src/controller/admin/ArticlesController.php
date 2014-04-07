@@ -3,7 +3,6 @@
 use vxPHP\Util\Rex;
 use vxPHP\Util\Uuid;
 
-use vxPHP\User\Admin;
 use vxPHP\Image\ImageModifierFactory;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
@@ -31,12 +30,13 @@ use vxPHP\Http\JsonResponse;
 
 
 use vxPHP\Application\Application;
+use vxPHP\User\User;
 
 class ArticlesController extends Controller {
 
 	protected function execute() {
 
-		$admin = Admin::getInstance();
+		$admin = User::getSessionUser();
 
 		// editing something?
 
@@ -261,6 +261,9 @@ class ArticlesController extends Controller {
 					$article->setHeadline($v['Headline']);
 					$article->setData(array('Teaser' => $v['Teaser'], 'Content' => $v['Content']));
 					$article->setCustomSort($v['customSort']);
+
+					$article->setCreatedBy(User::getSessionUser());
+					$article->setUpdatedBy(User::getSessionUser());
 
 					$id = $article->getId();
 

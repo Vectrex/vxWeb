@@ -9,6 +9,7 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Application\Application;
 use vxPHP\User\Admin;
+use vxPHP\User\User;
 
 class PagesController extends Controller {
 
@@ -76,7 +77,7 @@ class PagesController extends Controller {
 				}
 
 				if(($newId = vxWeb\SimpleTemplateUtil::addRevision(array(
-					'authorsID' => Admin::getInstance()->getAdminId(),
+					'authorsID' => User::getSessionUser()->getAdminId(),
 
 					'Title' => $v['Title'],
 					'Markup' => $v['Markup'],

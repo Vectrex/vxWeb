@@ -1,6 +1,5 @@
 <?php
 use vxPHP\User\UserAbstract;
-use vxPHP\User\Admin;
 use vxPHP\User\Util;
 use vxPHP\User\Notification\Notification;
 
@@ -13,12 +12,13 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Http\JsonResponse;
+use vxPHP\User\User;
 
 class ProfileController extends Controller {
 
 	public function execute() {
-
-		$admin					= Admin::getInstance();
+		
+		$admin					= User::getSessionUser();
 		$availableNotifications	= Notification::getAvailableNotifications($admin->getAdmingroup());
 		$assignedNotifications	= $admin->getNotifications();
 

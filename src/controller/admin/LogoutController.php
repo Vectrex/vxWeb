@@ -1,15 +1,16 @@
 <?php
 
-use vxPHP\User\Admin;
 use vxPHP\Controller\Controller;
+use vxPHP\User\User;
 
 class LogoutController extends Controller {
 
 	protected function execute() {
 
-		$admin = Admin::getInstance();
+		if($admin = User::getSessionUser()) {
+			$admin->removeFromSession();
+		}
 
-		$admin->removeFromSession();
 		$this->redirect('login');
 	}
 }

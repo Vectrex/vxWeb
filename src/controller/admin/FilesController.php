@@ -27,6 +27,7 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
+use vxPHP\User\User;
 
 /**
  *
@@ -288,14 +289,24 @@ class FilesController extends Controller {
 	private function delFile() {
 
 		if(($id = $this->request->request->getInt('id'))) {
-			$file = MetaFile::getInstance(NULL, $id);
-			$folder = $file->getMetaFolder();
-			$file->delete();
 
-			return array(
-				'folders'	=> $this->getFolderList($folder),
-				'files'		=> $this->getFileList($folder)
-			);
+			try {
+				$file = MetaFile::getInstance(NULL, $id);
+				$user = User::getSessionUser();
+
+				if($user->hasSuperAdminPrivileges() || $user->getAdminId() == $file->getCreatedBy()->getAdminId()) {
+
+					$folder = $file->getMetaFolder();
+					$file->delete();
+
+					return array(
+						'folders'	=> $this->getFolderList($folder),
+						'files'		=> $this->getFileList($folder)
+					);
+				}
+			}
+
+			catch (MetaFileException $e) {}
 		}
 
 		return array('error' => TRUE);

@@ -1,6 +1,5 @@
 <?php
 
-use vxPHP\User\Admin;
 use vxPHP\User\Exception\UserException;
 use vxPHP\Application\Application;
 use vxPHP\Form\HtmlForm;
@@ -9,14 +8,15 @@ use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
+use vxPHP\User\User;
 
 class LoginController extends Controller {
 
 	protected function execute() {
 
-		$admin = Admin::getInstance();
+		$admin = User::getSessionUser();
 
-		if($admin->isAuthenticated()) {
+		if($admin && $admin->isAuthenticated()) {
 
 			foreach(Application::getInstance()->getConfig()->routes['admin.php'] as $route) {
 
@@ -46,10 +46,11 @@ class LoginController extends Controller {
 			$values = $form->bindRequestParameters($this->request->request)->getValidFormValues();
 
 			try {
-				$admin->setUser($values['UID']);
+				$admin = User::getInstance($values['UID']);
 				$admin->authenticate($values['pwd']);
 
 				if($admin->isAuthenticated()) {
+					$admin->storeInSession();
 					return new JsonResponse(array('command' => 'submit'));
 				}
 			}
@@ -70,7 +71,8 @@ class LoginController extends Controller {
 				$values = $form->getValidFormValues();
 
 				try {
-					$admin->setUser($values['UID']);
+
+					$admin = User::getInstance($values['UID']);
 					$admin->authenticate($values['pwd']);
 
 					if(!$admin->isAuthenticated()) {
@@ -78,6 +80,9 @@ class LoginController extends Controller {
 					}
 
 					else {
+
+						$admin->storeInSession();
+						
 						if(isset($_SESSION['authViolatingUri'])) {
 							$redir = $_SESSION['authViolatingUri'];
 							$_SESSION['authViolatingUri'] = NULL;
