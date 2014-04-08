@@ -294,7 +294,7 @@ class FilesController extends Controller {
 				$file = MetaFile::getInstance(NULL, $id);
 				$user = User::getSessionUser();
 
-				if($user->hasSuperAdminPrivileges() || $user->getAdminId() == $file->getCreatedBy()->getAdminId()) {
+				if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
 
 					$folder = $file->getMetaFolder();
 					$file->delete();
