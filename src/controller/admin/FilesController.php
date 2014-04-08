@@ -270,16 +270,21 @@ class FilesController extends Controller {
 	private function renameFile() {
 
 		try {
-			$file = MetaFile::getInstance(NULL, $this->request->request->get('id'));
-			$file->rename(trim($this->request->request->get('filename')));
+			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('id'));
+			$user = User::getSessionUser();
 
-			$metaData = $file->getData();
+			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
 
-			return array(
-				'filename' => $file->getMetaFilename(),
-				'elements' => array('html' => "<span title='{$metaData['Title']}'>{$file->getMetaFilename()}</span>"),
-				'error' => FALSE
-			);
+				$file->rename(trim($this->request->request->get('filename')));
+	
+				$metaData = $file->getData();
+	
+				return array(
+					'filename' => $file->getMetaFilename(),
+					'elements' => array('html' => "<span title='{$metaData['Title']}'>{$file->getMetaFilename()}</span>"),
+					'error' => FALSE
+				);
+			}
 		}
 		catch(MetaFileException $e) {}
 
@@ -288,46 +293,47 @@ class FilesController extends Controller {
 
 	private function delFile() {
 
-		if(($id = $this->request->request->getInt('id'))) {
+		try {
+			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('id'));
+			$user = User::getSessionUser();
 
-			try {
-				$file = MetaFile::getInstance(NULL, $id);
-				$user = User::getSessionUser();
+			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
 
-				if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
-
-					$folder = $file->getMetaFolder();
-					$file->delete();
-
-					return array(
-						'folders'	=> $this->getFolderList($folder),
-						'files'		=> $this->getFileList($folder)
-					);
-				}
-			}
-
-			catch (MetaFileException $e) {}
-		}
-
-		return array('error' => TRUE);
-	}
-
-	private function moveFile() {
-
-		if(($id = $this->request->request->getInt('id'))) {
-			try {
-
-				$file = MetaFile::getInstance(NULL, $id);
-				$folder = $file->getMetafolder();
-				$file->move(MetaFolder::getInstance(NULL, $this->request->request->getInt('destination')));
+				$folder = $file->getMetaFolder();
+				$file->delete();
 
 				return array(
 					'folders'	=> $this->getFolderList($folder),
 					'files'		=> $this->getFileList($folder)
 				);
 			}
-			catch(MetaFileException $e) {}
 		}
+
+		catch (MetaFileException $e) {}
+
+		return array('error' => TRUE);
+	}
+
+	private function moveFile() {
+
+		try {
+
+			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('id'));
+			$user = User::getSessionUser();
+
+			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
+
+				$folder = $file->getMetafolder();
+				$file->move(MetaFolder::getInstance(NULL, $this->request->request->getInt('destination')));
+	
+				return array(
+					'folders'	=> $this->getFolderList($folder),
+					'files'		=> $this->getFileList($folder)
+				);
+			}
+		}
+
+		catch(MetaFileException $e) {}
 
 		return array('error' => TRUE);
 	}
