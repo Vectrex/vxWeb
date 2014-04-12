@@ -41,6 +41,10 @@ class FilesController extends Controller {
 		if($this->route->getRouteId() === 'filepicker') {
 			return new Response(SimpleTemplate::create('admin/files_picker.php')->display());
 		}
+		
+		if($this->route->getRouteId() === 'fileoverlay') {
+			return new Response(SimpleTemplate::create('admin/files_picker.php')->display());
+		}
 
 		return new Response(SimpleTemplate::create('admin/files_js.php')->display());
 	}

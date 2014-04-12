@@ -1,10 +1,11 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
 
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
-<script type="text/javascript" src="/js/admin/admin_articles.js"></script>
+<script type="text/javascript" src="/js/admin/doArticles.js"></script>
 
 <script type="text/javascript">
 	this.vxWeb.routes.articles = "<?php echo vxPHP\Http\Router::getRoute('articlesXhr', 'admin.php')->getUrl(); ?>?<?php echo vxPHP\Http\Request::createFromGlobals()->getQueryString(); ?>";
+	vxJS.event.addDomReadyListener(this.vxWeb.doArticles);
 </script>
 
 <script type="text/javascript">

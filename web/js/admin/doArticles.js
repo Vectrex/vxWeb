@@ -1,4 +1,8 @@
-vxJS.event.addDomReadyListener(function() {
+if(!this.vxWeb) {
+	this.vxWeb = {};
+}
+
+this.vxWeb.doArticles = function() {
 
 	"use strict";
 
@@ -137,4 +141,4 @@ vxJS.event.addDomReadyListener(function() {
 	});
 
 	vxJS.event.addListener(articleXhrForm, "check", parseServerCheck);
-});
+};

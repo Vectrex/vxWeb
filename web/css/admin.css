@@ -346,6 +346,8 @@ span.calendarPopper:before			{ font-family: icomoon; content: "\e00c"; font-size
 
 img.thumb						{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3px #808080; -webkit-box-shadow: 1px 1px 3px #808080; }
 
+.fileOverlay					{ width: 80%; height: 60%; padding: 1em; border: solid 1px #808080; background: #fff; }
+
 /*
  * Popup Calendar
  */

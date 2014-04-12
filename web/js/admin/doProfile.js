@@ -1,4 +1,9 @@
-vxJS.event.addDomReadyListener(function() {
+if(!this.vxWeb) {
+	this.vxWeb = {};
+}
+
+this.vxWeb.doProfile = function() {
+
 	"use strict";
 
 	var	mBox = document.getElementById("messageBox"), timeoutId,
@@ -37,4 +42,4 @@ vxJS.event.addDomReadyListener(function() {
 
 	f.addSubmit(f.element.elements["submit_profile"]);
 	vxJS.event.addListener(f, "check", parseServerCheck);
-});
+};

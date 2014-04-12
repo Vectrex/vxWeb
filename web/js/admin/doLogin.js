@@ -1,4 +1,9 @@
-vxJS.event.addDomReadyListener(function() {
+if(!this.vxWeb) {
+	this.vxWeb = {};
+}
+
+this.vxWeb.doLogin = function() {
+
 	"use strict";
 
 	var mBox = document.getElementById("messageBox"), timeoutId;
@@ -29,4 +34,4 @@ vxJS.event.addDomReadyListener(function() {
 
 	vxJS.event.addListener(f, "check", parseServerCheck);
 
-});
+};
