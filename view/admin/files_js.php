@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
 	this.vxWeb.routes.files = "<?php echo vxPHP\Http\Router::getRoute('filesXhr', 'admin.php')->getUrl(); ?>";
-	vxJS.event.addDomReadyListener(this.vxWeb.doArticles);
+	vxJS.event.addDomReadyListener(this.vxWeb.doFiles);
 </script>
 
 <h1>Dateien</h1>

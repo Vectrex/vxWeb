@@ -2,7 +2,7 @@ if(!this.vxWeb) {
 	this.vxWeb = {};
 }
 
-this.vxWeb.doArticles = function() {
+this.vxWeb.doFiles = function() {
 
 	"use strict";
 

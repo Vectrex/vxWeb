@@ -3,7 +3,7 @@
 <script type="text/javascript" src="/js/admin/doFiles.js"></script>
 
 <script type="text/javascript">
-	vxJS.event.addDomReadyListener(this.vxWeb.doArticles);
+	vxJS.event.addDomReadyListener(this.vxWeb.doFiles);
 </script>
 
 <h1>Dateien</h1>
