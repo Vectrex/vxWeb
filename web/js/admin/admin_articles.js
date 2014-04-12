@@ -12,8 +12,8 @@ vxJS.event.addDomReadyListener(function() {
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
 
-	var initFilesFunc = function() {
-		var form = document.forms[1];
+	var initFilesForm = function() {
+		var form = document.forms[1], dragFrom;
 
 		form.action = route;
 
@@ -25,10 +25,24 @@ vxJS.event.addDomReadyListener(function() {
 
 		st = vxJS.widget.sorTable(vxJS.dom.getElementsByClassName("imageTable")[0], { columnFormat: ["manual", "no_sort", "no_sort", "no_sort"] });
 
+		vxJS.event.addListener(st, "dragStart", function() {
+			dragFrom = this.getDraggedRow().sectionRowIndex;
+		});
+
 		vxJS.event.addListener(st, "dragStop", function() {
-			sortXhr.use(null, { sortOrder: this.getCurrentOrder(), id: filesXhrForm.element.elements["id"].value });
-			sortXhr.submit();
-			this.initSort();
+			var draggedRow = this.getDraggedRow(), to = draggedRow.sectionRowIndex;
+
+			if(dragFrom !== to) {
+
+				sortXhr.use(null, {
+					to:		to,
+					file:	parseInt(draggedRow.querySelector("input[type='checkbox']").name.match(/\[(\d+)\]$/)[1], 10),
+					id:		parseInt(filesXhrForm.element.elements["id"].value, 10)
+				}).submit();
+				
+				this.initSort();
+
+			}
 		});
 
 		tabs.enable();
@@ -46,7 +60,7 @@ vxJS.event.addDomReadyListener(function() {
 			if(r.markup) {
 				vxJS.dom.deleteChildNodes(tabs.tabs[1].page);
 				tabs.tabs[1].page.appendChild(vxJS.dom.parse(r.markup));
-				initFilesFunc();
+				initFilesForm();
 			}
 
 			if(r.id) {
@@ -107,7 +121,7 @@ vxJS.event.addDomReadyListener(function() {
 	};
 
 	if(document.forms[1]) {
-		initFilesFunc();
+		initFilesForm();
 	}
 	else {
 		tabs.disable();

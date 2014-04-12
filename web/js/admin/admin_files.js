@@ -20,7 +20,7 @@ vxJS.event.addDomReadyListener(function () {
 		}(),
 		xhr = vxJS.xhr(
 			{ uri: uri, echo: true, timeout: 10000 },
-			{ columns: ["name", "size", "mime", "mTime", "reference"] },
+			{ columns: ["name", "size", "mime", "mTime"] },
 			{ node: throbberElement }
 		),
 		form, xhrForm,
@@ -73,7 +73,6 @@ vxJS.event.addDomReadyListener(function () {
 				fileSizeSort,
 				simpleFileRowSort,
 				simpleFileRowSort,
-				fancyFileRowSort,
 				"no_sort"
 			]
 		}),

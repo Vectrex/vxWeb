@@ -74,9 +74,7 @@ class FileUtil {
 			}
 
 			$mf->setMetaData(array(
-					'Description'		=> htmlspecialchars($metaData['file_description']),
-					'referenced_Table'	=> 'articles',
-					'referencedID'		=> $article->getId()
+					'Description'		=> htmlspecialchars($metaData['file_description'])
 			));
 
 			if($metaFolder->obscuresFiles()) {

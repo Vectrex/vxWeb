@@ -5,7 +5,6 @@
 			<th class="sm right sortableHeader">Größe</th>
 			<th class="sm center sortableHeader">Typ/Vorschau</th>
 			<th class="sm right sortableHeader">Erstellt</th>
-			<th class="sm center sortableHeader">referenziert</th>
 			<th class="ssm"></th>
 		</tr>
 	</thead>

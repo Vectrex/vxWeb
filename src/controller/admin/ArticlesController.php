@@ -60,17 +60,13 @@ class ArticlesController extends Controller {
 
 		if(isset($article) && count($this->pathSegments) > 1 && $this->pathSegments[1] == 'del') {
 
-			$files = $article->getReferencingFiles();
-
 			try {
 				$article->delete();
 			}
 			catch(ArticleException $e) {
 				$this->redirect('articles');
 			}
-			foreach($files as $f) {
-				$f->delete();
-			}
+
 			$this->redirect('articles');
 		}
 
@@ -294,24 +290,28 @@ class ArticlesController extends Controller {
 
 			case 'ifuSubmit':
 
-				$success = TRUE;
-				$errorMsg = '';
+				$success	= TRUE;
+				$errorMsg	= '';
 
 				if(($delIds = $this->request->request->get('delete_file'))) {
 					foreach(array_keys($delIds) as $id) {
 						try {
-							MetaFile::getInstance(NULL, (int) $id)->delete();
+							$article->unlinkMetaFile(MetaFile::getInstance(NULL, (int) $id));
+							$article->save();
 						}
 						catch(MetaFileException $e) {
-							$success = FALSE;
-							$errorMsg = 'Fehler beim Löschen der Datei(en)!';
+							$success	= FALSE;
+							$errorMsg	= 'Fehler beim Entfernen der Datei!';
 						}
 					}
 				}
 
 //				$this->getArticleCategories();
 				try {
-					vxWeb\FileUtil::uploadFileForArticle($article, array('file_description' => $this->request->request->get('file_description')));
+					if(($mf = vxWeb\FileUtil::uploadFileForArticle($article, array('file_description' => $this->request->request->get('file_description'))))) {
+						$article->linkMetaFile($mf);
+						$article->save();
+					}
 				}
 				catch(MetaFileException $e) {
 					$success = FALSE;
@@ -320,7 +320,7 @@ class ArticlesController extends Controller {
 
 				$rows = array();
 
-				foreach(MetaFile::getFilesForReference($article->getId(), 'articles', 'sortByCustomSort') as $mf) {
+				foreach($article->getLinkedMetaFiles() as $mf) {
 					$rows[] = array(
 							'id'		=> $mf->getId(),
 							'filename'	=> $mf->getFilename(),
@@ -336,24 +336,14 @@ class ArticlesController extends Controller {
 				return new JsonResponse(array('success' => $success, 'message' => $errorMsg, 'files' => $rows));
 
 			case 'sortFiles':
-				if(($sortOrder = $this->request->request->get('sortOrder')) && count($sortOrder) > 1) {
-
-					$filesSorted	= $article->getReferencingFiles();
-					$oldPos			= 0;
-
-					foreach($filesSorted as $file) {
-						$newPos = array_search($oldPos++, $sortOrder);
-
-						$db->preparedExecute("
-							UPDATE
-								files
-							SET
-								customSort = ?
-							WHERE
-								filesID = ?
-						", array((int) $newPos, $file->getId()));
-					}
-				}
+				
+				$article->setCustomSortOfMetaFile(
+					MetaFile::getInstance(NULL, $this->request->request->getInt('file')),
+					$this->request->request->getInt('to')
+				);
+				
+				$article->save();
+				
 		}
 
 		return new JsonResponse();
@@ -399,7 +389,7 @@ class ArticlesController extends Controller {
 		if(!is_null($article->getId())) {
 			$form->addElement(FormElementFactory::create('input', 'id', $article->getId(), array('type' => 'hidden')));
 
-			foreach($article->getReferencingFiles() as $f) {
+			foreach($article->getLinkedMetaFiles() as $f) {
 
 				$data = $f->getData();
 

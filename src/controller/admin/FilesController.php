@@ -235,8 +235,6 @@ class FilesController extends Controller {
 					->addElement(FormElementFactory::create('input', 'Title', '', array(), array(), FALSE, array('trim')))
 					->addElement(FormElementFactory::create('input', 'Subtitle', '', array(), array(), FALSE, array('trim')))
 					->addElement(FormElementFactory::create('input', 'customSort', '', array(), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT)))
-					->addElement(FormElementFactory::create('input', 'referencedID', '', array(), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)))
-					->addElement(FormElementFactory::create('input', 'referenced_Table', '', array(), array(), FALSE, array('trim')))
 					->addElement(FormElementFactory::create('textarea', 'Description', ''))
 					->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1));
 
@@ -408,8 +406,6 @@ class FilesController extends Controller {
 			->addElement(FormElementFactory::create('input', 'Title', '', array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')))
 			->addElement(FormElementFactory::create('input', 'Subtitle', '', array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')))
 			->addElement(FormElementFactory::create('input', 'customSort', '', array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT)))
-			->addElement(FormElementFactory::create('input', 'referencedID', '', array('maxlength' => 5, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)))
-			->addElement(FormElementFactory::create('input', 'referenced_Table', '', array('maxlength' => 32, 'class' => 'm'), array(), FALSE, array('trim')))
 			->addElement(FormElementFactory::create('input', 'File', '', array('type' => 'file')))
 			->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1))
 			->addElement(FormElementFactory::create('textarea', 'Description', '', array('rows' => 5, 'cols' => 40, 'class' => 'xl')))
@@ -466,8 +462,6 @@ class FilesController extends Controller {
 			->addElement(FormElementFactory::create('input', 'Subtitle', NULL, array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')))
 			->addElement(FormElementFactory::create('input', 'customSort', NULL, array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT)))
 			->addElement(FormElementFactory::create('textarea', 'Description', NULL, array('rows' => 5, 'cols' => 40, 'class' => 'xl')))
-			->addElement(FormElementFactory::create('input', 'referencedID', $file->getReferencedId(), array('maxlength' => 5, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)))
-			->addElement(FormElementFactory::create('input', 'referenced_Table', $file->getReferencedTable(), array('maxlength' => 32, 'class' => 'm'), array(), FALSE, array('trim')))
 			->addElement($editButton)
 			->addElement($cancelButton)
 			->addMiscHtml('Fileinfo', $infoHtml)
@@ -488,7 +482,7 @@ class FilesController extends Controller {
 		return $folders;
 	}
 
-	private function getFileList(MetaFolder $folder, array $columns = array('name', 'size', 'thumb', 'mTime', 'reference')) {
+	private function getFileList(MetaFolder $folder, array $columns = array('name', 'size', 'thumb', 'mTime')) {
 
 		$files		= array();
 		$app		= Application::getInstance();
@@ -513,12 +507,6 @@ class FilesController extends Controller {
 
 					case 'mTime':
 						$file['columns'][] = date('Y-m-d H:i:s', $f->getFileInfo()->getMTime());
-						break;
-
-					case 'reference':
-						if($f->getReferencedTable()) {
-							$file['columns'][] = array('html' => sprintf('%s<br />%s', $f->getReferencedTable(), $f->getReferencedId()));
-						}
 						break;
 
 					case 'thumb':
