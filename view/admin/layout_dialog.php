@@ -29,7 +29,7 @@
 				this.vxWeb.routes = {};
 			}
 
-			this.vxWeb.routes.files = "<?php echo vxPHP\Http\Router::getRoute('filesXhr', 'admin.php')->getUrl(); ?>?filepicker";
+			this.vxWeb.routes.files = "<?php echo vxPHP\Http\Router::getRoute('filepickerXhr', 'admin.php')->getUrl(); ?>";
 		</script>
 
 	</head>

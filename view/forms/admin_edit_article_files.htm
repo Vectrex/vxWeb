@@ -1,28 +1,5 @@
 {error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
 
-<script type="text/javascript">
-
-	var filesOverlay;
-
-	var openpopup = function() {
-		
-		if(!filesOverlay) {
-
-			filesOverlay = vxJS.widget.confirm({
-				overlay: true,
-				className: "fileOverlay",
-				buttons: [ { label: "Schließen" , key: "close" } ],
-				content: [ { "html": '<div id="filePicker"></div>' } ]
-			});
-
-			vxJS.xhr(null, null, null, { complete: function() { console.log(this); }}).submit();
-		}
-		
-		filesOverlay.show();
-	};
-
-</script>
-
 <div class="formSect">
 
 	<div class="formItem">
@@ -31,7 +8,7 @@
 	<div class="formItem">
 		<label style="vertical-align: top;">Beschreibung</label>{textarea:file_description}
 	</div>
-	<!-- <button type="button" onclick="openpopup()">Datei auswählen</button> -->
+	<button type="button" onclick="openpopup()">Datei auswählen</button>
 </div>
 
 <div class="formBase">

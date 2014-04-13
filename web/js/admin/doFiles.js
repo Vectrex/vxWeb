@@ -22,11 +22,8 @@ this.vxWeb.doFiles = function() {
 		throbberElement = function() {
 			return "div".setProp("class", "vxJS_xhrThrobberFileOperation").create();
 		}(),
-		xhr = vxJS.xhr(
-			{ uri: uri, echo: true, timeout: 10000 },
-			{ columns: ["name", "size", "mime", "mTime"] },
-			{ node: throbberElement }
-		),
+		fileListParameters = {},
+		xhr = vxJS.xhr( { uri: uri, echo: true, timeout: 10000 }, {}, { node: throbberElement } ),
 		form, xhrForm,
 		formInitValues = {}, filesTableListeners = [],
 		dnd, dndPossible = !!vxJS.dnd,
@@ -37,11 +34,13 @@ this.vxWeb.doFiles = function() {
 		folderRex = /(^| )folderRow( |$)/,
 		icons = {
 			edit:		"button".setProp( { type: "button", href: "", className: "edit", title: "Bearbeiten" } ).create(),
-			del:		"button".setProp( { type: "button", href: "", className: "del", title: "Löschen" } ).create(),
 			move:		"button".setProp( { type: "button", href: "", className: "move", title: "Verschieben" } ).create(),
-			delFolder:	"button".setProp( { type: "button", href: "", className: "delFolder", title: "Ordner leeren und löschen" } ).create(),
+			del:		"button".setProp( { type: "button", href: "", className: "del", title: "Löschen" } ).create(),
 			forward:	"button".setProp( { type: "button", href: "", className: "forward", title: "Übernehmen" } ).create(),
+
+			delFolder:	"button".setProp( { type: "button", href: "", className: "delFolder", title: "Ordner leeren und löschen" } ).create(),
 			rename:		"button".setProp( { type: "button", href: "", className: "rename", title: "Umbenennen" } ).create(),
+
 			locked:		"span".setProp( { href: "", className: "locked", title: "Gesperrt" } ).create()
 		},
 
@@ -275,15 +274,11 @@ this.vxWeb.doFiles = function() {
 		}(folderData))));
 	};
 
-	var appendFileRow = function(fileData) {
+	var appendFileRow = function(fileData, funcs) {
+
 		var td = "td".create(fileData.locked ?
 				icons.locked.cloneNode(true) :
-				[
-				 	icons.edit.cloneNode(true),
-				 	icons.move.cloneNode(true),
-				 	icons.del.cloneNode(true),
-				 	fileData.forward ? icons.forward.cloneNode(true) : null
-				]
+				funcs.map(function(func) { return icons[func] && func !== "rename" ? icons[func].cloneNode(true) : null; })
 			), cells = [], i, l, d;
 
 		for(i = 0, l = colNum - 1; i < l; ++i) {
@@ -294,8 +289,8 @@ this.vxWeb.doFiles = function() {
 			else {
 				cells.push("td".create(typeof d === "object" ? vxJS.dom.parse(d) : d));
 			}
-			if(!i) {
-				cells[0].appendChild(icons.rename.cloneNode(true))
+			if(!i && funcs.indexOf("rename") !== -1) {
+				cells[0].appendChild(icons.rename.cloneNode(true));
 			}
 		}
 
@@ -307,11 +302,17 @@ this.vxWeb.doFiles = function() {
 			return function() {
 				var storedNodes, cell;
 
-				if(this.nodeName.toLowerCase() !== "button") {
+				if(["input", "button"].indexOf(this.nodeName.toLowerCase()) === -1) {
 					return;
 				}
 
 				switch(this.className) {
+					case "link":
+						if(vxWeb.parameters && vxWeb.parameters.articlesId) {
+							xhr.use( { command: this.checked ? "linkToArticle" : "unlinkFromArticle" }, { id: data.id, articlesId: vxWeb.parameters.articlesId } ).submit();
+						}
+						break;
+
 					case "del":
 						if(window.confirm("Datei wirklich löschen?")) {
 							xhr.use({ command: "delFile" }, { id: data.id }).submit();
@@ -363,13 +364,11 @@ this.vxWeb.doFiles = function() {
 												{
 													uri:		uri,
 													command:	"renameFile"
-												},
-												{
+												}, {
 													id:			fileData.id,
 													filename:	elem.value
-												},
-												{},
-												{
+												}, {
+												}, {
 													complete: function() {
 														var r = this.response;
 
@@ -428,13 +427,16 @@ this.vxWeb.doFiles = function() {
 		}(fileData))));
 	};
 
-	var buildFilesTable = function(folders, files) {
-		var l = filesTableListeners.length;
+	var buildFilesTable = function(fileData) {
+
+		var l = filesTableListeners.length, i,
+			folders = fileData.folders || [],
+			files = fileData.files || [],
+			funcs = fileData.fileFunctions || [];
 
 		while(l--) {
 			vxJS.event.removeListener(filesTableListeners[l]);
 		}
-
 		while((l = t.element.rows.length)) {
 			t.removeRow(t.element.rows[l - 1]);
 		}
@@ -445,8 +447,12 @@ this.vxWeb.doFiles = function() {
 			);
 		}
 		else {
-			folders.forEach(appendFolderRow);
-			files.forEach(appendFileRow);
+			for(i = 0, l = folders.length; i < l; ++i) {
+				appendFolderRow(folders[i]);
+			}
+			for(i = 0, l = files.length; i < l; ++i) {
+				appendFileRow(files[i], funcs);
+			}
 			t.reSort();
 		}
 	};
@@ -461,7 +467,7 @@ this.vxWeb.doFiles = function() {
 
 				case "delFolder":
 					if(!r.response.error) {
-						buildFilesTable(r.response.folders, r.response.files);
+						buildFilesTable(r.response);
 						while((b = breadCrumbs[i])) {
 							if(b.id === e.id) {
 								while((b = breadCrumbs[i])) {
@@ -477,6 +483,7 @@ this.vxWeb.doFiles = function() {
 
 				case "moveFile":
 					confirm.hide();
+
 				case "getFiles":
 				case "addFolder":
 				case "delFile":
@@ -484,7 +491,7 @@ this.vxWeb.doFiles = function() {
 						if(r.response.pathSegments) {
 							buildDirectoryBar(r.response.pathSegments);
 						}
-						buildFilesTable(r.response.folders, r.response.files);
+						buildFilesTable(r.response);
 
 						if(e.folder) {
 							folderId = e.folder;
@@ -530,7 +537,7 @@ this.vxWeb.doFiles = function() {
 								// possible error handling
 							}
 							else {
-								buildFilesTable(r.folders, r.files);
+								buildFilesTable(r);
 								f = null;
 								xForm = null;
 								confirm.hide();
@@ -570,9 +577,20 @@ this.vxWeb.doFiles = function() {
 			}
 		}
 	};
-
+	
 	// everything prepared, get things going
+	
+	// set xhr parameters to meet the different "environments"
 
+	if(vxWeb.parameters) {
+		if(vxWeb.parameters.fileColumns) {
+			fileListParameters.fileColumns = vxWeb.parameters.fileColumns;
+		}
+		if(vxWeb.parameters.articlesId) {
+			fileListParameters.articlesId = vxWeb.parameters.articlesId;
+		}
+	}
+	
 	vxJS.event.addListener(xhr,		"timeout", function() { window.alert('Dateioperation dauert zu lange. Bitte erneut versuchen.'); });
 	vxJS.event.addListener(xhr,		"complete", handleXhrResponse);
 	vxJS.event.addListener(confirm,	"focusLost", focusForm);
@@ -604,5 +622,5 @@ this.vxWeb.doFiles = function() {
 	}
 	confirm.element.appendChild(confirmPayload);
 
-	xhr.use({command: "getFiles"}).submit();
+	xhr.use({command: "getFiles"}, fileListParameters).submit();
 };

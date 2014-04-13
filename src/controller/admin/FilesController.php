@@ -28,6 +28,7 @@ use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxPHP\User\User;
+use vxPHP\Orm\Custom\Article;
 
 /**
  *
@@ -38,15 +39,13 @@ class FilesController extends Controller {
 
 	protected function execute() {
 
-		if($this->route->getRouteId() === 'filepicker') {
-			return new Response(SimpleTemplate::create('admin/files_picker.php')->display());
-		}
+		switch($this->route->getRouteId()) {
+			case 'filepicker':
+				return new Response(SimpleTemplate::create('admin/files_picker.php')->display());
 		
-		if($this->route->getRouteId() === 'fileoverlay') {
-			return new Response(SimpleTemplate::create('admin/files_picker.php')->display());
+			default:
+				return new Response(SimpleTemplate::create('admin/files_js.php')->display());
 		}
-
-		return new Response(SimpleTemplate::create('admin/files_js.php')->display());
 	}
 
 	protected function xhrExecute() {
@@ -65,6 +64,32 @@ class FilesController extends Controller {
 
 		switch($this->request->request->get('httpRequest')) {
 
+			// link file to an article
+			case 'linkToArticle':
+				try {
+					$article = Article::getInstance($this->request->request->getInt('articlesId'));
+					$article->linkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('id')));
+					$article->save();
+					$response = array('error' => FALSE);
+				}
+				catch(\Exception $e) {
+					$response = array('error' => $e->getMessage());
+				}
+				break;
+				
+			// unlink file from an article
+			case 'unlinkFromArticle':
+				try {
+					$article = Article::getInstance($this->request->request->getInt('articlesId'));
+					$article->unlinkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('id')));
+					$article->save();
+					$response = array('error' => FALSE);
+				}
+				catch(\Exception $e) {
+					$response = array('error' => $e->getMessage());
+				}
+				break;
+			
 			// rename file
 			case 'renameFile':
 				$response = $this->renameFile();
@@ -90,7 +115,7 @@ class FilesController extends Controller {
 				$response = $this->delFile();
 				break;
 
-			// return file table for given folder id
+			// return file table for given folder id with array containing available functions
 			case 'getFiles':
 				$response = $this->getFiles($folder);
 				break;
@@ -137,11 +162,7 @@ class FilesController extends Controller {
 					->getFormErrors()
 				)) {
 					$file->setMetaData($form->getValidFormValues());
-
-					$response = array(
-						'folders'	=> $this->getFolderList($file->getMetafolder()),
-						'files'		=> $this->getFileList($file->getMetafolder())
-					);
+					$response = $this->getFiles($file->getMetafolder());
 				}
 
 				else {
@@ -264,6 +285,10 @@ class FilesController extends Controller {
 						)
 					);
 				}
+				break;
+			
+			default:
+				$response = null;
 		}
 
 		return $this->addEchoToJsonResponse(new JsonResponse($response));
@@ -304,10 +329,7 @@ class FilesController extends Controller {
 				$folder = $file->getMetaFolder();
 				$file->delete();
 
-				return array(
-					'folders'	=> $this->getFolderList($folder),
-					'files'		=> $this->getFileList($folder)
-				);
+				return $this->getFiles($folder);
 			}
 		}
 
@@ -328,10 +350,7 @@ class FilesController extends Controller {
 				$folder = $file->getMetafolder();
 				$file->move(MetaFolder::getInstance(NULL, $this->request->request->getInt('destination')));
 	
-				return array(
-					'folders'	=> $this->getFolderList($folder),
-					'files'		=> $this->getFileList($folder)
-				);
+				return $this->getFiles($folder);
 			}
 		}
 
@@ -340,15 +359,11 @@ class FilesController extends Controller {
 		return array('error' => TRUE);
 	}
 
-	private function addFolder(MetaFolder $mf) {
+	private function addFolder(MetaFolder $folder) {
 
 		try {
-			$mf->createFolder(preg_replace('~[^a-z0-9_-]~', '_', $this->request->request->get('folderName')));
-
-			return array(
-				'folders'	=> $this->getFolderList($mf),
-				'files'		=> $this->getFileList($mf)
-			);
+			$folder->createFolder(preg_replace('~[^a-z0-9_-]~', '_', $this->request->request->get('folderName')));
+			return $this->getFiles($folder);
 		}
 		catch(Exception $e) {}
 
@@ -364,11 +379,7 @@ class FilesController extends Controller {
 			if(($parent = $folder->getParentMetafolder())) {
 
 				$folder->delete();
-
-				return array(
-					'folders'	=> $this->getFolderList($parent),
-					'files'		=> $this->getFileList($parent)
-				);
+				return $this->getFiles($parent);
 			}
 		}
 
@@ -388,10 +399,21 @@ class FilesController extends Controller {
 			array_unshift($pathSegments, array('name' => $mf->getName(), 'id' => $mf->getId()));
 		}
 
+		switch($this->route->getRouteId()) {
+		
+			case 'filepickerXhr':
+				$fileFunctions = array('rename', 'edit', 'move', 'del', 'forward');
+				break;
+		
+			default:
+				$fileFunctions = array('rename', 'edit', 'move', 'del');
+		}
+
 		return array(
 			'pathSegments'	=> $pathSegments,
 			'folders'		=> $folders,
-			'files'			=> $files
+			'files'			=> $files,
+			'fileFunctions'	=> $fileFunctions
 		);
 	}
 
@@ -486,11 +508,16 @@ class FilesController extends Controller {
 		return $folders;
 	}
 
-	private function getFileList(MetaFolder $folder, array $columns = array('name', 'size', 'thumb', 'mTime')) {
+	private function getFileList(MetaFolder $folder) {
 
 		$files		= array();
 		$app		= Application::getInstance();
 		$assetsPath	= !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
+		$columns	= $this->request->request->get('fileColumns', array('name', 'size', 'mime', 'mTime'));
+
+		if($articlesId = $this->request->request->get('articlesId')) {
+			$linkedFiles = Article::getInstance($articlesId)->getLinkedMetaFiles();
+		}
 
 		foreach(MetaFile::getMetaFilesInFolder($folder) as $f) {
 
@@ -513,7 +540,7 @@ class FilesController extends Controller {
 						$file['columns'][] = date('Y-m-d H:i:s', $f->getFileInfo()->getMTime());
 						break;
 
-					case 'thumb':
+					case 'mime':
 						if($isImage) {
 
 							// check and - if required - generate thumbnail
@@ -547,13 +574,25 @@ class FilesController extends Controller {
 						else {
 							$file['columns'][] = $f->getMimetype();
 						}
+						break;
+						
+					case 'linked':
+						if(isset($linkedFiles) && in_array($f, $linkedFiles, TRUE)) {
+							$file['columns'][] = array('html' => '<input class="link" type="checkbox" checked="checked">');
+							$file['linked'] = TRUE;
+						}
+						else {
+							$file['columns'][] = array('html' => '<input class="link" type="checkbox">');
+							$file['linked'] = FALSE;
+						}
+						break;
 				}
 
 
 			}
 
 			if(
-				!is_null($this->request->query->get('filepicker')) && (
+				$this->route->getRouteId() === 'filepickerXhr' && (
 					is_null($this->request->query->get('filter')) ||
 					$this->request->query->get('filter') != 'image' ||
 					$isImage
@@ -566,7 +605,6 @@ class FilesController extends Controller {
 
 		return $files;
 	}
-
 
 	private function getFolderTree(MetaFolder $currentFolder = NULL) {
 

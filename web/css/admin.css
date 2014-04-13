@@ -226,11 +226,11 @@ form div.formBase * 		{ font-size: 100%; }
 #filesList .submitImg	{ cursor: pointer; }
 
 #filesList tr.folderRow td:first-child a:before		{ font-family: icomoon; font-weight: normal; content: "\e006"; padding-right: 0.25em; font-size: 150%; }
+#filesList tr.folderRow td + td						{ text-align: center; }
 
 #filesList tr.fileRow td + td,
 #filesList tr.fileRow td + td + td + td				{ text-align: right; }
 #filesList tr.fileRow td + td + td					{ text-align: center; }
-#filesList tr.fileRow td + td + td + td + td		{ text-align: left; }
 
 #filesList tr.fileRow td button.rename				{ display: inline-block; margin-left: 0.5em;  background-color: transparent; visibility: hidden; opacity: 0; transition: opacity 0.5s; -moz-transition: opacity 0.5s; -webkit-transition: opacity 0.5s; }
 #filesList tr.fileRow td:hover button.rename		{ visibility: visible; opacity: 1; }

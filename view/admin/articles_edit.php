@@ -2,10 +2,21 @@
 
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="/js/admin/doArticles.js"></script>
+<script type="text/javascript" src="/js/admin/doFiles.js"></script>
 
 <script type="text/javascript">
+	if(!this.vxWeb.parameters) {
+		this.vxWeb.parameters = {};
+	}
+	
 	this.vxWeb.routes.articles = "<?php echo vxPHP\Http\Router::getRoute('articlesXhr', 'admin.php')->getUrl(); ?>?<?php echo vxPHP\Http\Request::createFromGlobals()->getQueryString(); ?>";
+	this.vxWeb.routes.files = "<?php echo vxPHP\Http\Router::getRoute('fileincludeXhr', 'admin.php')->getUrl(); ?>";
+
+	this.vxWeb.parameters.fileColumns = ["name", "size", "mime", "mTime", "linked"];
+	this.vxWeb.parameters.articlesId = <?php echo vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null'); ?>;
+	
 	vxJS.event.addDomReadyListener(this.vxWeb.doArticles);
+	vxJS.event.addDomReadyListener(this.vxWeb.doFiles);
 </script>
 
 <script type="text/javascript">
@@ -68,5 +79,39 @@ vxJS.event.addDomReadyListener(function() {
 	<div class="section">
 		<h2 id="article_files">Dateien</h2>
 		<?php echo $tpl->files_form; ?>
+		
+		<div id="files">
+
+	<div id="directoryBar"></div>
+
+	<div id="filesList">
+		<table>
+			<thead>
+				<tr>
+					<th class="sortableHeader">Dateiname</th>
+					<th class="sm right sortableHeader">Größe</th>
+					<th class="sm center sortableHeader">Typ/Vorschau</th>
+					<th class="sm right sortableHeader">Erstellt</th>
+					<th class="xs center">Link</th>
+					<th class="sm"></th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</div>
+		
+		
 	</div>
 </div>

@@ -1,14 +1,3 @@
-<!-- {extend: admin/layout_with_menu.php @ content_block } -->
-
-<script type="text/javascript" src="/js/admin/doFiles.js"></script>
-
-<script type="text/javascript">
-	this.vxWeb.routes.files = "<?php echo vxPHP\Http\Router::getRoute('filesXhr', 'admin.php')->getUrl(); ?>";
-	vxJS.event.addDomReadyListener(this.vxWeb.doFiles);
-</script>
-
-<h1>Dateien</h1>
-
 <div id="files">
 
 	<div id="directoryBar"></div>
@@ -27,7 +16,7 @@
 
 			<tbody>
 				<tr>
-					<td>Der Dateimanager ist auf JavaScript Unterstützung angewiesen.</td>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>

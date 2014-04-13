@@ -69,6 +69,10 @@ this.vxWeb.doArticles = function() {
 
 			if(r.id) {
 				id = r.id;
+				if(vxWeb.parameters) {
+					vxWeb.parameters.articlesId = id;
+				}
+
 				articleXhrForm.element.elements["submit_article"].firstChild.nodeValue = "Änderungen übernehmen";
 			}
 		}
