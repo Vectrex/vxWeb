@@ -99,8 +99,6 @@ class ArticlesController extends Controller {
 
 				$submitButton->setInnerHTML('Änderungen übernehmen');
 
-				$filesForm = $this->initFilesForm($article)->bindRequestParameters();
-
 			}
 
 			else {
@@ -128,7 +126,6 @@ class ArticlesController extends Controller {
 				SimpleTemplate::create('admin/articles_edit.php')
 					->assign('backlink', $this->pathSegments[0])
 					->assign('article_form', $articleForm->render())
-					->assign('files_form', isset($filesForm) ? $filesForm->render() : '')
 					->display()
 			);
 		}
@@ -268,7 +265,6 @@ class ArticlesController extends Controller {
 						if(!$id) {
 							return new JsonResponse(array(
 								'success' => TRUE,
-								'markup' => array('html' => $this->initFilesForm($article)->render()),
 								'id' => $article->getId()
 							));
 						}
@@ -287,53 +283,6 @@ class ArticlesController extends Controller {
 				catch(ArticleCategoryException $e) {
 					return new JsonResponse(array('message' => 'Beim Anlegen/Aktualisieren des Artikels ist ein Fehler aufgetreten!'));
 				}
-
-			case 'ifuSubmit':
-
-				$success	= TRUE;
-				$errorMsg	= '';
-
-				if(($delIds = $this->request->request->get('delete_file'))) {
-					foreach(array_keys($delIds) as $id) {
-						try {
-							$article->unlinkMetaFile(MetaFile::getInstance(NULL, (int) $id));
-							$article->save();
-						}
-						catch(MetaFileException $e) {
-							$success	= FALSE;
-							$errorMsg	= 'Fehler beim Entfernen der Datei!';
-						}
-					}
-				}
-
-//				$this->getArticleCategories();
-				try {
-					if(($mf = vxWeb\FileUtil::uploadFileForArticle($article, array('file_description' => $this->request->request->get('file_description'))))) {
-						$article->linkMetaFile($mf);
-						$article->save();
-					}
-				}
-				catch(MetaFileException $e) {
-					$success = FALSE;
-					$errorMsg = 'Fehler beim Upload der Datei!';
-				}
-
-				$rows = array();
-
-				foreach($article->getLinkedMetaFiles() as $mf) {
-					$rows[] = array(
-							'id'		=> $mf->getId(),
-							'filename'	=> $mf->getFilename(),
-							'isThumb'	=> $mf->isWebImage(),
-
-							// notice: Loading in iframe document doesn't allow markup due to intrinsic entity encoding
-
-							'type'		=> $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
-							'metadata'	=> $mf->getData()
-					);
-				}
-
-				return new JsonResponse(array('success' => $success, 'message' => $errorMsg, 'files' => $rows));
 
 			case 'sortFiles':
 				
@@ -391,49 +340,6 @@ class ArticlesController extends Controller {
 	}
 
 	/**
-	 * @param Article $article
-	 * @return HtmlForm
-	 */
-	private function initFilesForm(Article $article) {
-
-		$cbValues		= array();
-		$mimetypes		= array();
-		$descriptions	= array();
-		$filenames		= array();
-
-		$form = HtmlForm::create('admin_edit_article_files.htm')
-			->setEncType('multipart/form-data')
-			->setAttribute('class', 'editArticleForm');
-
-		if(!is_null($article->getId())) {
-			$form->addElement(FormElementFactory::create('input', 'id', $article->getId(), array('type' => 'hidden')));
-
-			foreach($article->getLinkedMetaFiles() as $f) {
-
-				$data = $f->getData();
-
-				$cbValues[$data['filesID']]	= 1;
-				$descriptions[]				= $data['Description'];
-				$filenames[]				= $data['File'];
-				$mimetypes[]				= $f->isWebImage() ? ('<img class="thumb" src="' . $f->getRelativePath() . '#crop 1|resize 0 40" alt="">') : $f->getMimetype();
-			}
-		}
-
-		$fileSubmit = FormElementFactory::create('button', 'submit_file', '', array('type' => 'submit'));
-		$fileSubmit->setInnerHTML('Datei(en) hinzufügen/löschen');
-
-		return $form
-			->initVar	('files_count',		count($filenames))
-			->addMiscHtml('mimetypes',		$mimetypes)
-			->addMiscHtml('descriptions',	$descriptions)
-			->addMiscHtml('filenames',		$filenames)
-			->addElementArray(FormElementFactory::create('checkbox', 'delete_file', $cbValues))
-			->addElement(FormElementFactory::create('input', 'upload_file', '', array('type' => 'file')))
-			->addElement(FormElementFactory::create('textarea', 'file_description', '', array('rows' => 2, 'cols' => 40, 'class' => 'xl')))
-			->addElement($fileSubmit);
-	}
-
-	/**
 	 * @param MetaFile $f
 	 * @return string
 	 */
@@ -469,6 +375,5 @@ class ArticlesController extends Controller {
 
 		return str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest);
 	}
-
 
 }
