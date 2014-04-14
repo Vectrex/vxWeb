@@ -313,9 +313,9 @@ class FilesController extends Controller {
 				);
 			}
 		}
-		catch(MetaFileException $e) {}
-
-		return array('error' => TRUE);
+		catch (MetaFileException $e) {
+			return array('error' => $e->getMessage());
+		}
 	}
 
 	private function delFile() {
@@ -333,9 +333,9 @@ class FilesController extends Controller {
 			}
 		}
 
-		catch (MetaFileException $e) {}
-
-		return array('error' => TRUE);
+		catch (MetaFileException $e) {
+			return array('error' => $e->getMessage());
+		}
 	}
 
 	private function moveFile() {
@@ -353,37 +353,39 @@ class FilesController extends Controller {
 				return $this->getFiles($folder);
 			}
 		}
-
-		catch(MetaFileException $e) {}
-
-		return array('error' => TRUE);
+		catch (\Exception $e) {
+			return array('error' => $e->getMessage());
+		}
 	}
-
+		
 	private function addFolder(MetaFolder $folder) {
 
 		try {
 			$folder->createFolder(preg_replace('~[^a-z0-9_-]~', '_', $this->request->request->get('folderName')));
 			return $this->getFiles($folder);
 		}
-		catch(Exception $e) {}
-
-		return array('error' => TRUE);
+		catch (\Exception $e) {
+			return array('error' => $e->getMessage());
+		}
 	}
 
 	private function delFolder() {
 
-		if(($id = $this->request->request->getInt('id'))) {
-
-			$folder = MetaFolder::getInstance(NULL, $id);
-
-			if(($parent = $folder->getParentMetafolder())) {
-
-				$folder->delete();
-				return $this->getFiles($parent);
+		try {
+			if(($id = $this->request->request->getInt('id'))) {
+	
+				$folder = MetaFolder::getInstance(NULL, $id);
+	
+				if(($parent = $folder->getParentMetafolder())) {
+	
+					$folder->delete();
+					return $this->getFiles($parent);
+				}
 			}
 		}
-
-		return array('error' => TRUE);
+		catch (\Exception $e) {
+			return array('error' => $e->getMessage());
+		}
 	}
 
 	private function getFiles(MetaFolder $mf) {
@@ -587,8 +589,6 @@ class FilesController extends Controller {
 						}
 						break;
 				}
-
-
 			}
 
 			if(

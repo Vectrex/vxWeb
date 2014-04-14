@@ -343,6 +343,25 @@ class ArticlesController extends Controller {
 				);
 				
 				$article->save();
+				break;
+				
+				
+			case 'getFiles':
+
+				$rows = array();
+
+				foreach(Article::getInstance($this->request->request->getInt('articlesId'))->getLinkedMetaFiles() as $mf) {
+					$rows[] = array(
+						'id'		=> $mf->getId(),
+						'filename'	=> $mf->getFilename(),
+						'isThumb'	=> $mf->isWebImage(),
+						'type'		=> $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype()
+					);
+				}
+
+				return new JsonResponse(array('files' => $rows));
+
+				break;
 				
 		}
 

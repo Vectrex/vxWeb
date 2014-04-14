@@ -1,3 +1,5 @@
+/*jslint browser: true, eqeq: true, plusplus: true, sloppy: true, vars: true, white: true */
+
 if(!this.vxWeb) {
 	this.vxWeb = {};
 }
@@ -8,48 +10,51 @@ this.vxWeb.doArticles = function() {
 
 	var	route = vxWeb.routes.articles,
 		articleXhrForm, id,
-		filesXhrForm, st,
 		sortXhr = vxJS.xhr( { uri: route, command: "sortFiles" }),
+		sorTable,
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
 		mBox = document.getElementById("messageBox"), timeoutId;
 
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
 
-	var initFilesForm = function() {
-		var form = document.forms[1], dragFrom;
+	var initSorTable = function() {
+		var st = "table".setProp("class", "linkedFilesTable").create([
+				"thead".create(
+					"tr".create(["", "Typ", "Dateiname"].domWrapWithTag("th")
+				)),
+				"tbody".create(
+					"tr".create(["", "", ""].domWrapWithTag("td")
+				))
+			]),
+			dragFrom;
 
-		form.action = route;
-
-		filesXhrForm = vxJS.widget.xhrForm(form, { uri: route, command: "handleFiles" });
-		filesXhrForm.addSubmit(filesXhrForm.element.elements["submit_file"]);
-		filesXhrForm.enableIframeUpload();
-		filesXhrForm.enableImmediateSubmit();
-		vxJS.event.addListener(filesXhrForm, "ifuResponse", handleUploadResponse);
-
-		st = vxJS.widget.sorTable(vxJS.dom.getElementsByClassName("imageTable")[0], { columnFormat: ["manual", "no_sort", "no_sort", "no_sort"] });
-
-		vxJS.event.addListener(st, "dragStart", function() {
+		sorTable = vxJS.widget.sorTable(st, { columnFormat: ["manual", "no_sort", "no_sort"] });
+		
+		vxJS.event.addListener(sorTable, "dragStart", function() {
 			dragFrom = this.getDraggedRow().sectionRowIndex;
 		});
 
-		vxJS.event.addListener(st, "dragStop", function() {
+		vxJS.event.addListener(sorTable, "dragStop", function() {
 			var draggedRow = this.getDraggedRow(), to = draggedRow.sectionRowIndex;
 
 			if(dragFrom !== to) {
 
-				sortXhr.use(null, {
-					to:		to,
-					file:	parseInt(draggedRow.querySelector("input[type='checkbox']").name.match(/\[(\d+)\]$/)[1], 10),
-					id:		parseInt(filesXhrForm.element.elements["id"].value, 10)
-				}).submit();
+				sortXhr.use(
+					{
+						command: "sortFiles"
+					}, {
+						to:		to,
+						file:	parseInt(draggedRow.firstChild.id.match(/(\d+)$/)[1], 10),
+						id:		vxWeb.parameters.articlesId
+					}
+				).submit();
 				
 				this.initSort();
 
 			}
 		});
 
-		tabs.enable();
 	};
 
 	var parseServerCheck = function(r) {
@@ -98,42 +103,31 @@ this.vxWeb.doArticles = function() {
 		}, 3000);
 	};
 
-	var handleUploadResponse = function(r) {
-		var l, fi;
-
-		if(!r.success) {
-			parseServerCheck(r);
-		}
-
-		while((l = st.element.rows.length)) {
-			st.removeRow(st.element.rows[l - 1]);
-		}
-
-		if(r.files && r.files.length) {
-			r.files.forEach(function(fileData){
-				st.insertRow("tr".create([
-					"td".setProp("class", "dndColumn").create(),
-					"td".create(fileData.isThumb ? "img".setProp({ src: fileData.type, className: "thumb"}).create() : fileData.type),
-					"td".create(fileData.filename),
-					"td".create(fileData.metadata.Description),
-					"td".create("input".setProp( { type: "checkbox", name: "delete_file[" + fileData.id + "]", value: 1 } ).create())
-				]));
-			});
-		}
-
-		// IE7/8 doesn't allow to set value to an empty string
-
-		fi = this.element.elements["upload_file"];
-		fi.parentNode.replaceChild("input".setProp({name: "upload_file", type: "file" }).create(), fi);
-		this.element.elements["file_description"].value = "";
-	};
-
-	if(document.forms[1]) {
-		initFilesForm();
+	if(vxWeb.parameters.articlesId) {
+		initSorTable();
 	}
 	else {
 		tabs.disable();
 	}
+	
+	var handleSortResponse = function() {
+		var confirm;
+
+		if(this.response && this.response.files) {
+			sorTable.removeAllRows();
+			this.response.files.forEach(function(row) {
+				sorTable.insertRow(
+					"tr".create([
+						"td".setProp("id", "__id__" + row.id).create(),
+						"td".create(row.isThumb ? "img".setProp( { src: row.type, className: "thumb" } ).create() : row.type),
+						"td".create(row.filename)
+					])
+				);
+			});
+			confirm = vxJS.widget.confirm( { className: "confirmForm", content: [ { fragment: sorTable.element.parentNode }], buttons: [{label: "Schließen", key: "close"}]}); 
+			confirm.show();
+		}
+	};
 
 	vxJS.event.addListener(articleXhrForm, "beforeSubmit", function() {
 		if(id) {
@@ -145,4 +139,10 @@ this.vxWeb.doArticles = function() {
 	});
 
 	vxJS.event.addListener(articleXhrForm, "check", parseServerCheck);
+	vxJS.event.addListener(sortXhr, "complete", handleSortResponse);
+	vxJS.event.addListener(document.getElementById("showSort"), "click", function() {
+		if(vxWeb.parameters && vxWeb.parameters.articlesId) {
+			sortXhr.use( { command: "getFiles" }, { articlesId: vxWeb.parameters.articlesId } ).submit();
+		}
+	});
 };

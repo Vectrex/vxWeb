@@ -26,10 +26,12 @@ this.vxWeb.doFiles = function() {
 		xhr = vxJS.xhr( { uri: uri, echo: true, timeout: 10000 }, {}, { node: throbberElement } ),
 		form, xhrForm,
 		formInitValues = {}, filesTableListeners = [],
-		dnd, dndPossible = !!vxJS.dnd,
-		confirm = vxJS.widget.confirm( { overlay: true, className: "confirmForm" } ),
+		dnd,
+		confirm = vxJS.widget.confirm( {
+			overlay: true,
+			decoration: [{ html: '<div class="vxJS_dragBar"></div><div class="vxJS_confirm_content"></div><div class="vxJS_confirm_buttons"></div>' }]
+		}),
 		filesTable = document.getElementById("filesList").getElementsByTagName("table")[0],
-		confirmPayload = "div".setProp("class", "confirmPayload").create(),
 		lsValue, lsKey = window.location.href + "__sort__",
 		folderRex = /(^| )folderRow( |$)/,
 		icons = {
@@ -89,8 +91,7 @@ this.vxWeb.doFiles = function() {
 					xhr.use({ command: "requestAddForm" }).submit();
 				}
 				else {
-					vxJS.dom.deleteChildNodes(confirmPayload);
-					confirmPayload.appendChild(form);
+					vxJS.widget.confirm({ content: [{ fragment: form }], buttons: [], className: "confirmForm" });
 					confirm.show();
 				}
 				vxJS.event.cancelBubbling(e);
@@ -501,26 +502,20 @@ this.vxWeb.doFiles = function() {
 					break;
 
 				case "requestAddForm":
-					vxJS.dom.deleteChildNodes(confirmPayload);
-					confirmPayload.appendChild(vxJS.dom.parse(r.response));
-					form = confirmPayload.getElementsByTagName("form")[0];
+					vxJS.widget.confirm({ content: r.response, buttons: [], className: "confirmForm" });
+					form = confirm.element.getElementsByTagName("form")[0];
 
 					prepareAddForm();
 
 					confirm.show();
 					form.elements[0].focus();
-
-					if(dnd) {
-						dnd.addDraggable(confirm.element);
-					}
 					break;
 
 				case "requestEditForm":
-					vxJS.dom.deleteChildNodes(confirmPayload);
-					confirmPayload.appendChild(vxJS.dom.parse(r.response));
+					vxJS.widget.confirm({ content: r.response, buttons: [], className: "confirmForm" });
 
 					// prepare edit form
-					f = confirmPayload.getElementsByTagName("form")[0];
+					f = confirm.element.getElementsByTagName("form")[0];
 
 					xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
 					xForm.addSubmit(f.elements["submit_edit"]);
@@ -557,9 +552,6 @@ this.vxWeb.doFiles = function() {
 					);
 
 					confirm.show();
-					if(dnd) {
-						dnd.addDraggable(confirm.element);
-					}
 					break;
 
 				case "getFolderTree":
@@ -567,12 +559,9 @@ this.vxWeb.doFiles = function() {
 					tree.truncate();
 					tree.addBranches(r.response.branches);
 
-					vxJS.dom.deleteChildNodes(confirmPayload);
-					confirmPayload.appendChild(folderTreeContainer);
+					vxJS.widget.confirm({ content: [ { fragment: folderTree.element } ], buttons: [ { label: "Abbrechen", key: "close"} ], className: "confirmForm" });
+
 					confirm.show();
-					if(dnd) {
-						dnd.addDraggable(confirm.element);
-					}
 					break;
 			}
 		}
@@ -616,11 +605,10 @@ this.vxWeb.doFiles = function() {
 
 	filesTable.tHead.appendChild("tr".setProp("class", "addFolderRow").create("td".setProp("colSpan", 6).create([addFolderButton, addFolderInput, addFileButton, throbberElement])));
 
-	if(dndPossible) {
-		confirm.element.appendChild("div".setProp("class", "vxJS_dragBar").create());
+	if(vxJS.dnd) {
 		dnd = vxJS.dnd.create();
+		dnd.addDraggable(confirm.element);
 	}
-	confirm.element.appendChild(confirmPayload);
 
 	xhr.use({command: "getFiles"}, fileListParameters).submit();
 };

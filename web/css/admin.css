@@ -236,7 +236,7 @@ form div.formBase * 		{ font-size: 100%; }
 #filesList tr.fileRow td:hover button.rename		{ visibility: visible; opacity: 1; }
 #filesList tr.fileRow input							{ width: 20em; border: solid 1px #c0c0c0; background: #fff; padding: 2px; }
 
-.editFileForm								{ background: #c0c0c0; padding: 0.75em 1.5em; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; margin-bottom: 0.5em; }
+.editFileForm								{ background: #c0c0c0; padding: 0.75em 1.5em; }
 .editFileForm .extras						{ margin-top: 0.5em; border-top: solid 1px #fff; }
 .editFileForm label							{ vertical-align: top; width: 8em; }
 .editFileForm .formBase						{ margin-left: 8em; }
@@ -327,26 +327,28 @@ button.loginButton:after			{ font-family: icomoon; font-size: 16px; content: "\e
  * Articles
  */
 
-.editArticleForm .fileInfo			{ margin: 0.5em 0 0.5em 10em; }
-span.calendarPopper					{ display: inline-block; cursor: pointer; vertical-align: middle; margin: 0 4px; }
-span.calendarPopper:before			{ font-family: icomoon; content: "\e00c"; font-size: 1.5em; color: #1D6589; }
+.editArticleForm .fileInfo					{ margin: 0.5em 0 0.5em 10em; }
 
-.imageTable							{ }
-.imageTable th+th+th+th,
-.imageTable td+td+td+td				{ text-align: center; }
-.imageTable .dragged				{ background: #ff6000; }
-.imageTable .insertAbove			{ border-top: solid 2px #808080; }
-.imageTable .insertBelow			{ border-bottom: solid 2px #808080; }
+span.calendarPopper							{ display: inline-block; cursor: pointer; vertical-align: middle; margin: 0 4px; }
+span.calendarPopper:before					{ font-family: icomoon; content: "\e00c"; font-size: 1.5em; color: #1D6589; }
 
-.imageTable td.dndColumn			{ vertical-align: middle; text-align: center; cursor: move; visibility: hidden; }
-.imageTable td.dndColumn:before		{ font-family: icomoon; content: "\e03a"; font-size: 2em; color: #c0c0c0; }
+.linkedFilesTable							{ }
+.linkedFilesTable th+th,
+.linkedFilesTable td+td						{ width: 4em; text-align: center; }
+.linkedFilesTable th+th+th,
+.linkedFilesTable td+td+td					{ width: 12em; text-align: left; }
 
-.imageTable tr.dragged td.dndColumn,
-.imageTable tr:hover td.dndColumn	{ visibility: visible; }
+.linkedFilesTable .dragged					{ background: #ff6000; }
+.linkedFilesTable .insertAbove				{ border-top: solid 2px #808080; }
+.linkedFilesTable .insertBelow				{ border-bottom: solid 2px #808080; }
 
-img.thumb						{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3px #808080; -webkit-box-shadow: 1px 1px 3px #808080; }
+.linkedFilesTable tr td:first-child			{ vertical-align: middle; text-align: center; cursor: move; visibility: hidden; }
+.linkedFilesTable tr td:first-child:before	{ font-family: icomoon; content: "\e03a"; font-size: 2em; color: #fff; }
 
-.fileOverlay					{ width: 80%; height: 60%; padding: 1em; border: solid 1px #808080; background: #fff; }
+.linkedFilesTable tr.dragged td:first-child,
+.linkedFilesTable tr:hover td:first-child	{ visibility: visible; }
+
+img.thumb									{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3px #808080; -webkit-box-shadow: 1px 1px 3px #808080; }
 
 /*
  * Popup Calendar
