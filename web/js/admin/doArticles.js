@@ -13,7 +13,16 @@ this.vxWeb.doArticles = function() {
 		sortXhr = vxJS.xhr( { uri: route, command: "sortFiles" }),
 		sorTable,
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
-		mBox = document.getElementById("messageBox"), timeoutId;
+		mBox = document.getElementById("messageBox"), timeoutId,
+		sortButton = function() {
+			var b = "button".setProp({ type: "button", className: "sortFilesButton" }).create("Verlinkte Dateien sortieren");
+			vxJS.event.addListener(b, "click", function() {
+				if(vxWeb.parameters && vxWeb.parameters.articlesId) {
+					sortXhr.use( { command: "getFiles" }, { articlesId: vxWeb.parameters.articlesId } ).submit();
+				}
+			});
+			return b;
+		}(), buttonsCell;
 
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
@@ -66,18 +75,12 @@ this.vxWeb.doArticles = function() {
 			vxJS.dom.removeClassName(mBox, "messageBoxError");
 			vxJS.dom.addClassName(mBox, "messageBoxSuccess");
 
-			if(r.markup) {
-				vxJS.dom.deleteChildNodes(tabs.tabs[1].page);
-				tabs.tabs[1].page.appendChild(vxJS.dom.parse(r.markup));
-				initFilesForm();
-			}
-
 			if(r.id) {
 				id = r.id;
 				if(vxWeb.parameters) {
 					vxWeb.parameters.articlesId = id;
 				}
-
+				tabs.enable();
 				articleXhrForm.element.elements["submit_article"].firstChild.nodeValue = "Änderungen übernehmen";
 			}
 		}
@@ -103,13 +106,6 @@ this.vxWeb.doArticles = function() {
 		}, 3000);
 	};
 
-	if(vxWeb.parameters.articlesId) {
-		initSorTable();
-	}
-	else {
-		tabs.disable();
-	}
-	
 	var handleSortResponse = function() {
 		var confirm;
 
@@ -140,9 +136,12 @@ this.vxWeb.doArticles = function() {
 
 	vxJS.event.addListener(articleXhrForm, "check", parseServerCheck);
 	vxJS.event.addListener(sortXhr, "complete", handleSortResponse);
-	vxJS.event.addListener(document.getElementById("showSort"), "click", function() {
-		if(vxWeb.parameters && vxWeb.parameters.articlesId) {
-			sortXhr.use( { command: "getFiles" }, { articlesId: vxWeb.parameters.articlesId } ).submit();
-		}
-	});
+	
+	if(!vxWeb.parameters.articlesId) {
+		tabs.disable();
+	}
+	initSorTable();
+
+	buttonsCell = document.querySelector("tr.addFolderRow td");
+	buttonsCell.insertBefore(sortButton, buttonsCell.lastChild);
 };

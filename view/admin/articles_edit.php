@@ -15,8 +15,8 @@
 	this.vxWeb.parameters.fileColumns = ["name", "size", "mime", "mTime", "linked"];
 	this.vxWeb.parameters.articlesId = <?php echo vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null'); ?>;
 	
-	vxJS.event.addDomReadyListener(this.vxWeb.doArticles);
 	vxJS.event.addDomReadyListener(this.vxWeb.doFiles);
+	vxJS.event.addDomReadyListener(this.vxWeb.doArticles);
 </script>
 
 <script type="text/javascript">
@@ -78,9 +78,7 @@ vxJS.event.addDomReadyListener(function() {
 
 	<div class="section">
 		<h2 id="article_files">Dateien</h2>
-		
-		<button id="showSort" type="button">Datei auswählen</button>
-		
+
 		<div id="directoryBar"></div>
 	
 		<div id="filesList">
