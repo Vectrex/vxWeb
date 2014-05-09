@@ -1,3 +1,9 @@
+/*
+ * colors: #0089CC, #FF9400 - #005680, #804A00, hover: #aef
+ *
+ *
+ */
+
 @CHARSET "UTF-8";
 @import "../fonts/verb_condensed/webfont.css";
 @import "../fonts/icomoon/webfont.css";
@@ -12,21 +18,20 @@ body			{ }
 
 img				{ border: none; }
 p				{ font-size: 80%; line-height: 200%; margin-bottom: 0.5em; padding: 0; }
-a				{ text-decoration: none; color: #1D6589; }
+a				{ text-decoration: none; color: #005680; }
 a:hover,
-a:active		{ text-decoration: underline; }
+a:active		{ color: #0089CC; }
 
 input,
 textarea,
 select,
 button							{ padding: 0.125em; font-family: verbcond, sans-serif; font-size: 100%; }
-button							{ display: inline-block; padding: 0.25em 0.75em; background: #808080; color: #fff; font-weight: bold; border: solid 1px #666; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
+button							{ display: inline-block; padding: 0.25em 0.75em; background: #999; color: #fff; font-weight: bold; border: solid 1px #888; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
 button:hover,
-button:active					{ box-shadow: 0 0 4px 1px #4a0; color: #6e0; }
-/*
-button::-moz-focus-inner{ border: 0; }
-button:focus			{ outline: none; }
-*/
+button:active					{ color: #aef; cursor: pointer; }
+
+input:focus,
+textarea:focus					{}
 input[type="checkbox"]			{ vertical-align: middle; }
 
 table							{ font-size: 0.8em; border-collapse: collapse; margin-bottom: 1em; }
@@ -128,14 +133,14 @@ div.errorContainer .errorBox	{ font-size: 80%; font-weight: bold; line-height: 1
  * "Buttons" with labels
  */
 
-a.button						{ display: inline-block; text-decoration: none; padding: 6px 8px; background: 8px 50% no-repeat #c0c0c0; text-align: center; border-radius: 3px; margin-bottom: 0.5em; border: solid 1px #888; font-weight: bold; cursor: pointer; }
+a.button						{ display: inline-block; font-size: 80%; text-decoration: none; padding: 0.25em 1em; color: #fff; background: 8px 50% no-repeat #999; text-align: center; border-radius: 3px; margin-bottom: 0.5em; border: solid 1px #888; font-weight: bold; cursor: pointer; }
 
 a.addButton:before				{ font-family: icomoon; font-weight: normal; content: "\e020"; padding-right: 4px; vertical-align: middle; }
 a.prevButton:before				{ font-family: icomoon; font-weight: normal; content: "\e025"; padding-right: 4px; vertical-align: middle; }
 a.delButton:before				{ font-family: icomoon; font-weight: normal; content: "\e01d"; padding-right: 4px; vertical-align: middle; }
 
 a.button:hover,
-a.button:active					{ box-shadow: 0 0 4px 1px #4a0; }
+a.button:active					{  color: #aef; }
 
 /*
  * Buttons without labels
@@ -167,7 +172,7 @@ a.iconButton:active				{
 #adminmenu_level_0 li,
 #adminmenu li		{ margin: 0; padding: 0.25em 0 0.25em 1em; color:#000; font-size: 100%; }
 #adminmenu_level_0 li.active,
-#adminmenu li.active{ background: url(../img/site/admin_menu_active.png) no-repeat right center #1D6589; color: #fff; }
+#adminmenu li.active{ background: url(../img/site/admin_menu_active.png) no-repeat right center #005680; color: #fff; }
 #adminmenu_level_0 a,
 #adminmenu a		{ }
 #adminmenu_level_0 a:hover,
@@ -315,7 +320,7 @@ form div.formBase * 		{ font-size: 100%; }
 .confirmForm .vxJS_dragBar					{ height: 1.5em; background: #808080; margin: -0.5em -0.5em 0 -0.5em; }
 .confirmForm .buttonBar						{ text-align: center; }
 .confirmForm .buttonBar	button				{ margin-top: 0.5em; display: inline-block; }
-.confirmForm .vxJS_confirm_content			{ max-height: 30em; overflow: auto; }
+.confirmForm .vxJS_confirm_content			{ max-height: 40em; overflow: auto; }
 
 /*
  * Login
@@ -404,6 +409,7 @@ img.thumb									{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3p
 
 div.vxJS_xhrThrobber {
 	position: absolute;
+	color: #005680;
 	z-index: 100;
 	padding: 0.5em;
 	animation: load 1.5s infinite linear;
@@ -422,7 +428,7 @@ div.vxJS_xhrThrobber:before {
 
 div.vxJS_xhrThrobberFileOperation {
 	padding: 0.125em 0.5em;
-	color: #808080;
+	color: #005680;
 	text-align: center;
 	opacity: 0.2;
 	display: inline-block;
@@ -444,14 +450,14 @@ div.vxJS_xhrThrobberFileOperation:before {
  */
 
 @keyframes load {
-	0%		{ transform: rotate(0); color: #808080; }
-	50%		{ transform: rotate(180deg); color: #4a0; }
-	100%	{ transform: rotate(360deg); color: #808080; }
+	0%		{ transform: rotate(0); }
+	50%		{ transform: rotate(180deg); }
+	100%	{ transform: rotate(360deg); }
 }
 @-webkit-keyframes webkit-load {
-	0%		{ -webkit-transform: rotate(0); color: #808080; }
-	50%		{ -webkit-transform: rotate(180deg); color: #4a0; }
-	100%	{ -webkit-transform: rotate(360deg); color: #808080; }
+	0%		{ -webkit-transform: rotate(0); }
+	50%		{ -webkit-transform: rotate(180deg); }
+	100%	{ -webkit-transform: rotate(360deg); }
 }
 
 @keyframes fadeInDown {
