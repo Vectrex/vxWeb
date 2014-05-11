@@ -40,7 +40,7 @@ this.vxWeb.doFiles = function() {
 			 	{ key: "edit",		title: "Bearbeiten",	icon: "\ue002" },
 			 	{ key: "move",		title: "Verschieben",	icon: "\ue004" },
 			 	{ key: "del",		title: "Löschen",		icon: "\ue01d" },
-			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue002a" },
+			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue02a" },
 			 	{ key: "rename",	title: "Umbenennen",	icon: "\ue001" },
 			 	{ key: "delFolder",	title: "Ordner leeren und löschen", icon: "\ue008" },
 			 	{ key: "locked",	title: "Gesperrt", icon: "\ue00f", element: "span" },
