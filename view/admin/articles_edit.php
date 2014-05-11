@@ -65,7 +65,9 @@ vxJS.event.addDomReadyListener(function() {
 
 <h1>Artikel &amp; News</h1>
 
-<a class="button prevButton" href="$<?php echo $tpl->backlink; ?>">Zurück zur Übersicht</a>
+<div class="buttonBar">
+	<a class="buttonLink withIcon" data-icon="&#xe025;" href="$<?php echo $tpl->backlink; ?>">Zurück zur Übersicht</a>
+</div>
 
 <div class="vxJS_tabThis">
 
@@ -79,10 +81,10 @@ vxJS.event.addDomReadyListener(function() {
 	<div class="section">
 		<h2 id="article_files">Dateien</h2>
 
-		<div id="directoryBar"></div>
-	
+	<div class="buttonBar"><span class="buttonGroup" id="directoryBar"></span></div>
+
 		<div id="filesList">
-			<table>
+			<table class="list pct_100">
 				<thead>
 					<tr>
 						<th class="sortableHeader">Dateiname</th>

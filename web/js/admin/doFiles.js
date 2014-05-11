@@ -34,17 +34,24 @@ this.vxWeb.doFiles = function() {
 		filesTable = document.getElementById("filesList").getElementsByTagName("table")[0],
 		lsValue, lsKey = window.location.href + "__sort__",
 		folderRex = /(^| )folderRow( |$)/,
-		icons = {
-			edit:		"button".setProp( { type: "button", href: "", className: "edit", title: "Bearbeiten" } ).create(),
-			move:		"button".setProp( { type: "button", href: "", className: "move", title: "Verschieben" } ).create(),
-			del:		"button".setProp( { type: "button", href: "", className: "del", title: "Löschen" } ).create(),
-			forward:	"button".setProp( { type: "button", href: "", className: "forward", title: "Übernehmen" } ).create(),
+		icons = function() {
+			var elements = {};
+			[
+			 	{ key: "edit",		title: "Bearbeiten",	icon: "\ue002" },
+			 	{ key: "move",		title: "Verschieben",	icon: "\ue004" },
+			 	{ key: "del",		title: "Löschen",		icon: "\ue01d" },
+			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue002a" },
+			 	{ key: "rename",	title: "Umbenennen",	icon: "\ue001" },
+			 	{ key: "delFolder",	title: "Ordner leeren und löschen", icon: "\ue008" },
+			 	{ key: "locked",	title: "Gesperrt", icon: "\ue00f", element: "span" },
+			].forEach(function(props) {
+				var e = (props.element || "button").setProp( { title: props.title, className: "iconOnly " + props.key }).create();
+				e.setAttribute("data-icon", props.icon);
+				elements[props.key] = e;
+			});
 
-			delFolder:	"button".setProp( { type: "button", href: "", className: "delFolder", title: "Ordner leeren und löschen" } ).create(),
-			rename:		"button".setProp( { type: "button", href: "", className: "rename", title: "Umbenennen" } ).create(),
-
-			locked:		"span".setProp( { href: "", className: "locked", title: "Gesperrt" } ).create()
-		},
+			return elements;
+		}(),
 
 		simpleFileRowSort = function(a, b) {
 			var s = this.asc ? 1 : -1;
@@ -85,7 +92,10 @@ this.vxWeb.doFiles = function() {
 		colNum = filesTable.tHead.rows[0].cells.length,
 
 		addFileButton = (function() {
-			var e = "button".setProp({ type: "button", className: "addFileButton" }).create("Datei hinzufügen");
+			var e = "button".setProp({ type: "button", className: "withIcon" }).create("Datei hinzufügen");
+
+			e.setAttribute("data-icon", "\ue00e");
+
 			vxJS.event.addListener(e, "click", function(e) {
 				if(!form) {
 					xhr.use({ command: "requestAddForm" }).submit();
@@ -100,15 +110,18 @@ this.vxWeb.doFiles = function() {
 		}()),
 
 		addFolderButton = (function() {
-			var elem = "button".setProp({ type: "button", className: "addFolderButton" }).create("Neues Verzeichnis anlegen");
-			vxJS.event.addListener(elem, "click", function(e) {
+			var e = "button".setProp({ type: "button", className: "withIcon" }).create("Neues Verzeichnis anlegen");
+
+			e.setAttribute("data-icon", "\ue007");
+
+			vxJS.event.addListener(e, "click", function(e) {
 				this.style.display = "none";
 				addFolderInput.style.display = "";
 				addFolderInput.value = "";
 				addFolderInput.focus();
 				vxJS.event.cancelBubbling(e);
 			});
-			return elem;
+			return e;
 		}()),
 
 		addFolderInput = (function() {
@@ -218,7 +231,7 @@ this.vxWeb.doFiles = function() {
 		for(; i < l; ++i) {
 
 			p = pathSegs[i];
-			elem = "a".setProp("href", "").create(p.name);
+			elem = "button".create(p.name);
 
 			add =  {
 				name:		p.name,
@@ -240,10 +253,10 @@ this.vxWeb.doFiles = function() {
 			directoryBar.appendChild(add.element);
 		}
 
-		if((p = vxJS.dom.getElementsByClassName("currentFolder", directoryBar)[0])) {
-			vxJS.dom.removeClassName(p, "currentFolder");
+		if((p = vxJS.dom.getElementsByClassName("active", directoryBar)[0])) {
+			vxJS.dom.removeClassName(p, "active");
 		}
-		vxJS.dom.addClassName(breadCrumbs[l - 1].element, "currentFolder");
+		vxJS.dom.addClassName(breadCrumbs[l - 1].element, "active");
 	};
 
 	var appendFolderRow = function(folderData) {
@@ -301,13 +314,24 @@ this.vxWeb.doFiles = function() {
 
 		filesTableListeners.push(vxJS.event.addListener(fileData.tr, "click", (function(data) {
 			return function() {
-				var storedNodes, cell;
+				var storedNodes, cell, commands = "link,del,move,edit,forward,rename".split(","), l = commands.length, cmd;
 
 				if(["input", "button"].indexOf(this.nodeName.toLowerCase()) === -1) {
 					return;
 				}
 
-				switch(this.className) {
+				while(l--) {
+					if(vxJS.dom.hasClassName(this, commands[l])) {
+						cmd = commands[l];
+						break;
+					}
+				}
+
+				if(!cmd) {
+					return;
+				}
+
+				switch(cmd) {
 					case "link":
 						if(vxWeb.parameters && vxWeb.parameters.articlesId) {
 							xhr.use( { command: this.checked ? "linkToArticle" : "unlinkFromArticle" }, { id: data.id, articlesId: vxWeb.parameters.articlesId } ).submit();
@@ -559,7 +583,7 @@ this.vxWeb.doFiles = function() {
 					tree.truncate();
 					tree.addBranches(r.response.branches);
 
-					vxJS.widget.confirm({ content: [ { fragment: folderTree.element } ], buttons: [ { label: "Abbrechen", key: "close"} ], className: "confirmForm" });
+					vxJS.widget.confirm({ content: [ { fragment: "div".setProp("className", "padded").create(folderTree.element) } ], buttons: [ { label: "Abbrechen", key: "close"} ], className: "confirmForm" });
 
 					confirm.show();
 					break;
@@ -603,7 +627,7 @@ this.vxWeb.doFiles = function() {
 		t.sortBy(0, "asc");
 	}
 
-	filesTable.tHead.appendChild("tr".setProp("class", "addFolderRow").create("td".setProp("colSpan", 6).create([addFolderButton, addFolderInput, addFileButton, throbberElement])));
+	filesTable.tHead.appendChild("tr".setProp("className", "fileFunctions").create("td".setProp("colSpan", 6).create("div".setProp("className", "buttonBar").create([addFolderButton, addFolderInput, addFileButton, throbberElement]))));
 
 	if(vxJS.dnd) {
 		dnd = vxJS.dnd.create();

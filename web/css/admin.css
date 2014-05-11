@@ -8,53 +8,84 @@
 @import "../fonts/verb_condensed/webfont.css";
 @import "../fonts/icomoon/webfont.css";
 
-/*
+/**
  * Elements
  */
 
-*				{ margin: 0; padding: 0; }
-html, body		{ font-family: verbcond, sans-serif; font-size: 100%; background: #fff; color: #000; height: 100%; }
-body			{ }
+*								{ margin: 0; padding: 0; }
+html, body						{ font-family: verbcond, sans-serif; font-size: 100%; background: #fff; color: #000; height: 100%; }
 
-img				{ border: none; }
-p				{ font-size: 80%; line-height: 200%; margin-bottom: 0.5em; padding: 0; }
-a				{ text-decoration: none; color: #005680; }
+*, *:before, *:after			{ box-sizing: border-box; -moz-box-sizing: border-box; }
+
+img								{ border: none; }
+p								{ font-size: 80%; line-height: 200%; margin-bottom: 0.5em; padding: 0; }
+a								{ text-decoration: none; color: #005680; }
 a:hover,
-a:active		{ color: #0089CC; }
+a:active						{ color: #0089CC; }
 
 input,
 textarea,
-select,
-button							{ padding: 0.125em; font-family: verbcond, sans-serif; font-size: 100%; }
-button							{ display: inline-block; padding: 0.25em 0.75em; background: #999; color: #fff; font-weight: bold; border: solid 1px #888; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
-button:hover,
-button:active					{ color: #aef; cursor: pointer; }
+select							{ font-size: 100%; padding: 0.125em 0.25em; border-radius: 0.125em; border: solid 1px #888; font-family: verbcond, sans-serif; }
 
 input:focus,
-textarea:focus					{}
-input[type="checkbox"]			{ vertical-align: middle; }
+textarea:focus,
+select:focus					{ box-shadow: 0 0 0.25em #aef; border-color: #0089CC; }
 
-table							{ font-size: 0.8em; border-collapse: collapse; margin-bottom: 1em; }
+table							{ border-collapse: collapse; margin-bottom: 1em; }
 th, td							{ padding: 0.25em 0.5em; text-align: left; vertical-align: middle; }
 th								{ padding-top: 0.5em; background: #c0c0c0; font-weight: bold; }
-table *							{ font-size: 100%; }
-table.list tr th				{ border-left: solid 1px #fff; }
+table.list tr th				{ border-left: solid 1px #eee; }
 table.list tr th:first-child	{ border-left: none; }
 
-/*
+/**
+ * Buttons and button-like anchors
+ */
+
+button, a.buttonLink				{ font-family: verbcond, sans-serif; display: inline-block; padding: 0.25em 0.75em; background: #005680; color: #fff; font-weight: bold; border: solid 1px #003b59; border-radius: 0.25em; margin-right: 0.25em; transition: all 0.5s ease 0s; }
+
+button:hover,
+a.buttonLink:hover,
+button:active,
+a.buttonLink:active					{ color: #aef; cursor: pointer; }
+
+button.active,
+a.buttonLink.active					{ background: #0089CC; transition: all 0.5s ease 0s; }
+
+.withIcon							{ }
+.withIcon:before					{ font-family: icomoon; padding-right: 0.5em; font-weight: normal; content: attr(data-icon); }
+
+span.iconOnly,
+button.iconOnly,
+a.iconOnly							{ font-family: icomoon; font-weight: normal; padding: 0.25em; color: #005680; background: none; border-color: transparent; border-width: 2px; }
+span.iconOnly:before,
+button.iconOnly:before,
+a.iconOnly:before					{ content: attr(data-icon); }
+
+button.iconOnly:hover,
+button.iconOnly:active,
+a.iconOnly:hover,
+a.iconOnly:active					{ color: #005680; border-color: #005680; }
+
+div.buttonBar						{ margin: 0.5em 0; }
+span.buttonGroup					{ display: inline-block; margin-right: 0.25em; }
+span.buttonGroup button				{ border-radius: 0; border-right-style: none; margin-right: 0; }
+span.buttonGroup button:first-child	{ border-bottom-left-radius: 0.25em; border-top-left-radius: 0.25em; }
+span.buttonGroup button:last-child	{ border-bottom-right-radius: 0.25em; border-top-right-radius: 0.25em; border-right-style: solid; }
+
+/**
  * Containers
  */
 
-#page					{ background: none; height: auto; min-width: inherit; min-height: inherit; width: auto; max-width: none; border: none; padding-top: 3em; }
-#content				{ width: auto; background: #fff; margin-left: 14em; padding: 0; color: #000; border: none; }
+#page								{ height: 100%; padding-top: 3em; }
+#content							{ min-height: 100%; background: #eee; margin-left: 13em; padding: 1em; border-left: dotted 1px #888; }
 
-/*
+/**
  * IDs and Classes
  */
 
-#page h1		{ background: none; margin: 0 0 0.5em 0; padding: 0; border: none; color: #808080; font-size: 150%; text-transform: uppercase; font-weight: bold; }
-#page h2		{ font-size: 120%; color: #808080; font-weight: bold; margin: 0.5em 0; padding: 0; font-size: 100%; text-transform: uppercase; font-style: normal; padding: 0;}
-#page h3		{ font-size: 100%; color: #808080; font-weight: bold; margin: 0.5em 0; }
+h1		{ margin: 0 0 0.5em 0; padding: 0; color: #444; font-size: 150%; text-transform: uppercase; font-weight: bold; }
+h2		{ font-size: 120%; color: #444; font-weight: bold; margin: 0.5em 0; padding: 0; font-size: 100%; text-transform: uppercase; font-style: normal; padding: 0;}
+h3		{ font-size: 100%; color: #444; font-weight: bold; margin: 0.5em 0; }
 
 th.sortableHeader					{ cursor: pointer; }
 th.vxJS_sorTable_header_desc,
@@ -64,11 +95,8 @@ th.vxJS_sorTable_header_desc:before,
 th.vxJS_sorTable_header_asc:before	{ font-family: icomoon; font-weight: normal; content: "\e033"; vertical-align: middle; font-size: 150%; }
 th.vxJS_sorTable_header_desc:before	{ content: "\e031"; }
 
-
-.row0				{ background: none; }
-.row1				{ background: #f0f0f0; }
-.row0 td.sorted		{ background: #f8f8f8; }
-.row1 td.sorted		{ background: #e8e8e8; }
+.row0				{ background: #fff; }
+.row1				{ background: #ddd; }
 
 .row0 .active		{ background: #fff0e5; }
 .row1 .active		{ background: #ffe1cc; }
@@ -118,119 +146,58 @@ th.vxJS_sorTable_header_desc:before	{ content: "\e031"; }
 .notify_message     			{ border: solid 1px #880; color: #880; background: #ffc; padding: 1em; margin-bottom: 0.25em; }
 .error_message					{ border: solid 2px #f44; background: #fee; padding: 1.5em; font-size: 0.8em; font-weight: bold; color: #f44; margin: 1.5em 0em; line-height: 150%; }
 .error							{ color: #f00; }
-span.error						{ display: inline-block; background: #ffe0e0; padding: 0.25em; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+span.error						{ display: inline-block; background: #ffe0e0; padding: 0.25em 0.5em; border-radius: 0.25em; }
 label.error						{ font-weight: bold; }
-input.error						{
-									background: #fcc;
-									transition: all 0.5s ease 0s;
-									-moz-transition: all 0.5s ease 0s;
-									-webkit-transition: all 0.5s ease 0s;
-									-o-transition: all 0.5s ease 0s;
-								}
-div.errorContainer .errorBox	{ font-size: 80%; font-weight: bold; line-height: 150%; color: #f00; background: #ffe0e0; padding: 0.5em 1em; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+input.error						{ background: #fcc; transition: all 0.5s ease 0s; }
+div.errorContainer .errorBox	{ font-size: 80%; font-weight: bold; line-height: 150%; color: #f00; background: #ffe0e0; padding: 0.5em 1em; border-radius: 0.25em; }
 
-/*
- * "Buttons" with labels
- */
+div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; padding-bottom: 0.25em; border-bottom: dotted 1px #444; }
 
-a.button						{ display: inline-block; font-size: 80%; text-decoration: none; padding: 0.25em 1em; color: #fff; background: 8px 50% no-repeat #999; text-align: center; border-radius: 3px; margin-bottom: 0.5em; border: solid 1px #888; font-weight: bold; cursor: pointer; }
-
-a.addButton:before				{ font-family: icomoon; font-weight: normal; content: "\e020"; padding-right: 4px; vertical-align: middle; }
-a.prevButton:before				{ font-family: icomoon; font-weight: normal; content: "\e025"; padding-right: 4px; vertical-align: middle; }
-a.delButton:before				{ font-family: icomoon; font-weight: normal; content: "\e01d"; padding-right: 4px; vertical-align: middle; }
-
-a.button:hover,
-a.button:active					{  color: #aef; }
-
-/*
- * Buttons without labels
- */
-
-a.iconButton					{ border-radius: 3px; font-family: icomoon; font-weight: normal; font-size: 16px; display: inline-block; text-decoration: none; padding: 6px 8px; text-align: center; border-radius: 3px; }
-a.deleteButton:before			{ content: "\e01d"; }
-a.editButton:before				{ content: "\e002"; }
-a.cancelButton:before			{ content: "\e01b"; }
-a.checkButton:before			{ content: "\e01e"; }
-
-a.iconButton:hover,
-a.iconButton:active				{
-									background: #ccc;
-									transition: all 0.5s ease 0s;
-									-moz-transition: all 0.5s ease 0s;
-									-webkit-transition: all 0.5s ease 0s;
-									-o-transition: all 0.5s ease 0s;
-								}
-
-/*
- * Main menu
+/**
+ * main menu
  */
 
 #adminmenu_level_0,
-#adminmenu			{ position: fixed; padding: 1em 0; float: left; width: 12em; margin-left: 1em; background: #eee; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; }
+#adminmenu						{ position: fixed; padding: 1em 0; float: left; width: 13em; font-weight: bold; }
 #adminmenu_level_0 ul,
-#adminmenu ul		{ font-size: 100%; list-style-type: none; margin: 0; padding: 0; }
+#adminmenu ul					{ list-style-type: none; margin: 0; padding: 0; }
 #adminmenu_level_0 li,
-#adminmenu li		{ margin: 0; padding: 0.25em 0 0.25em 1em; color:#000; font-size: 100%; }
+#adminmenu li					{ margin: 0; padding: 0.25em 1em 0.25em 2em; color:#000; }
 #adminmenu_level_0 li.active,
-#adminmenu li.active{ background: url(../img/site/admin_menu_active.png) no-repeat right center #005680; color: #fff; }
+#adminmenu li.active			{ background: #005680; color: #fff; }
 #adminmenu_level_0 a,
-#adminmenu a		{ }
+#adminmenu a					{ }
 #adminmenu_level_0 a:hover,
-#adminmenu a:hover	{ text-decoration: none; }
-#adminmenu_level_0 li.active a { color: #fff; }
+#adminmenu a:hover				{ text-decoration: none; }
+#adminmenu_level_0 li.active a	{ color: #fff; }
 
-/*
+/**
  * status bar
  */
 
 #statusBar						{ top: 0; position: fixed; padding: 1em 1em 0.5em 1em; margin: 0; border-bottom: solid 1px #eee; width: 100%; background: #fff; box-shadow: 0 0 8px #888; }
-#statusBar p					{ font-size: 100%; margin: 0; line-height: 100%; }
 #statusBar a					{ text-decoration: none; }
-#statusBar a.homeLink:before	{ font-family: icomoon; font-weight: normal; content: "\e000"; padding-right: 0.25em; }
-#statusBar a.profileLink:before	{ font-family: icomoon; font-weight: normal; content: "\e009"; padding-right: 0.25em; }
-#statusBar a.logoutLink:before	{ font-family: icomoon; font-weight: normal; content: "\e021"; padding-right: 0.25em; }
 
-/*
+/**
  * stock form
  */
 
-form						{ background: #eee; padding: 0.75em 1.5em; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; margin-bottom: 0.5em; margin-right: 1em; }
-form div.formSect			{ margin-bottom: 0.25em; font-size: 80%; }
-form div.formBase			{ font-size: 80%; }
-form div.formItem			{ padding: 0.5em 0; }
-form label					{ display: inline-block; vertical-align: middle; width: 11em; }
-form div.formSect * 		{ font-size: 100%; }
-form div.formBase * 		{ font-size: 100%; }
+form							{ padding: 0.75em 0; }
+.formSect						{ }
+.formBase						{ margin-top: 0.25em; }
+.formItem						{ padding: 0.5em 0; }
+label							{ display: inline-block; vertical-align: top; padding-right: 0.5em; }
 
-/*
- * Profile
+.formSect.multiColumn			{ float: left; padding-right: 1em; }
+.formSect.multiColumn:last-child{ padding-right: 0; }
+.formBase.multiColumn			{ clear: left; }
+
+/**
+ * files
  */
 
-.editProfileForm label		{ vertical-align: middle; width: 8em; }
-.editProfileForm .formBase	{ margin-left: 8em; }
-
-/*
- * Files
- */
-
-#directoryBar					{ margin: 0.25em 0; }
-#directoryBar a					{ display: inline-block; padding: 0.25em 0.5em; margin-right: 2px; background: #c0c0c0; }
-#directoryBar a:first-child		{ border-bottom-left-radius: 4px; border-top-left-radius: 4px; }
-#directoryBar a:last-child		{ border-bottom-right-radius: 4px; border-top-right-radius: 4px; }
-#directoryBar a.currentFolder	{ color: #4a0; }
-#directoryBar a:hover,
-#directoryBar a:active			{ box-shadow: 0 0 4px 1px #4a0; -webkit-box-shadow: 0 0 4px 1px #4a0; -moz-box-shadow: 0 0 4px 1px #4a0; text-decoration: none; }
-
-#files					{ width: 100%; }
-
-#filesList				{ width: 100%; }
-#filesList	table		{ width: 100%; }
-#filesList .hiLite		{ background: #ddd; }
-#filesList a:hover,
-#filesList a:active		{ text-decoration: none; }
-#filesList img			{ vertical-align: middle; }
-#filesList .submitImg	{ cursor: pointer; }
-
+#filesList img										{ vertical-align: middle; }
+#filesList tr.fileFunctions td						{ padding: 0; }
 #filesList tr.folderRow td:first-child a:before		{ font-family: icomoon; font-weight: normal; content: "\e006"; padding-right: 0.25em; font-size: 150%; }
 #filesList tr.folderRow td + td						{ text-align: center; }
 
@@ -238,55 +205,12 @@ form div.formBase * 		{ font-size: 100%; }
 #filesList tr.fileRow td + td + td + td				{ text-align: right; }
 #filesList tr.fileRow td + td + td					{ text-align: center; }
 
-#filesList tr.fileRow td button.rename				{ display: inline-block; margin-left: 0.5em;  background-color: transparent; visibility: hidden; opacity: 0; transition: opacity 0.5s; -moz-transition: opacity 0.5s; -webkit-transition: opacity 0.5s; }
+#filesList tr.fileRow td button.rename				{ margin-left: 0.5em; visibility: hidden; opacity: 0; transition: opacity 0.5s; }
 #filesList tr.fileRow td:hover button.rename		{ visibility: visible; opacity: 1; }
 
-.editFileForm										{ background: #c0c0c0; padding: 0.75em 1.5em; }
-.editFileForm .extras								{ margin-top: 0.5em; border-top: solid 1px #fff; }
-.editFileForm label									{ vertical-align: top; width: 8em; }
-.editFileForm .formBase								{ margin-left: 8em; }
-.editFileForm .fileInfo								{ margin: 0 0 0.5em 8em; padding-bottom: 0.25em; border-bottom: solid 1px #fff; line-height: 200%; }
-.editFileForm button								{ display: inline-block; }
-.editFileForm button[name="submit_cancel"]			{ margin-right: 0.5em; }
+#filesList input.renameInput						{ width: 20em; }
 
-#filesList input.renameInput						{ width: 20em; border: solid 1px #c0c0c0; background: #fff; padding: 2px; }
-
-#filesList button									{ display: inline-block; cursor: pointer; border: none; vertical-align: middle; }
-#filesList button.addFileButton,
-#filesList button.addFolderButton					{ color: #1D6589; padding: 0.25em 0.5em; background: none; font-weight: bold; margin: 0.25em 0; }
-#filesList button.addFileButton						{ margin-left: 1em; }
-#filesList input.addFolderInput						{ border: solid 1px #c0c0c0; padding: 4px 4px 4px 24px; background: url(../img/site/icons/darkgray/folder_plus_icon&16.png) no-repeat 4px center; }
-#filesList button.addFolderButton:before			{ font-family: icomoon; font-weight: normal; content: "\e007"; padding-right: 0.25em; font-size: 200%; }
-#filesList button.addFileButton:before				{ font-family: icomoon; font-weight: normal; content: "\e00e"; padding-right: 0.25em; font-size: 200%; }
-
-#filesList button.rename,
-#filesList button.edit,
-#filesList button.del,
-#filesList button.move,
-#filesList button.delFolder,
-#filesList button.forward,
-#filesList span.locked								{ padding: 0.25em; font-weight: normal; }
-
-#filesList button.edit,
-#filesList button.del,
-#filesList button.move,
-#filesList button.delFolder,
-#filesList button.forward,
-#filesList button.rename							{ font-family: icomoon; font-weight: normal; font-size: 16px; border-radius: 2px; color: #1D6589; background: none; }
-
-#filesList button.edit:before						{ content: "\e002"; }
-#filesList button.del:before						{ content: "\e01d"; }
-#filesList button.move:before						{ content: "\e004"; }
-#filesList button.delFolder:before					{ content: "\e008"; }
-
-#filesList button.rename:before						{ content: "\e001"; }
-#filesList button.forward:before					{ content: "\e02a"; }
-#filesList span.locked:before						{ content: "\e00f"; }
-
-#filesList button.sortFilesButton					{ margin-left: 1em; color: #1D6589; padding: 0.25em 0.5em; background: none; font-weight: bold; margin: 0.25em 0; }
-#filesList button.sortFilesButton:before			{ font-family: icomoon; font-weight: normal; content: "\e035"; padding-right: 0.25em; font-size: 200%; }
-
-/*
+/**
  * folderTree popup
  */
 
@@ -311,34 +235,29 @@ form div.formBase * 		{ font-size: 100%; }
 .vxJS_tree div.__label__					{ display: inline; cursor: pointer; }
 .vxJS_tree li span.current					{ font-weight: bold; cursor: default; }
 
-/*
- * Confirm Form
+/**
+ * confirm
  */
 
-.vxJS_overlay								{ background: #fff; opacity: 0.5; filter: alpha(opacity=50); }
-.confirmForm								{ padding: 0.5em !important; background: #c0c0c0 !important; box-shadow: 0 0 6px #666; -moz-box-shadow: 0 0 6px #666; -webkit-box-shadow: 0 0 6px #666; border: solid 3px #808080; }
-.confirmForm .vxJS_dragBar					{ height: 1.5em; background: #808080; margin: -0.5em -0.5em 0 -0.5em; }
-.confirmForm .buttonBar						{ text-align: center; }
-.confirmForm .buttonBar	button				{ margin-top: 0.5em; display: inline-block; }
+.vxJS_overlay								{ background: #fff; opacity: 0.5; }
+.confirmForm								{ background: #ccc !important; box-shadow: 0 0 6px #666; border: solid 3px #808080; }
+.confirmForm .vxJS_dragBar					{ height: 1.5em; background: #808080; }
+.confirmForm .buttonBar						{ text-align: center; padding-top: 0.5em; }
 .confirmForm .vxJS_confirm_content			{ max-height: 40em; overflow: auto; }
 
-/*
- * Login
+.confirmForm div.padded,
+.confirmForm form							{ margin: 1em; }
+
+/**
+ * login
  */
 
-div#adminLogin								{ width: 30em; margin: 0 auto; padding-top: 10em; }
-div#adminLogin form							{ background: #eee; border: solid 3px #808080; padding: 1em 2em; margin: 0; }
+div#adminLogin								{ width: 32em; margin: 0 auto; padding-top: 10em; }
+div#adminLogin form							{ background: #eee; border: solid 2px #808080; padding: 1em 2em; margin: 0;  border-radius: 0.25em; }
 
-div#adminLogin .formSect					{ margin-bottom: 0.25em; font-size: 90%; border-bottom: solid 1px #fff; margin-bottom: 0.5em; padding-bottom: 0.5em; }
-div#adminLogin label						{ width: 6em; }
-div#adminLogin .formBase					{ font-size: 90%; text-align: center; }
-button.loginButton:after					{ font-family: icomoon; font-size: 16px; content: "\e02e"; padding-left: 4px; vertical-align: middle; font-weight: normal; }
-
-/*
- * Articles
+/**
+ * articles
  */
-
-.editArticleForm .fileInfo					{ margin: 0.5em 0 0.5em 10em; }
 
 span.calendarPopper							{ display: inline-block; cursor: pointer; vertical-align: middle; margin: 0 4px; }
 span.calendarPopper:before					{ font-family: icomoon; content: "\e00c"; font-size: 1.5em; color: #1D6589; }
@@ -349,7 +268,7 @@ span.calendarPopper:before					{ font-family: icomoon; content: "\e00c"; font-si
 .linkedFilesTable th+th+th,
 .linkedFilesTable td+td+td					{ width: 24em; text-align: left; }
 
-.linkedFilesTable .dragged					{ background: #ff6000; }
+.linkedFilesTable .dragged					{ background: #FF9400; }
 .linkedFilesTable .insertAbove				{ border-top: solid 2px #808080; }
 .linkedFilesTable .insertBelow				{ border-bottom: solid 2px #808080; }
 
@@ -359,13 +278,13 @@ span.calendarPopper:before					{ font-family: icomoon; content: "\e00c"; font-si
 .linkedFilesTable tr.dragged td:first-child,
 .linkedFilesTable tr:hover td:first-child	{ visibility: visible; }
 
-img.thumb									{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3px #808080; -webkit-box-shadow: 1px 1px 3px #808080; }
+img.thumb									{ box-shadow: 1px 1px 3px #808080; }
 
 /*
- * Popup Calendar
+ * popup calendar
  */
 
-.calendarSkin					{ background: #fff; color: #e80; -moz-box-shadow: 1px 1px 10px #000; -webkit-box-shadow: 1px 1px 10px #000; box-shadow: 1px 1px 10px #000; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; }
+.calendarSkin					{ background: #fff; color: #e80; box-shadow: 1px 1px 10px #000; border-radius: 0.25em; }
 .calendarSkin div				{ padding: 4px; }
 .calendarSkin .vxJS_dragBar		{ font-size: 80%; position: relative; padding: 0; margin: 0.25em 0.5em; }
 .calendarSkin .mon				{ display: block; text-align: center; }
@@ -379,8 +298,8 @@ img.thumb									{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3p
 .calendarSkin input				{ width: 2.5em; font-size: 100%; background: #909090; border: solid 1px; border-color: #445 #ccd #ccd #445; color: #fff; padding: 0 0.25em; }
 .calendarSkin .trail			{ color: #c0c0c0; }
 .calendarSkin .weekCell			{ cursor: pointer; background: #99A5BD; }
-.calendarSkin .today			{ background: #c0c0c0; color: #fff; -moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px; }
-.calendarSkin .marked			{ background-color: #e80; color: #fff; -moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px; }
+.calendarSkin .today			{ background: #c0c0c0; color: #fff; border-radius: 0.2em; }
+.calendarSkin .marked			{ background-color: #e80; color: #fff; border-radius: 0.2em; }
 .calendarSkin .disabled			{ color: #808080; cursor: default; }
 .calendarSkin .prevMon:before	{ font-family: icomoon; content: "\e025"; }
 .calendarSkin .nextMon:before	{ font-family: icomoon; content: "\e023"; }
@@ -392,7 +311,7 @@ img.thumb									{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3p
 .vxJS_tabBar ul				{ padding: 0; margin: 1em 0 0 0; list-style-type: none; font-size: 100%; }
 .vxJS_tabThis				{ }
 .vxJS_tabThis .section		{ clear: both; overflow: auto; }
-.vxJS_tabBar li				{ float: left; font-weight: bold; font-size: 100%; cursor: pointer; margin: 0; padding: 0.5em 0.75em 0.25em 0.75em; border-left: solid 2px #eee; }
+.vxJS_tabBar li				{ float: left; font-weight: bold; font-size: 100%; cursor: pointer; margin: 0; padding: 0.5em 0.75em 0.25em 0.75em; border-left: dotted 1px #0089CC; }
 .vxJS_tabBar li:first-child	{ border-left: none; }
 .vxJS_tabBar li.shown		{ cursor: default; }
 .vxJS_tabBar a				{ outline: none; }
@@ -401,9 +320,9 @@ img.thumb									{ box-shadow: 1px 1px 3px #808080; -moz-box-shadow: 1px 1px 3p
 .vxJS_tabBar .shown a		{ color: #808080; }
 .vxJS_tabBar.disabled a		{ color: #808080; cursor: default; }
 
-.vxJS_tabSpacer				{ clear: both; overflow: hidden; line-height: 0%; height: 2px; }
+.vxJS_tabSpacer				{ clear: both; overflow: hidden; line-height: 0%; height: 2px; border-top: dotted 1px #0089CC; }
 
-/*
+/**
  * XHR throbbers
  */
 
@@ -422,7 +341,7 @@ div.vxJS_xhrThrobber.active {
 }
 
 div.vxJS_xhrThrobber:before {
-	font-family: icomoon; font-size: 16px;
+	font-family: icomoon;
 	content: "\e02f";
 }
 
@@ -430,22 +349,23 @@ div.vxJS_xhrThrobberFileOperation {
 	padding: 0.125em 0.5em;
 	color: #005680;
 	text-align: center;
-	opacity: 0.2;
+	opacity: 0;
 	display: inline-block;
 	vertical-align: middle;
 }
 
 div.vxJS_xhrThrobberFileOperation.active {
+	opacity: 1;
 	animation: load 2s infinite linear;
 	-webkit-animation:  webkit-load 2s infinite linear;
 }
 
 div.vxJS_xhrThrobberFileOperation:before {
 	font-family: icomoon; font-size: 2em;
-	content: "\e030";
+	content: "\e02f";
 }
 
-/*
+/**
  * animation keyframes
  */
 

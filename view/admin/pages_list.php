@@ -57,7 +57,7 @@
 		<td class="right"><?php echo $p['LastRevision']; ?></td>
 		<td class="right"><?php echo $p['RevCount']; ?></td>
 		<td>
-			<a class="iconButton editButton" href="$pages?id=<?php echo $p['revisionsID']; ?>"></a>
+			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$pages?id=<?php echo $p['revisionsID']; ?>"></a>
 		</td>
 	</tr>
 

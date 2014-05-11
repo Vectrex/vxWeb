@@ -35,7 +35,7 @@ class ProfileController extends Controller {
 			$checkBoxHtml .= '<div class="formItem">' . $e->render() . '</div>';
 		}
 
-		$button = FormElementFactory::create('button', 'submit_profile', '', array('type' => 'submit', 'class' => 'ml'));
+		$button = FormElementFactory::create('button', 'submit_profile', '', array('type' => 'submit'));
 		$button->setInnerHTML('<span>Änderungen speichern</span>');
 
 		$form =

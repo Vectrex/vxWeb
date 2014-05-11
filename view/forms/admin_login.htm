@@ -2,14 +2,17 @@
 	<h1>Admin Login</h1>
 	<div class="formSect">
 		<div class="formItem">
-			<label>Username</label>{input:UID}
+			<label class="ssm">Username</label>{input:UID}
 		</div>
 		<div class="formItem">
-			<label>Passwort</label>{input:pwd}
+			<label class="ssm">Passwort</label>{input:pwd}
 		</div>
 	</div>
+	<div class="separator"></div>
 	<div class="formBase">
-		<div class="formItem">{button:submit_login}</div>
+		<div class="formItem">
+			<label class="ssm"></label>{button:submit_login}
+		</div>
 	</div>
 	{error_submit_login:<div class="error_message">Ungültige Email oder ungültiges Passwort!</div>}
 </div>

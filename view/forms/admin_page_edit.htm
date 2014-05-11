@@ -6,24 +6,29 @@
 <div class="notify_message"><strong>Keine Änderungen notwendig</strong><br>Daten wurden nicht gespeichert.</div>
 {end_if}
 
-<div style="float: left; width: 70%">
-	<p style="width: 90%">
-	Titel<br>
-	{input:Title}<br>
-	Eindeutiger Name (automatisch generiert)<br>
-	{input:Alias}<br>
-	Inhalt<br>
-	{textarea:Markup}
-	</p>
+<div class="formSect multiColumn" style="width: 70%;">
+	<div class="formItem">
+		<label>Titel</label>{input:Title}
+	</div>
+	<div class="formItem">
+		<label>Eindeutiger Name (automatisch generiert)</label>{input:Alias}
+	</div>
+	<div class="formItem">
+		<label>Inhalt</label>{textarea:Markup}
+	</div>
 </div>
-<div style="float: left; width: 30%">
-	<p style="width: 90%">
-	Schlüsselwörter<br>
-	{textarea:Keywords}<br>
-	Beschreibung<br>
-	{textarea:Description}
-	</p>
-</div>
-<div class="clearFloat"></div>
 
-<p>{input:submit_edit}</p>
+<div class="formSect multiColumn" style="width: 30%;">
+	<div class="formItem">
+		<label>Schlüsselwörter</label>{textarea:Keywords}
+	</div>
+	<div class="formItem">
+		<label>Beschreibung</label>{textarea:Description}
+	</div>
+</div>	 
+
+<div class="formBase multiColumn">
+	<div class="formItem">
+	{input:submit_edit}
+	</div>
+</div>

@@ -10,19 +10,19 @@
 
 <div class="formSect">
 	<div class="formItem">
-		<label{error_Email: class="error"} for="email_input">Email</label>{input:Email}
+		<label class="m{error_Email: error}" for="email_input">Email</label>{input:Email}
 		<span id="error_Email"></span>{error_Email:<span class="error">Ungültige Email!</span>}
 		<span id="error_duplicate_Email"></span>{error_duplicate_Email:<span class="error">Email wird bereits verwendet!</span>}
 	</div>
 	<div class="formItem">
-		<label{error_Name: class="error"} for="name_input">Admin Name</label>{input:Name}
+		<label class="m{error_Name: error}" for="name_input">Admin Name</label>{input:Name}
 	</div>
 	<div class="formItem">
-		<label for="pwd_input">Neues Passwort</label>{input:new_PWD}
+		<label class="m" for="pwd_input">Neues Passwort</label>{input:new_PWD}
 		<span id="error_new_PWD"></span>{error_new_PWD:<span class="error">Passwort zu kurz!</span>}
 	</div>
 	<div class="formItem">
-		<label for="pwd2_input">Passwort wiederholen</label>{input:new_PWD_verify}
+		<label class="m" for="pwd2_input">Passwort wiederholen</label>{input:new_PWD_verify}
 		<span id="error_PWD_mismatch"></span>{error_PWD_mismatch:<span class="error">Passwörter stimmen nicht überein!</span>}
 	</div>
 </div>
@@ -36,6 +36,6 @@
 
 <div class="formBase">
 	<div class="formItem">
-		{button:submit_profile}
+		<label class="m"></label>{button:submit_profile}
 	</div>
 </div>

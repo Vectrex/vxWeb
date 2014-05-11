@@ -80,7 +80,7 @@ class ArticlesController extends Controller {
 
 			$articleForm = HtmlForm::create('admin_edit_article.htm')->setAttribute('class', 'editArticleForm');
 
-			$submitButton = FormElementFactory::create('button', 'submit_article', '', array('type' => 'submit', 'class' => 'l'));
+			$submitButton = FormElementFactory::create('button', 'submit_article', '', array('type' => 'submit'));
 
 			if(isset($article)) {
 

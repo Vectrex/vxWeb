@@ -32,6 +32,8 @@
 
 <h1>Seiten</h1>
 
-<a class="button prevButton" href="$pages">Zurück ohne speichern</a>
+<div class="buttonBar">
+	<a class="buttonLink withIcon" data-icon="&#xe025;" href="$pages">Zurück zur Übersicht</a>
+</div>
 
 <?php echo $tpl->form; ?>

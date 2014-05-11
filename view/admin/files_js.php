@@ -11,10 +11,10 @@
 
 <div id="files">
 
-	<div id="directoryBar"></div>
+	<div class="buttonBar"><span class="buttonGroup" id="directoryBar"></span></div>
 
 	<div id="filesList">
-		<table>
+		<table class="list pct_100">
 			<thead>
 				<tr>
 					<th class="sortableHeader">Dateiname</th>

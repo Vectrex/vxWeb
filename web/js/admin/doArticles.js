@@ -15,7 +15,10 @@ this.vxWeb.doArticles = function() {
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
 		mBox = document.getElementById("messageBox"), timeoutId,
 		sortButton = function() {
-			var b = "button".setProp({ type: "button", className: "sortFilesButton" }).create("Verlinkte Dateien sortieren");
+			var b = "button".setProp({ type: "button", className: "withIcon" }).create("Verlinkte Dateien sortieren");
+
+			b.setAttribute("data-icon", "\ue035");
+
 			vxJS.event.addListener(b, "click", function() {
 				if(vxWeb.parameters && vxWeb.parameters.articlesId) {
 					sortXhr.use( { command: "getFiles" }, { articlesId: vxWeb.parameters.articlesId } ).submit();
@@ -142,6 +145,6 @@ this.vxWeb.doArticles = function() {
 	}
 	initSorTable();
 
-	buttonsCell = document.querySelector("tr.addFolderRow td");
+	buttonsCell = document.querySelector("tr.fileFunctions td > div");
 	buttonsCell.insertBefore(sortButton, buttonsCell.lastChild);
 };

@@ -1,7 +1,9 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
 <h1>Artikel &amp; News</h1>
 
-<a class="button addButton" href="$articles/new">Artikel anlegen</a>
+<div class="buttonBar">
+	<a class="buttonLink withIcon" data-icon="&#xe018;" href="$articles/new">Artikel anlegen</a>
+</div>
 
 <script type="text/javascript">
 	vxJS.event.addDomReadyListener(function() {
@@ -39,7 +41,7 @@
 	});
 </script>
 
-<table class="list">
+<table class="list pct_100">
 	<tr>
 		<th class="m">Kategorie</th>
 		<th class="l">Titel</th>
@@ -62,8 +64,8 @@
 			<td class="centered"><?php echo $article->getCustomSort(); ?></td>
 			<td class="right"><?php echo is_null($article->getLastUpdated()) ? '' : $article->getLastUpdated()->format('Y-m-d H:i:s'); ?></td>
 			<td>
-				<a class="iconButton editButton" href="$articles?id=<?php echo $article->getId(); ?>" title="Bearbeiten"></a>
-				<a class="iconButton deleteButton" href="$articles/del?id=<?php echo $article->getId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+				<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$articles?id=<?php echo $article->getId(); ?>" title="Bearbeiten"></a>
+				<a class="buttonLink iconOnly" data-icon="&#xe01d;" href="$articles/del?id=<?php echo $article->getId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

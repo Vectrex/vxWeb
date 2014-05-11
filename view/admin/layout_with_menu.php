@@ -42,12 +42,10 @@
 
 		<div id="page">
 			<div id="statusBar">
-				<p>
 					<span class="userInfo">Angemeldet <strong><?php echo vxPHP\User\User::getSessionUser()->getName(); ?></strong> (<?php echo vxPHP\User\User::getSessionUser()->getId(); ?>)</span> &bull;
-					<a class="profileLink" href="<?php echo vxPHP\Http\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
-					<a class="logoutLink" href="<?php echo vxPHP\Http\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
-					Gehe zu <a href="/" class="homeLink"><?php echo vxPHP\Http\Request::createFromGlobals()->getHost(); ?></a>
-				</p>
+					<a class="withIcon" data-icon="&#xe009;" href="<?php echo vxPHP\Http\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
+					<a  class="withIcon" data-icon="&#xe021;" href="<?php echo vxPHP\Http\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
+					Gehe zu <a href="/" class="withIcon" data-icon="&#xe000;"><?php echo vxPHP\Http\Request::createFromGlobals()->getHost(); ?></a>
 			</div>
 
 			<?php echo vxPHP\Webpage\MenuGenerator::create('admin', 0)->render(); ?>
