@@ -55,11 +55,11 @@ a.buttonLink:active					{ color: #aef; cursor: pointer; }
 button.active,
 a.buttonLink.active					{ background: #0089CC; transition: all 0.5s ease 0s; }
 
-.withIcon:before					{ font-family: icomoon; padding-right: 0.5em; font-weight: normal; content: attr(data-icon); line-height: 0; }
+.withIcon:before					{ font-family: icomoon; padding-right: 0.5em; font-weight: normal; content: attr(data-icon); line-height: 100%; }
 
 span.iconOnly,
 button.iconOnly,
-a.iconOnly							{ font-family: icomoon; font-weight: normal; padding: 0.25em; color: #005680; background: none; border-color: transparent; border-width: 2px; }
+a.iconOnly							{ font-family: icomoon; font-weight: normal; padding: 0.25em; color: #005680; background: none; border-color: transparent; border-width: 2px; line-height: 100%; }
 span.iconOnly:before,
 button.iconOnly:before,
 a.iconOnly:before					{ content: attr(data-icon); }
@@ -178,7 +178,6 @@ div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pad
 #adminmenu li					{ margin: 0; padding: 0.25em 1em 0.25em 2em; color:#000; }
 #adminmenu_level_0 li.active,
 #adminmenu li.active			{ background: #005680; color: #fff; }
-#adminmenu_level_0 a,
 #adminmenu_level_0 li.active a	{ color: #fff; }
 
 /**
