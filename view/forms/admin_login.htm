@@ -1,18 +1,18 @@
-<div class="dialog" style="position: relative; z-index: 10;">
-	<h1>Admin Login</h1>
-	<div class="formSect">
-		<div class="formItem">
-			<label class="ssm">Username</label>{input:UID}
-		</div>
-		<div class="formItem">
-			<label class="ssm">Passwort</label>{input:pwd}
+<h1>Administrator Login</h1>
+<div class="formSect">
+
+	<div class="formItem">
+		<div class="inputGroup pct_100">
+			<span class="ssm">Username</span>{input:UID}
 		</div>
 	</div>
-	<div class="separator"></div>
-	<div class="formBase">
-		<div class="formItem">
-			<label class="ssm"></label>{button:submit_login}
+	
+	<div class="formItem">
+		<div class="inputGroup pct_100">
+			<span class="ssm">Passwort</span>{input:pwd}<span class="inputGroupBtn">{button:submit_login}</span>
 		</div>
 	</div>
-	{error_submit_login:<div class="error_message">Ungültige Email oder ungültiges Passwort!</div>}
+	
 </div>
+
+{error_submit_login:<div class="error_message">Ungültige Email oder ungültiges Passwort!</div>}
