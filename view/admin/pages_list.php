@@ -41,7 +41,7 @@
 		<th class="mml">Alias/Titel</th>
 		<th class="m">Template</th>
 		<th>Inhalt</th>
-		<th class="right sm">letzte Änderung</th>
+		<th class="right mml">letzte Änderung</th>
 		<th class="right xs">#Rev</th>
 		<th class="s">&nbsp;</th>
 	</tr>

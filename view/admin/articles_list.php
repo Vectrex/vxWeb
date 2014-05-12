@@ -44,13 +44,13 @@
 <table class="list pct_100">
 	<tr>
 		<th class="m">Kategorie</th>
-		<th class="l">Titel</th>
-		<th class="right">Artikeldatum</th>
-		<th class="right">Anzeige von</th>
-		<th class="right">Anzeige bis</th>
-		<th class="centered">Sortierziffer</th>
-		<th class="right">Angelegt/aktualisiert</th>
-		<th>&nbsp;</th>
+		<th>Titel</th>
+		<th class="m right">Artikeldatum</th>
+		<th class="m right">Anzeige von</th>
+		<th class="m right">Anzeige bis</th>
+		<th class="sm centered">Sortierziffer</th>
+		<th class="ml right">Angelegt/aktualisiert</th>
+		<th class="ssm">&nbsp;</th>
 	</tr>
 <?php if(!empty($tpl->articles)): ?>
 	<?php $color = 0; ?>
