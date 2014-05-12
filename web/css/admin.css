@@ -89,14 +89,14 @@ div.inputGroup span.inputGroupBtn	{ padding: 0; width: 1%; white-space: nowrap; 
 div.inputGroup .inputGroupBtn button{ border: none; margin: -1px; border-radius: inherit; }
 
 /**
- * Containers
+ * containers
  */
 
 #page								{ height: 100%; padding-top: 3em; }
 #content							{ min-height: 100%; background: #eee; margin-left: 13em; padding: 1em; border-left: dotted 1px #888; }
 
 /**
- * IDs and Classes
+ * standard classes and rules
  */
 
 h1		{ margin: 0 0 0.5em 0; padding: 0; color: #444; font-size: 150%; text-transform: uppercase; font-weight: bold; }
@@ -263,8 +263,8 @@ label							{ display: inline-block; vertical-align: top; padding-right: 0.5em; 
  * login
  */
 
-div#adminLogin								{ width: 32em; margin: 0 auto; padding-top: 10em; }
-div#adminLogin form							{ background: #eee; border: solid 2px #888; padding: 2em 3em; margin: 0;  border-radius: 0.25em; }
+div#adminLogin								{ width: 32em; margin: 0 auto; }
+div#adminLogin form							{ background: #fff;	border: solid 1px #08c; padding: 2em 3em; border-radius: 0.5em; box-shadow: 0 0 1em #444; }
 div#adminLogin .inputGroup span:first-child	{ background: #888; color: #fff; }
 
 /**
@@ -296,7 +296,7 @@ img.thumb									{ box-shadow: 1px 1px 3px #808080; }
  * popup calendar
  */
 
-.calendarSkin					{ background: #fff; color: #e80; box-shadow: 1px 1px 10px #000; border-radius: 0.25em; }
+.calendarSkin					{ background: #fff; color: #e58600; box-shadow: 1px 1px 10px #000; border-radius: 0.25em; }
 .calendarSkin div				{ padding: 4px; }
 .calendarSkin .vxJS_dragBar		{ font-size: 80%; position: relative; padding: 0; margin: 0.25em 0.5em; }
 .calendarSkin .mon				{ display: block; text-align: center; }
@@ -305,14 +305,13 @@ img.thumb									{ box-shadow: 1px 1px 3px #808080; }
 .calendarSkin .nextMon			{ right: 0; text-align: right; }
 .calendarSkin .prevMon			{ left: 0; }
 .calendarSkin table	   			{ font-size: 80%; border-collapse: separate; border-spacing: 2px; }
-.calendarSkin th				{ padding: 0.125em 0.25em; text-align: center; color: #fff; vertical-align: middle; width: 1.75em; background: #c0c0c0; }
+.calendarSkin th				{ padding: 0.125em 0.25em; text-align: center; color: #fff; vertical-align: middle; width: 1.75em; background: #aaa; }
 .calendarSkin td				{ padding: 0.125em 0.25em; text-align: center; vertical-align: middle; cursor: pointer; background: #fff; height: 2.5em; }
-.calendarSkin input				{ width: 2.5em; font-size: 100%; background: #909090; border: solid 1px; border-color: #445 #ccd #ccd #445; color: #fff; padding: 0 0.25em; }
-.calendarSkin .trail			{ color: #c0c0c0; }
+.calendarSkin .trail			{ color: #aaa; }
 .calendarSkin .weekCell			{ cursor: pointer; background: #99A5BD; }
-.calendarSkin .today			{ background: #c0c0c0; color: #fff; border-radius: 0.2em; }
-.calendarSkin .marked			{ background-color: #e80; color: #fff; border-radius: 0.2em; }
-.calendarSkin .disabled			{ color: #808080; cursor: default; }
+.calendarSkin .today			{ background: #08c; color: #fff; border-radius: 0.2em; }
+.calendarSkin .marked			{ background-color: #ff9400; color: #fff; border-radius: 0.2em; }
+.calendarSkin .disabled			{ color: #888; cursor: default; }
 .calendarSkin .prevMon:before	{ font-family: icomoon; content: "\e025"; }
 .calendarSkin .nextMon:before	{ font-family: icomoon; content: "\e023"; }
 
