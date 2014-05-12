@@ -9,10 +9,10 @@
 @import "../fonts/icomoon/webfont.css";
 
 /**
- * Elements
+ * defaults
  */
 
-*								{ margin: 0; padding: 0; }
+*								{ margin: 0; padding: 0; line-height: 130%; }
 html, body						{ font-family: verbcond, sans-serif; font-size: 100%; background: #fff; color: #000; height: 100%; }
 
 *, *:before, *:after			{ box-sizing: border-box; -moz-box-sizing: border-box; }
@@ -23,6 +23,16 @@ a								{ text-decoration: none; color: #005680; }
 a:hover,
 a:active						{ color: #0089CC; }
 
+table							{ border-collapse: collapse; margin-bottom: 1em; }
+th, td							{ padding: 0.25em 0.5em; text-align: left; vertical-align: middle; }
+th								{ padding-top: 0.5em; background: #c0c0c0; font-weight: bold; }
+table.list tr th				{ border-left: solid 1px #eee; }
+table.list tr th:first-child	{ border-left: none; }
+
+/**
+ * form elements
+ */
+
 input,
 textarea,
 select							{ font-size: 100%; padding: 0.125em 0.25em; border-radius: 0.125em; border: solid 1px #888; font-family: verbcond, sans-serif; }
@@ -31,14 +41,8 @@ input:focus,
 textarea:focus,
 select:focus					{ box-shadow: 0 0 0.25em #aef; border-color: #0089CC; }
 
-table							{ border-collapse: collapse; margin-bottom: 1em; }
-th, td							{ padding: 0.25em 0.5em; text-align: left; vertical-align: middle; }
-th								{ padding-top: 0.5em; background: #c0c0c0; font-weight: bold; }
-table.list tr th				{ border-left: solid 1px #eee; }
-table.list tr th:first-child	{ border-left: none; }
-
 /**
- * Buttons and button-like anchors
+ * buttons and button-like anchors
  */
 
 button, a.buttonLink				{ font-family: verbcond, sans-serif; display: inline-block; padding: 0.25em 0.75em; background: #005680; color: #fff; font-weight: bold; border: solid 1px #003b59; border-radius: 0.25em; margin-right: 0.25em; transition: all 0.5s ease 0s; }
@@ -51,8 +55,7 @@ a.buttonLink:active					{ color: #aef; cursor: pointer; }
 button.active,
 a.buttonLink.active					{ background: #0089CC; transition: all 0.5s ease 0s; }
 
-.withIcon							{ }
-.withIcon:before					{ font-family: icomoon; padding-right: 0.5em; font-weight: normal; content: attr(data-icon); }
+.withIcon:before					{ font-family: icomoon; padding-right: 0.5em; font-weight: normal; content: attr(data-icon); line-height: 0; }
 
 span.iconOnly,
 button.iconOnly,
@@ -71,6 +74,16 @@ span.buttonGroup					{ display: inline-block; margin-right: 0.25em; }
 span.buttonGroup button				{ border-radius: 0; border-right-style: none; margin-right: 0; }
 span.buttonGroup button:first-child	{ border-bottom-left-radius: 0.25em; border-top-left-radius: 0.25em; }
 span.buttonGroup button:last-child	{ border-bottom-right-radius: 0.25em; border-top-right-radius: 0.25em; border-right-style: solid; }
+
+/* wip */
+div.inputGroup						{ display: table; }
+div.inputGroup *					{ border-radius: 0; border-style: solid; border-width: 1px 1px 1px 0; vertical-align: middle; padding-top: 0.125em; padding-bottom: 0.125em; margin: 0; }
+div.inputGroup input,
+div.inputGroup span					{ display: table-cell; }
+div.inputGroup *:first-child		{ padding-left: 0.5em; border-top-left-radius: 0.25em; border-bottom-left-radius: 0.25em; border-left-width: 1px; }
+div.inputGroup *:last-child			{ padding-right: 0.5em; border-top-right-radius: 0.25em; border-bottom-right-radius: 0.25em; }
+div.inputGroup span.inputGroupBtn	{ padding: 0; width: 1%; white-space: nowrap; }
+div.inputGroup .inputGroupBtn button{ border: none; margin: 0; border-radius: 0; }
 
 /**
  * Containers
@@ -166,9 +179,6 @@ div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pad
 #adminmenu_level_0 li.active,
 #adminmenu li.active			{ background: #005680; color: #fff; }
 #adminmenu_level_0 a,
-#adminmenu a					{ }
-#adminmenu_level_0 a:hover,
-#adminmenu a:hover				{ text-decoration: none; }
 #adminmenu_level_0 li.active a	{ color: #fff; }
 
 /**
@@ -176,7 +186,6 @@ div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pad
  */
 
 #statusBar						{ top: 0; position: fixed; padding: 1em 1em 0.5em 1em; margin: 0; border-bottom: solid 1px #eee; width: 100%; background: #fff; box-shadow: 0 0 8px #888; }
-#statusBar a					{ text-decoration: none; }
 
 /**
  * stock form
@@ -316,7 +325,6 @@ img.thumb									{ box-shadow: 1px 1px 3px #808080; }
 .vxJS_tabBar li.shown		{ cursor: default; }
 .vxJS_tabBar a				{ outline: none; }
 .vxJS_tabBar a:hover,
-.vxJS_tabBar a:active		{ text-decoration: none; }
 .vxJS_tabBar .shown a		{ color: #808080; }
 .vxJS_tabBar.disabled a		{ color: #808080; cursor: default; }
 
