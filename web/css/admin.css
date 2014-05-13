@@ -36,13 +36,13 @@ table.list tr th:first-child	{ border-left: none; }
 input,
 textarea,
 select,
-button							{ font-size: 100%; padding: 0.125em 0.25em; border-radius: 0.125em; border: solid 1px #888; font-family: verbcond, sans-serif; }
+button							{ font-size: 100%; padding: 0.125em 0.25em; border-radius: 0.125em; border: solid 1px #aaa; font-family: verbcond, sans-serif; }
 
 button::-moz-focus-inner		{ border: 0; padding: 0; }
 
 input:focus,
 textarea:focus,
-select:focus					{ box-shadow: 0 0 0.25em #aef; border-color: #0089CC; }
+select:focus					{ box-shadow: 0 0 0.25em #aef; border-color: #0089CC !important; }
 
 /**
  * buttons and button-like anchors
@@ -78,9 +78,12 @@ span.buttonGroup button				{ border-radius: 0; border-right-style: none; margin-
 span.buttonGroup button:first-child	{ border-bottom-left-radius: 0.25em; border-top-left-radius: 0.25em; }
 span.buttonGroup button:last-child	{ border-bottom-right-radius: 0.25em; border-top-right-radius: 0.25em; border-right-style: solid; }
 
-/* wip */
+/**
+ * input group
+ */
+div.inputGroup.inline				{ display: inline-table; }
 div.inputGroup						{ display: table; }
-div.inputGroup *					{ border-radius: 0; border-color: #888 ; border-style: solid; border-width: 1px 1px 1px 0; vertical-align: middle; padding-top: 0.125em; padding-bottom: 0.125em; margin: 0; }
+div.inputGroup *					{ border-radius: 0; border-color: #ccc ; border-style: solid; border-width: 1px 1px 1px 0; vertical-align: middle; padding-top: 0.125em; padding-bottom: 0.125em; margin: 0; }
 div.inputGroup input,
 div.inputGroup span					{ display: table-cell; }
 div.inputGroup *:first-child		{ padding-left: 0.5em; border-top-left-radius: 0.25em; border-bottom-left-radius: 0.25em; border-left-width: 1px; }
@@ -219,8 +222,7 @@ label							{ display: inline-block; vertical-align: top; padding-right: 0.5em; 
 #filesList tr.fileRow td button.rename				{ margin-left: 0.5em; visibility: hidden; opacity: 0; transition: opacity 0.5s; }
 #filesList tr.fileRow td:hover button.rename		{ visibility: visible; opacity: 1; }
 
-#filesList input.renameInput						{ width: 20em; }
-
+#filesList input.addFolderInput						{ display: inline-block; margin-right: 1em; }
 /**
  * folderTree popup
  */
@@ -264,15 +266,14 @@ label							{ display: inline-block; vertical-align: top; padding-right: 0.5em; 
  */
 
 div#adminLogin								{ width: 32em; margin: 0 auto; }
-div#adminLogin form							{ background: #fff;	border: solid 1px #08c; padding: 2em 3em; border-radius: 0.5em; box-shadow: 0 0 1em #444; }
-div#adminLogin .inputGroup span:first-child	{ background: #888; color: #fff; }
+div#adminLogin form							{ background: #fff; border: solid 1px #08c; padding: 2em 3em; border-radius: 0.5em; box-shadow: 0 0 1em #444; }
+div#adminLogin .inputGroup span:first-child	{ background: #888; border-color: #888; color: #fff; }
 
 /**
  * articles
  */
 
-span.calendarPopper							{ display: inline-block; cursor: pointer; vertical-align: middle; margin: 0 4px; }
-span.calendarPopper:before					{ font-family: icomoon; content: "\e00c"; font-size: 1.5em; color: #1D6589; }
+span.calendarPopper							{ cursor: pointer; }
 
 .linkedFilesTable							{ }
 .linkedFilesTable th+th,
@@ -290,7 +291,7 @@ span.calendarPopper:before					{ font-family: icomoon; content: "\e00c"; font-si
 .linkedFilesTable tr.dragged td:first-child,
 .linkedFilesTable tr:hover td:first-child	{ visibility: visible; }
 
-img.thumb									{ box-shadow: 1px 1px 3px #808080; }
+img.thumb									{ box-shadow: 1px 1px 3px #444; }
 
 /*
  * popup calendar

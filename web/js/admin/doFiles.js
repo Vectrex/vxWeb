@@ -365,7 +365,7 @@ this.vxWeb.doFiles = function() {
 						}
 						cell.appendChild(
 							function() {
-								var elem = "input".setProp({ className: "renameInput", value: fileData.filename }).create(), keydownListenerId, blurListenerId;
+								var elem = "input".setProp({ className: "renameInput ml", value: fileData.filename }).create(), keydownListenerId, blurListenerId;
 
 								// remove input element
 
