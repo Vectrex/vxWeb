@@ -12,8 +12,8 @@
  * defaults
  */
 
-*								{ margin: 0; padding: 0; line-height: normal; }
-html, body						{ font-family: verbcond, sans-serif; font-size: 100%; background: #fff; color: #000; height: 100%; }
+*								{ font-family: verbcond, sans-serif; font-size: 100%; margin: 0; padding: 0; line-height: normal; }
+html, body						{ background: #fff; color: #000; height: 100%; }
 
 *, *:before, *:after			{ box-sizing: border-box; -moz-box-sizing: border-box; }
 
@@ -36,7 +36,7 @@ table.list tr th:first-child	{ border-left: none; }
 input,
 textarea,
 select,
-button							{ font-size: 100%; padding: 0.125em 0.25em; border-radius: 0.125em; border: solid 1px #aaa; font-family: verbcond, sans-serif; }
+button							{ padding: 0.125em 0.25em; border-radius: 0.125em; border: solid 1px #aaa; }
 
 button::-moz-focus-inner		{ border: 0; padding: 0; }
 
