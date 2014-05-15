@@ -36,13 +36,16 @@ table.list tr th:first-child	{ border-left: none; }
 input,
 textarea,
 select,
-button							{ padding: 0.125em 0.25em; border-radius: 0.125em; border: solid 1px #aaa; }
-
-button::-moz-focus-inner		{ border: 0; padding: 0; }
+button							{ -moz-appearance: none; -webkit-appearance: none; background: #fff; padding: 0.125em 0.25em; border-radius: 0.25em; border: solid 1px #aaa; }
 
 input:focus,
 textarea:focus,
 select:focus					{ box-shadow: 0 0 0.25em #aef; border-color: #0089CC !important; }
+
+select							{ padding-left: 24px; background: url('../img/site/gui/select_arrow.png') no-repeat 0 50% #fff; text-indent: 0.1px; text-overflow: ""; }
+
+button::-moz-focus-inner		{ border: 0; padding: 0; }
+select::-ms-expand				{ display: none; }
 
 /**
  * buttons and button-like anchors
