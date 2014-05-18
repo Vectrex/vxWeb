@@ -48,6 +48,9 @@ class FilesController extends Controller {
 		}
 	}
 
+	protected function xhrUpload() {
+	}
+
 	protected function xhrExecute() {
 
 		try {
@@ -65,6 +68,7 @@ class FilesController extends Controller {
 		switch($this->request->request->get('httpRequest')) {
 
 			// link file to an article
+
 			case 'linkToArticle':
 				try {
 					$article = Article::getInstance($this->request->request->getInt('articlesId'));
@@ -76,8 +80,9 @@ class FilesController extends Controller {
 					$response = array('error' => $e->getMessage());
 				}
 				break;
-				
+
 			// unlink file from an article
+
 			case 'unlinkFromArticle':
 				try {
 					$article = Article::getInstance($this->request->request->getInt('articlesId'));
@@ -91,41 +96,49 @@ class FilesController extends Controller {
 				break;
 			
 			// rename file
+
 			case 'renameFile':
 				$response = $this->renameFile();
 				break;
 
 			// create a new subdirectory
+
 			case 'addFolder':
 				$response = $this->addFolder($folder);
 				break;
 
 			// empty and delete a subdirectory
+
 			case 'delFolder':
 				$response = $this->delFolder();
 				break;
 
 			// move a file
+
 			case 'moveFile':
 				$response = $this->moveFile();
 				break;
 
 			// delete file and return new folder content
+
 			case 'delFile':
 				$response = $this->delFile();
 				break;
 
 			// return file table for given folder id with array containing available functions
+
 			case 'getFiles':
 				$response = $this->getFiles($folder);
 				break;
 
 			// return form for adding new file(delivered only once)
+
 			case 'requestAddForm':
 				$response = array('html' => $this->getAddForm()->render());
 				break;
 
 			// get complete folder tree
+
 			case 'getFolderTree':
 				$response = array(
 					'branches' => array(
@@ -135,6 +148,7 @@ class FilesController extends Controller {
 				break;
 
 			// return form for editing file
+
 			case 'requestEditForm':
 				if(($id = $this->request->request->getInt('id'))) {
 					$markup = $this->getEditForm(MetaFile::getInstance(NULL, $id))->render();
@@ -150,6 +164,7 @@ class FilesController extends Controller {
 				break;
 
 			// check and update edit data
+
 			case 'checkEditForm':
 				$this->request->request->add($this->request->request->get('elements'));
 
@@ -184,8 +199,8 @@ class FilesController extends Controller {
 				break;
 
 			// validate new file data before upload
-			case 'checkUpload':
 
+			case 'checkUpload':
 				$this->request->request->add($this->request->request->get('elements'));
 
 				$form = $this->getAddForm();
@@ -216,6 +231,7 @@ class FilesController extends Controller {
 				break;
 
 			// do upload
+
 			case 'ifuSubmit':
 
 				$upload = FilesystemFile::uploadFile('File', $folder->getFilesystemFolder());

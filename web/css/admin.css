@@ -227,6 +227,9 @@ label							{ display: inline-block; vertical-align: top; padding-right: 0.5em; 
 #filesList tr.fileRow td:hover button.rename		{ visibility: visible; opacity: 1; }
 
 #filesList input.addFolderInput						{ display: inline-block; margin-right: 1em; }
+
+#progressBar										{ display: inline-block; padding: 0.25em 1em; width: 10em; border: solid 1px #000; vertical-align: middle; text-align: center; }
+
 /**
  * folderTree popup
  */

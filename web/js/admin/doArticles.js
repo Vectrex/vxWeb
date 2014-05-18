@@ -25,7 +25,7 @@ this.vxWeb.doArticles = function() {
 				}
 			});
 			return b;
-		}(), buttonsCell;
+		}(), lastButton;
 
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
@@ -145,6 +145,6 @@ this.vxWeb.doArticles = function() {
 	}
 	initSorTable();
 
-	buttonsCell = document.querySelector("tr.fileFunctions td > div");
-	buttonsCell.insertBefore(sortButton, buttonsCell.lastChild);
+	lastButton = vxJS.collectionToArray(document.querySelectorAll("tr.fileFunctions button")).pop();
+	lastButton.parentNode.insertBefore(sortButton, lastButton.nextSibling);
 };
