@@ -37,6 +37,9 @@ this.vxWeb.doLogin = function() {
 	// file upload via drag and drop
 
 	if(vxJS.xhrObj().upload && window.File && window.FileList && window.FileReader) {
+		
+		// @todo: set timeout to max_execution_time
+		
 		var xhr = vxJS.xhr( { upload: true, uri: location.origin + "/upload.php", timeout: 10000 } ),
 			filesQueue = [], uploadActive;
 	
@@ -63,6 +66,10 @@ this.vxWeb.doLogin = function() {
 		vxJS.event.addListener(xhr, "timeout", function() {
 			uploadActive = false;
 			window.alert("Upload time exceeds 10s.");
+		});
+
+		vxJS.event.addListener(xhr.xhrObj, "progress", function(e) {
+			console.log(parseInt(100 - (e.loaded / e.total * 100), 10));
 		});
 
 		vxJS.event.addListener(xhr, "complete", function() {
