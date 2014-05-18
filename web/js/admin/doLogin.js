@@ -68,7 +68,7 @@ this.vxWeb.doLogin = function() {
 			window.alert("Upload time exceeds 10s.");
 		});
 
-		xhr.xhrObj.addEventListener("progress", function(e) {
+		xhr.xhrObj.upload.addEventListener("progress", function(e) {
 			console.log(parseInt(100 - (e.loaded / e.total * 100), 10));
 		}, false);
 
