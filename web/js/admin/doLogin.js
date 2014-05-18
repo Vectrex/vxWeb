@@ -40,8 +40,8 @@ this.vxWeb.doLogin = function() {
 		var xhr = vxJS.xhr( { upload: true, uri: 'http://test.leia/upload.php'} ),
 			filesQueue = [], uploadActive;
 	
-		vxJS.event.addListener(document.getElementById("adminLogin"), "dragover", function(e) { console.log("over - highlight box"); });
-		vxJS.event.addListener(document.getElementById("adminLogin"), "dragleave", function(e) { console.log("leave - un-highlight box"); });
+		vxJS.event.addListener(document.getElementById("adminLogin"), "dragover", function(e) { console.log("over - highlight box"); e.preventDefault(); });
+		vxJS.event.addListener(document.getElementById("adminLogin"), "dragleave", function(e) { console.log("leave - un-highlight box"); e.preventDefault(); });
 		vxJS.event.addListener(document.getElementById("adminLogin"), "drop", function(e) {
 			var i, l, f, files = e.target.files || e.dataTransfer.files;
 
