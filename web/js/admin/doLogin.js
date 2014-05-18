@@ -34,4 +34,46 @@ this.vxWeb.doLogin = function() {
 
 	vxJS.event.addListener(f, "check", parseServerCheck);
 
+	// file upload via drag and drop
+
+	if(vxJS.xhrObj().upload && window.File && window.FileList && window.FileReader) {
+		var xhr = vxJS.xhr( { upload: true, uri: 'http://test.leia/upload.php'} ),
+			filesQueue = [], uploadActive;
+	
+		vxJS.event.addListener(document.getElementById("adminLogin"), "dragover", function(e) { console.log("over - highlight box"); });
+		vxJS.event.addListener(document.getElementById("adminLogin"), "dragleave", function(e) { console.log("leave - un-highlight box"); });
+		vxJS.event.addListener(document.getElementById("adminLogin"), "drop", function(e) {
+			var i, l, f, files = e.target.files || e.dataTransfer.files;
+
+			for(i = 0, l = files.length; i < l; ++i) {
+				filesQueue.push(files[i]);
+			}
+	
+			if(!uploadActive) {
+				if(f = filesQueue.shift()) {
+					uploadActive = true;
+					xhr.use(null, { filename: f.name, file: f }).submit();
+				}
+			}
+
+			vxJS.event.preventDefault(e);
+			vxJS.event.cancelBubbling(e);
+		});
+
+		vxJS.event.addListener(xhr, "complete", function() {
+
+			var f;
+			
+			console.log(this.response);
+
+			if(f = filesQueue.shift()) {
+				this.use(null, { filename: f.name, file: f }).submit();
+			}
+			
+			else {
+				uploadActive = false;
+			}
+			
+		});
+	}
 };
