@@ -37,7 +37,7 @@ this.vxWeb.doLogin = function() {
 	// file upload via drag and drop
 
 	if(vxJS.xhrObj().upload && window.File && window.FileList && window.FileReader) {
-		var xhr = vxJS.xhr( { upload: true, uri: 'http://test.leia/upload.php'} ),
+		var xhr = vxJS.xhr( { upload: true, uri: location.origin + "/upload.php" } ),
 			filesQueue = [], uploadActive;
 	
 		vxJS.event.addListener(document.getElementById("adminLogin"), "dragover", function(e) { console.log("over - highlight box"); e.preventDefault(); });
