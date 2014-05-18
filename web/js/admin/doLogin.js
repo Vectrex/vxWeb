@@ -37,7 +37,7 @@ this.vxWeb.doLogin = function() {
 	// file upload via drag and drop
 
 	if(vxJS.xhrObj().upload && window.File && window.FileList && window.FileReader) {
-		var xhr = vxJS.xhr( { upload: true, uri: location.origin + "/upload.php" } ),
+		var xhr = vxJS.xhr( { upload: true, uri: location.origin + "/upload.php", timeout: 10000 } ),
 			filesQueue = [], uploadActive;
 	
 		vxJS.event.addListener(document.getElementById("adminLogin"), "dragover", function(e) { console.log("over - highlight box"); e.preventDefault(); });
@@ -58,6 +58,11 @@ this.vxWeb.doLogin = function() {
 
 			vxJS.event.preventDefault(e);
 			vxJS.event.cancelBubbling(e);
+		});
+
+		vxJS.event.addListener(xhr, "timeout", function() {
+			uploadActive = false;
+			window.alert("Upload time exceeds 10s.");
 		});
 
 		vxJS.event.addListener(xhr, "complete", function() {
