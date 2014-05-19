@@ -37,6 +37,12 @@ use vxPHP\Orm\Custom\Article;
  */
 class FilesController extends Controller {
 
+	/**
+	 * depending on route fill response with appropriate template
+	 * 
+	 * (non-PHPdoc)
+	 * @see \vxPHP\Controller\Controller::execute()
+	 */
 	protected function execute() {
 
 		switch($this->route->getRouteId()) {
@@ -48,9 +54,37 @@ class FilesController extends Controller {
 		}
 	}
 
+	/**
+	 * handle file upload via drag and drop
+	 */
 	protected function xhrUpload() {
+		
+		// get metafolder
+
+		try {
+			if(($id = $this->request->query->get('folder'))) {
+				$folder = MetaFolder::getInstance(NULL, $id);
+			}
+			else {
+				$folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
+			}
+		}
+
+		catch(MetaFolderException $e) {
+			return new JsonResponse(array ('error' => $e->getMessage()));
+		}
+
+		// get filename
+
+		$filename = FilesystemFile::sanitizeFilename($this->request->headers->get('x-file-name'), $folder->getFilesystemFolder());
+		file_put_contents($folder->getFilesystemFolder()->getPath() . $filename, file_get_contents('php://input'));
+
+		return new JsonResponse(array('echo' => array('folder' => $folder->getId()), 'response' => $this->getFiles($folder)));
 	}
 
+	/**
+	 * handle all other file actions: adding, deleting, moving, renaming...
+	 */
 	protected function xhrExecute() {
 
 		try {

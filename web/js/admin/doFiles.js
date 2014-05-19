@@ -649,7 +649,12 @@ this.vxWeb.doFiles = function() {
 					var d = "div".setProp("id", "progressBar").create("uploading");
 					filesTable.querySelector("div.buttonBar").appendChild(d);
 					return d;
-				}();
+				}(), filenameLabel = progressBar.firstChild;
+
+			var finishUpload = function() {
+				uploadActive = false;
+				filenameLabel.nodeValue = "uploading";
+			};
 
 			vxJS.event.addListener(filesTable, "dragover", function(e) {
 				vxJS.dom.addClassName(filesTable, "draggedOver");
@@ -671,7 +676,8 @@ this.vxWeb.doFiles = function() {
 				if(!uploadActive) {
 					if(f = filesQueue.shift()) {
 						uploadActive = true;
-						uploadXhr.use({ uri: vxWeb.routes.upload + (folderId ? ("folderId=" + folderId) : "") }, { filename: f.name, file: f }).submit();
+						filenameLabel.nodeValue = f.name;
+						uploadXhr.use({ uri: vxWeb.routes.upload + (folderId ? ("?folder=" + folderId) : "") }, { filename: f.name, file: f }).submit();
 					}
 				}
 	
@@ -682,7 +688,7 @@ this.vxWeb.doFiles = function() {
 			});
 	
 			vxJS.event.addListener(uploadXhr, "timeout", function() {
-				uploadActive = false;
+				finishUpload();
 				window.alert("Upload time exceeded 10s.");
 			});
 	
@@ -693,7 +699,7 @@ this.vxWeb.doFiles = function() {
 					this.use(null, { filename: f.name, file: f }).submit();
 				}
 				else {
-					uploadActive = false;
+					finishUpload();
 
 					// building directory bar and set folder id will correctly switch back to upload directory in case folder was changed during upload
 
@@ -713,7 +719,8 @@ this.vxWeb.doFiles = function() {
 			// vxJS.event.addListener won't detect XHR.upload as host object
 	
 			uploadXhr.xhrObj.upload.addEventListener("progress", function(e) {
-				console.log(parseInt(e.loaded / e.total * 100, 10));
+				var percentage = parseInt(e.loaded / e.total * 100, 10);
+				filenameLabel.nodeValue = percentage + "%";
 			}, false);
 		}());
 	}
