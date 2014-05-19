@@ -519,8 +519,7 @@ this.vxWeb.doFiles = function() {
 						buildFilesTable(r.response);
 
 						if(e.folder) {
-							folderId = e.folder;
-							folderInput.value = e.folder;
+							folderId = folderInput.value = e.folder;
 						}
 					}
 					break;
@@ -642,7 +641,7 @@ this.vxWeb.doFiles = function() {
 		
 		// @todo: set timeout to max_execution_time (supplied by server, maybe with getFiles request)
 		
-		// outer scope variables: filesTable, folderId
+		// outer scope variables: filesTable, folderId, buidDirectoryBar(), buildFilesTable()
 		
 		(function() {
 			var uploadXhr = vxJS.xhr( { upload: true, timeout: 10000 } ), uploadActive, filesQueue = [],
@@ -672,7 +671,7 @@ this.vxWeb.doFiles = function() {
 				if(!uploadActive) {
 					if(f = filesQueue.shift()) {
 						uploadActive = true;
-						uploadXhr.use({ uri: location.origin + "/upload.php?folderId=" + (folderId || "") }, { filename: f.name, file: f }).submit();
+						uploadXhr.use({ uri: vxWeb.routes.upload + (folderId ? ("folderId=" + folderId) : "") }, { filename: f.name, file: f }).submit();
 					}
 				}
 	
@@ -688,13 +687,26 @@ this.vxWeb.doFiles = function() {
 			});
 	
 			vxJS.event.addListener(uploadXhr, "complete", function() {
-				var f;
+				var f, r = this.response, e = r.echo;
 	
 				if(f = filesQueue.shift()) {
 					this.use(null, { filename: f.name, file: f }).submit();
 				}
 				else {
 					uploadActive = false;
+
+					// building directory bar and set folder id will correctly switch back to upload directory in case folder was changed during upload
+
+					if(!r.response.error) {
+						if(r.response.pathSegments) {
+							buildDirectoryBar(r.response.pathSegments);
+						}
+						buildFilesTable(r.response);
+
+						if(e.folder) {
+							folderId = folderInput.value = e.folder;
+						}
+					}
 				}
 			});
 			

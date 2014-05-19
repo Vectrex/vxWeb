@@ -3,7 +3,8 @@
 <script type="text/javascript" src="/js/admin/doFiles.js"></script>
 
 <script type="text/javascript">
-	this.vxWeb.routes.files = "<?php echo vxPHP\Http\Router::getRoute('filesXhr', 'admin.php')->getUrl(); ?>";
+	this.vxWeb.routes.files		= "<?php echo vxPHP\Http\Router::getRoute('filesXhr',	'admin.php')->getUrl(); ?>";
+	this.vxWeb.routes.upload	= "<?php echo vxPHP\Http\Router::getRoute('uploadXhr',	'admin.php')->getUrl(); ?>";
 	vxJS.event.addDomReadyListener(this.vxWeb.doFiles);
 </script>
 

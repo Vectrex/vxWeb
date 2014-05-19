@@ -59,6 +59,7 @@
 		<page id="files"		controller="admin/files"	auth="superadmin" />
 		<page id="filepicker"	controller="admin/files"	auth="superadmin" />
 		<page id="filesXhr"		controller="admin/files"	method="xhrExecute" auth="superadmin" />
+		<page id="uploadXhr"	controller="admin/files"	method="xhrUpload" auth="superadmin" />
 		<page id="pages"		controller="admin/pages"	auth="superadmin" />
 	</pages>
 
