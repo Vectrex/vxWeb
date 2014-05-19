@@ -181,34 +181,34 @@ div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pad
  */
 
 #adminmenu_level_0,
-#adminmenu						{ position: fixed; padding: 1em 0; float: left; width: 13em; font-weight: bold; }
+#adminmenu											{ position: fixed; padding: 1em 0; float: left; width: 13em; font-weight: bold; }
 #adminmenu_level_0 ul,
-#adminmenu ul					{ list-style-type: none; margin: 0; padding: 0; }
+#adminmenu ul										{ list-style-type: none; margin: 0; padding: 0; }
 #adminmenu_level_0 li,
-#adminmenu li					{ margin: 0; padding: 0.25em 1em 0.25em 2em; color:#000; }
+#adminmenu li										{ margin: 0; padding: 0.25em 1em 0.25em 2em; color:#000; }
 #adminmenu_level_0 li.active,
-#adminmenu li.active			{ background: #005680; color: #fff; }
-#adminmenu_level_0 li.active a	{ color: #fff; }
+#adminmenu li.active								{ background: #005680; color: #fff; }
+#adminmenu_level_0 li.active a						{ color: #fff; }
 
 /**
  * status bar
  */
 
-#statusBar						{ top: 0; position: fixed; padding: 1em 1em 0.5em 1em; margin: 0; border-bottom: solid 1px #eee; width: 100%; background: #fff; box-shadow: 0 0 8px #888; }
+#statusBar											{ top: 0; position: fixed; padding: 1em 1em 0.5em 1em; margin: 0; border-bottom: solid 1px #eee; width: 100%; background: #fff; box-shadow: 0 0 8px #888; }
 
 /**
  * stock form
  */
 
-form							{ padding: 0.75em 0; }
-.formSect						{ }
-.formBase						{ margin-top: 0.25em; }
-.formItem						{ padding: 0.5em 0; }
-label							{ display: inline-block; vertical-align: top; padding-right: 0.5em; }
+form												{ padding: 0.75em 0; }
+.formSect											{ }
+.formBase											{ margin-top: 0.25em; }
+.formItem											{ padding: 0.5em 0; }
+label												{ display: inline-block; vertical-align: top; padding-right: 0.5em; }
 
-.formSect.multiColumn			{ float: left; padding-right: 1em; }
-.formSect.multiColumn:last-child{ padding-right: 0; }
-.formBase.multiColumn			{ clear: left; }
+.formSect.multiColumn								{ float: left; padding-right: 1em; }
+.formSect.multiColumn:last-child					{ padding-right: 0; }
+.formBase.multiColumn								{ clear: left; }
 
 /**
  * files
@@ -229,76 +229,72 @@ label							{ display: inline-block; vertical-align: top; padding-right: 0.5em; 
 #filesList input.addFolderInput						{ display: inline-block; margin-right: 1em; }
 
 #progressBar										{ display: inline-block; padding: 0.25em 1em; width: 10em; border: solid 1px #000; vertical-align: middle; text-align: center; }
+#filesList .draggedOver								{ box-shadow: 0 0 1em #FF9400; }
 
 /**
  * folderTree popup
  */
 
-#folderTreeContainer						{ min-width: 15em; }
-#folderTreeContainer .formBase				{ border-top: solid 1px #fff; padding: 0.5em 0; margin-top: 0.5em; text-align: center; }
-#folderTreeContainer button					{ }
-#folderTreeContainer > ul					{ max-height: 20em; overflow: auto; font-size: 90%; }
-
-.vxJS_tree									{ list-style-type: none; margin: 0; padding: 0; font-size: 100%; }
-.vxJS_tree li								{ padding: 0; margin: 0 0 0 32px; background: url(../js/assets/tree_guide.gif) repeat-y 0% 0%; }
-.vxJS_tree li.lastBranch					{ background-image: none; }
+.vxJS_tree											{ list-style-type: none; margin: 0; padding: 0; font-size: 100%; }
+.vxJS_tree li										{ padding: 0; margin: 0 0 0 32px; background: url(../js/assets/tree_guide.gif) repeat-y 0% 0%; }
+.vxJS_tree li.lastBranch							{ background-image: none; }
 
 .vxJS_tree li img,
-.vxJS_tree li span							{ vertical-align: middle; }
+.vxJS_tree li span									{ vertical-align: middle; }
 
 .vxJS_tree .leafNode,
 .vxJS_tree .subTreeExpanded,
-.vxJS_tree .subTreeCollapsed				{ display: inline-block; width: 24px; height: 24px; background: url(../js/assets/tree_plus.gif) no-repeat 50% 50%; }
-.vxJS_tree .leafNode						{ background-image: url(../js/assets/leaf_node.gif); }
-.vxJS_tree .subTreeExpanded					{ background-image: url(../js/assets/tree_minus.gif); }
+.vxJS_tree .subTreeCollapsed						{ display: inline-block; width: 24px; height: 24px; background: url(../js/assets/tree_plus.gif) no-repeat 50% 50%; }
+.vxJS_tree .leafNode								{ background-image: url(../js/assets/leaf_node.gif); }
+.vxJS_tree .subTreeExpanded							{ background-image: url(../js/assets/tree_minus.gif); }
 
-.vxJS_tree div.__label__					{ display: inline; cursor: pointer; }
-.vxJS_tree li span.current					{ font-weight: bold; cursor: default; }
+.vxJS_tree div.__label__							{ display: inline; cursor: pointer; }
+.vxJS_tree li span.current							{ font-weight: bold; cursor: default; }
 
 /**
  * confirm
  */
 
-.vxJS_overlay								{ background: #fff; opacity: 0.5; }
-.confirmForm								{ background: #ccc !important; box-shadow: 0 0 6px #666; border: solid 3px #808080; }
-.confirmForm .vxJS_dragBar					{ height: 1.5em; background: #808080; }
-.confirmForm .buttonBar						{ text-align: center; padding-top: 0.5em; }
-.confirmForm .vxJS_confirm_content			{ max-height: 40em; overflow: auto; }
+.vxJS_overlay										{ background: #fff; opacity: 0.5; }
+.confirmForm										{ background: #ccc !important; box-shadow: 0 0 6px #666; border: solid 3px #808080; }
+.confirmForm .vxJS_dragBar							{ height: 1.5em; background: #808080; }
+.confirmForm .buttonBar								{ text-align: center; padding-top: 0.5em; }
+.confirmForm .vxJS_confirm_content					{ max-height: 40em; overflow: auto; }
 
 .confirmForm div.padded,
-.confirmForm form							{ margin: 1em; }
+.confirmForm form									{ margin: 1em; }
 
 /**
  * login
  */
 
-div#adminLogin								{ width: 32em; margin: 0 auto; }
-div#adminLogin form							{ background: #fff; border: solid 1px #08c; padding: 2em 3em; border-radius: 0.5em; box-shadow: 0 0 1em #444; }
-div#adminLogin .inputGroup span:first-child	{ background: #888; border-color: #888; color: #fff; }
+div#adminLogin										{ width: 32em; margin: 0 auto; }
+div#adminLogin form									{ background: #fff; border: solid 1px #08c; padding: 2em 3em; border-radius: 0.5em; box-shadow: 0 0 1em #444; }
+div#adminLogin .inputGroup span:first-child			{ background: #888; border-color: #888; color: #fff; }
 
 /**
  * articles
  */
 
-span.calendarPopper							{ cursor: pointer; }
+span.calendarPopper									{ cursor: pointer; }
 
-.linkedFilesTable							{ }
+.linkedFilesTable									{ }
 .linkedFilesTable th+th,
-.linkedFilesTable td+td						{ width: 4em; text-align: center; }
+.linkedFilesTable td+td								{ width: 4em; text-align: center; }
 .linkedFilesTable th+th+th,
-.linkedFilesTable td+td+td					{ width: 24em; text-align: left; }
+.linkedFilesTable td+td+td							{ width: 24em; text-align: left; }
 
-.linkedFilesTable .dragged					{ background: #FF9400; }
-.linkedFilesTable .insertAbove				{ border-top: solid 2px #808080; }
-.linkedFilesTable .insertBelow				{ border-bottom: solid 2px #808080; }
+.linkedFilesTable .dragged							{ background: #FF9400; }
+.linkedFilesTable .insertAbove						{ border-top: solid 2px #808080; }
+.linkedFilesTable .insertBelow						{ border-bottom: solid 2px #808080; }
 
-.linkedFilesTable tr td:first-child			{ vertical-align: middle; text-align: center; cursor: move; visibility: hidden; }
-.linkedFilesTable tr td:first-child:before	{ font-family: icomoon; content: "\e03a"; font-size: 2em; color: #fff; }
+.linkedFilesTable tr td:first-child					{ vertical-align: middle; text-align: center; cursor: move; visibility: hidden; }
+.linkedFilesTable tr td:first-child:before			{ font-family: icomoon; content: "\e03a"; font-size: 2em; color: #fff; }
 
 .linkedFilesTable tr.dragged td:first-child,
-.linkedFilesTable tr:hover td:first-child	{ visibility: visible; }
+.linkedFilesTable tr:hover td:first-child			{ visibility: visible; }
 
-img.thumb									{ box-shadow: 1px 1px 3px #444; }
+img.thumb											{ box-shadow: 1px 1px 3px #444; }
 
 /*
  * popup calendar

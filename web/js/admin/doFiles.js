@@ -158,9 +158,7 @@ this.vxWeb.doFiles = function() {
 			var b = "button".create("Abbrechen");
 			vxJS.event.addListener(b, "click", confirm.hide);
 			return "div".setProp("id", "folderTreeContainer").create([folderTree.element, "div".setProp("class", "formBase").create(b)]);
-		}()),
-		
-		uploadXhr, filesQueue = [], uploadActive, progressBar;
+		}());
 
 	var prepareAddForm = function() {
 		var i = 0, e;
@@ -644,63 +642,67 @@ this.vxWeb.doFiles = function() {
 		
 		// @todo: set timeout to max_execution_time (supplied by server, maybe with getFiles request)
 		
-		uploadXhr = vxJS.xhr( { upload: true, timeout: 10000 } );
-		progressBar = function() {
-			var d = "div".setProp("id", "progressBar").create("uploading");
-			filesTable.querySelector("div.buttonBar").appendChild(d);
-			return d;
-		}();
-
-		vxJS.event.addListener(filesTable, "dragover", function(e) {
-			console.log("over - highlight box");
-			vxJS.event.preventDefault(e);
-		});
-
-		vxJS.event.addListener(filesTable, "dragleave", function(e) {
-			console.log("leave - un-highlight box");
-			vxJS.event.preventDefault(e);
-		});
-
-		vxJS.event.addListener(filesTable, "drop", function(e) {
-			var i, l, f, files = e.target.files || e.dataTransfer.files;
-
-			for(i = 0, l = files.length; i < l; ++i) {
-				filesQueue.push(files[i]);
-			}
-	
-			if(!uploadActive) {
-				if(f = filesQueue.shift()) {
-					uploadActive = true;
-					uploadXhr.use({ uri: location.origin + "/upload.php?folderId=" + (folderId || "") }, { filename: f.name, file: f }).submit();
-				}
-			}
-
-			vxJS.event.preventDefault(e);
-			vxJS.event.cancelBubbling(e);
-		});
-
-		vxJS.event.addListener(uploadXhr, "timeout", function() {
-			uploadActive = false;
-			window.alert("Upload time exceeded 10s.");
-		});
-
-		vxJS.event.addListener(uploadXhr, "complete", function() {
-			var f;
-
-			if(f = filesQueue.shift()) {
-				this.use(null, { filename: f.name, file: f }).submit();
-			}
-			else {
-				uploadActive = false;
-			}
-		});
+		// outer scope variables: filesTable, folderId
 		
-		// vxJS.event.addListener won't detect XHR.upload as host object
+		(function() {
+			var uploadXhr = vxJS.xhr( { upload: true, timeout: 10000 } ), uploadActive, filesQueue = [],
+				progressBar = function() {
+					var d = "div".setProp("id", "progressBar").create("uploading");
+					filesTable.querySelector("div.buttonBar").appendChild(d);
+					return d;
+				}();
 
-		uploadXhr.xhrObj.upload.addEventListener("progress", function(e) {
-			console.log(parseInt(e.loaded / e.total * 100, 10));
-		}, false);
-	}
+			vxJS.event.addListener(filesTable, "dragover", function(e) {
+				vxJS.dom.addClassName(filesTable, "draggedOver");
+				vxJS.event.preventDefault(e);
+			});
 	
-
+			vxJS.event.addListener(filesTable, "dragleave", function(e) {
+				vxJS.dom.removeClassName(filesTable, "draggedOver");
+				vxJS.event.preventDefault(e);
+			});
+	
+			vxJS.event.addListener(filesTable, "drop", function(e) {
+				var i, l, f, files = e.target.files || e.dataTransfer.files;
+	
+				for(i = 0, l = files.length; i < l; ++i) {
+					filesQueue.push(files[i]);
+				}
+		
+				if(!uploadActive) {
+					if(f = filesQueue.shift()) {
+						uploadActive = true;
+						uploadXhr.use({ uri: location.origin + "/upload.php?folderId=" + (folderId || "") }, { filename: f.name, file: f }).submit();
+					}
+				}
+	
+				vxJS.dom.removeClassName(filesTable, "draggedOver");
+	
+				vxJS.event.preventDefault(e);
+				vxJS.event.cancelBubbling(e);
+			});
+	
+			vxJS.event.addListener(uploadXhr, "timeout", function() {
+				uploadActive = false;
+				window.alert("Upload time exceeded 10s.");
+			});
+	
+			vxJS.event.addListener(uploadXhr, "complete", function() {
+				var f;
+	
+				if(f = filesQueue.shift()) {
+					this.use(null, { filename: f.name, file: f }).submit();
+				}
+				else {
+					uploadActive = false;
+				}
+			});
+			
+			// vxJS.event.addListener won't detect XHR.upload as host object
+	
+			uploadXhr.xhrObj.upload.addEventListener("progress", function(e) {
+				console.log(parseInt(e.loaded / e.total * 100, 10));
+			}, false);
+		}());
+	}
 };
