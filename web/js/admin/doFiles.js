@@ -669,7 +669,7 @@ this.vxWeb.doFiles = function() {
 					filesTable.querySelector("div.buttonBar").appendChild(bar);
 					return {
 						element:		bar,
-						setLabel:		function(text)	{ d.firstChild.nodeValue = text; },
+						setLabel:		function(text)	{ bar.firstChild.nodeValue = text; },
 						setPercentage:	function(p)		{ progress.style.width = p + "%"; }
 					}
 				}();
