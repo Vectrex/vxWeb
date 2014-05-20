@@ -39,7 +39,7 @@ class FilesController extends Controller {
 
 	/**
 	 * depending on route fill response with appropriate template
-	 * 
+	 *
 	 * (non-PHPdoc)
 	 * @see \vxPHP\Controller\Controller::execute()
 	 */
@@ -48,7 +48,7 @@ class FilesController extends Controller {
 		switch($this->route->getRouteId()) {
 			case 'filepicker':
 				return new Response(SimpleTemplate::create('admin/files_picker.php')->display());
-		
+
 			default:
 				return new Response(SimpleTemplate::create('admin/files_js.php')->display());
 		}
@@ -58,7 +58,7 @@ class FilesController extends Controller {
 	 * handle file upload via drag and drop
 	 */
 	protected function xhrUpload() {
-		
+
 		// get metafolder
 
 		try {
@@ -79,7 +79,7 @@ class FilesController extends Controller {
 		$filename = FilesystemFile::sanitizeFilename($this->request->headers->get('x-file-name'), $folder->getFilesystemFolder());
 		file_put_contents($folder->getFilesystemFolder()->getPath() . $filename, file_get_contents('php://input'));
 
-		return new JsonResponse(array('echo' => array('folder' => $folder->getId()), 'response' => $this->getFiles($folder)));
+		return new JsonResponse(array('echo' => array('folder' => $id), 'response' => $this->getFiles($folder)));
 	}
 
 	/**
@@ -128,7 +128,7 @@ class FilesController extends Controller {
 					$response = array('error' => $e->getMessage());
 				}
 				break;
-			
+
 			// rename file
 
 			case 'renameFile':
@@ -336,7 +336,7 @@ class FilesController extends Controller {
 					);
 				}
 				break;
-			
+
 			default:
 				$response = null;
 		}
@@ -353,9 +353,9 @@ class FilesController extends Controller {
 			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
 
 				$file->rename(trim($this->request->request->get('filename')));
-	
+
 				$metaData = $file->getData();
-	
+
 				return array(
 					'filename' => $file->getMetaFilename(),
 					'elements' => array('html' => "<span title='{$metaData['Title']}'>{$file->getMetaFilename()}</span>"),
@@ -399,7 +399,7 @@ class FilesController extends Controller {
 
 				$folder = $file->getMetafolder();
 				$file->move(MetaFolder::getInstance(NULL, $this->request->request->getInt('destination')));
-	
+
 				return $this->getFiles($folder);
 			}
 		}
@@ -407,7 +407,7 @@ class FilesController extends Controller {
 			return array('error' => $e->getMessage());
 		}
 	}
-		
+
 	private function addFolder(MetaFolder $folder) {
 
 		try {
@@ -423,11 +423,11 @@ class FilesController extends Controller {
 
 		try {
 			if(($id = $this->request->request->getInt('id'))) {
-	
+
 				$folder = MetaFolder::getInstance(NULL, $id);
-	
+
 				if(($parent = $folder->getParentMetafolder())) {
-	
+
 					$folder->delete();
 					return $this->getFiles($parent);
 				}
@@ -452,11 +452,11 @@ class FilesController extends Controller {
 		}
 
 		switch($this->route->getRouteId()) {
-		
+
 			case 'filepickerXhr':
 				$fileFunctions = array('rename', 'edit', 'move', 'del', 'forward');
 				break;
-		
+
 			default:
 				$fileFunctions = array('rename', 'edit', 'move', 'del');
 		}
@@ -496,7 +496,7 @@ class FilesController extends Controller {
 		$data		= $file->getData();
 		$app		= Application::getInstance();
 		$assetsPath	= !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
-		
+
 		if(($cacheInfo = $file->getFilesystemFile()->getCacheInfo())) {
 			$cacheText = sprintf(', Cache: %d Files/gesamt %skB', $cacheInfo['count'], number_format($cacheInfo['totalSize'] / 1024, 1, ',', '.'));
 		}
@@ -627,7 +627,7 @@ class FilesController extends Controller {
 							$file['columns'][] = $f->getMimetype();
 						}
 						break;
-						
+
 					case 'linked':
 						if(isset($linkedFiles) && in_array($f, $linkedFiles, TRUE)) {
 							$file['columns'][] = array('html' => '<input class="link" type="checkbox" checked="checked">');
