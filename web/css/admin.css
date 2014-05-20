@@ -228,8 +228,10 @@ label												{ display: inline-block; vertical-align: top; padding-right: 0.
 
 #filesList input.addFolderInput						{ display: inline-block; margin-right: 1em; }
 
-#progressBar										{ display: inline-block; padding: 0.25em 1em; width: 10em; border: solid 1px #000; vertical-align: middle; text-align: center; position: relative; }
-#progressBar > div									{ position: absolute; z-index: -1; height: 100%; width: 0%; background: #f00; }
+#progressBar										{ position: relative; display: inline-block; width: 16em; height: 2em; border: solid 1px #000; vertical-align: middle; border-radius: 0.25em; opacity: 0; transition: opacity 0.5s ease 0s; }
+#progressBar.shown									{ opacity: 1; transition: opacity 0.5s ease 0s; }
+#progressBar > div									{ position: absolute; top: 0; left: 0; height: 100%; background: #4c0; width: 0%; border-radius: 0.25em; }
+#progressBar > span									{ position: absolute; top: 0; left: 0; height: 100%; width: 100%; padding: 0.25em 1em; display: block; text-align: center; color: #444; text-shadow: 1px 1px #fff; }
 #filesList .draggedOver								{ box-shadow: 0 0 1em #FF9400; }
 
 /**
