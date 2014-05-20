@@ -162,7 +162,7 @@ this.vxWeb.doFiles = function() {
 			var decQL = function() {
 				if(queueLength) {
 					--queueLength;
-					if(queueLength) {
+					if(!queueLength) {
 						vxJS.dom.removeClassName(e, "active");
 					}
 				}
