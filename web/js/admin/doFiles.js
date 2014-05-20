@@ -19,11 +19,8 @@ this.vxWeb.doFiles = function() {
 		folderId,
 		directoryBar = document.getElementById("directoryBar"), breadCrumbs = [],
 		folderInput = "input".setProp([["type", "hidden"], ["name", "folder"]]).create(),
-		throbberElement = function() {
-			return "div".setProp("class", "vxJS_xhrThrobberFileOperation").create();
-		}(),
 		fileListParameters = {},
-		xhr = vxJS.xhr( { uri: uri, echo: true, timeout: 10000 }, {}, { node: throbberElement } ),
+		xhr = vxJS.xhr( { uri: uri, echo: true, timeout: 10000 }),
 		form, xhrForm,
 		formInitValues = {}, filesTableListeners = [],
 		dnd,
@@ -34,6 +31,7 @@ this.vxWeb.doFiles = function() {
 		filesTable = document.getElementById("filesList").getElementsByTagName("table")[0],
 		lsValue, lsKey = window.location.href + "__sort__",
 		folderRex = /(^| )folderRow( |$)/,
+
 		icons = function() {
 			var elements = {};
 			[
@@ -154,11 +152,27 @@ this.vxWeb.doFiles = function() {
 			});
 			return t;
 		}()),
-		folderTreeContainer = (function() {
-			var b = "button".create("Abbrechen");
-			vxJS.event.addListener(b, "click", confirm.hide);
-			return "div".setProp("id", "folderTreeContainer").create([folderTree.element, "div".setProp("class", "formBase").create(b)]);
-		}());
+
+		activityIndicator = function() {
+			var e = "div".setProp("class", "vxJS_xhrThrobberFileOperation").create(), queueLength = 0;
+			var incQL = function() {
+				++queueLength;
+				vxJS.dom.addClassName(e, "active");
+			};
+			var decQL = function() {
+				if(queueLength) {
+					--queueLength;
+					if(queueLength) {
+						vxJS.dom.removeClassName(e, "active");
+					}
+				}
+			};
+			return {
+				element: e,
+				setActivity: incQL,
+				unsetActivity: decQL
+			};
+		}();
 
 	var prepareAddForm = function() {
 		var i = 0, e;
@@ -482,8 +496,12 @@ this.vxWeb.doFiles = function() {
 		}
 	};
 
-	var handleXhrResponse = function() {
-		var r = this.response, e = r.echo, f, xForm, i = 0, b, tree;
+	var handleXhrResponse = function(r) {
+		var e = r.echo, f, xForm, i = 0, b, tree;
+
+		// hide throbber
+
+		activityIndicator.unsetActivity();
 
 		// response is only evaluated when echo property is set
 
@@ -589,9 +607,9 @@ this.vxWeb.doFiles = function() {
 			}
 		}
 	};
-	
+
 	// everything prepared, get things going
-	
+
 	// set xhr parameters to meet the different "environments"
 
 	if(vxWeb.parameters) {
@@ -602,9 +620,9 @@ this.vxWeb.doFiles = function() {
 			fileListParameters.articlesId = vxWeb.parameters.articlesId;
 		}
 	}
-	
+
 	vxJS.event.addListener(xhr,		"timeout", function() { window.alert('Dateioperation dauert zu lange. Bitte erneut versuchen.'); });
-	vxJS.event.addListener(xhr,		"complete", handleXhrResponse);
+	vxJS.event.addListener(xhr,		"complete", function() { activityIndicator.setActivity(); handleXhrResponse(this.response); });
 	vxJS.event.addListener(confirm,	"focusLost", focusForm);
 	vxJS.event.addListener(
 		t,
@@ -626,7 +644,7 @@ this.vxWeb.doFiles = function() {
 		t.sortBy(0, "asc");
 	}
 
-	filesTable.tHead.appendChild("tr".setProp("className", "fileFunctions").create("td".setProp("colSpan", 6).create("div".setProp("className", "buttonBar").create([addFolderButton, addFolderInput, addFileButton, throbberElement]))));
+	filesTable.tHead.appendChild("tr".setProp("className", "fileFunctions").create("td".setProp("colSpan", 6).create("div".setProp("className", "buttonBar").create([addFolderButton, addFolderInput, addFileButton, activityIndicator.element]))));
 
 	if(vxJS.dnd) {
 		dnd = vxJS.dnd.create();
@@ -634,15 +652,15 @@ this.vxWeb.doFiles = function() {
 	}
 
 	xhr.use({command: "getFiles"}, fileListParameters).submit();
-	
+
 	// add drag and drop file upload, when support sufficient
-	
+
 	if(vxJS.xhrObj().upload && window.File && window.FileList && window.FileReader) {
-		
+
 		// @todo: set timeout to max_execution_time (supplied by server, maybe with getFiles request)
-		
-		// outer scope variables: filesTable, folderId, buidDirectoryBar(), buildFilesTable()
-		
+
+		// outer scope variables: filesTable, folderId, buildFilesTable()
+
 		(function() {
 			var uploadXhr = vxJS.xhr( { upload: true, timeout: 10000 } ), uploadActive, filesQueue = [],
 				progressBar = function() {
@@ -653,71 +671,73 @@ this.vxWeb.doFiles = function() {
 
 			var finishUpload = function() {
 				uploadActive = false;
+				activityIndicator.unsetActivity();
 				filenameLabel.nodeValue = "uploading";
+			};
+
+			var startUpload = function() {
+				uploadActive = true;
+				activityIndicator.setActivity();
 			};
 
 			vxJS.event.addListener(filesTable, "dragover", function(e) {
 				vxJS.dom.addClassName(filesTable, "draggedOver");
 				vxJS.event.preventDefault(e);
 			});
-	
+
 			vxJS.event.addListener(filesTable, "dragleave", function(e) {
 				vxJS.dom.removeClassName(filesTable, "draggedOver");
 				vxJS.event.preventDefault(e);
 			});
-	
+
 			vxJS.event.addListener(filesTable, "drop", function(e) {
 				var i, l, f, files = e.target.files || e.dataTransfer.files;
-	
+
 				for(i = 0, l = files.length; i < l; ++i) {
 					filesQueue.push(files[i]);
 				}
-		
+
 				if(!uploadActive) {
 					if(f = filesQueue.shift()) {
-						uploadActive = true;
+						startUpload();
 						filenameLabel.nodeValue = f.name;
 						uploadXhr.use({ uri: vxWeb.routes.upload + (folderId ? ("?folder=" + folderId) : "") }, { filename: f.name, file: f }).submit();
 					}
 				}
-	
+
 				vxJS.dom.removeClassName(filesTable, "draggedOver");
-	
+
 				vxJS.event.preventDefault(e);
 				vxJS.event.cancelBubbling(e);
 			});
-	
+
 			vxJS.event.addListener(uploadXhr, "timeout", function() {
 				finishUpload();
 				window.alert("Upload time exceeded 10s.");
 			});
-	
+
 			vxJS.event.addListener(uploadXhr, "complete", function() {
 				var f, r = this.response, e = r.echo;
-	
+
 				if(f = filesQueue.shift()) {
+					filenameLabel.nodeValue = f.name;
 					this.use(null, { filename: f.name, file: f }).submit();
 				}
 				else {
 					finishUpload();
 
-					// building directory bar and set folder id will correctly switch back to upload directory in case folder was changed during upload
+					// refresh folder, in case folder was not changed by user (weak comparison in case folder[Id] is undefined)
 
 					if(!r.response.error) {
-						if(r.response.pathSegments) {
-							buildDirectoryBar(r.response.pathSegments);
-						}
-						buildFilesTable(r.response);
-
-						if(e.folder) {
-							folderId = folderInput.value = e.folder;
+						if(e.folder == folderId) {
+							buildFilesTable(r.response);
 						}
 					}
 				}
 			});
-			
+
 			// vxJS.event.addListener won't detect XHR.upload as host object
-	
+
 			uploadXhr.xhrObj.upload.addEventListener("progress", function(e) {
 				var percentage = parseInt(e.loaded / e.total * 100, 10);
 				filenameLabel.nodeValue = percentage + "%";
