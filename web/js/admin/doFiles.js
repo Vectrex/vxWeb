@@ -664,15 +664,20 @@ this.vxWeb.doFiles = function() {
 		(function() {
 			var uploadXhr = vxJS.xhr( { upload: true, timeout: 10000 } ), uploadActive, filesQueue = [],
 				progressBar = function() {
-					var d = "div".setProp("id", "progressBar").create("uploading");
-					filesTable.querySelector("div.buttonBar").appendChild(d);
-					return d;
-				}(), filenameLabel = progressBar.firstChild;
+					var progress	= "div".create(),
+						bar			= "div".setProp("id", "progressBar").create(["uploading", progress]);
+					filesTable.querySelector("div.buttonBar").appendChild(bar);
+					return {
+						element:		bar,
+						setLabel:		function(text)	{ d.firstChild.nodeValue = text; },
+						setPercentage:	function(p)		{ progress.style.width = p + "%"; }
+					}
+				}();
 
 			var finishUpload = function() {
 				uploadActive = false;
 				activityIndicator.unsetActivity();
-				filenameLabel.nodeValue = "uploading";
+				progressBar.setLabel("uploading");
 			};
 
 			var startUpload = function() {
@@ -700,7 +705,7 @@ this.vxWeb.doFiles = function() {
 				if(!uploadActive) {
 					if(f = filesQueue.shift()) {
 						startUpload();
-						filenameLabel.nodeValue = f.name;
+						progressBar.setLabel(f.name);
 						uploadXhr.use({ uri: vxWeb.routes.upload + (folderId ? ("?folder=" + folderId) : "") }, { filename: f.name, file: f }).submit();
 					}
 				}
@@ -720,7 +725,7 @@ this.vxWeb.doFiles = function() {
 				var f, r = this.response, e = r.echo;
 
 				if(f = filesQueue.shift()) {
-					filenameLabel.nodeValue = f.name;
+					progressBar.setLabel(f.name);
 					this.use(null, { filename: f.name, file: f }).submit();
 				}
 				else {
@@ -740,7 +745,7 @@ this.vxWeb.doFiles = function() {
 
 			uploadXhr.xhrObj.upload.addEventListener("progress", function(e) {
 				var percentage = parseInt(e.loaded / e.total * 100, 10);
-				filenameLabel.nodeValue = percentage + "%";
+				progressBar.setPercentage(percentage);
 			}, false);
 		}());
 	}

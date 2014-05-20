@@ -228,8 +228,8 @@ label												{ display: inline-block; vertical-align: top; padding-right: 0.
 
 #filesList input.addFolderInput						{ display: inline-block; margin-right: 1em; }
 
-#progressBar										{ display: inline-block; padding: 0.25em 1em; width: 10em; border: solid 1px #000; vertical-align: middle; text-align: center; }
-#progressBar										{ background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAABCAYAAABADtw1AAAABmJLR0QA/wD/AP+gvaeTAAAAJ0lEQVRYw+3QAQEAMAQAsCshqwiyKnFBbBEW2fkfAHDK1IQFALhlAbSlBAJt+QfKAAAAAElFTkSuQmCC) repeat-y; }
+#progressBar										{ display: inline-block; padding: 0.25em 1em; width: 10em; border: solid 1px #000; vertical-align: middle; text-align: center; position: relative; }
+#progressBar > div									{ position: absolute; z-index: -1; height: 100%; width: 0%; background: #f00; }
 #filesList .draggedOver								{ box-shadow: 0 0 1em #FF9400; }
 
 /**
