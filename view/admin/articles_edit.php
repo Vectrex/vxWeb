@@ -1,7 +1,7 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
 
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
-<script type="text/javascript" src="/js/admin/doFiles.js"></script>
+<script type="text/javascript" src="/js/admin/fileManager.js"></script>
 <script type="text/javascript" src="/js/admin/doArticles.js"></script>
 
 <script type="text/javascript">
@@ -15,8 +15,16 @@
 	this.vxWeb.parameters.fileColumns = ["name", "size", "mime", "mTime", "linked"];
 	this.vxWeb.parameters.articlesId = <?php echo vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null'); ?>;
 	
-	vxJS.event.addDomReadyListener(this.vxWeb.doFiles);
+	vxJS.event.addDomReadyListener(function() {
+		vxWeb.fileManager({
+			directoryBar:		document.getElementById("directoryBar"),
+			filesList:			document.getElementById("filesList"),
+			uploadMaxFilesize:	<?php echo $this->upload_max_filesize; ?>,
+			maxUploadTime:		<?php echo $this->max_execution_time_ms; ?>
+		});
+	});
 	vxJS.event.addDomReadyListener(this.vxWeb.doArticles);
+
 </script>
 
 <script type="text/javascript">

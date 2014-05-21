@@ -122,10 +122,18 @@ class ArticlesController extends Controller {
 
 			$articleForm->bindRequestParameters();
 
+			$uploadMaxFilesize = min(
+					$this->toBytes(ini_get('upload_max_filesize')),
+					$this->toBytes(ini_get('post_max_size'))
+			);
+			$maxExecutionTime = ini_get('max_execution_time');
+				
 			return new Response(
 				SimpleTemplate::create('admin/articles_edit.php')
 					->assign('backlink', $this->pathSegments[0])
 					->assign('article_form', $articleForm->render())
+					->assign('upload_max_filesize',		$uploadMaxFilesize)
+					->assign('max_execution_time_ms',	$maxExecutionTime * 900) // 10pct "safety margin"
 					->display()
 			);
 		}
@@ -141,6 +149,23 @@ class ArticlesController extends Controller {
 					->select())
 				->display()
 		);
+	}
+
+	/**
+	 * simple helper function to convert ini values like 10M or 256K to integer
+	 *
+	 * @param string $val
+	 */
+	private function toBytes($val) {
+		switch(strtolower(substr(trim($val),-1))) {
+			case 'g':
+				$val *= 1024;
+			case 'm':
+				$val *= 1024;
+			case 'k':
+				$val *= 1024;
+		}
+		return $val;
 	}
 
 	protected function xhrExecute() {
