@@ -1,11 +1,19 @@
 <!-- {extend: admin/layout_with_menu.php @ content_block } -->
 
-<script type="text/javascript" src="/js/admin/doFiles.js"></script>
+<script type="text/javascript" src="/js/admin/fileManager.js"></script>
 
 <script type="text/javascript">
 	this.vxWeb.routes.files		= "<?php echo vxPHP\Http\Router::getRoute('filesXhr',	'admin.php')->getUrl(); ?>";
 	this.vxWeb.routes.upload	= "<?php echo vxPHP\Http\Router::getRoute('uploadXhr',	'admin.php')->getUrl(); ?>";
-	vxJS.event.addDomReadyListener(this.vxWeb.doFiles);
+
+	vxJS.event.addDomReadyListener(function() {
+		vxWeb.fileManager({
+			directoryBar:		document.getElementById("directoryBar"),
+			filesList:			document.getElementById("filesList"),
+			uploadMaxFilesize:	<?php echo $this->upload_max_filesize; ?>,
+			maxUploadTime:		<?php echo $this->max_execution_time_ms; ?>
+		});
+	});
 </script>
 
 <h1>Dateien</h1>

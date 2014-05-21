@@ -2,11 +2,13 @@ if(!this.vxWeb) {
 	this.vxWeb = {};
 }
 
-this.vxWeb.doFiles = function() {
+this.vxWeb.fileManager = function(config) {
 
 	"use strict";
 
-	var uri = function() {
+	var filesTable = config.filesList.getElementsByTagName("table")[0],
+
+		uri = function() {
 			var path = vxWeb.routes.files, search = window.location.search;
 
 			// add query parameter (needed for CKEditor integration)
@@ -16,8 +18,7 @@ this.vxWeb.doFiles = function() {
 			}
 			return path;
 		}(),
-		folderId,
-		directoryBar = document.getElementById("directoryBar"), breadCrumbs = [],
+		folderId, breadCrumbs = [],
 		folderInput = "input".setProp([["type", "hidden"], ["name", "folder"]]).create(),
 		fileListParameters = {},
 		xhr = vxJS.xhr( { uri: uri, echo: true, timeout: 10000 }),
@@ -28,7 +29,6 @@ this.vxWeb.doFiles = function() {
 			overlay: true,
 			decoration: [{ html: '<div class="vxJS_dragBar"></div><div class="vxJS_confirm_content"></div><div class="vxJS_confirm_buttons"></div>' }]
 		}),
-		filesTable = document.getElementById("filesList").getElementsByTagName("table")[0],
 		lsValue, lsKey = window.location.href + "__sort__",
 		folderRex = /(^| )folderRow( |$)/,
 
@@ -264,10 +264,10 @@ this.vxWeb.doFiles = function() {
 			};
 			breadCrumbs.push(add);
 
-			directoryBar.appendChild(add.element);
+			config.directoryBar.appendChild(add.element);
 		}
 
-		if((p = vxJS.dom.getElementsByClassName("active", directoryBar)[0])) {
+		if((p = vxJS.dom.getElementsByClassName("active", config.directoryBar)[0])) {
 			vxJS.dom.removeClassName(p, "active");
 		}
 		vxJS.dom.addClassName(breadCrumbs[l - 1].element, "active");
@@ -657,12 +657,10 @@ this.vxWeb.doFiles = function() {
 
 	if(vxJS.xhrObj().upload && window.File && window.FileList && window.FileReader) {
 
-		// @todo: set timeout to max_execution_time (supplied by server, maybe with getFiles request)
-
 		// outer scope variables: filesTable, folderId, buildFilesTable()
 
 		(function() {
-			var uploadXhr = vxJS.xhr( { upload: true, timeout: 10000 } ), uploadActive, filesQueue = [],
+			var uploadXhr = vxJS.xhr( { upload: true, timeout: config.maxUploadTime } ), uploadActive, filesQueue = [],
 				progressBar = function() {
 					var progress	= "div".create(),
 						label		= "span".create("uploading"),
@@ -703,7 +701,12 @@ this.vxWeb.doFiles = function() {
 				var i, l, f, files = e.target.files || e.dataTransfer.files;
 
 				for(i = 0, l = files.length; i < l; ++i) {
-					filesQueue.push(files[i]);
+					if(files[i].size > config.uploadMaxFilesize) {
+						window.alert("'" + files[i].name +"' übersteigt die maximale Größe eines Uploads und wird nicht hochgeladen.");
+					}
+					else {
+						filesQueue.push(files[i]);
+					}
 				}
 
 				if(!uploadActive) {

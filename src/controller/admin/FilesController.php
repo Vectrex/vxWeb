@@ -45,13 +45,44 @@ class FilesController extends Controller {
 	 */
 	protected function execute() {
 
+		$uploadMaxFilesize = min(
+			$this->toBytes(ini_get('upload_max_filesize')),
+			$this->toBytes(ini_get('post_max_size'))
+		);
+
+		$maxExecutionTime = ini_get('max_execution_time');
+
 		switch($this->route->getRouteId()) {
 			case 'filepicker':
-				return new Response(SimpleTemplate::create('admin/files_picker.php')->display());
+				$tpl = 'admin/files_picker.php';
+				break;
 
 			default:
-				return new Response(SimpleTemplate::create('admin/files_js.php')->display());
+				$tpl = 'admin/files_js.php';
 		}
+		
+		return new Response(
+			SimpleTemplate::create($tpl)
+				->assign('upload_max_filesize',		$uploadMaxFilesize)
+				->assign('max_execution_time_ms',	$maxExecutionTime * 900) // 10pct "safety margin"
+				->display());
+	}
+
+	/**
+	 * simple helper function to convert ini values like 10M or 256K to integer
+	 * 
+	 * @param string $val
+	 */
+	private function toBytes($val) {
+		switch(strtolower(substr(trim($val),-1))) {
+			case 'g':
+				$val *= 1024;
+			case 'm':
+				$val *= 1024;
+			case 'k':
+				$val *= 1024;
+		}
+		return $val;
 	}
 
 	/**
