@@ -687,17 +687,17 @@ this.vxWeb.fileManager = function(config) {
 				progressBar.show();
 			};
 
-			vxJS.event.addListener(filesTable, "dragover", function(e) {
-				vxJS.dom.addClassName(filesTable, "draggedOver");
+			vxJS.event.addListener(config.filesList, "dragover", function(e) {
+				vxJS.dom.addClassName(config.filesList, "draggedOver");
 				vxJS.event.preventDefault(e);
 			});
 
-			vxJS.event.addListener(filesTable, "dragleave", function(e) {
-				vxJS.dom.removeClassName(filesTable, "draggedOver");
+			vxJS.event.addListener(config.filesList, "dragleave", function(e) {
+				vxJS.dom.removeClassName(config.filesList, "draggedOver");
 				vxJS.event.preventDefault(e);
 			});
 
-			vxJS.event.addListener(filesTable, "drop", function(e) {
+			vxJS.event.addListener(config.filesList, "drop", function(e) {
 				var i, l, f, files = e.target.files || e.dataTransfer.files;
 
 				for(i = 0, l = files.length; i < l; ++i) {
@@ -717,7 +717,7 @@ this.vxWeb.fileManager = function(config) {
 					}
 				}
 
-				vxJS.dom.removeClassName(filesTable, "draggedOver");
+				vxJS.dom.removeClassName(config.filesList, "draggedOver");
 
 				vxJS.event.preventDefault(e);
 				vxJS.event.cancelBubbling(e);
