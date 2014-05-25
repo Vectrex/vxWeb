@@ -52,7 +52,7 @@ select::-ms-expand				{ display: none; }
  * buttons and button-like anchors
  */
 
-button, a.buttonLink				{ font-family: verbcond, sans-serif; display: inline-block; padding: 0.25em 0.75em; background: #005680; color: #fff; font-weight: bold; border: solid 1px #003b59; border-radius: 0.25em; margin-right: 0.25em; transition: all 0.5s ease 0s; }
+button, a.buttonLink				{ display: inline-block; padding: 0.25em 0.75em; background: #005680; color: #fff; font-weight: bold; border: solid 1px #003b59; border-radius: 0.25em; margin-right: 0.25em; transition: all 0.5s ease 0s; }
 
 button:hover,
 a.buttonLink:hover,
