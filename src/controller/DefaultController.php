@@ -33,6 +33,7 @@ class DefaultController extends Controller {
 			// replace content block with include for snippet in response
 
 			return new Response(SimpleTemplate::create('layout.php')
+				->assign('route', $page)
 				->insertTemplateAt($include, 'content_block')
 				->display()
 			);
