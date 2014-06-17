@@ -713,7 +713,7 @@ this.vxWeb.fileManager = function(config) {
 					if(f = filesQueue.shift()) {
 						startUpload();
 						progressBar.setLabel(f.name);
-						uploadXhr.use({ uri: vxWeb.routes.upload + (folderId ? ("?folder=" + folderId) : "") }, { filename: f.name, file: f }).submit();
+						uploadXhr.use({ uri: vxWeb.routes.upload + (folderId ? ((vxWeb.routes.upload.indexOf("?") === -1 ? "?" : "&") + "folder=" + folderId) : "") }, { filename: f.name, file: f }).submit();
 					}
 				}
 

@@ -110,6 +110,21 @@ class FilesController extends Controller {
 		$filename = FilesystemFile::sanitizeFilename($this->request->headers->get('x-file-name'), $folder->getFilesystemFolder());
 		file_put_contents($folder->getFilesystemFolder()->getPath() . $filename, file_get_contents('php://input'));
 
+		// link to article, when in "article" mode
+		
+		if($articlesId = $this->request->query->get('articlesId')) {
+
+			try {
+				$article = Article::getInstance($articlesId);
+				$article->linkMetaFile(FilesystemFile::getInstance($folder->getFilesystemFolder()->getPath() . $filename)->createMetaFile());
+				$article->save();
+			}
+			catch(\Exception $e) {
+				return new JsonResponse(array ('error' => $e->getMessage()));
+			}
+
+		}
+		
 		return new JsonResponse(array('echo' => array('folder' => $id), 'response' => $this->getFiles($folder)));
 	}
 
@@ -598,7 +613,7 @@ class FilesController extends Controller {
 		$assetsPath	= !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
 		$columns	= $this->request->request->get('fileColumns', array('name', 'size', 'mime', 'mTime'));
 
-		if($articlesId = $this->request->request->get('articlesId')) {
+		if($articlesId = $this->request->query->get('articlesId', $this->request->request->get('articlesId'))) {
 			$linkedFiles = Article::getInstance($articlesId)->getLinkedMetaFiles();
 		}
 
