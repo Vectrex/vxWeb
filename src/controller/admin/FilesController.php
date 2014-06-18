@@ -110,8 +110,13 @@ class FilesController extends Controller {
 		$filename = FilesystemFile::sanitizeFilename($this->request->headers->get('x-file-name'), $folder->getFilesystemFolder());
 		file_put_contents($folder->getFilesystemFolder()->getPath() . $filename, file_get_contents('php://input'));
 
-		// link to article, when in "article" mode
 		
+		// @todo better way, to handle columns
+		
+		$fileColumns = array('name', 'size', 'mime', 'mTime');
+
+		// link to article, when in "article" mode
+
 		if($articlesId = $this->request->query->get('articlesId')) {
 
 			try {
@@ -123,9 +128,10 @@ class FilesController extends Controller {
 				return new JsonResponse(array ('error' => $e->getMessage()));
 			}
 
+			$fileColumns[] = 'linked';
 		}
 		
-		return new JsonResponse(array('echo' => array('folder' => $id), 'response' => $this->getFiles($folder)));
+		return new JsonResponse(array('echo' => array('folder' => $id), 'response' => $this->getFiles($folder, $fileColumns)));
 	}
 
 	/**
@@ -262,7 +268,7 @@ class FilesController extends Controller {
 
 				else {
 					$e = array();
-					foreach($errors as $k => $v) {
+					foreach(array_keys($errors) as $k) {
 						$e[] = array('name' => $k, 'error' => 1);
 					}
 
@@ -294,7 +300,7 @@ class FilesController extends Controller {
 				}
 				else {
 					$e = array();
-					foreach($errors as $k => $v) {
+					foreach(array_keys($errors) as $k) {
 						$e[] = array('name' => $k, 'error' => 1);
 					}
 
@@ -361,7 +367,25 @@ class FilesController extends Controller {
 
 				$values = $form->bindRequestParameters($this->request->request)->getValidFormValues();
 
-				if(FALSE !== vxWeb\FileUtil::processFileUpload($folder, $upload, $values, isset($values['unpack_archives']))) {
+				$uploadedFiles = vxWeb\FileUtil::processFileUpload($folder, $upload, $values, isset($values['unpack_archives']));
+
+				if(FALSE !== $uploadedFiles) {
+					
+					if($articlesId = $this->request->query->get('articlesId')) {
+						
+						try {
+							$article = Article::getInstance($articlesId);
+							
+							foreach($uploadedFiles as $mf) {
+								$article->linkMetaFile($mf);
+								$article->save();
+							}
+						}
+						catch(\Exception $e) {
+							return new JsonResponse(array ('error' => $e->getMessage()));
+						}
+					}
+
 					$response = array('success' => TRUE);
 				}
 
@@ -484,12 +508,16 @@ class FilesController extends Controller {
 		}
 	}
 
-	private function getFiles(MetaFolder $mf) {
-
+	private function getFiles(MetaFolder $mf, array $fileColumns = NULL) {
+		
 		vxWeb\FileUtil::cleanupMetaFolder($mf);
 
+		if(!$fileColumns) {
+			$fileColumns = $this->request->request->get('fileColumns', array('name', 'size', 'mime', 'mTime'));
+		}
+
 		$folders	= $this->getFolderList($mf);
-		$files		= $this->getFileList($mf);
+		$files		= $this->getFileList($mf, $fileColumns);
 
 		$pathSegments = array(array('name' => $mf->getName(), 'id' => $mf->getId()));
 
@@ -606,12 +634,11 @@ class FilesController extends Controller {
 		return $folders;
 	}
 
-	private function getFileList(MetaFolder $folder) {
+	private function getFileList(MetaFolder $folder, array $columns) {
 
 		$files		= array();
 		$app		= Application::getInstance();
 		$assetsPath	= !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
-		$columns	= $this->request->request->get('fileColumns', array('name', 'size', 'mime', 'mTime'));
 
 		if($articlesId = $this->request->query->get('articlesId', $this->request->request->get('articlesId'))) {
 			$linkedFiles = Article::getInstance($articlesId)->getLinkedMetaFiles();
