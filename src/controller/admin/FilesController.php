@@ -111,7 +111,7 @@ class FilesController extends Controller {
 		file_put_contents($folder->getFilesystemFolder()->getPath() . $filename, file_get_contents('php://input'));
 
 		
-		// @todo better way, to handle columns
+		// @todo better way to handle columns
 		
 		$fileColumns = array('name', 'size', 'mime', 'mTime');
 
@@ -158,7 +158,7 @@ class FilesController extends Controller {
 			case 'linkToArticle':
 				try {
 					$article = Article::getInstance($this->request->request->getInt('articlesId'));
-					$article->linkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('id')));
+					$article->linkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('file')));
 					$article->save();
 					$response = array('error' => FALSE);
 				}
@@ -172,7 +172,7 @@ class FilesController extends Controller {
 			case 'unlinkFromArticle':
 				try {
 					$article = Article::getInstance($this->request->request->getInt('articlesId'));
-					$article->unlinkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('id')));
+					$article->unlinkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('file')));
 					$article->save();
 					$response = array('error' => FALSE);
 				}
@@ -228,7 +228,7 @@ class FilesController extends Controller {
 			case 'getFolderTree':
 				$response = array(
 					'branches' => array(
-						$this->getFolderTree(($id = $this->request->request->getInt('id')) ? MetaFile::getInstance(NULL, $id)->getMetafolder() : NULL)
+						$this->getFolderTree(($id = $this->request->request->getInt('file')) ? MetaFile::getInstance(NULL, $id)->getMetafolder() : NULL)
 					)
 				);
 				break;
@@ -236,7 +236,7 @@ class FilesController extends Controller {
 			// return form for editing file
 
 			case 'requestEditForm':
-				if(($id = $this->request->request->getInt('id'))) {
+				if(($id = $this->request->request->getInt('file'))) {
 					$markup = $this->getEditForm(MetaFile::getInstance(NULL, $id))->render();
 
 					ImageCache::create()->apply($markup);
@@ -371,7 +371,7 @@ class FilesController extends Controller {
 
 				if(FALSE !== $uploadedFiles) {
 					
-					if($articlesId = $this->request->query->get('articlesId')) {
+					if($articlesId = $this->request->request->get('articlesId')) {
 						
 						try {
 							$article = Article::getInstance($articlesId);
@@ -417,7 +417,7 @@ class FilesController extends Controller {
 	private function renameFile() {
 
 		try {
-			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('id'));
+			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
 			$user = User::getSessionUser();
 
 			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
@@ -441,7 +441,7 @@ class FilesController extends Controller {
 	private function delFile() {
 
 		try {
-			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('id'));
+			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
 			$user = User::getSessionUser();
 
 			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
@@ -462,7 +462,7 @@ class FilesController extends Controller {
 
 		try {
 
-			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('id'));
+			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
 			$user = User::getSessionUser();
 
 			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
@@ -492,7 +492,7 @@ class FilesController extends Controller {
 	private function delFolder() {
 
 		try {
-			if(($id = $this->request->request->getInt('id'))) {
+			if(($id = $this->request->request->getInt('del'))) {
 
 				$folder = MetaFolder::getInstance(NULL, $id);
 
