@@ -12,6 +12,7 @@ this.vxWeb.doArticles = function() {
 		articleXhrForm, id,
 		sortXhr = vxJS.xhr( { uri: route, command: "sortFiles" }),
 		sorTable,
+		confirm,
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
 		mBox = document.getElementById("messageBox"), timeoutId,
 		sortButton = function() {
@@ -30,18 +31,30 @@ this.vxWeb.doArticles = function() {
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
 
+	var handleFolderClick = function(e) {
+		var matches;
+		
+		if(this.href && (matches = this.href.match(/@folder=(\d+)$/))) {
+			vxJS.event.preventDefault(e);
+			confirm.hide();
+			if(matches[1]) {
+				vxWeb.fmInstance.gotoFolder(matches[1]);
+			}
+		}
+	};
+
 	var initSorTable = function() {
 		var st = "table".setProp("class", "linkedFilesTable").create([
 				"thead".create(
-					"tr".create(["", "Typ", "Dateiname"].domWrapWithTag("th")
+					"tr".create(["", "Typ", "Dateiname", "Ordner"].domWrapWithTag("th")
 				)),
 				"tbody".create(
-					"tr".create(["", "", ""].domWrapWithTag("td")
+					"tr".create(["", "", "", ""].domWrapWithTag("td")
 				))
 			]),
 			dragFrom;
 
-		sorTable = vxJS.widget.sorTable(st, { columnFormat: ["manual", "no_sort", "no_sort"] });
+		sorTable = vxJS.widget.sorTable(st, { columnFormat: ["manual", "no_sort", "no_sort", "no_sort"] });
 		
 		vxJS.event.addListener(sorTable, "dragStart", function() {
 			dragFrom = this.getDraggedRow().sectionRowIndex;
@@ -67,6 +80,7 @@ this.vxWeb.doArticles = function() {
 			}
 		});
 
+		vxJS.event.addListener(st, "click", handleFolderClick);
 	};
 
 	var parseServerCheck = function(r) {
@@ -108,10 +122,8 @@ this.vxWeb.doArticles = function() {
 			vxJS.dom.addClassName(mBox, "fadeOutUp");
 		}, 3000);
 	};
-
+	
 	var handleSortResponse = function() {
-		var confirm;
-
 		if(this.response && this.response.files) {
 			sorTable.removeAllRows();
 			this.response.files.forEach(function(row) {
@@ -119,7 +131,8 @@ this.vxWeb.doArticles = function() {
 					"tr".create([
 						"td".setProp("id", "__id__" + row.id).create(),
 						"td".create(row.isThumb ? "img".setProp( { src: row.type, className: "thumb" } ).create() : row.type),
-						"td".create(row.filename)
+						"td".create(row.filename),
+						"td".create("a".setProp("href", window.location + "@folder=" + row.folderId).create(row.path))
 					])
 				);
 			});

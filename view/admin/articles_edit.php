@@ -17,14 +17,15 @@
 	this.vxWeb.parameters.articlesId = <?php echo vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null'); ?>;
 	
 	vxJS.event.addDomReadyListener(function() {
-		vxWeb.fileManager({
+		vxWeb.fmInstance = vxWeb.fileManager({
 			directoryBar:		document.getElementById("directoryBar"),
 			filesList:			document.getElementById("filesList"),
 			uploadMaxFilesize:	<?php echo $this->upload_max_filesize; ?>,
 			maxUploadTime:		<?php echo $this->max_execution_time_ms; ?>
 		});
+
+		vxWeb.doArticles();
 	});
-	vxJS.event.addDomReadyListener(this.vxWeb.doArticles);
 
 </script>
 

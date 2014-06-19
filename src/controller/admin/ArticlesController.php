@@ -327,9 +327,11 @@ class ArticlesController extends Controller {
 				foreach(Article::getInstance($this->request->request->getInt('articlesId'))->getLinkedMetaFiles() as $mf) {
 					$rows[] = array(
 						'id'		=> $mf->getId(),
+						'folderId'	=> $mf->getMetaFolder()->getId(),
 						'filename'	=> $mf->getFilename(),
 						'isThumb'	=> $mf->isWebImage(),
-						'type'		=> $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype()
+						'type'		=> $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
+						'path'		=> $mf->getMetaFolder()->getRelativePath()
 					);
 				}
 
