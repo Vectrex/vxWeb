@@ -1,3 +1,5 @@
+/*jslint browser: true, ass: true, continue: true, eqeq: true, plusplus: true, todo: true, vars: true, white: true */
+
 if(!this.vxWeb) {
 	this.vxWeb = {};
 }
@@ -11,7 +13,7 @@ this.vxWeb.fileManager = function(config) {
 
 	var filesTable = config.filesList.getElementsByTagName("table")[0],
 
-		uri = function() {
+		uri = (function() {
 			var path = vxWeb.routes.files, search = window.location.search;
 
 			// add query parameter (needed for CKEditor integration)
@@ -20,7 +22,7 @@ this.vxWeb.fileManager = function(config) {
 				path = path + (path.indexOf("?") !== -1 ? "&" : "?") + search.substring(1);
 			}
 			return path;
-		}(),
+		}()),
 		breadCrumbs = [],
 		folderInput		= "input".setProp([["type", "hidden"], ["name", "folder"]]).create(),
 		articlesIdInput	= "input".setProp([["type", "hidden"], ["name", "articlesId"]]).create(),
@@ -35,7 +37,7 @@ this.vxWeb.fileManager = function(config) {
 		lsValue, lsKey = window.location.href + "__sort__",
 		folderRex = /(^| )folderRow( |$)/,
 
-		icons = function() {
+		icons = (function() {
 			var elements = {};
 			[
 			 	{ key: "edit",		title: "Bearbeiten",	icon: "\ue002" },
@@ -44,7 +46,7 @@ this.vxWeb.fileManager = function(config) {
 			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue02a" },
 			 	{ key: "rename",	title: "Umbenennen",	icon: "\ue001" },
 			 	{ key: "delFolder",	title: "Ordner leeren und löschen", icon: "\ue008" },
-			 	{ key: "locked",	title: "Gesperrt", icon: "\ue00f", element: "span" },
+			 	{ key: "locked",	title: "Gesperrt", icon: "\ue00f", element: "span" }
 			].forEach(function(props) {
 				var e = (props.element || "button").setProp( { title: props.title, className: "iconOnly " + props.key }).create();
 				e.setAttribute("data-icon", props.icon);
@@ -52,7 +54,7 @@ this.vxWeb.fileManager = function(config) {
 			});
 
 			return elements;
-		}(),
+		}()),
 
 		simpleFileRowSort = function(a, b) {
 			var s = this.asc ? 1 : -1;
@@ -110,25 +112,10 @@ this.vxWeb.fileManager = function(config) {
 			return e;
 		}()),
 
-		addFolderButton = (function() {
-			var e = "button".setProp({ type: "button", className: "withIcon" }).create("Neues Verzeichnis anlegen");
-
-			e.setAttribute("data-icon", "\ue007");
-
-			vxJS.event.addListener(e, "click", function(e) {
-				this.style.display = "none";
-				addFolderInput.style.display = "";
-				addFolderInput.value = "";
-				addFolderInput.focus();
-				vxJS.event.cancelBubbling(e);
-			});
-			return e;
-		}()),
-
 		addFolderInput = (function() {
 			var elem = "input".setProp("class", "ml addFolderInput").create();
 			elem.style.display = "none";
-			vxJS.event.addListener(elem, "blur", function(e) {
+			vxJS.event.addListener(elem, "blur", function() {
 				this.style.display = "none";
 				addFolderButton.style.display = "";
 			});
@@ -142,6 +129,21 @@ this.vxWeb.fileManager = function(config) {
 				}
 			});
 			return elem;
+		}()),
+
+		addFolderButton = (function() {
+			var e = "button".setProp({ type: "button", className: "withIcon" }).create("Neues Verzeichnis anlegen");
+
+			e.setAttribute("data-icon", "\ue007");
+
+			vxJS.event.addListener(e, "click", function(e) {
+				this.style.display = "none";
+				addFolderInput.style.display = "";
+				addFolderInput.value = "";
+				addFolderInput.focus();
+				vxJS.event.cancelBubbling(e);
+			});
+			return e;
 		}()),
 
 		//@todo: xhr request assumes that file id is still in request parameters from previous request
@@ -158,7 +160,7 @@ this.vxWeb.fileManager = function(config) {
 			return t;
 		}()),
 
-		activityIndicator = function() {
+		activityIndicator = (function() {
 			var e = "div".setProp("class", "vxJS_xhrThrobberFileOperation").create(), queueLength = 0;
 			var incQL = function() {
 				++queueLength;
@@ -177,11 +179,18 @@ this.vxWeb.fileManager = function(config) {
 				setActivity: incQL,
 				unsetActivity: decQL
 			};
-		}();
+		}());
+	
+	var getFiles = function(folderId) {
+		if(folderId) {
+			vxWeb.parameters.folder = folderId;
+		}
+		xhr.use({ command: "getFiles" }, vxWeb.parameters).submit();
+	};
 
 	var prepareAddForm = function() {
 		var i = 0, e;
-		while((e = form.elements[i++])) {
+		while(e = form.elements[i++]) {
 			formInitValues[e.name] = e.value;
 		}
 		form.appendChild(folderInput);
@@ -224,7 +233,7 @@ this.vxWeb.fileManager = function(config) {
 							form.elements[p].value = formInitValues[p];
 						}
 					}
-					xhr.use({command: "getFiles"}, vxWeb.parameters).submit();
+					getFiles();
 				}
 			}
 		);
@@ -245,22 +254,21 @@ this.vxWeb.fileManager = function(config) {
 			p = pathSegs[i];
 			b = breadCrumbs[i];
 
-			if(b && b.name == p.name) {
+			if(b && b.name === p.name) {
 				continue;
 			}
-			else {
-				while((b = breadCrumbs[i])) {
-					vxJS.event.removeListener(b.listener);
-					breadCrumbs.splice(i, 1);
-					b.element.parentNode.removeChild(b.element);
-				}
-				break;
+
+			while(b = breadCrumbs[i]) {
+				vxJS.event.removeListener(b.listener);
+				breadCrumbs.splice(i, 1);
+				b.element.parentNode.removeChild(b.element);
 			}
+			break;
 		}
 
-		for(; i < l; ++i) {
+		while(i < l) {
 
-			p = pathSegs[i];
+			p = pathSegs[i++];
 			elem = "button".create(p.name);
 
 			add =  {
@@ -272,8 +280,7 @@ this.vxWeb.fileManager = function(config) {
 					"click",
 					(function(id) {
 						return function(e) {
-							vxWeb.parameters.folder = id;
-							xhr.use({ command: "getFiles" }, vxWeb.parameters).submit();
+							getFiles(id);
 							vxJS.event.preventDefault(e);
 						};
 					}(p.id))
@@ -303,8 +310,7 @@ this.vxWeb.fileManager = function(config) {
 		t.insertRow("tr".setProp("class", "folderRow").create(cells));
 
 		filesTableListeners.push(vxJS.event.addListener(a, "click", function(e) {
-			vxWeb.parameters.folder = folderData.id;
-			xhr.use({ command: "getFiles" }, vxWeb.parameters).submit();
+			getFiles(folderData.id);
 			vxJS.event.preventDefault(e);
 		}));
 
@@ -575,7 +581,7 @@ this.vxWeb.fileManager = function(config) {
 					xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
 					xForm.addSubmit(f.elements["submit_edit"]);
 					xForm.addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", f)[0], "general");
-					xForm.setPayload( { id: e.id } );
+					xForm.setPayload( { file: e.file } );
 
 					vxJS.event.addListener(
 						xForm,
@@ -584,7 +590,7 @@ this.vxWeb.fileManager = function(config) {
 							var r = this.getLastXhrResponse();
 
 							if(r.elements) {
-								// possible error handling
+								//@todo: possible error handling
 							}
 							else {
 								buildFilesTable(r);
@@ -654,7 +660,7 @@ this.vxWeb.fileManager = function(config) {
 		dnd.addDraggable(confirm.element);
 	}
 
-	xhr.use({command: "getFiles"}, vxWeb.parameters).submit();
+	getFiles();
 
 	// add drag and drop file upload, when support sufficient
 
@@ -664,7 +670,7 @@ this.vxWeb.fileManager = function(config) {
 
 		(function() {
 			var uploadXhr = vxJS.xhr( { upload: true, timeout: config.maxUploadTime } ), uploadQuery, uploadActive, filesQueue = [],
-				progressBar = function() {
+				progressBar = (function() {
 					var progress	= "div".create(),
 						label		= "span".create("uploading"),
 						bar			= "div".setProp("id", "progressBar").create([progress, label]);
@@ -676,7 +682,7 @@ this.vxWeb.fileManager = function(config) {
 						show:			function()		{ vxJS.dom.addClassName(bar, "shown"); },
 						hide:			function()		{ vxJS.dom.removeClassName(bar, "shown"); this.setLabel(""); }
 					};
-				}();
+				}());
 
 			var finishUpload = function() {
 				uploadActive = false;
@@ -770,4 +776,10 @@ this.vxWeb.fileManager = function(config) {
 			}, false);
 		}());
 	}
+	
+	// expose methods
+	
+	return {
+		gotoFolder: getFiles
+	};
 };

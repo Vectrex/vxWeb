@@ -254,7 +254,7 @@ class FilesController extends Controller {
 			case 'checkEditForm':
 				$this->request->request->add($this->request->request->get('elements'));
 
-				$file = MetaFile::getInstance(NULL, $this->request->request->getInt('id'));
+				$file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
 				$form = $this->getEditForm($file);
 
 				if(!($errors = $form
