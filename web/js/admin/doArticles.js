@@ -9,6 +9,14 @@ this.vxWeb.doArticles = function() {
 	"use strict";
 
 	var	route = vxWeb.routes.articles,
+
+		fileManager = vxWeb.fileManager({
+			directoryBar:		document.getElementById("directoryBar"),
+			filesList:			document.getElementById("filesList"),
+			uploadMaxFilesize:	vxWeb.serverConfig.uploadMaxFilesize,
+			maxUploadTime:		vxWeb.serverConfig.maxUploadTime
+		}),
+
 		articleXhrForm, id,
 		sortXhr = vxJS.xhr( { uri: route, command: "sortFiles" }),
 		sorTable,
@@ -38,7 +46,7 @@ this.vxWeb.doArticles = function() {
 			vxJS.event.preventDefault(e);
 			confirm.hide();
 			if(matches[1]) {
-				vxWeb.fmInstance.gotoFolder(matches[1]);
+				fileManager.gotoFolder(matches[1]);
 			}
 		}
 	};

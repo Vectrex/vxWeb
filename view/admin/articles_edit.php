@@ -8,6 +8,10 @@
 	if(!this.vxWeb.parameters) {
 		this.vxWeb.parameters = {};
 	}
+	if(!this.vxWeb.serverConfig) {
+		this.vxWeb.serverConfig = {};
+	}
+	
 	
 	this.vxWeb.routes.articles	= "<?php echo vxPHP\Http\Router::getRoute('articlesXhr', 'admin.php')->getUrl(); ?>?<?php echo vxPHP\Http\Request::createFromGlobals()->getQueryString(); ?>";
 	this.vxWeb.routes.files		= "<?php echo vxPHP\Http\Router::getRoute('fileincludeXhr', 'admin.php')->getUrl(); ?>";
@@ -15,15 +19,11 @@
 
 	this.vxWeb.parameters.fileColumns = ["name", "size", "mime", "mTime", "linked"];
 	this.vxWeb.parameters.articlesId = <?php echo vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null'); ?>;
+
+	this.vxWeb.serverConfig.uploadMaxFilesize = <?php echo $this->upload_max_filesize; ?>;
+	this.vxWeb.serverConfig.maxUploadTime = <?php echo $this->max_execution_time_ms; ?>; 
 	
 	vxJS.event.addDomReadyListener(function() {
-		vxWeb.fmInstance = vxWeb.fileManager({
-			directoryBar:		document.getElementById("directoryBar"),
-			filesList:			document.getElementById("filesList"),
-			uploadMaxFilesize:	<?php echo $this->upload_max_filesize; ?>,
-			maxUploadTime:		<?php echo $this->max_execution_time_ms; ?>
-		});
-
 		vxWeb.doArticles();
 	});
 
