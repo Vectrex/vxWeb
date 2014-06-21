@@ -12,6 +12,6 @@ else {
 	require_once '../site.config.php';
 }
 
-$route = vxPHP\Http\Router::getRouteFromPathInfo();
+$route = vxPHP\Routing\Router::getRouteFromPathInfo();
 $application->setCurrentRoute($route);
 $controller = $route->getController()->render();

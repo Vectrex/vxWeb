@@ -43,8 +43,8 @@
 		<div id="page">
 			<div id="statusBar">
 					<span class="userInfo">Angemeldet <strong><?php echo vxPHP\User\User::getSessionUser()->getName(); ?></strong> (<?php echo vxPHP\User\User::getSessionUser()->getId(); ?>)</span> &bull;
-					<a class="withIcon" data-icon="&#xe009;" href="<?php echo vxPHP\Http\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
-					<a  class="withIcon" data-icon="&#xe021;" href="<?php echo vxPHP\Http\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
+					<a class="withIcon" data-icon="&#xe009;" href="<?php echo vxPHP\Routing\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
+					<a  class="withIcon" data-icon="&#xe021;" href="<?php echo vxPHP\Routing\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
 					Gehe zu <a href="/" class="withIcon" data-icon="&#xe000;"><?php echo vxPHP\Http\Request::createFromGlobals()->getHost(); ?></a>
 			</div>
 

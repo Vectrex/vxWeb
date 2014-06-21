@@ -3,8 +3,8 @@
 <script type="text/javascript" src="/js/admin/fileManager.js"></script>
 
 <script type="text/javascript">
-	this.vxWeb.routes.files		= "<?php echo vxPHP\Http\Router::getRoute('filesXhr',	'admin.php')->getUrl(); ?>";
-	this.vxWeb.routes.upload	= "<?php echo vxPHP\Http\Router::getRoute('uploadXhr',	'admin.php')->getUrl(); ?>";
+	this.vxWeb.routes.files		= "<?php echo vxPHP\Routing\Router::getRoute('filesXhr',	'admin.php')->getUrl(); ?>";
+	this.vxWeb.routes.upload	= "<?php echo vxPHP\Routing\Router::getRoute('uploadXhr',	'admin.php')->getUrl(); ?>";
 
 	vxJS.event.addDomReadyListener(function() {
 		vxWeb.fileManager({

@@ -2,7 +2,7 @@
 
 <?php if($tpl->allow_nice_edit): ?>
 
-	<?php $url = vxPHP\Http\Router::getRoute('filepicker', 'admin.php')->getUrl(); ?>
+	<?php $url = vxPHP\Routing\Router::getRoute('filepicker', 'admin.php')->getUrl(); ?>
 
 	<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 

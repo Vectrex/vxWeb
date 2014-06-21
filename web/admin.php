@@ -17,6 +17,6 @@ else {
 //$conf->set('HTML.Allowed', 'a[href], p, ul, ol, li, strong, em, sup, sub, br');
 //$purifier = new HTMLPurifier($conf);
 
-$route = vxPHP\Http\Router::getRouteFromPathInfo();
+$route = vxPHP\Routing\Router::getRouteFromPathInfo();
 vxPHP\Application\Application::getInstance()->setCurrentRoute($route);
 $controller = $route->getController()->render();
