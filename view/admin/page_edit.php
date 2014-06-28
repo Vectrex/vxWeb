@@ -9,7 +9,8 @@
 	<script type="text/javascript">
 	vxJS.event.addDomReadyListener(function() {
 		CKEDITOR.replace(document.forms[0].elements['Markup'], {
-			extraAllowedContent: "div(*)",
+			allowedContent: true,
+			// extraAllowedContent: "div(*)",
 			toolbar:
 				[
 				    ['Maximize', '-', 'Source', '-', 'Undo', 'Redo'],
