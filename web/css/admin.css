@@ -201,7 +201,7 @@ div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pad
  */
 
 form												{ padding: 0.75em 0; }
-.formSect											{ }
+.formSect											{ margin-bottom: 0.75em; }
 .formBase											{ margin-top: 0.25em; }
 .formItem											{ padding: 0.5em 0; }
 label												{ display: inline-block; vertical-align: top; padding-right: 0.5em; }

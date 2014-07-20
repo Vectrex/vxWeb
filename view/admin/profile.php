@@ -7,7 +7,7 @@
 </script>
 
 <?php echo $tpl->form; ?>
-
+<!--
 <div class="inputGroup xl" style="margin-bottom: 1em"><span class="s">Submit</span><input class="pct_100" name="xxx" placeholder="test"></div>
 <div class="inputGroup xl" style="margin-bottom: 1em"><span class="inputGroupBtn"><button>Submit</button></span><input class="pct_100" name="xxx" placeholder="test"></div>
 <div class="inputGroup xl" style="margin-bottom: 1em"><span class="s">Ok</span><input class="pct_100" name="xxx" placeholder="test"><span class="s">here</span></div>
@@ -22,3 +22,4 @@
 	<option>1</option>
 	<option>2</option>
 </select>
+-->
