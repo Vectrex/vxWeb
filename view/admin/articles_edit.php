@@ -73,7 +73,7 @@ vxJS.event.addDomReadyListener(function() {
 });
 </script>
 
-<h1>Artikel &amp; News</h1>
+<h1>Artikel &amp; News <em class="smaller"><?php echo $tpl->title; ?></em></h1>
 
 <div class="buttonBar">
 	<a class="buttonLink withIcon" data-icon="&#xe025;" href="$<?php echo $tpl->backlink; ?>">Zurück zur Übersicht</a>

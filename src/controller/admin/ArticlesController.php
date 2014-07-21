@@ -130,6 +130,7 @@ class ArticlesController extends Controller {
 				
 			return new Response(
 				SimpleTemplate::create('admin/articles_edit.php')
+					->assign('title', $article->getHeadline())
 					->assign('backlink', $this->pathSegments[0])
 					->assign('article_form', $articleForm->render())
 					->assign('upload_max_filesize',		$uploadMaxFilesize)
