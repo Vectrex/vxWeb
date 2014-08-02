@@ -1,5 +1,5 @@
 /*
- * colors: #0089CC, #FF9400 - #005680, #804A00, hover: #aef
+ * colors: #0089CC, #FF9400 - #005680, #e59517, hover: #aef
  *
  *
  */
@@ -8,7 +8,7 @@
 @import "../fonts/verb_condensed/webfont.css";
 @import "../fonts/icomoon/webfont.css";
 
-/**
+/*
  * defaults
  */
 
@@ -29,7 +29,7 @@ th								{ padding-top: 0.5em; background: #c0c0c0; font-weight: bold; }
 table.list tr th				{ border-left: solid 1px #eee; }
 table.list tr th:first-child	{ border-left: none; }
 
-/**
+/*
  * form elements
  */
 
@@ -48,7 +48,7 @@ select[size="1"]				{ padding-left: 24px; background: url('../img/site/gui/selec
 button::-moz-focus-inner		{ border: 0; padding: 0; }
 select::-ms-expand				{ display: none; }
 
-/**
+/*
  * buttons and button-like anchors
  */
 
@@ -82,7 +82,7 @@ span.buttonGroup button				{ border-radius: 0; border-right-style: none; margin-
 span.buttonGroup button:first-child	{ border-bottom-left-radius: 0.25em; border-top-left-radius: 0.25em; }
 span.buttonGroup button:last-child	{ border-bottom-right-radius: 0.25em; border-top-right-radius: 0.25em; border-right-style: solid; }
 
-/**
+/*
  * input group
  */
 div.inputGroup.inline				{ display: inline-table; }
@@ -102,7 +102,7 @@ div.inputGroup .inputGroupBtn button{ border: none; margin: -1px; border-radius:
 #page								{ height: 100%; padding-top: 3em; }
 #content							{ min-height: 100%; background: #eee; margin-left: 13em; padding: 1em; border-left: dotted 1px #888; }
 
-/**
+/*
  * standard classes and rules
  */
 
@@ -176,7 +176,7 @@ div.errorContainer .errorBox	{ font-size: 80%; font-weight: bold; line-height: 1
 
 div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; padding-bottom: 0.25em; border-bottom: dotted 1px #444; }
 
-/**
+/*
  * main menu
  */
 
@@ -190,13 +190,13 @@ div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pad
 #adminmenu li.active								{ background: #005680; color: #fff; }
 #adminmenu_level_0 li.active a						{ color: #fff; }
 
-/**
+/*
  * status bar
  */
 
 #statusBar											{ top: 0; position: fixed; padding: 1em 1em 0.5em 1em; margin: 0; border-bottom: solid 1px #eee; width: 100%; background: #fff; box-shadow: 0 0 8px #888; }
 
-/**
+/*
  * stock form
  */
 
@@ -210,7 +210,7 @@ label												{ display: inline-block; vertical-align: top; padding-right: 0.
 .formSect.multiColumn:last-child					{ padding-right: 0; }
 .formBase.multiColumn								{ clear: left; }
 
-/**
+/*
  * files
  */
 
@@ -234,7 +234,7 @@ label												{ display: inline-block; vertical-align: top; padding-right: 0.
 #progressBar > span									{ position: absolute; top: 0; left: 0; height: 100%; width: 100%; padding: 0.25em 1em; display: block; text-align: center; color: #444; text-shadow: 1px 1px #fff; }
 #filesList.draggedOver								{ box-shadow: 0 0 1em #FF9400; }
 
-/**
+/*
  * folderTree popup
  */
 
@@ -254,7 +254,7 @@ label												{ display: inline-block; vertical-align: top; padding-right: 0.
 .vxJS_tree div.__label__							{ display: inline; cursor: pointer; }
 .vxJS_tree li span.current							{ font-weight: bold; cursor: default; }
 
-/**
+/*
  * confirm
  */
 
@@ -267,7 +267,7 @@ label												{ display: inline-block; vertical-align: top; padding-right: 0.
 .confirmForm div.padded,
 .confirmForm form									{ margin: 1em; }
 
-/**
+/*
  * login
  */
 
@@ -275,7 +275,7 @@ div#adminLogin										{ width: 32em; margin: 0 auto; }
 div#adminLogin form									{ background: #fff; border: solid 1px #08c; padding: 2em 3em; border-radius: 0.5em; box-shadow: 0 0 1em #444; }
 div#adminLogin .inputGroup span:first-child			{ background: #888; border-color: #888; color: #fff; }
 
-/**
+/*
  * articles
  */
 
@@ -339,7 +339,18 @@ img.thumb											{ box-shadow: 1px 1px 3px #444; }
 
 .vxJS_tabSpacer				{ clear: both; overflow: hidden; line-height: 0%; height: 2px; border-top: dotted 1px #0089CC; }
 
-/**
+/*
+ * autosuggest widget
+ */
+ 
+.vxJS_autoSuggest							{ position: absolute; border: 1px solid #ccc; box-shadow: 0 1px 12px #888; }
+.vxJS_autoSuggest ul						{ color: #000; background: #fff; margin: 0; padding: 0;  list-style-type: none; }
+.vxJS_autoSuggest li						{ cursor: pointer; margin: 0; padding: 0.25em 0.5em; }
+.vxJS_autoSuggest li.current				{ color: #0089CC; background: #ddd; }
+.vxJS_autoSuggest li span					{ padding: 0 0.5em; }
+.vxJS_autoSuggest li span.hiLite			{ color: #e59517; padding: 0; }
+
+/*
  * XHR throbbers
  */
 
