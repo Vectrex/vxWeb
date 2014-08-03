@@ -36,23 +36,27 @@ table.list tr th:first-child	{ border-left: none; }
 input,
 textarea,
 select,
-button							{ -moz-appearance: none; -webkit-appearance: none; background: #fff; padding: 0.125em 0.25em; border-radius: 0.25em; border: solid 1px #aaa; }
+button								{ -moz-appearance: none; -webkit-appearance: none; background: #fff; padding: 0.125em 0.25em; border-radius: 0.25em; border: solid 1px #aaa; }
 
 input:focus,
 textarea:focus,
-select:focus					{ box-shadow: 0 0 0.25em #aef; border-color: #0089CC !important; }
+select:focus						{ box-shadow: 0 0 0.25em #aef; border-color: #0089CC !important; }
+
+label,
+input								{ display: inline-block; vertical-align: middle; }
 
 select:not([size]),
-select[size="1"]				{ padding-left: 24px; background: url('../img/site/gui/select_arrow.png') no-repeat 0 50% #fff; text-indent: 0.1px; text-overflow: ""; }
+select[size="1"]					{ display: inline-block; vertical-align: middle; padding-left: 24px; background: url('../img/site/gui/select_arrow.png') no-repeat 0 50% #fff; text-indent: 0.1px; text-overflow: ""; }
 
-button::-moz-focus-inner		{ border: 0; padding: 0; }
-select::-ms-expand				{ display: none; }
+button::-moz-focus-inner			{ border: 0; padding: 0; }
+select::-ms-expand					{ display: none; }
 
 /*
  * buttons and button-like anchors
  */
 
-button, a.buttonLink				{ display: inline-block; padding: 0.25em 0.75em; background: #005680; color: #fff; font-weight: bold; border: solid 1px #003b59; border-radius: 0.25em; margin-right: 0.25em; transition: all 0.5s ease 0s; }
+button,
+a.buttonLink						{ display: inline-block; vertical-align: middle; padding: 0.25em 0.75em; background: #005680; color: #fff; font-weight: bold; border: solid 1px #003b59; border-radius: 0.25em; margin-right: 0.25em; transition: all 0.5s ease 0s; }
 
 button:hover,
 a.buttonLink:hover,
@@ -204,7 +208,7 @@ form												{ padding: 0.75em 0; }
 .formSect											{ margin-bottom: 0.75em; }
 .formBase											{ margin-top: 0.25em; }
 .formItem											{ padding: 0.5em 0; }
-label												{ display: inline-block; vertical-align: top; padding-right: 0.5em; }
+label												{ padding-right: 0.5em; }
 
 .formSect.multiColumn								{ float: left; padding-right: 1em; }
 .formSect.multiColumn:last-child					{ padding-right: 0; }
