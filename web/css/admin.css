@@ -38,6 +38,9 @@ textarea,
 select,
 button								{ -moz-appearance: none; -webkit-appearance: none; background: #fff; padding: 0.125em 0.25em; border-radius: 0.25em; border: solid 1px #aaa; }
 
+input[type=checkbox]				{ -moz-appearance: checkbox; -webkit-appearance: checkbox; }
+input[type=radio]					{ -moz-appearance: radio; -webkit-appearance: radio; }
+
 input:focus,
 textarea:focus,
 select:focus						{ box-shadow: 0 0 0.25em #aef; border-color: #0089CC !important; }
@@ -50,6 +53,9 @@ select[size="1"]					{ display: inline-block; vertical-align: middle; padding-le
 
 button::-moz-focus-inner			{ border: 0; padding: 0; }
 select::-ms-expand					{ display: none; }
+
+input[disabled="disabled"],
+textarea[disabled="disabled"]		{ background: #eee; }
 
 /*
  * buttons and button-like anchors
@@ -149,7 +155,7 @@ th.vxJS_sorTable_header_desc:before	{ content: "\e031"; }
 .leftFloat			{ float: left; }
 .clearFloat			{ height: 0em; clear: both; }
 
-#messageBox						{ position: fixed; width: 50%; top: -3em; padding: 0.75em; font-size: 1em; border-style: none solid solid solid; border-radius: 0 0 4px 4px; border-width: 1px; text-align: center; margin-left: 25%; box-shadow: 0 0 2em #888; opacity: 0; }
+#messageBox						{ position: fixed; z-index: 100; width: 50%; top: -3em; padding: 0.75em; font-size: 1em; border-style: none solid solid solid; border-radius: 0 0 4px 4px; border-width: 1px; text-align: center; margin-left: 25%; box-shadow: 0 0 2em #888; opacity: 0; }
 .messageBoxSuccess				{ color: #080; background: #cfc; border-color: #080; }
 .messageBoxError				{ color: #f44; background: #fee; border-color: #f44; }
 #messageBox.fadeInDown			{
@@ -173,9 +179,10 @@ th.vxJS_sorTable_header_desc:before	{ content: "\e031"; }
 .notify_message     			{ border: solid 1px #880; color: #880; background: #ffc; padding: 1em; margin-bottom: 0.25em; }
 .error_message					{ border: solid 2px #f44; background: #fee; padding: 1.5em; font-size: 0.8em; font-weight: bold; color: #f44; margin: 1.5em 0em; line-height: 150%; }
 .error							{ color: #f00; }
-span.error						{ display: inline-block; background: #ffe0e0; padding: 0.25em 0.5em; border-radius: 0.25em; }
+span.error						{ display: inline-block; background: #ffe0e0; padding: 0.25em 0.5em; border-radius: 0.25em; box-shadow: 0 0 0.125em #444; }
 label.error						{ font-weight: bold; }
-input.error						{ background: #fcc; transition: all 0.5s ease 0s; }
+input.error,
+textarea.error					{ background: #fcc; transition: all 0.5s ease 0s; }
 div.errorContainer .errorBox	{ font-size: 80%; font-weight: bold; line-height: 150%; color: #f00; background: #ffe0e0; padding: 0.5em 1em; border-radius: 0.25em; }
 
 div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; padding-bottom: 0.25em; border-bottom: dotted 1px #444; }
@@ -347,7 +354,7 @@ img.thumb											{ box-shadow: 1px 1px 3px #444; }
  * autosuggest widget
  */
  
-.vxJS_autoSuggest							{ position: absolute; border: 1px solid #ccc; box-shadow: 0 1px 12px #888; }
+.vxJS_autoSuggest							{ position: absolute; z-index: 100; border: 1px solid #ccc; box-shadow: 0 1px 12px #888; }
 .vxJS_autoSuggest ul						{ color: #000; background: #fff; margin: 0; padding: 0;  list-style-type: none; }
 .vxJS_autoSuggest li						{ cursor: pointer; margin: 0; padding: 0.25em 0.5em; }
 .vxJS_autoSuggest li.current				{ color: #0089CC; background: #ddd; }
