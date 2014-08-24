@@ -3,12 +3,13 @@
 error_reporting(E_ALL & ~E_STRICT);
 ini_set('display_errors', '1');
 
-require_once 'SplClassLoader.php';
-require_once 'CustomClassLoader.php';
+require_once $rootPath . '/vendor/vxPHP/Autoload/Psr4.php';
 
-SplClassLoader::create		('vxPHP', $rootPath . DIRECTORY_SEPARATOR . 'vendor')->register();
-SplClassLoader::create		('vxWeb', $rootPath . DIRECTORY_SEPARATOR . 'vendor')->register();
-CustomClassLoader::create	($rootPath)->register();
+$loader = new vxPHP\Autoload\Psr4();
+$loader->register();
+
+$loader->addPrefix('vxPHP', $rootPath . '/vendor/vxPHP');
+// $loader->addPrefix('vxWeb', $rootPath . '/vendor/vxWeb');
 
 session_start();
 
