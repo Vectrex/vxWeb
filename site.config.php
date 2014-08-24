@@ -9,7 +9,7 @@ $loader = new vxPHP\Autoload\Psr4();
 $loader->register();
 
 $loader->addPrefix('vxPHP', $rootPath . '/vendor/vxPHP');
-// $loader->addPrefix('vxWeb', $rootPath . '/vendor/vxWeb');
+$loader->addPrefix('vxWeb', $rootPath . '/vendor/vxWeb');
 
 session_start();
 
