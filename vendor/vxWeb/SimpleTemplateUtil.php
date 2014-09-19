@@ -46,25 +46,26 @@ class SimpleTemplateUtil {
 
 		$dbTpl = array();
 
-		$rows = $db->doQuery("
-			SELECT
-				p.pagesID,
-				p.Template,
-				p.Alias,
-				date_format(max(r.templateUpdated), '%Y-%m-%d %H:%i:%s') AS lastUpdate,
-				UNIX_TIMESTAMP(max(r.templateUpdated)) AS lastUpdateTS
-			FROM
-				revisions r
-				RIGHT JOIN pages p ON r.pagesID = p.pagesID
-			WHERE
-				r.Locale IS NULL OR r.Locale = ''
-			GROUP BY
-				pagesID,
-				Template
-			", TRUE);
+		foreach (
+			$db->doPreparedQuery("
+				SELECT
+					p.pagesID,
+					p.Template,
+					p.Alias,
+					date_format(max(r.templateUpdated), '%Y-%m-%d %H:%i:%s') AS lastUpdate,
+					UNIX_TIMESTAMP(max(r.templateUpdated)) AS lastUpdateTS
+				FROM
+					revisions r
+					RIGHT JOIN pages p ON r.pagesID = p.pagesID
+				WHERE
+					r.Locale IS NULL OR r.Locale = ''
+				GROUP BY
+					pagesID,
+					Template
+			")
+			as $r) {
 
-		foreach($rows as $r) {
-			$dbTpl['universal'][$r['Template']] = $r;
+				$dbTpl['universal'][$r['Template']] = $r;
 		}
 
 		// localized templates
@@ -98,24 +99,33 @@ class SimpleTemplateUtil {
 		foreach($dbTpl as $l => $t) {
 
 			foreach($t as $k => $v) {
+				
+				$parameters = array((int) $v['pagesID']);
 
 				if(!isset($tpl[$l][$k]) || ($tpl[$l][$k]['fmtime'] < $v['lastUpdateTS'])) {
 
-					$localeSQL = $l == 'universal' ? "(r.Locale IS NULL OR r.Locale = '')" : "r.Locale = '$l'";
+					if($l === 'universal') {
+						$localeSQL = "(r.Locale IS NULL OR r.Locale = '')";
+					}
+					else {
+						$localeSQL = 'r.Locale = ?';
+						$parameters[] = $l;
+					}
 
-					$rows = $db->doQuery("
+					$rows = $db->doPreparedQuery('
 						SELECT
 							r.Markup
 						FROM
 							revisions r
 						WHERE
-							pagesID = {$v['pagesID']} AND $localeSQL
+							pagesID = ? AND ' .
+							$localeSQL . '
 						ORDER BY
 							templateUpdated DESC
 						LIMIT 1
-					", TRUE);
+					', $parameters);
 
-					if(!empty($rows[0])) {
+					if(count($rows)) {
 						self::createTemplate($v + $rows[0], $l);
 					}
 				}
@@ -364,7 +374,7 @@ class SimpleTemplateUtil {
 		
 		if(!empty($locale) && $locale != 'universal' && in_array($locale, $config->site->locales)) {
 			$localeSQL = 'Locale = ?';
-			parameters[] = $locale;
+			$parameters[] = $locale;
 		}
 		else {
 			$localeSQL = "(Locale IS NULL OR Locale = '')";

@@ -101,7 +101,7 @@ class PagesController extends Controller {
 			);
 		}
 
-		$pages = Application::getInstance()->getDb()->doQuery("
+		$pages = Application::getInstance()->getDb()->doPreparedQuery("
 			SELECT
 				pg.*,
 				rev.revisionsID,
@@ -127,7 +127,8 @@ class PagesController extends Controller {
 				inner join revisions rev ON (rev.templateUpdated = pg.LastRevision AND rev.pagesID = pg.pagesID)
 			ORDER BY
 				Alias,
-				Locale", TRUE, 'htmlspecialchars');
+				Locale
+		");
 
 		return new Response(
 			SimpleTemplate::create('admin/pages_list.php')
