@@ -57,6 +57,8 @@ select::-ms-expand					{ display: none; }
 input[disabled="disabled"],
 textarea[disabled="disabled"]		{ background: #eee; }
 
+option								{ padding: 0.125em 0.25em; }
+								
 /*
  * buttons and button-like anchors
  */
