@@ -40,9 +40,8 @@ class LoginController extends Controller {
 
 		// form was submitted by XHR
 
-		if($this->isXhr) {
+		if($this->request->getMethod() === 'POST') {
 
-			$this->request->request->add($this->request->request->get('elements'));
 			$values = $form->bindRequestParameters($this->request->request)->getValidFormValues();
 
 			try {

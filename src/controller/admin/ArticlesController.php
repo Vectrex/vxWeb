@@ -188,15 +188,6 @@ class ArticlesController extends Controller {
 
 		}
 
-		else if(($elements = $this->request->request->get('elements')) && isset($elements['id'])) {
-			try {
-				$article = Article::getInstance($elements['id']);
-			}
-			catch(ArticleException $e) {
-				return new JsonResponse();
-			}
-		}
-
 		else {
 			$article = new Article();
 		}
@@ -206,8 +197,6 @@ class ArticlesController extends Controller {
 			// check article data
 
 			case 'checkForm':
-
-				$this->request->request->add($this->request->request->get('elements'));
 
 				$form = HtmlForm::create()
 					->addElement(FormElementFactory::create('select', 'articlecategoriesID', NULL, array(), array(), FALSE, array(), array(Rex::INT_EXCL_NULL)))

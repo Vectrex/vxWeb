@@ -252,7 +252,6 @@ class FilesController extends Controller {
 			// check and update edit data
 
 			case 'checkEditForm':
-				$this->request->request->add($this->request->request->get('elements'));
 
 				$file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
 				$form = $this->getEditForm($file);
@@ -287,7 +286,6 @@ class FilesController extends Controller {
 			// validate new file data before upload
 
 			case 'checkUpload':
-				$this->request->request->add($this->request->request->get('elements'));
 
 				$form = $this->getAddForm();
 

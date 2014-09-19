@@ -320,15 +320,29 @@ class SimpleTemplateUtil {
 		$row			= self::sanitizeTemplateData($row);
 		$row['Rawtext']	= self::extractRawtext($row['Markup']);
 
+		$parameters = array((int) $row['pagesID']);
+
 		if(!empty($locale) && $locale != 'universal' && in_array($locale, $config->site->locales)) {
 			$row['Locale'] = $locale;
-			$localeSQL = "r.Locale = '$locale'";
+			$localeSQL = 'r.Locale = ?';
+			$parameters[] = $locale;
 		}
 		else {
 			$localeSQL = "(r.Locale IS NULL OR r.Locale = '')";
 		}
 
-		$db->execute("update revisions r set active = NULL where active = 1 AND pagesID = {$row['pagesID']} AND $localeSQL");
+		$db->execute('
+			UPDATE
+				revisions r
+			SET
+				active = NULL
+			WHERE
+				active = 1 AND
+				pagesID = ? AND ' .
+				$localeSQL
+			,$parameters
+		);
+
 		$row['active'] = 1;
 
 		return $db->insertRecord('revisions', $row);
@@ -346,36 +360,55 @@ class SimpleTemplateUtil {
 										5;
 		}
 
-		$delIds = array();
+		$parameters = array((int) $pagesID);
+		
+		if(!empty($locale) && $locale != 'universal' && in_array($locale, $config->site->locales)) {
+			$localeSQL = 'Locale = ?';
+			parameters[] = $locale;
+		}
+		else {
+			$localeSQL = "(Locale IS NULL OR Locale = '')";
+		}
+		
+		// get all revisions sorted from new to old
 
-		$localeSQL = !empty($locale) && $locale != 'universal' && in_array($locale, $config->site->locales) ?
-			"Locale = '$locale'" :
-			"(Locale IS NULL OR Locale = '')";
-
-		$db->doQuery("
+		$rows = $db->doQuery('
 			SELECT
 				revisionsID
 			FROM
 				revisions r
 			WHERE
-				pagesID = $pagesID AND $localeSQL
+				pagesID = ? AND ' .
+				$localeSQL . '
 			ORDER BY
-				templateUpdated DESC");
+				templateUpdated DESC
+			LIMIT
+				?
+			', parameters);
 
-		if($db->numRows < self::$maxPageRevisions) {
+		if(count($rows) < self::$maxPageRevisions) {
 			return TRUE;
 		}
 
-		for($i = self::$maxPageRevisions - 1; $i--;) {
-			$r = $db->queryResult->fetch_assoc();
-			array_push($delIds, $r['revisionsID']);
+		$delIds = array();
+
+		// remove old revisions
+
+		for($i = count($rows) - self::$maxPageRevisions; $i--;) {
+			$r = array_pop($rows);
+			$delIds[] = $r['revisionsID'];
 		}
 
-		return $db->execute("
+		return $db->execute('
 			DELETE FROM
 				revisions
 			WHERE
-				revisionsID NOT IN (".implode(',', $delIds).") AND pagesID = $pagesID AND $localeSQL");
+				revisionsID IN (' .
+				implode(', ', array_fill(0, count($delIds), '?')) .
+				') AND pagesID = ? AND '.
+				$localeSQL,
+			array(array_merge($delIds, $parameters))
+		);
 	}
 
 	/**

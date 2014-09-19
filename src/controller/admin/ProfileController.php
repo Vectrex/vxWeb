@@ -1,5 +1,4 @@
 <?php
-use vxPHP\User\UserAbstract;
 use vxPHP\User\Util;
 use vxPHP\User\Notification\Notification;
 
@@ -50,56 +49,8 @@ class ProfileController extends Controller {
 				->initVar('success', (int) end($this->pathSegments) === 'success')
 				->initVar('has_notifications', (int) !empty($checkBoxHtml));
 
-		if(!$this->isXhr) {
+		if($this->request->getMethod() === 'POST') {
 
-			$form->bindRequestParameters();
-
-			if($form->wasSubmittedByName('submit_profile')) {
-
-				if(!$form->validate()->getFormErrors()) {
-
-					$v = $form->getValidFormValues();
-
-					if(!empty($v['new_PWD']) && $v['new_PWD'] != $v['new_PWD_verify']) {
-						$form->setError('PWD_mismatch');
-					}
-
-					if($v['Email'] != $admin->getId() && !UserAbstract::isAvailableId($v['Email'])) {
-						$form->setError('duplicate_Email');
-					}
-
-					if(!$form->getFormErrors()) {
-						if(!empty($v['new_PWD'])) {
-							$v['PWD'] = Util::hashPassword($v['new_PWD']);
-						}
-
-						if($admin->restrictedUpdate($v)) {
-							$add = array();
-							foreach($availableNotifications as $n) {
-								if(!empty($v[$n->alias])) {
-									$add[] = $n->alias;
-								}
-							}
-							$admin->setNotifications($add);
-							$this->redirect('profile/success');
-						}
-						else {
-							$form->setError('system');
-						}
-					}
-				}
-				$form->initVar('success', 0);
-			}
-
-			return new Response(
-				SimpleTemplate::create('admin/profile.php')
-					->assign('form', $form->render())
-					->display()
-			);
-		}
-
-		else {
-			$this->request->request->add($this->request->request->get('elements'));
 			$form->bindRequestParameters($this->request->request);
 
 			if(!$form->validate()->getFormErrors()) {
@@ -143,6 +94,15 @@ class ProfileController extends Controller {
 			return new JsonResponse(array('elements' => $response));
 
 		}
-
+		
+		else {
+			
+			return new Response(
+					SimpleTemplate::create('admin/profile.php')
+					->assign('form', $form->render())
+					->display()
+			);
+			
+		}
 	}
 }

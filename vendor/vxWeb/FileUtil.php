@@ -122,11 +122,11 @@ class FileUtil {
 
 				// delete "potential" subdirectories
 
-				$db->execute("DELETE FROM folders WHERE l >= $l AND r <= $r");
+				$db->execute('DELETE FROM folders WHERE l >= ? AND r <= ?', array((int) $l, (int) $r));
 
 				// update nesting
 
-				$db->execute("UPDATE folders SET r = r - $rl WHERE r > $l");
+				$db->execute('UPDATE folders SET r = r - ? WHERE r > ?', array((int) $rl, (int) $l));
 			}
 		}
 
