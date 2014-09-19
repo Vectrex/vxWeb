@@ -382,7 +382,7 @@ class SimpleTemplateUtil {
 		
 		// get all revisions sorted from new to old
 
-		$rows = $db->doQuery('
+		$rows = $db->doPreparedQuery('
 			SELECT
 				revisionsID
 			FROM
@@ -392,33 +392,32 @@ class SimpleTemplateUtil {
 				$localeSQL . '
 			ORDER BY
 				templateUpdated DESC
-			LIMIT
-				?
-			', parameters);
+			', $parameters
+		);
 
 		if(count($rows) < self::$maxPageRevisions) {
 			return TRUE;
 		}
 
-		$delIds = array();
+		$keepsIds = array();
 
 		// remove old revisions
 
-		for($i = count($rows) - self::$maxPageRevisions; $i--;) {
-			$r = array_pop($rows);
-			$delIds[] = $r['revisionsID'];
+		for($i = 0; $i < self::$maxPageRevisions - 1; ++$i) {
+			$keepIds[] = $rows[$i]['revisionsID'];
 		}
 
 		return $db->execute('
 			DELETE FROM
 				revisions
 			WHERE
-				revisionsID IN (' .
-				implode(', ', array_fill(0, count($delIds), '?')) .
+				revisionsID NOT IN (' .
+				implode(', ', array_fill(0, count($keepIds), '?')) .
 				') AND pagesID = ? AND '.
 				$localeSQL,
-			array(array_merge($delIds, $parameters))
+			array_merge($keepIds, $parameters)
 		);
+		
 	}
 
 	/**
