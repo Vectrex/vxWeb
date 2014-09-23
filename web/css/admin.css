@@ -370,7 +370,7 @@ img.thumb											{ box-shadow: 1px 1px 3px #444; }
 div.vxJS_xhrThrobber {
 	position: absolute;
 	color: #005680;
-	text-shadow: 0 0 2px #000;
+	text-shadow: 0 0 2px #fff;
 	z-index: 100;
 	padding: 0.5em;
 	animation: load 1.5s infinite linear;
