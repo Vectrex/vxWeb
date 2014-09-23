@@ -29,7 +29,7 @@ class LoginController extends Controller {
 			}
 		}
 
-		$button = FormElementFactory::create('button',	'submit_login',	'',	array('type' => 'submit', 'class' => '', 'data-icon' => '&#xe02e;'));
+		$button = FormElementFactory::create('button',	'submit_login',	'',	array('type' => 'submit', 'class' => '', 'data-icon' => '&#xe02e;', 'data-throbber-position' => 'outside-left'));
 		$button->setInnerHTML('Login');
 
 		$form =
