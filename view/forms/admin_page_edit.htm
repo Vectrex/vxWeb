@@ -6,28 +6,30 @@
 <div class="notify_message"><strong>Keine Änderungen notwendig</strong><br>Daten wurden nicht gespeichert.</div>
 {end_if}
 
-<div class="formSect multiColumn" style="width: 70%;">
-	<div class="formItem">
-		<label>Titel</label>{input:Title}
+<div class="multiColumnContainer">
+	<div class="formSect column" style="width: 70%;">
+		<div class="formItem">
+			<label>Titel</label>{input:Title}
+		</div>
+		<div class="formItem">
+			<label>Eindeutiger Name (automatisch generiert)</label>{input:Alias}
+		</div>
+		<div class="formItem">
+			<label>Inhalt</label>{textarea:Markup}
+		</div>
 	</div>
-	<div class="formItem">
-		<label>Eindeutiger Name (automatisch generiert)</label>{input:Alias}
-	</div>
-	<div class="formItem">
-		<label>Inhalt</label>{textarea:Markup}
-	</div>
-</div>
-
-<div class="formSect multiColumn" style="width: 30%;">
-	<div class="formItem">
-		<label>Schlüsselwörter</label>{textarea:Keywords}
-	</div>
-	<div class="formItem">
-		<label>Beschreibung</label>{textarea:Description}
+	
+	<div class="formSect column" style="width: 30%; padding-left: 1em;">
+		<div class="formItem">
+			<label>Schlüsselwörter</label>{textarea:Keywords}
+		</div>
+		<div class="formItem">
+			<label>Beschreibung</label>{textarea:Description}
+		</div>
 	</div>
 </div>	 
 
-<div class="formBase multiColumn">
+<div class="formBase">
 	<div class="formItem">
 	{input:submit_edit}
 	</div>

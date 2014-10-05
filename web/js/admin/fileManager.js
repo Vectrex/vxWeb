@@ -673,7 +673,7 @@ this.vxWeb.fileManager = function(config) {
 				progressBar = (function() {
 					var progress	= "div".create(),
 						label		= "span".create("uploading"),
-						bar			= "div".setProp("id", "progressBar").create([progress, label]);
+						bar			= "div".setProp("class", "progressBar ml").create([progress, label]);
 					filesTable.querySelector("div.buttonBar").appendChild(bar);
 					return {
 						element:		bar,
