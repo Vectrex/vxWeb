@@ -217,18 +217,20 @@ tr.row1 .active							{ background: #ffe1cc; }
  */
 
 div.vxJS_xhrThrobber {
+	display: inline-block;
 	color: #005680;
-	text-shadow: 0 0 2px #fff;
 	padding: 0.5em;
-	animation: load 1.5s infinite linear;
-	-webkit-animation:  webkit-load 1.5s infinite linear;
 	text-align: center;
+	vertical-align: middle;
 	visibility: hidden;
 	z-index: 100;
 }
 div.vxJS_xhrThrobber.active {
 	visibility: visible;
+	animation: load 1s infinite linear;
+	-webkit-animation:  webkit-load 1s infinite linear;
 }
+
 div.vxJS_xhrThrobber:before {
 	font-family: icomoon;
 	content: "\e02f";

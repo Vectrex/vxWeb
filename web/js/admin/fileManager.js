@@ -161,7 +161,7 @@ this.vxWeb.fileManager = function(config) {
 		}()),
 
 		activityIndicator = (function() {
-			var e = "div".setProp("class", "vxJS_xhrThrobberFileOperation").create(), queueLength = 0;
+			var e = "div".setProp("class", "vxJS_xhrThrobber fileOperation").create(), queueLength = 0;
 			var incQL = function() {
 				++queueLength;
 				vxJS.dom.addClassName(e, "active");

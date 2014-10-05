@@ -6,31 +6,40 @@
 @import "../fonts/verb_condensed/webfont.css";
 @import "../fonts/icomoon/webfont.css";
 
-/*
- * defaults
- */
-
-*								{ font-family: verbcond, sans-serif; }
-
 /**
  * containers
  */
-
+*									{ font-family: verbcond, sans-serif; }
 #page								{ height: 100%; padding-top: 3em; }
 #content							{ min-height: 100%; background: #eee; margin-left: 13em; padding: 1em; border-left: dotted 1px #888; }
+#statusBar							{ top: 0; position: fixed; padding: 1em 1em 0.5em 1em; margin: 0; border-bottom: solid 1px #eee; width: 100%; background: #fff; box-shadow: 0 0 8px #888; }
+
+/*
+ * main menu
+ */
+
+#adminmenu_level_0,
+#adminmenu							{ position: fixed; padding: 1em 0; float: left; width: 13em; font-weight: bold; }
+#adminmenu_level_0 ul,
+#adminmenu ul						{ list-style-type: none; margin: 0; padding: 0; }
+#adminmenu_level_0 li,
+#adminmenu li						{ margin: 0; padding: 0.25em 1em 0.25em 2em; color:#000; }
+#adminmenu_level_0 li.active,
+#adminmenu li.active				{ background: #005680; color: #fff; }
+#adminmenu_level_0 li.active a		{ color: #fff; }
 
 /*
  * standard classes and rules
  */
 
-h1		{ margin: 0 0 0.5em 0; padding: 0; color: #444; font-size: 150%; text-transform: uppercase; font-weight: bold; }
-h2		{ font-size: 120%; color: #444; font-weight: bold; margin: 0.5em 0; padding: 0; font-size: 100%; text-transform: uppercase; font-style: normal; padding: 0;}
-h3		{ font-size: 100%; color: #444; font-weight: bold; margin: 0.5em 0; }
+h1									{ margin: 0 0 0.5em 0; padding: 0; color: #444; font-size: 150%; text-transform: uppercase; font-weight: bold; }
+h2									{ font-size: 120%; color: #444; font-weight: bold; margin: 0.5em 0; padding: 0; font-size: 100%; text-transform: uppercase; font-style: normal; padding: 0;}
+h3									{ font-size: 100%; color: #444; font-weight: bold; margin: 0.5em 0; }
 
-#messageBox						{ position: fixed; z-index: 100; width: 50%; top: -3em; padding: 0.75em; font-size: 1em; border-style: none solid solid solid; border-radius: 0 0 4px 4px; border-width: 1px; text-align: center; margin-left: 25%; box-shadow: 0 0 2em #888; opacity: 0; }
-.messageBoxSuccess				{ color: #080; background: #cfc; border-color: #080; }
-.messageBoxError				{ color: #f44; background: #fee; border-color: #f44; }
-#messageBox.fadeInDown			{
+#messageBox							{ position: fixed; z-index: 100; width: 50%; top: -3em; padding: 0.75em; font-size: 1em; border-style: none solid solid solid; border-radius: 0 0 4px 4px; border-width: 1px; text-align: center; margin-left: 25%; box-shadow: 0 0 2em #888; opacity: 0; }
+.messageBoxSuccess					{ color: #080; background: #cfc; border-color: #080; }
+.messageBoxError					{ color: #f44; background: #fee; border-color: #f44; }
+#messageBox.fadeInDown				{
 	-webkit-animation-name: webkit-fadeInDown;
 	-webkit-animation-duration: 1s;
 	-webkit-animation-fill-mode: forwards;
@@ -38,7 +47,7 @@ h3		{ font-size: 100%; color: #444; font-weight: bold; margin: 0.5em 0; }
 	animation-duration: 1s;
 	animation-fill-mode: forwards;
 }
-#messageBox.fadeOutUp			{
+#messageBox.fadeOutUp				{
 	-webkit-animation-name: webkit-fadeOutUp;
 	-webkit-animation-duration: 1s;
 	-webkit-animation-fill-mode: forwards;
@@ -47,37 +56,17 @@ h3		{ font-size: 100%; color: #444; font-weight: bold; margin: 0.5em 0; }
 	animation-fill-mode: forwards;
 }
 
-.success_message     			{ border: solid 1px #080; color: #080; background: #cfc; padding: 1em; margin-bottom: 0.25em; }
-.notify_message     			{ border: solid 1px #880; color: #880; background: #ffc; padding: 1em; margin-bottom: 0.25em; }
-.error_message					{ border: solid 2px #f44; background: #fee; padding: 1.5em; font-size: 0.8em; font-weight: bold; color: #f44; margin: 1.5em 0em; line-height: 150%; }
-.error							{ color: #f00; }
-span.error						{ display: inline-block; background: #ffe0e0; padding: 0.25em 0.5em; border-radius: 0.25em; box-shadow: 0 0 0.125em #444; }
-label.error						{ font-weight: bold; }
+.success_message     				{ border: solid 1px #080; color: #080; background: #cfc; padding: 1em; margin-bottom: 0.25em; }
+.notify_message     				{ border: solid 1px #880; color: #880; background: #ffc; padding: 1em; margin-bottom: 0.25em; }
+.error_message						{ border: solid 2px #f44; background: #fee; padding: 1.5em; font-size: 0.8em; font-weight: bold; color: #f44; margin: 1.5em 0em; line-height: 150%; }
+.error								{ color: #f00; }
+span.error							{ display: inline-block; background: #ffe0e0; padding: 0.25em 0.5em; border-radius: 0.25em; box-shadow: 0 0 0.125em #444; }
+label.error							{ font-weight: bold; }
 input.error,
-textarea.error					{ background: #fcc; transition: all 0.5s ease 0s; }
-div.errorContainer .errorBox	{ font-size: 80%; font-weight: bold; line-height: 150%; color: #f00; background: #ffe0e0; padding: 0.5em 1em; border-radius: 0.25em; }
+textarea.error						{ background: #fcc; transition: all 0.5s ease 0s; }
+div.errorContainer .errorBox		{ font-size: 80%; font-weight: bold; line-height: 150%; color: #f00; background: #ffe0e0; padding: 0.5em 1em; border-radius: 0.25em; }
 
-div.separator					{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; padding-bottom: 0.25em; border-bottom: dotted 1px #444; }
-
-/*
- * main menu
- */
-
-#adminmenu_level_0,
-#adminmenu											{ position: fixed; padding: 1em 0; float: left; width: 13em; font-weight: bold; }
-#adminmenu_level_0 ul,
-#adminmenu ul										{ list-style-type: none; margin: 0; padding: 0; }
-#adminmenu_level_0 li,
-#adminmenu li										{ margin: 0; padding: 0.25em 1em 0.25em 2em; color:#000; }
-#adminmenu_level_0 li.active,
-#adminmenu li.active								{ background: #005680; color: #fff; }
-#adminmenu_level_0 li.active a						{ color: #fff; }
-
-/*
- * status bar
- */
-
-#statusBar											{ top: 0; position: fixed; padding: 1em 1em 0.5em 1em; margin: 0; border-bottom: solid 1px #eee; width: 100%; background: #fff; box-shadow: 0 0 8px #888; }
+div.separator						{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; padding-bottom: 0.25em; border-bottom: dotted 1px #444; }
 
 /*
  * files
@@ -189,25 +178,9 @@ img.thumb											{ box-shadow: 1px 1px 3px #444; }
  * XHR throbbers
  */
 
-div.vxJS_xhrThrobberFileOperation {
+.vxJS_xhrThrobber.fileOperation {
 	padding: 0.125em 0.5em;
-	color: #fff;
-	/* color: #005680; */
-	text-align: center;
-	opacity: 0;
-	display: inline-block;
-	vertical-align: middle;
-}
-
-div.vxJS_xhrThrobberFileOperation.active {
-	opacity: 1;
-	animation: load 2s infinite linear;
-	-webkit-animation:  webkit-load 2s infinite linear;
-}
-
-div.vxJS_xhrThrobberFileOperation:before {
-	font-family: icomoon; font-size: 2em;
-	content: "\e02f";
+	font-size: 2em;
 }
 
 @keyframes fadeInDown {
