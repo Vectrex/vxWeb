@@ -12,11 +12,13 @@ else {
 	require_once '../site.config.php';
 }
 
-//$conf = HTMLPurifier_Config::createDefault();
-//$conf->set('HTML.Doctype', 'HTML 4.01 Strict');
-//$conf->set('HTML.Allowed', 'a[href], p, ul, ol, li, strong, em, sup, sub, br');
-//$purifier = new HTMLPurifier($conf);
+
+session_start();
+
+if(isset($_GET['__clear__session__'])) {
+	$_SESSION = array();
+}
 
 $route = vxPHP\Routing\Router::getRouteFromPathInfo();
 vxPHP\Application\Application::getInstance()->setCurrentRoute($route);
-$controller = $route->getController()->render();
+$route->getController()->render();

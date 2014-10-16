@@ -14,9 +14,9 @@ else {
 
 $route = vxPHP\Routing\Router::getRouteFromPathInfo();
 $application->setCurrentRoute($route);
-$controller = $route->getController()->render();
-
+$route->getController()->render();
 ?>
+
 <?php
 /*
 use vxPHP\Application\Application;
