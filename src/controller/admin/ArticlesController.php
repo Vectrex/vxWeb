@@ -31,6 +31,7 @@ use vxPHP\Http\JsonResponse;
 
 use vxPHP\Application\Application;
 use vxPHP\User\User;
+use vxPHP\Database\vxPDOUtil;
 
 class ArticlesController extends Controller {
 
@@ -218,7 +219,7 @@ class ArticlesController extends Controller {
 						$form->setError('Article_Date');
 					}
 					else {
-						$article->setDate(new \DateTime($db->formatDate($v['Article_Date'], 'de')));
+						$article->setDate(new \DateTime(vxPDOUtil::unFormatDate($v['Article_Date'], 'de')));
 					}
 				}
 				else {
@@ -230,7 +231,7 @@ class ArticlesController extends Controller {
 						$form->setError('Display_from');
 					}
 					else {
-						$article->setDisplayFrom(new \DateTime($db->formatDate($v['Display_from'], 'de')));
+						$article->setDisplayFrom(new \DateTime(vxPDOUtil::unFormatDate($v['Article_Date'], 'de')));
 					}
 				}
 				else {
@@ -242,7 +243,7 @@ class ArticlesController extends Controller {
 						$form->setError('Display_until');
 					}
 					else {
-						$article->setDisplayUntil(new \DateTime($db->formatDate($v['Display_until'], 'de')));
+						$article->setDisplayUntil(new \DateTime(vxPDOUtil::unFormatDate($v['Article_Date'], 'de')));
 					}
 				}
 				else {
