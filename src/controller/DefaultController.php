@@ -30,14 +30,28 @@ class DefaultController extends Controller {
 				$this->generateHttpError();
 			}
 
-			// replace content block with include for snippet in response
+			// fall back to "layout.php" as parent template, when template has no "extend" directive
 
-			return new Response(SimpleTemplate::create('layout.php')
-				->assign('route', $page)
-				->insertTemplateAt($include, 'content_block')
-				->display()
-			);
+			if(is_null($include->getParentTemplateFilename())) {
+			
+				// replace content block with include for snippet in response
 
+				return new Response(SimpleTemplate::create('layout.php')
+					->assign('route', $page)
+					->insertTemplateAt($include, 'content_block')
+					->display()
+				);
+
+			}
+			
+			else {
+
+				return new Response($include
+					->assign('route', $page)
+					->display()
+				);
+				
+			}
 		}
 
 		catch(SimpleTemplateException $e) {
