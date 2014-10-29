@@ -231,7 +231,7 @@ class ArticlesController extends Controller {
 						$form->setError('Display_from');
 					}
 					else {
-						$article->setDisplayFrom(new \DateTime(vxPDOUtil::unFormatDate($v['Article_Date'], 'de')));
+						$article->setDisplayFrom(new \DateTime(vxPDOUtil::unFormatDate($v['Display_from'], 'de')));
 					}
 				}
 				else {
@@ -243,7 +243,7 @@ class ArticlesController extends Controller {
 						$form->setError('Display_until');
 					}
 					else {
-						$article->setDisplayUntil(new \DateTime(vxPDOUtil::unFormatDate($v['Article_Date'], 'de')));
+						$article->setDisplayUntil(new \DateTime(vxPDOUtil::unFormatDate($v['Display_until'], 'de')));
 					}
 				}
 				else {
