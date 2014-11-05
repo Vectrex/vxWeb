@@ -89,6 +89,8 @@ span.buttonGroup button					{ border-radius: 0; border-right-style: none; margin
 span.buttonGroup button:first-child		{ border-bottom-left-radius: 0.25em; border-top-left-radius: 0.25em; }
 span.buttonGroup button:last-child		{ border-bottom-right-radius: 0.25em; border-top-right-radius: 0.25em; border-right-style: solid; }
 
+button[disabled=disabled]				{ border-color: #444; color: #444; text-shadow: 1px 1px #ccc; background: #888; }
+button.iconOnly[disabled=disabled]		{ border-color: #444; color: #444; }
 /*
  * input group
  */
