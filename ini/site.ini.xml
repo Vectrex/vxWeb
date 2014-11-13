@@ -56,6 +56,9 @@
 		<page id="profile"			controller="admin/profile"						auth="observe_row" />
 		<page id="pages"			controller="admin/pages"						auth="superadmin" />
 
+		<page id="users"			controller="admin/users"						auth="superadmin" />
+		<page id="usersXhr"			controller="admin/users"	method="xhrExecute"	auth="superadmin" />
+
 		<page id="articles"			controller="admin/articles"						auth="privileged" />
 		<page id="articlesXhr"		controller="admin/articles" method="xhrExecute"	auth="privileged" />
 
@@ -68,10 +71,11 @@
 	</pages>
 
 	<menus>
-		<menu id="admin" script="admin.php" auth="superadmin">
+		<menu id="admin" script="admin.php" auth="privileged">
 			<menuentry page="articles" text="Artikel"/>
-			<menuentry page="files" text="Dateien" />
-			<menuentry page="pages" text="Seiten"/>
+			<menuentry page="files" text="Dateien"/>
+			<menuentry page="pages" text="Seiten" auth="superadmin"/>
+			<menuentry page="users" text="User" auth="superadmin"/>
 		</menu>
 	</menus>
 

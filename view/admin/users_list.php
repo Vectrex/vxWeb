@@ -1,6 +1,6 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
 
-<h1>Seiten</h1>
+<h1>User</h1>
 
 <script type="text/javascript">
 	vxJS.event.addDomReadyListener(function() {
@@ -10,8 +10,7 @@
 				columnFormat: [
 					null,
 					null,
-					"no_sort",
-					"date_iso",
+					null,
 					null,
 					"no_sort"
 				]
@@ -40,31 +39,36 @@
 		else {
 			vxJS.widget.shared.shadeTableRows({ element: t.element });
 		}
-		
 	});
 </script>
 
+<div class="buttonBar">
+	<a class="buttonLink withIcon" data-icon="&#xe018;" href="$users/new">User anlegen</a>
+</div>
+
 <table class="list pct_100">
 	<tr>
-		<th class="mml">Alias/Titel</th>
-		<th class="m">Template</th>
-		<th>Inhalt</th>
-		<th class="right mml">letzte Änderung</th>
-		<th class="right xs">#Rev</th>
-		<th class="s">&nbsp;</th>
+		<th class="ml">Username</th>
+		<th class="l">Name</th>
+		<th>Email</th>
+		<th class="m">Gruppe</th>
+		<th class="ssm">&nbsp;</th>
 	</tr>
 
-	<?php foreach($tpl->pages as $p): ?>
-	<tr>
+	<?php foreach($this->users as $user): ?>
 
-		<td><?php echo $p['Alias']; ?><br><em><?php echo $p['Title']; ?></em></td>
-		<td><?php echo $p['Template']; ?></td>
-		<td class="shortened_60" style="font-size: 85%;"><?php echo $p['Rawtext']; ?></td>
-		<td class="right"><?php echo $p['LastRevision']; ?></td>
-		<td class="right"><?php echo $p['RevCount']; ?></td>
-		<td>
-			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$pages?id=<?php echo $p['revisionsID']; ?>"></a>
+	<tr<?php if (vxPHP\User\User::getSessionUser()->getAdminId() === $user->getAdminId()): ?> class="locked"<?php endif; ?>>
+
+		<td><?php echo $user->getUsername(); ?></td>
+		<td><?php echo $user->getName(); ?></td>
+		<td><?php echo $user->getEmail(); ?></td>
+		<td><?php echo $user->getAdmingroup(); ?></td>
+		<td class="right"><?php if (vxPHP\User\User::getSessionUser()->getAdminId() !== $user->getAdminId()): ?>
+			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$users?id=<?php echo $user->getAdminId(); ?>"></a>
+			<a class="buttonLink iconOnly" data-icon="&#xe01d;" href="$users/del?id=<?php echo $user->getAdminId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+			<?php endif; ?>
 		</td>
+
 	</tr>
 
 	<?php endforeach; ?>

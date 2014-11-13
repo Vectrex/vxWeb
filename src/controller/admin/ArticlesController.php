@@ -172,8 +172,6 @@ class ArticlesController extends Controller {
 
 	protected function xhrExecute() {
 
-		$db = Application::getInstance()->getDb();
-
 		// id comes either via URL or as an extra form field
 
 		$id = $this->request->query->get('id', $this->request->request->get('id'));

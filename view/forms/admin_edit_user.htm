@@ -1,5 +1,3 @@
-<h1>Profil</h1>
-
 <div class="errorContainer">
 {error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
 </div>
@@ -11,7 +9,7 @@
 <div class="formSect">
 	<div class="formItem">
 		<label class="m{error_username: error}" for="username_input">Username*</label>{input:username}
-		<span id="error_username"></span>{error_Email:<span class="error">Ungültiger Username!</span>}
+		<span id="error_username"></span>{error_username:<span class="error">Ungültiger Username!</span>}
 		<span id="error_duplicate_username"></span>{error_duplicate_username:<span class="error">Username wird bereits verwendet!</span>}
 	</div>
 	<div class="formItem">
@@ -23,6 +21,9 @@
 		<label class="m{error_name: error}" for="name_input">Name*</label>{input:name}
 	</div>
 	<div class="formItem">
+		<label class="m{error_admingroup: error}" for="admingroup_select">Gruppe*</label>{dropdown:admingroup}
+	</div>
+	<div class="formItem">
 		<label class="m" for="pwd_input">Neues Passwort</label>{input:new_PWD}
 		<span id="error_new_PWD"></span>{error_new_PWD:<span class="error">Passwort zu kurz!</span>}
 	</div>
@@ -32,15 +33,8 @@
 	</div>
 </div>
 
-{if($has_notifications == 1)}
-<div class="formSect">
-	<h3>Benachrichtigungen</h3>
-	{html:notifications}
-</div>
-{end_if}
-
 <div class="formBase">
 	<div class="formItem">
-		<label class="m"></label>{button:submit_profile}
+		<label class="m"></label>{button:submit_user}
 	</div>
 </div>

@@ -158,6 +158,12 @@ span.calendarPopper									{ cursor: pointer; }
 img.thumb											{ box-shadow: 1px 1px 3px #444; }
 
 /*
+ * user
+ */
+tr.locked					{ color: #888; text-shadow: 1px 1px #fff; }
+
+
+/*
  * SimpleTabs
  */
 

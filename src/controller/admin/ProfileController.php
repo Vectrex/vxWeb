@@ -12,6 +12,7 @@ use vxPHP\Http\Response;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Http\JsonResponse;
 use vxPHP\User\User;
+use vxPHP\User\Exception\UserException;
 
 class ProfileController extends Controller {
 
@@ -23,17 +24,6 @@ class ProfileController extends Controller {
 
 		$checkBoxHtml = '';
 
-		foreach($availableNotifications as $n) {
-			if($n->not_displayed == 1) {
-				continue;
-			}
-			$e = new CheckboxElement($n->alias, 1, $admin->getsNotified($n->alias));
-			$e->setLabel('&nbsp;' . $n->description);
-			$form->addElement($e);
-
-			$checkBoxHtml .= '<div class="formItem">' . $e->render() . '</div>';
-		}
-
 		$button = FormElementFactory::create('button', 'submit_profile', '', array('type' => 'submit'));
 		$button->setInnerHTML('<span>Änderungen speichern</span>');
 
@@ -41,13 +31,26 @@ class ProfileController extends Controller {
 			HtmlForm::create('admin_profile.htm')
 				->setAttribute('class', 'editProfileForm')
 				->addElement($button)
-				->addElement(FormElementFactory::create('input',		'Email',		$admin->getId(),		array('maxlength' => 128, 'class' => 'xl', 'id' => 'email_input'),	array(),	FALSE, array('trim', 'lowercase'),	array('/'.Rex::EMAIL.'/i')))
-				->addElement(FormElementFactory::create('input',		'Name',			$admin->getName(),		array('maxlength' => 128, 'class' => 'xl', 'id' => 'name_input'),	array(),	FALSE, array('trim'),				array(Rex::NOT_EMPTY_TEXT)))
-				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						array('maxlength' => 128, 'class' => 'xl', 'id' => 'pwd_input'),	array(),	FALSE, array(),						array('/^(|[^\s].{4,}[^\s])$/')))
-				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	'',						array('maxlength' => 128, 'class' => 'xl', 'id' => 'pwd2_input')))
+				->addElement(FormElementFactory::create('input',	'username',			$admin->getUsername(),	array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'username_input'),	array(),	FALSE, array('trim', 'lowercase'),	array(Rex::NOT_EMPTY_TEXT)))
+				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'email_input'),		array(),	FALSE, array('trim', 'lowercase'),	array('/'.Rex::EMAIL.'/i')))
+				->addElement(FormElementFactory::create('input',	'name',				$admin->getName(),		array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'name_input'),		array(),	FALSE, array('trim'),				array(Rex::NOT_EMPTY_TEXT)))
+				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd_input'),		array(),	FALSE, array(),						array('/^(|[^\s].{4,}[^\s])$/')))
+				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	'',						array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd2_input')))
 				->addMiscHtml('notifications', $checkBoxHtml)
 				->initVar('success', (int) end($this->pathSegments) === 'success')
 				->initVar('has_notifications', (int) !empty($checkBoxHtml));
+
+		foreach($availableNotifications as $n) {
+			if($n->not_displayed == 1) {
+				continue;
+			}
+
+			$e = new CheckboxElement($n->alias, 1, $admin->getsNotified($n->alias));
+			$e->setLabel('&nbsp;' . $n->description);
+			$form->addElement($e);
+
+			$checkBoxHtml .= '<div class="formItem">' . $e->render() . '</div>';
+		}
 
 		if($this->request->getMethod() === 'POST') {
 
@@ -60,25 +63,42 @@ class ProfileController extends Controller {
 				if(!empty($v['new_PWD']) && $v['new_PWD'] != $v['new_PWD_verify']) {
 					$form->setError('PWD_mismatch');
 				}
-				if($v['Email'] != $admin->getId() && !Util::isAvailableId($v['Email'])) {
-					$form->setError('duplicate_Email');
+				else {
+					$admin->setPassword($v['new_PWD']);
+				}
+
+				if($v['email'] != $admin->getEmail() && !Util::isAvailableEmail($v['email'])) {
+					$form->setError('duplicate_email');
+				}
+
+				if($v['username'] != $admin->getUsername() && !Util::isAvailableUsername($v['username'])) {
+					$form->setError('duplicate_username');
 				}
 
 				if(!$form->getFormErrors()) {
 
-					if(!empty($v['new_PWD'])) {
-						$v['PWD'] = Util::hashPassword($v['new_PWD']);
-					}
-					if($admin->restrictedUpdate($v)) {
+					try {
+						$admin
+							->setUsername	($v['username'])
+							->setName		($v['name'])
+							->setEmail		($v['email'])
+							->save			();
+	
 						$add = array();
+
 						foreach($availableNotifications as $n) {
 							if(!empty($v[$n->alias])) {
 								$add[] = $n->alias;
 							}
 						}
 						$admin->setNotifications($add);
+						
+						return new JsonResponse(array('success' => TRUE));
+
 					}
-					return new JsonResponse(array('success' => 1));
+					catch (\Exception $e) {
+						return new JsonResponse(array('success' => FALSE, 'message' => $e->getMessage()));
+					}
 				}
 			}
 
@@ -98,7 +118,7 @@ class ProfileController extends Controller {
 		else {
 			
 			return new Response(
-					SimpleTemplate::create('admin/profile.php')
+				SimpleTemplate::create('admin/profile.php')
 					->assign('form', $form->render())
 					->display()
 			);
