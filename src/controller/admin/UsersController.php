@@ -160,11 +160,14 @@ class UsersController extends Controller {
 		$errors = $form->getFormErrors();
 
 		if(!isset($errors['new_PWD'])) {
-			if(!empty($v['new_PWD']) && $v['new_PWD'] != $v['new_PWD_verify']) {
-				$form->setError('PWD_mismatch');
-			}
-			else {
-				$user->setPassword($v['new_PWD']);
+
+			if(!empty($v['new_PWD'])) {
+				if($v['new_PWD'] != $v['new_PWD_verify']) {
+					$form->setError('PWD_mismatch');
+				}
+				else {
+					$user->setPassword($v['new_PWD']);
+				}
 			}
 		}
 

@@ -60,11 +60,13 @@ class ProfileController extends Controller {
 
 				$v = $form->getValidFormValues();
 
-				if(!empty($v['new_PWD']) && $v['new_PWD'] != $v['new_PWD_verify']) {
-					$form->setError('PWD_mismatch');
-				}
-				else {
-					$admin->setPassword($v['new_PWD']);
+				if(!empty($v['new_PWD'])) {
+					if($v['new_PWD'] != $v['new_PWD_verify']) {
+						$form->setError('PWD_mismatch');
+					}
+					else {
+						$admin->setPassword($v['new_PWD']);
+					}
 				}
 
 				if($v['email'] != $admin->getEmail() && !Util::isAvailableEmail($v['email'])) {
