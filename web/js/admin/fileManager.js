@@ -197,9 +197,9 @@ this.vxWeb.fileManager = function(config) {
 		form.appendChild(articlesIdInput);
 
 		xhrForm = vxJS.widget.xhrForm(form, { command: "checkUpload", uri: uri } );
-		xhrForm.addSubmit(form.elements["submit_add"]);
-		xhrForm.addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", form)[0], "general");
-		xhrForm.enableIframeUpload();
+		xhrForm.	addSubmit(form.elements["submit_add"]).
+					addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", form)[0], "general").
+					enableIframeUpload();
 
 		vxJS.event.addListener(
 			xhrForm,
@@ -576,12 +576,13 @@ this.vxWeb.fileManager = function(config) {
 					vxJS.widget.confirm({ content: r.response, buttons: [], className: "confirmForm" });
 
 					// prepare edit form
+
 					f = confirm.element.getElementsByTagName("form")[0];
 
 					xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
-					xForm.addSubmit(f.elements["submit_edit"]);
-					xForm.addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", f)[0], "general");
-					xForm.setPayload( { file: e.file } );
+					xForm.	addSubmit(f.elements["submit_edit"]).
+							addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", f)[0], "general").
+							setPayload( { file: e.file } );
 
 					vxJS.event.addListener(
 						xForm,
