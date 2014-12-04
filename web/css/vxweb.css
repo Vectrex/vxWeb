@@ -81,7 +81,7 @@ a.iconOnly:before						{ content: attr(data-icon); }
 button.iconOnly:hover,
 button.iconOnly:active,
 a.iconOnly:hover,
-a.iconOnly:active						{ color: #005680; border-color: #005680; }
+a.iconOnly:active						{ background: none; box-shadow: none; color: #0089CC; border-color: #0089CC; }
 
 div.buttonBar							{ margin: 0.5em 0; }
 span.buttonGroup						{ display: inline-block; margin-right: 0.25em; }
