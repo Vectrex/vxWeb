@@ -38,7 +38,7 @@ vxJS.event.addDomReadyListener(function() {
 			    ['Maximize','-','Source', '-', 'Undo','Redo'],
 			    ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord','-','RemoveFormat'],
 			    ['Bold', 'Italic', '-', 'NumberedList','BulletedList', '-', 'Table', '-', 'Link', 'Unlink', 'Anchor']
-			], height: "20em", width: "52em", contentsCss: '/css/default.css'
+			], height: "20em", width: "52em", contentsCss: ['/css/vxweb.css', '/css/default.css']
 		} );
 
 	vxJS.widget.calendar(
