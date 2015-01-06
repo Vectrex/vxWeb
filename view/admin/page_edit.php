@@ -23,7 +23,7 @@
 				    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript', '-', 'TextColor','BGColor'],
 				    ['NumberedList','BulletedList','-','Blockquote', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock']
 				],
-				height: "450px", contentsCss: contentsCss: ['/css/vxweb.css', '/css/default.css'],
+				height: "450px", contentsCss: ['/css/vxweb.css', '/css/default.css'],
 				filebrowserBrowseUrl: "<?php echo $url; ?>",
 				filebrowserImageBrowseUrl: "<?php echo $url; ?>?filter=image"
 			} );
