@@ -8,6 +8,7 @@ use vxPHP\File\MetaFile;
 use vxPHP\File\FilesystemFolder;
 use vxPHP\File\MetaFolder;
 use vxPHP\File\FilesystemFile;
+use vxPHP\File\UploadedFile;
 use vxPHP\Http\Request;
 use vxPHP\Application\Application;
 
@@ -18,73 +19,6 @@ use vxPHP\Application\Application;
  *
  */
 class FileUtil {
-
-	/**
-	 * @param Article $article
-	 * @param array $metaData
-	 * @param string $articlesDir optional name of subdirectory, that keeps files for articles
-	 *
-	 * @throws MetaFolderException
-	 * @throws FilesystemFileException
-	 *
-	 * @return MetaFile
-	 */
-	public static function uploadFileForArticle(Article $article, array $metaData, $articlesDir = 'articles') {
-
-		$parentFolder = FilesystemFolder::getInstance(rtrim(Application::getInstance()->getAbsoluteAssetsPath(), DIRECTORY_SEPARATOR) . FILES_PATH . $articlesDir);
-
-		// @todo avoid collision of folder names with existing file names
-
-		if(!is_dir($parentFolder->getPath() . $article->getCategory()->getAlias())) {
-			$metaFolder = $parentFolder->createFolder($article->getCategory()->getAlias())->createMetafolder();
-		}
-		else {
-			try {
-				$metaFolder = MetaFolder::getInstance($parentFolder->getPath().$article->getCategory()->getAlias() . DIRECTORY_SEPARATOR);
-			}
-			catch(MetaFolderException $e) {
-				$metaFolder = $parentFolder->createMetaFolder();
-			}
-		}
-
-		if(($f = FilesystemFile::uploadFile('upload_file', $metaFolder->getFileSystemFolder()))) {
-
-			try {
-				$mf = $f->createMetaFile();
-			}
-
-			catch(FilesystemFileException $e) {
-				if($e->getCode() == FilesystemFileException::METAFILE_ALREADY_EXISTS) {
-					preg_match('~^(.*?)(\((\d+)\))?(.[a-z0-9]*)?$~i', $f->getFilename(), $matches);
-					$matches [2] = $matches [2] == '' ? 2 : $matches [2] + 1;
-
-					// check for both alternative filesystem filename and metafile filename
-
-					while(file_exists("{$matches[1]}({$matches[2]}){$matches[4]}") || ! MetaFile::isFilenameAvailable("{$matches[1]}({$matches[2]}){$matches[4]}", $this->data ['folder'])) {
-						+ $matches[2];
-					}
-
-					$f->rename("{$matches[1]}({$matches[2]}){$matches[4]}");
-
-					$mf = $f->createMetaFile();
-				}
-				else {
-					throw $e;
-				}
-			}
-
-			$mf->setMetaData(array(
-					'Description'		=> htmlspecialchars($metaData['file_description'])
-			));
-
-			if($metaFolder->obscuresFiles()) {
-				$mf->obscureTo(uniqid());
-			}
-
-			return $mf;
-		}
-
-	}
 
 	/**
 	 * add metafolder entries for filesystem subfolders
@@ -167,14 +101,14 @@ class FileUtil {
 	 * turns uploaded file into metafile, avoiding filename collisions
 	 *
 	 * @param MetaFolder $metaFolder
-	 * @param FilesystemFile $upload
+	 * @param UploadedFile $upload
 	 * @param array metadata
 	 * @param boolean $unpackArchives unpack zip|gzip files when true
 	 * @throws FilesystemFileException
 	 *
 	 * @return array metafiles | FALSE when failure
 	 */
-	public static function processFileUpload(MetaFolder $metaFolder, FilesystemFile $upload, array $metaData = array(), $unpackArchives = FALSE) {
+	public static function processFileUpload(MetaFolder $metaFolder, UploadedFile $upload, array $metaData = array(), $unpackArchives = FALSE) {
 
 		$metafiles = array();
 
@@ -254,13 +188,13 @@ class FileUtil {
 
 	/**
 	 * extracts an archive and flattens it
-	 * all extracted files are turned into Metafile objects
+	 * all extracted files are turned into FilesystemFile instances
 	 *
-	 * @param FilesystemFile $f
+	 * @param UploadedFile $f
 	 * @throws Exception
-	 * @returns array unzipped_filesystemfiles
+	 * @returns array [vxPHP\File\FilesystemFile]
 	 */
-	private static function handleArchive(FilesystemFile $f) {
+	private static function handleArchive(UploadedFile $f) {
 
 		$zip = new \ZipArchive();
 		$status = $zip->open($f->getPath());
@@ -269,22 +203,21 @@ class FileUtil {
 			throw new \Exception("Archive file reports error: $status");
 		}
 
-		$path = $f->getFolder()->getPath();
-		$metaFolder = MetaFolder::getInstance($path);
+		$folder	= $f->getFolder();
+		$path	= $folder->getPath();
 		$files = array();
 
 		for($i = 0; $i < $zip->numFiles; ++ $i) {
+
 			$name = $zip->getNameIndex($i);
 
 			if(substr($name, - 1) == '/') {
 				continue;
 			}
 
-			// @FIXME: Util::checkFileName() is no longer available
+			$dest = FilesystemFile::sanitizeFilename(basename($name), $folder);
 
-			$dest = Util::checkFileName(basename($name), $path);
-
-			copy("zip://{$f->getPath()}#$name", $path.$dest);
+			copy("zip://{$f->getPath()}#$name", $path . $dest);
 			$files[] = FilesystemFile::getInstance($path . $dest);
 		}
 

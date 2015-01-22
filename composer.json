@@ -10,16 +10,9 @@
 		}
 	],
 
-	"repositories": [
-		{
-			"type":	"git",
-			"url":	"git@141.101.32.213:/opt/git/vxPHP.git"
-		}
-	],
- 
 	"require": {
 		"php":					">=5.3.10",
-		"vxPHP":				"dev-master",
-		"ckeditor/ckeditor":	"4.*"
-	}
+		"vectrex/vxphp":		"dev-master",
+		"ckeditor/ckeditor":	"dev-standard/stable"
+	},
 }

@@ -91,6 +91,12 @@ span.buttonGroup button:last-child		{ border-bottom-right-radius: 0.25em; border
 
 button[disabled=disabled]				{ border-color: #444; color: #444; text-shadow: 1px 1px #ccc; background: #888; }
 button.iconOnly[disabled=disabled]		{ border-color: #444; color: #444; }
+
+a.buttonLink:hover,
+a.buttonLink:active,
+a.iconOnly:hover,
+a.iconOnly:active						{ text-decoration: none; }
+
 /*
  * input group
  */
@@ -158,7 +164,9 @@ label									{ padding-right: 0.5em; }
 .centered								{ text-align: center; }
 .leftFloat								{ float: left; }
 .clearFloat								{ height: 0; clear: both; overflow: hidden; line-height: 0; visibility: hidden; }
-
+.clearLeftAfter:after,
+.clearRightAfter:after					{ content: ''; display: block; clear: left; visibility: hidden; line-height: 0; height: 0; }
+.clearRightAfter:after					{ clear: right; }
 /*
  * table classes
  */

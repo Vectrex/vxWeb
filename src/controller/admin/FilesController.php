@@ -318,27 +318,11 @@ class FilesController extends Controller {
 
 			case 'ifuSubmit':
 
-				$upload = FilesystemFile::uploadFile('File', $folder->getFilesystemFolder());
+				$upload = $this->request->files->get('File');
 
-				if($upload === FALSE) {
-					$response = array(
-						'msgBoxes' => array(
-							array(
-								'id' => 'general',
-								'elements' => array(
-									array(
-										'node' => 'div',
-										'properties' => array('className' => 'errorBox'),
-										'childnodes' => array(array('text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'))
-									)
-								)
-							)
-						)
-					);
-					break;
-				}
+				// was a file uploaded at all?
 
-				else if($upload === NULL) {
+				if($upload === NULL) {
 					$response = array(
 						'msgBoxes' => array(
 							array(
@@ -356,6 +340,37 @@ class FilesController extends Controller {
 					break;
 				}
 
+				// try to move uploaded file to its final destination
+
+				try {
+					$upload->move($folder->getFilesystemFolder());
+				}
+				
+				catch(FilesystemFileException $e) {
+					$response = array(
+						'msgBoxes' => array(
+							array(
+								'id' => 'general',
+								'elements' => array(
+									array(
+										'node' => 'div',
+										'properties' => array('className' => 'errorBox'),
+										'childnodes' => array(array('text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'))
+									)
+								)
+							)
+						)
+					);
+					break;
+				}
+
+				/*
+				 * @todo
+				 * Kludge: HtmlForm calls Request::createFromGlobals() which in turn parses $_FILES and throws an exception 
+				 * since the uploaded file was already moved
+				 */
+				unset($_FILES['File']);
+
 				$form = HtmlForm::create()
 					->addElement(FormElementFactory::create('input', 'Title', '', array(), array(), FALSE, array('trim')))
 					->addElement(FormElementFactory::create('input', 'Subtitle', '', array(), array(), FALSE, array('trim')))
@@ -364,6 +379,8 @@ class FilesController extends Controller {
 					->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1));
 
 				$values = $form->bindRequestParameters($this->request->request)->getValidFormValues();
+
+				// turn uploaded file into metafile, extract archive if neccessary
 
 				$uploadedFiles = vxWeb\FileUtil::processFileUpload($folder, $upload, $values, isset($values['unpack_archives']));
 
