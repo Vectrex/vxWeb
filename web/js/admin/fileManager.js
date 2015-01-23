@@ -654,7 +654,7 @@ this.vxWeb.fileManager = function(config) {
 		t.sortBy(0, "asc");
 	}
 
-	filesTable.tHead.appendChild("tr".setProp("className", "fileFunctions").create("td".setProp("colSpan", 6).create("div".setProp("className", "buttonBar").create([addFolderButton, addFolderInput, addFileButton, activityIndicator.element]))));
+	filesTable.tHead.appendChild("tr".setProp("className", "fileFunctions").create("td".setProp("colSpan", filesTable.rows[0].cells.length).create("div".setProp("className", "buttonBar").create([addFolderButton, addFolderInput, addFileButton, activityIndicator.element]))));
 
 	if(vxJS.dnd) {
 		dnd = vxJS.dnd.create();

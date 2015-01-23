@@ -36,7 +36,6 @@
 
 			<tbody>
 				<tr>
-					<td>Der Dateimanager ist auf JavaScript Unterstützung angewiesen.</td>
 					<td></td>
 					<td></td>
 					<td></td>
