@@ -29,14 +29,11 @@ class LoginController extends Controller {
 			}
 		}
 
-		$button = FormElementFactory::create('button',	'submit_login',	'',	array('type' => 'submit', 'class' => '', 'data-icon' => '&#xe02e;', 'data-throbber-position' => 'outside-left'));
-		$button->setInnerHTML('Login');
-
 		$form =
 			HtmlForm::create('admin_login.htm')
-				->addElement($button)
 				->addElement(FormElementFactory::create('input',	'UID',	'',	array('maxlength' => 128, 'class' => 'pct_100'),	array(),	FALSE,	array('trim')))
-				->addElement(FormElementFactory::create('password',	'pwd',	'',	array('maxlength' => 128, 'class' => 'pct_100')));
+				->addElement(FormElementFactory::create('password',	'pwd',	'',	array('maxlength' => 128, 'class' => 'pct_100')))
+				->addElement(FormElementFactory::create('button',	'submit_login',	'',	array('type' => 'submit', 'class' => '', 'data-icon' => '&#xe02e;', 'data-throbber-position' => 'outside-left'))->setInnerHTML('Login'));
 
 		// form was submitted by XHR
 

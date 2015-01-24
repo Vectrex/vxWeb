@@ -3,7 +3,6 @@ use vxPHP\Template\SimpleTemplate;
 
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
-use vxPHP\Form\FormElement\ButtonElement;
 use vxPHP\Template\Filter\ShortenText;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
@@ -51,9 +50,6 @@ class PagesController extends Controller {
 
 			$this->allowNiceEdit = !preg_match('~<\\?(php)?.*?\\?>~', $page['Markup']);
 
-			$submit = new ButtonElement('submit_edit', '', 'submit');
-			$submit->setInnerHTML('<span>Änderungen übernehmen</span>');
-
 			$form = HtmlForm::create('admin_page_edit.htm')
 				->initVar('success', (int) !is_null($this->request->query->get('success')))
 				->initVar('nochange', (int) !is_null($this->request->query->get('nochange')))
@@ -62,7 +58,7 @@ class PagesController extends Controller {
 				->addElement(FormElementFactory::create('textarea', 'Keywords', $page['Keywords'], array('rows' => 4, 'cols' => '30', 'class' => 'pct_100'), array(), FALSE, array('trim')))
 				->addElement(FormElementFactory::create('textarea', 'Description', $page['Description'], array('rows' => 4, 'cols' => '30', 'class' => 'pct_100'), array(), FALSE, array('trim')))
 				->addElement(FormElementFactory::create('textarea', 'Markup', htmlspecialchars($page['Markup'], ENT_NOQUOTES, 'UTF-8'), array('rows' => 20, 'cols' => 40, 'class' => 'pct_100'), array(), FALSE, array('trim')))
-				->addElement($submit);
+				->addElement(FormElementFactory::create('button', 'submit_edit', '', array('type' => 'submit'))->setInnerHTML('Änderungen übernehmen'));
 
 			if($form->bindRequestParameters()->wasSubmittedByName('submit_edit')) {
 				$v = $form->getValidFormValues();

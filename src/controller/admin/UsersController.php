@@ -3,7 +3,6 @@ use vxPHP\Template\SimpleTemplate;
 
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
-use vxPHP\Form\FormElement\ButtonElement;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Application\Application;
@@ -57,8 +56,6 @@ class UsersController extends Controller {
 
 			$form = HtmlForm::create('admin_edit_user.htm')->setAttribute('class', 'editUserForm');
 			
-			$submitButton = FormElementFactory::create('button', 'submit_user', '', array('type' => 'submit'));
-
 			if(isset($user)) {
 			
 				$form->setInitFormValues(array(
@@ -68,7 +65,7 @@ class UsersController extends Controller {
 					'admin_group'	=> $user->getAdmingroup()
 				));
 			
-				$submitButton->setInnerHTML('Änderungen übernehmen');
+				$submitLabel = 'Änderungen übernehmen';
 			
 			}
 			
@@ -76,14 +73,14 @@ class UsersController extends Controller {
 			
 				$user = new User();
 			
-				$submitButton->setInnerHTML('User anlegen');
+				$submitLabel = 'User anlegen';
 				$form->initVar('is_add', 1);
 			}
 
 			$admingroups = $db->query('SELECT alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
 
 			$form
-				->addElement($submitButton)
+				->addElement(FormElementFactory::create('button', 'submit_user', '', array('type' => 'submit'))->setInnerHTML($submitLabel))
 				->addElement(FormElementFactory::create('input',	'username',			NULL,	array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'username_input')))
 				->addElement(FormElementFactory::create('input',	'email',			NULL,	array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'email_input')))
 				->addElement(FormElementFactory::create('input',	'name',				NULL,	array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'name_input')))

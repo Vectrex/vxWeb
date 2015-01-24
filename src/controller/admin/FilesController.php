@@ -15,7 +15,6 @@ use vxPHP\File\Util;
 
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
-use vxPHP\Form\FormElement\ButtonElement;
 
 use vxPHP\Image\ImageModifierFactory;
 
@@ -560,12 +559,6 @@ class FilesController extends Controller {
 
 	private function getAddForm() {
 
-		$addButton = new ButtonElement('submit_add', NULL, 'submit');
-		$addButton->setInnerHTML('<span>Speichern</span>');
-
-		$cancelButton = new ButtonElement('submit_cancel', NULL, 'submit');
-		$cancelButton->setInnerHTML('<span>Abbrechen</span>');
-
 		return HtmlForm::create('admin_file.htm')
 			->initVar('add', 1)
 			->setEncType('multipart/form-data')
@@ -576,8 +569,8 @@ class FilesController extends Controller {
 			->addElement(FormElementFactory::create('input', 'File', '', array('type' => 'file')))
 			->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1))
 			->addElement(FormElementFactory::create('textarea', 'Description', '', array('rows' => 5, 'cols' => 40, 'class' => 'xl')))
-			->addElement($addButton)
-			->addElement($cancelButton);
+			->addElement(FormElementFactory::create('button', 'submit_add', '', array('type' => 'submit'))->setInnerHTML('Speichern'))
+			->addElement(FormElementFactory::create('button', 'submit_cancel', '', array('type' => 'submit'))->setInnerHTML('Abbrechen'));
 	}
 
 	private function getEditForm(MetaFile $file) {
@@ -617,20 +610,14 @@ class FilesController extends Controller {
 			);
 		}
 
-		$editButton = new ButtonElement('submit_edit', NULL, 'submit');
-		$editButton->setInnerHTML('<span>Speichern</span>');
-
-		$cancelButton = new ButtonElement('submit_cancel', NULL, 'submit');
-		$cancelButton->setInnerHTML('<span>Abbrechen</span>');
-
 		return HtmlForm::create('admin_file.htm')
 			->setAttribute('class', 'editFileForm')
 			->addElement(FormElementFactory::create('input', 'Title', NULL, array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')))
 			->addElement(FormElementFactory::create('input', 'Subtitle', NULL, array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')))
 			->addElement(FormElementFactory::create('input', 'customSort', NULL, array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT)))
 			->addElement(FormElementFactory::create('textarea', 'Description', NULL, array('rows' => 5, 'cols' => 40, 'class' => 'xl')))
-			->addElement($editButton)
-			->addElement($cancelButton)
+			->addElement(FormElementFactory::create('button', 'submit_edit', '', array('type' => 'submit'))->setInnerHTML('Speichern'))
+			->addElement(FormElementFactory::create('button', 'submit_cancel', '', array('type' => 'submit'))->setInnerHTML('Abbrechen'))
 			->addMiscHtml('Fileinfo', $infoHtml)
 			->setInitFormValues($data);
 	}

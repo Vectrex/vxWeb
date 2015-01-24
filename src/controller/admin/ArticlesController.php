@@ -81,8 +81,6 @@ class ArticlesController extends Controller {
 
 			$articleForm = HtmlForm::create('admin_edit_article.htm')->setAttribute('class', 'editArticleForm');
 
-			$submitButton = FormElementFactory::create('button', 'submit_article', '', array('type' => 'submit'));
-
 			if(isset($article)) {
 
 				$data = $article->getData();
@@ -98,20 +96,18 @@ class ArticlesController extends Controller {
 					'Display_until'			=> is_null($article->getDisplayUntil())	? '' : $article->getDisplayUntil()->format('d.m.Y')
 				));
 
-				$submitButton->setInnerHTML('Änderungen übernehmen');
+				$submitLabel = 'Änderungen übernehmen';
 
 			}
 
 			else {
 
 				$article = new Article();
-
-				$submitButton->setInnerHTML('Newsmeldung anlegen');
+				$submitLabel = 'Artikel anlegen';
 				$articleForm->initVar('is_add', 1);
 			}
 
 			$articleForm
-				->addElement($submitButton)
 				->addElement(FormElementFactory::create('select', 'articlecategoriesID', NULL, array('size' => 1, 'class' => 'xxl'), $categories, FALSE, array(), array(Rex::INT_EXCL_NULL)))
 				->addElement(FormElementFactory::create('input', 'Headline', NULL, array('maxlength' => 200, 'class' => 'xxl'), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
 				->addElement(FormElementFactory::create('textarea', 'Teaser', NULL, array('rows' => 3, 'cols' => 40, 'class' => 'xxl'), array(), FALSE, array('trim', 'strip_tags')))
@@ -119,7 +115,8 @@ class ArticlesController extends Controller {
 				->addElement(FormElementFactory::create('input', 'Article_Date', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')))
 				->addElement(FormElementFactory::create('input', 'Display_from', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')))
 				->addElement(FormElementFactory::create('input', 'Display_until', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('input', 'customSort', NULL, array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)));
+				->addElement(FormElementFactory::create('input', 'customSort', NULL, array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)))
+				->addElement(FormElementFactory::create('button', 'submit_article', '', array('type' => 'submit'))->setInnerHTML($submitLabel));
 
 			$articleForm->bindRequestParameters();
 
