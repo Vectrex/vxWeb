@@ -142,6 +142,7 @@ class ArticlesController extends Controller {
 		return new Response(
 			SimpleTemplate::create('admin/articles_list.php')
 				->assign('page', $this->pathSegments[0])
+				->assign('can_publish', $admin->hasSuperAdminPrivileges())
 				->assign('articles', ArticleQuery::create(Application::getInstance()->getDb())
 					->where($restrictingWhere)
 					->sortBy('lastUpdated', FALSE)
@@ -165,6 +166,27 @@ class ArticlesController extends Controller {
 				$val *= 1024;
 		}
 		return $val;
+	}
+	
+	protected function xhrPublish() {
+		
+		$id = $this->request->request->getInt('id');
+		$state = $this->request->request->getInt('state');
+		
+		try {
+			if($id && $article = Article::getInstance($id)) {
+				if($state) {
+					$article->publish()->save();
+				}
+				else {
+					$article->unpublish()->save();
+				}
+				return new JsonResponse(array('success' => TRUE));
+			}
+		}
+		catch(\Exception $e) {
+			return new JsonResponse(array('success' => FALSE, 'error' => $e->getMessage()));
+		}
 	}
 
 	protected function xhrExecute() {

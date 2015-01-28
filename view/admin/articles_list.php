@@ -6,13 +6,35 @@
 </div>
 
 <script type="text/javascript">
+
+	this.vxWeb.routes.publish = "<?php echo vxPHP\Routing\Router::getRoute('publishXhr', 'admin.php')->getUrl(); ?>";
+
 	vxJS.event.addDomReadyListener(function() {
+
 		var lsValue, lsKey = window.location.href + "__sort__",
 			t = vxJS.widget.sorTable(
 			vxJS.dom.getElementsByClassName("list")[0],	{
 				columnFormat: [
 					null,
 					null,
+
+					// checkbox sort
+
+					function(a, b) {
+
+						var checked1 = a.element.cells[this.ndx].getElementsByTagName("input")[0].checked,
+							checked2 = b.element.cells[this.ndx].getElementsByTagName("input")[0].checked;
+
+						if(checked1 === checked2) {
+							return 0;
+						}
+						if(this.asc) {
+							return checked2 ? -1 : 1;
+						}
+						else {
+							return checked1 ? -1 : 1;
+						}
+					},
 					"date_iso",
 					"date_iso",
 					"date_iso",
@@ -20,7 +42,8 @@
 					null,
 					"no_sort"
 				]
-			});
+			}),
+			publishXhr = vxJS.xhr( { uri: vxWeb.routes.publish } );
 
 		vxJS.event.addListener(
 			t,
@@ -38,6 +61,20 @@
 				t.sortBy(lsValue.ndx, lsValue.asc ? "asc" : "desc");
 			}
 		}
+
+		vxJS.event.addListener(document.querySelector("table.list"), "click", function() {
+			var matches;
+
+			if(this.type === "checkbox") {
+				if(matches = this.name.match(/^publish\[(\d+)\]$/)) {
+					publishXhr.use(null, { id: matches[1], state: this.checked ? 1 : 0 }).submit();
+					if(t.getActiveColumn().ndx === 2) {
+						t.reSort();
+					}
+				}
+			}
+
+		});
 	});
 </script>
 
@@ -45,6 +82,7 @@
 	<tr>
 		<th class="m">Kategorie</th>
 		<th>Titel</th>
+		<th class="xss center">Pub</th>
 		<th class="m right">Artikeldatum</th>
 		<th class="m right">Anzeige von</th>
 		<th class="m right">Anzeige bis</th>
@@ -58,6 +96,12 @@
 		<tr class="row<?php echo $color++ % 2; ?>">
 			<td><?php echo $article->getCategory()->getTitle(); ?></td>
 			<td><?php echo $article->getHeadline(); ?></td>
+			<td class="centered">
+				<input type="checkbox" name="publish[<?php echo $article->getId(); ?>]"
+					<?php if ($article->isPublished()): ?>checked="checked"<?php endif; ?>
+					<?php if(!$this->can_publish): ?> disabled="disabled"<?php endif; ?>
+				>
+			</td>
 			<td class="right"><?php echo is_null($article->getDate()) ? '' : $article->getDate()->format('Y-m-d'); ?></td>
 			<td class="right"><?php echo is_null($article->getDisplayFrom()) ? '' : $article->getDisplayFrom()->format('Y-m-d'); ?></td>
 			<td class="right"><?php echo is_null($article->getDisplayUntil()) ? '' : $article->getDisplayUntil()->format('Y-m-d'); ?></td>
