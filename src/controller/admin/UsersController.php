@@ -57,14 +57,14 @@ class UsersController extends Controller {
 			$form = HtmlForm::create('admin_edit_user.htm')->setAttribute('class', 'editUserForm');
 			
 			if(isset($user)) {
-			
+
 				$form->setInitFormValues(array(
 					'username'		=> $user->getUsername(),
 					'email'			=> $user->getEmail(),
 					'name'			=> $user->getName(),
-					'admin_group'	=> $user->getAdmingroup()
+					'admingroup'	=> $user->getAdmingroup()
 				));
-			
+
 				$submitLabel = 'Änderungen übernehmen';
 			
 			}
@@ -77,7 +77,7 @@ class UsersController extends Controller {
 				$form->initVar('is_add', 1);
 			}
 
-			$admingroups = $db->query('SELECT alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
+			$admingroups = $db->query('SELECT LOWER(alias) AS alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
 
 			$form
 				->addElement(FormElementFactory::create('button', 'submit_user', '', array('type' => 'submit'))->setInnerHTML($submitLabel))
