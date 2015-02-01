@@ -147,7 +147,7 @@ class UsersController extends Controller {
 			->addElement(FormElementFactory::create('input',	'name',				NULL,	array(),	array(),	FALSE, array('trim'),				array(Rex::NOT_EMPTY_TEXT)))
 			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	array(),	array(),	FALSE, array(),						array('/^(|[^\s].{4,}[^\s])$/')))
 			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL	))
-			->addElement(FormElementFactory::create('select',	'admingroup',		NULL,	array(),	array(),	FALSE, array(),						array('/^(' . implode('|', array_keys($admingroups)) . ')$/')));
+			->addElement(FormElementFactory::create('select',	'admingroup',		NULL,	array(),	array(),	FALSE, array(),						array('/^(' . implode('|', array_keys($admingroups)) . ')$/i')));
 		
 		$v = $form
 				->bindRequestParameters($this->request->request)
