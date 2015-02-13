@@ -495,7 +495,7 @@ class FilesController extends Controller {
 	private function addFolder(MetaFolder $folder) {
 
 		try {
-			$folder->createFolder(preg_replace('~[^a-z0-9_-]~', '_', $this->request->request->get('folderName')));
+			$folder->createFolder(preg_replace('~[^a-z0-9_-]~i', '_', $this->request->request->get('folderName')));
 			return $this->getFiles($folder);
 		}
 		catch (\Exception $e) {
