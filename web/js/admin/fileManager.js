@@ -196,7 +196,7 @@ this.vxWeb.fileManager = function(config) {
 		form.appendChild(folderInput);
 		form.appendChild(articlesIdInput);
 
-		xhrForm = vxJS.widget.xhrForm(form, { command: "checkUpload", uri: uri } );
+		xhrForm = vxJS.widget.xhrForm(form, { command: "checkUpload", uri: uri, echo: false } );
 		xhrForm.	addSubmit(form.elements["submit_add"]).
 					addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", form)[0], "general").
 					enableIframeUpload();
@@ -582,7 +582,7 @@ this.vxWeb.fileManager = function(config) {
 					xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
 					xForm.	addSubmit(f.elements["submit_edit"]).
 							addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", f)[0], "general").
-							setPayload( { file: e.file } );
+							setPayload(vxJS.merge(vxWeb.parameters, { file: e.file } ));
 
 					vxJS.event.addListener(
 						xForm,
