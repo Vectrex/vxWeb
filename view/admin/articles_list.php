@@ -62,7 +62,7 @@
 			}
 		}
 
-		vxJS.event.addListener(document.querySelector("table.list"), "click", function() {
+		vxJS.event.addListener(t, "click", function() {
 			var matches;
 
 			if(this.type === "checkbox") {

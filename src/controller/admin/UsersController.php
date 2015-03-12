@@ -168,7 +168,7 @@ class UsersController extends Controller {
 			}
 		}
 
-		if(!isset($errors['email']) && $v['email'] != $user->getEmail() && !Util::isAvailableEmail($v['email'])) {
+		if(!isset($errors['email']) && $v['email'] != strtolower($user->getEmail()) && !Util::isAvailableEmail($v['email'])) {
 			$form->setError('duplicate_email');
 		}
 		if(!isset($errors['username']) && $v['username'] != $user->getUsername() && !Util::isAvailableUsername($v['username'])) {
