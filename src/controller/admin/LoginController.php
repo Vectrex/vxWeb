@@ -2,6 +2,7 @@
 
 use vxPHP\User\Exception\UserException;
 use vxPHP\Application\Application;
+use vxPHP\Session\Session;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Template\SimpleTemplate;
@@ -79,9 +80,10 @@ class LoginController extends Controller {
 
 						$admin->storeInSession();
 						
-						if(isset($_SESSION['authViolatingUri'])) {
-							$redir = $_SESSION['authViolatingUri'];
-							$_SESSION['authViolatingUri'] = NULL;
+						$session = Session::getSessionDataBag();
+
+						if(($redir = $session->get('authViolatingUri'))) {
+							$session->remove('authViolatingUri');
 							$this->redirect($redir);
 						}
 						$this->redirect('profile');

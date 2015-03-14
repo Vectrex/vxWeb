@@ -2,6 +2,8 @@
 error_reporting(E_ALL & ~E_STRICT);
 ini_set('display_errors', '1');
 
+// register autoloaders
+
 require_once $rootPath . '/vendor/vxPHP/Autoload/Psr4.php';
 
 $loader = new vxPHP\Autoload\Psr4();
@@ -15,11 +17,14 @@ $configFilename			= $iniPath . 'site.ini.xml';
 $cachedConfigPath		= $iniPath . '.cache' . DIRECTORY_SEPARATOR;
 $cachedConfigFilename	= $cachedConfigPath . 'app_config';
 
+// read configuration and cache if necessary
+
 if(!file_exists($configFilename)) {
 	throw new \Exception('No site.ini.xml in ' . $iniPath . ' found.');
 }
 
 if(file_exists($cachedConfigFilename)) {
+
 	if(filemtime($cachedConfigFilename) > filemtime($configFilename)) {
 		$config = unserialize(file_get_contents($cachedConfigFilename));
 	}
@@ -27,7 +32,9 @@ if(file_exists($cachedConfigFilename)) {
 		$config = new vxPHP\Application\Config($configFilename);
 		file_put_contents($cachedConfigFilename, serialize($config));
 	}
+
 }
+
 else {
 
 	$config = new vxPHP\Application\Config($configFilename);
@@ -47,6 +54,8 @@ else {
 	}
 }
 
+// initialize application 
+
 $application = vxPHP\Application\Application::getInstance($config);
 
 $application->setRootPath			($rootPath);
@@ -55,3 +64,12 @@ $application->setAbsoluteAssetsPath	($assetsPath);
 if(!is_dir($application->getAbsoluteAssetsPath())) {
 	throw new \Exception("Assets path '" . $application->getRelativeAssetsPath() . "' not found.");
 }
+
+// parse route
+
+$route = vxPHP\Routing\Router::getRouteFromPathInfo();
+vxPHP\Application\Application::getInstance()->setCurrentRoute($route);
+
+// render output
+
+$route->getController()->render();

@@ -11,10 +11,6 @@ else {
 	$rootPath = dirname($rootPath);
 	require_once '../site.config.php';
 }
-
-$route = vxPHP\Routing\Router::getRouteFromPathInfo();
-$application->setCurrentRoute($route);
-$route->getController()->render();
 ?>
 
 <?php
