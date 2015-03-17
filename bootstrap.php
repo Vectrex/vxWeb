@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL & ~E_STRICT);
-ini_set('display_errors', '1');
 
 // register autoloaders
 
@@ -40,7 +38,7 @@ else {
 	$config = new vxPHP\Application\Config($configFilename);
 
 	// create path
-	
+
 	if(!file_exists($cachedConfigPath)) {
 		if(!mkdir($cachedConfigPath, 0777, TRUE)) {
 			throw new \Exception('Cannot create directory ' . $cachedConfigPath);
@@ -48,28 +46,15 @@ else {
 	}
 
 	// create file
-	
+
 	if(FALSE === file_put_contents($cachedConfigFilename, serialize($config))) {
 		throw new \Exception('Cannot create serialized config file ' . $cachedConfigFilename);
 	}
 }
 
-// initialize application 
+// initialize application
 
 $application = vxPHP\Application\Application::getInstance($config);
 
 $application->setRootPath			($rootPath);
 $application->setAbsoluteAssetsPath	($assetsPath);
-
-if(!is_dir($application->getAbsoluteAssetsPath())) {
-	throw new \Exception("Assets path '" . $application->getRelativeAssetsPath() . "' not found.");
-}
-
-// parse route
-
-$route = vxPHP\Routing\Router::getRouteFromPathInfo();
-vxPHP\Application\Application::getInstance()->setCurrentRoute($route);
-
-// render output
-
-$route->getController()->render();
