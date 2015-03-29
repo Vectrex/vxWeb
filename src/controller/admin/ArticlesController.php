@@ -32,12 +32,14 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxPHP\User\User;
 use vxPHP\Database\vxPDOUtil;
+use vxPHP\Routing\Router;
 
 class ArticlesController extends Controller {
 
 	protected function execute() {
 
-		$admin = User::getSessionUser();
+		$admin			= User::getSessionUser();
+		$redirectUrl	= Router::getRoute('articles', 'admin.php')->getUrl();
 
 		// editing something?
 
@@ -47,13 +49,13 @@ class ArticlesController extends Controller {
 				$article = Article::getInstance($id);
 			}
 			catch(ArticleException $e) {
-				$this->redirect('articles');
+				return $this->redirect($redirectUrl);
 			}
 
 			// check permission of non superadmin
 
 			if(!$admin->hasSuperAdminPrivileges() && $admin->getAdminId() != $article->getCreatedBy()->getAdminId()) {
-				$this->redirect('articles');
+				return $this->redirect($redirectUrl);
 			}
 		}
 
@@ -64,11 +66,9 @@ class ArticlesController extends Controller {
 			try {
 				$article->delete();
 			}
-			catch(ArticleException $e) {
-				$this->redirect('articles');
-			}
+			catch(ArticleException $e) { }
 
-			$this->redirect('articles');
+			return $this->redirect($redirectUrl);
 		}
 
 		// edit or add article

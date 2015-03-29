@@ -2,6 +2,7 @@
 
 use vxPHP\Controller\Controller;
 use vxPHP\User\User;
+use vxPHP\Routing\Router;
 
 class LogoutController extends Controller {
 
@@ -11,6 +12,6 @@ class LogoutController extends Controller {
 			$admin->removeFromSession();
 		}
 
-		$this->redirect('login');
+		return $this->redirect(Router::getRoute('login', 'admin.php')->getUrl());
 	}
 }

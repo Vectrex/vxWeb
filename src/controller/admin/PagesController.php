@@ -9,6 +9,7 @@ use vxPHP\Http\Response;
 use vxPHP\Application\Application;
 use vxPHP\User\Admin;
 use vxPHP\User\User;
+use vxPHP\Routing\Router;
 
 class PagesController extends Controller {
 
@@ -43,7 +44,7 @@ class PagesController extends Controller {
 			);
 
 			if(empty($rows)) {
-				$this->redirect('pages');
+				return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl());
 			}
 
 			$page = $rows[0];
@@ -69,7 +70,7 @@ class PagesController extends Controller {
 					$v['Keywords']		== $page['Keywords'] &&
 					$v['Markup']		== $page['Markup']
 				) {
-					$this->redirect('pages', NULL, array('id' => $id, 'nochange' => 'true'));
+					return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl(), array('id' => $id, 'nochange' => 'true'));
 				}
 
 				if(($newId = vxWeb\SimpleTemplateUtil::addRevision(array(
@@ -84,7 +85,7 @@ class PagesController extends Controller {
 					'pagesID' => $page['pagesID'],
 					'Locale' => $page['Locale']
 				)))) {
-					$this->redirect('pages', NULL, array('id' => $newId, 'success' => 'true'));
+					return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl(), array('id' => $newId, 'success' => 'true'));
 				}
 				$form->setError('system');
 			}

@@ -24,13 +24,16 @@ class SimpleTemplateUtil {
 	/**
 	 * public function for
 	 * syncing file and db based templates
-	 *
-	 * can either
-	 * create template files from db entries
-	 * insert templates from template files into db
-	 * update templates
+	 * 
+	 * if file exists, but no db entry -> import and set active
+	 * else if db entry exists, but no file -> export
+	 * else if db entry and file exist ->
+	 * 		if filemtime is older than active db entry -> export
+	 * 		else if filemtime is newer than newest revision in db (not necessarily active) -> import and set active
+	 * 		else if filemtime between active revision and newest revision -> export active revision
+	 * 
+	 * manually edited and saved templates are only prioritized if they are newer than any db entry  
 	 */
-
 	public static function syncTemplates() {
 
 		$config		= Application::getInstance()->getConfig();
@@ -38,30 +41,40 @@ class SimpleTemplateUtil {
 
 		$locales	= array();
 
-		// fetch file info
+		// fetch file templates
 
-		$tpl = self::getTplFiles();
+		$fileTpl = self::getTplFiles();
 
-		// fetch db info
+		// fetch db templates
 
 		$dbTpl = array();
 
 		foreach (
 			$db->doPreparedQuery("
 				SELECT
-					p.pagesID,
-					p.Template,
-					p.Alias,
-					date_format(max(r.templateUpdated), '%Y-%m-%d %H:%i:%s') AS lastUpdate,
-					UNIX_TIMESTAMP(max(r.templateUpdated)) AS lastUpdateTS
+					sq.*,
+					ar.revisionsID,
+					UNIX_TIMESTAMP(ar.templateUpdated) AS activeUpdatedTS
 				FROM
-					revisions r
-					RIGHT JOIN pages p ON r.pagesID = p.pagesID
-				WHERE
-					r.Locale IS NULL OR r.Locale = ''
-				GROUP BY
-					pagesID,
-					Template
+					(
+						SELECT
+							p.pagesID,
+							p.Template,
+							p.Alias,
+							UNIX_TIMESTAMP(max(r.templateUpdated)) AS newestUpdateTS
+						FROM
+							pages p
+							LEFT JOIN revisions r ON r.pagesID = p.pagesID
+						WHERE
+							r.Locale IS NULL
+							OR r.Locale = ''
+						GROUP BY
+							pagesID,
+							Template,
+							Alias
+					)
+					AS sq
+					LEFT JOIN revisions ar ON ar.pagesID = sq.pagesID AND ar.active = 1			
 			")
 			as $r) {
 
@@ -74,20 +87,29 @@ class SimpleTemplateUtil {
 
 			$rows = $db->doPreparedQuery("
 				SELECT
-					p.pagesID,
-					p.Template,
-					p.Alias,
-					date_format(max(r.templateUpdated), '%Y-%m-%d %H:%i:%s') AS lastUpdate,
-					UNIX_TIMESTAMP(max(r.templateUpdated)) AS lastUpdateTS
+					sq.*,
+					ar.revisionsID,
+					UNIX_TIMESTAMP(ar.templateUpdated) AS activeUpdatedTS
 				FROM
-					revisions r
-					RIGHT JOIN pages p ON r.pagesID = p.pagesID
-				WHERE
-					r.Locale = ?
-			GROUP BY
-					pagesID,
-					Template
-			", array($l));
+					(
+						SELECT
+							p.pagesID,
+							p.Template,
+							p.Alias,
+							UNIX_TIMESTAMP(max(r.templateUpdated)) AS newestUpdateTS
+						FROM
+							pages p
+							LEFT JOIN revisions r ON r.pagesID = p.pagesID
+						WHERE
+							r.Locale = ?
+						GROUP BY
+							pagesID,
+							Template,
+							Alias
+					)
+					AS sq
+					LEFT JOIN revisions ar ON ar.pagesID = sq.pagesID AND ar.active = 1			
+				", array($l));
 
 			foreach($rows as $r) {
 				$dbTpl[$l][$r['Template']] = $r;
@@ -96,55 +118,75 @@ class SimpleTemplateUtil {
 
 		// update templates based on db info
 
-		foreach($dbTpl as $l => $t) {
+		$revisionIdsToCreate = array();
 
-			foreach($t as $k => $v) {
-				
-				$parameters = array((int) $v['pagesID']);
+		foreach($dbTpl as $locale => $templates) {
 
-				if(!isset($tpl[$l][$k]) || ($tpl[$l][$k]['fmtime'] < $v['lastUpdateTS'])) {
+			foreach($templates as $filename => $template) {
 
-					if($l === 'universal') {
-						$localeSQL = "(r.Locale IS NULL OR r.Locale = '')";
+				// file template not found
+	
+				if(!isset($fileTpl[$locale][$filename])) {
+	
+					// store revision id to create file template
+	
+					$revisionIdsToCreate[] = $template['revisionsID'];
+	
+				}
+	
+				else {
+	
+					// compare timestamps
+	
+					// active template of db or newest template is newer than file template
+	
+					if(
+						(int) $template['activeUpdatedTS'] > $fileTpl[$locale][$filename]['fmtime'] ||
+						(int) $template['newestUpdatedTS'] > $fileTpl[$locale][$filename]['fmtime']
+					) {
+	
+						// store revision id to create file template
+						
+						$revisionIdsToCreate[] = $template['revisionsID'];
+						
 					}
+					
+					// file template is newer than both active and newest db template
+	
 					else {
-						$localeSQL = 'r.Locale = ?';
-						$parameters[] = $l;
+	
+						// add revision
+	
+						self::updateTemplate(array_merge($template, $fileTpl[$locale][$filename]), $locale);
+	
 					}
+					
+					// remove file template from hash
+					
+					unset($fileTpl[$locale][$filename]);
 
-					$rows = $db->doPreparedQuery('
-						SELECT
-							r.Markup
-						FROM
-							revisions r
-						WHERE
-							pagesID = ? AND ' .
-							$localeSQL . '
-						ORDER BY
-							templateUpdated DESC
-						LIMIT 1
-					', $parameters);
-
-					if(count($rows)) {
-						self::createTemplate($v + $rows[0], $l);
-					}
 				}
+	
 			}
+
+			// create db entries which are not present in database
+
+			foreach($fileTpl as $locale => $templates) {
+
+				foreach($templates as $filename => $template) {
+					self::insertTemplate($template, $locale);
+				}
+
+			}
+
+		}
+		
+		// create files by retrieving revision data
+		
+		foreach($revisionIdsToCreate as $revisionId) {
+			self::createTemplateFromRevision($revisionId);
 		}
 
-		// update db on template files
-
-		foreach($tpl as $l => $t) {
-
-			foreach($t as $k => $v) {
-				if(!isset($dbTpl[$l][$k])) {
-					self::insertTemplate($v, $l);
-				}
-				else if(empty($dbTpl[$l][$k]['lastUpdateTS']) || ($v['fmtime'] > $dbTpl[$l][$k]['lastUpdateTS'])) {
-					self::updateTemplate(array_merge($dbTpl[$l][$k], $v), $l);
-				}
-			}
-		}
 	}
 
 	/**
@@ -228,9 +270,8 @@ class SimpleTemplateUtil {
 			$fi = $f->getFileInfo();
 
 			$tpl['universal'][$f->getFilename()] = array(
-				'Template' => $f,
-				'fmtime' => $fi->getMTime(),
-				'fmtimef' => date('Y-m-d H:i:s', $fi->getMTime())
+				'template' => $f,
+				'fmtime' => $fi->getMTime()
 			);
 		}
 
@@ -238,38 +279,52 @@ class SimpleTemplateUtil {
 	}
 
 	/**
-	 * create a new template file
-	 * @param array $data content, mtime, etc. of template
-	 * @param string $locale locale of template
+	 * create a new template file from a db entry
+	 * 
+	 * @param int $revisionId
+	 * @return boolean
 	 */
-	private static function createTemplate($data, $locale = 'universal') {
+	private static function createTemplateFromRevision($revisionId) {
 
-		$path = self::getPath();
+		$rows = Application::getInstance()->getDb()->doPreparedQuery("
+			SELECT
+				r.Markup,
+				r.Template
+			FROM
+				revisions r
+			WHERE
+				revisionsID = ?
+			", array((int) $revisionId)
+		);
 
-		if(!($handle = fopen($path . $data['Template'], 'w'))) {
+		$path = self::getPath() . $rows[0]['Template'];
+
+		if(!($handle = fopen($path, 'w'))) {
 			return FALSE;
 		}
-		if(fwrite($handle, $data['Markup']) === FALSE) {
+		if(fwrite($handle, $rows[0]['Markup']) === FALSE) {
 			return FALSE;
 		}
 		fclose($handle);
 
-		@chmod($path.$data['Template'], 0666);
-		@touch($path.$data['Template'], $data['lastUpdateTS']);
+		@chmod($path, 0666);
+		@touch($path, $rows[0]['lastUpdateTS']);
 
 		return TRUE;
 	}
 
 	/**
 	 * insert page data and first revision
+	 * 
 	 * @param array $data template data
 	 * @param string $locale of template
+	 * @return boolean
 	 */
 	private static function insertTemplate($data, $locale = 'universal') {
 
 		$db = Application::getInstance()->getDb();
 
-		$alias = strtoupper(basename($data['Template']->getFilename(), '.php'));
+		$alias = strtoupper(basename($data['template']->getFilename(), '.php'));
 
 		$rows = $db->doPreparedQuery("SELECT pagesID from pages WHERE Alias = ?", array($alias));
 
@@ -279,24 +334,22 @@ class SimpleTemplateUtil {
 			$newId = $rows[0]['pagesID'];
 		}
 		else {
-			if(!($newId = $db->insertRecord('pages',
-			array(
-				'Template' => $data['Template']->getFilename(),
-				'Alias' => $alias
-			)
-			))) {
-				return FALSE;
-			}
+			$newId = $db->insertRecord('pages',
+				array(
+					'Template'	=> $data['template']->getFilename(),
+					'Alias'		=> $alias
+				)
+			);
 		}
 
-		$markup = file_get_contents($data['Template']->getPath());
+		$markup = file_get_contents($data['template']->getPath());
 
 		return self::insertRevision(
 			array(
-				'Markup' => $markup,
-				'Rawtext' => self::extractRawtext($markup),
-				'pagesID' => $newId,
-				'templateUpdated' => $data['fmtimef']
+				'Markup'			=> $markup,
+				'Rawtext'			=> self::extractRawtext($markup),
+				'pagesID'			=> $newId,
+				'templateUpdated'	=> date('Y-m-d H:i:s', (int) $data['fmtime'])
 			), $locale
 		);
 	}

@@ -11,4 +11,4 @@ vxPHP\Application\Application::getInstance()->setCurrentRoute($route);
 
 // render output
 
-$route->getController()->render();
+$route->getController()->renderResponse();

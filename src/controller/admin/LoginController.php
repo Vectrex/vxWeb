@@ -10,6 +10,7 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 use vxPHP\User\User;
+use vxPHP\Routing\Router;
 
 class LoginController extends Controller {
 
@@ -25,7 +26,7 @@ class LoginController extends Controller {
 					continue;
 				}
 
-				$this->redirect($route->getRouteId());
+				return $this->redirect($route->getUrl());
 				break;
 			}
 		}
@@ -84,9 +85,9 @@ class LoginController extends Controller {
 
 						if(($redir = $session->get('authViolatingUri'))) {
 							$session->remove('authViolatingUri');
-							$this->redirect($redir);
+							return $this->redirect($redir);
 						}
-						$this->redirect('profile');
+						return $this->redirect(Router::getRoute('profile', 'admin.php')->getUrl());
 					}
 				}
 

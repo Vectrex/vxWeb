@@ -11,13 +11,15 @@ use vxPHP\User\Exception\UserException;
 use vxPHP\Util\Rex;
 use vxPHP\Http\JsonResponse;
 use vxPHP\User\Util;
+use vxPHP\Routing\Router;
 
 class UsersController extends Controller {
 
 	protected function execute() {
 
-		$admin	= User::getSessionUser();
-		$db		= Application::getInstance()->getDb();
+		$admin			= User::getSessionUser();
+		$db				= Application::getInstance()->getDb();
+		$redirectUrl	= Router::getRoute('users', 'admin.php')->getUrl();
 
 		// editing or deleting something?
 
@@ -26,14 +28,14 @@ class UsersController extends Controller {
 			// editing own record is not allowed
 
 			if($admin->getAdminId() == $id) {
-				$this->redirect('users');
+				return $this->redirect($redirectUrl);
 			}
 
 			try {
 				$user = User::getInstance($id);
 			}
 			catch(UserException $e) {
-				$this->redirect('users');
+				return $this->redirect($redirectUrl);
 			}
 
 		}
@@ -47,7 +49,7 @@ class UsersController extends Controller {
 			}
 			catch(ArticleException $e) { }
 		
-			$this->redirect('users');
+			return $this->redirect($redirectUrl);
 		}
 
 		// edit or add article
