@@ -1,6 +1,7 @@
 <?php
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
+use vxPHP\Http\Exception\HttpException;
 use vxPHP\Template\Exception\SimpleTemplateException;
 use vxPHP\Template\SimpleTemplate;
 
@@ -27,7 +28,7 @@ class DefaultController extends Controller {
 			$include = new SimpleTemplate('default' . DIRECTORY_SEPARATOR . preg_replace('~[^a-z0-9_-]~i', '', $page) . '.php');
 
 			if($include->containsPHP()) {
-				$this->generateHttpError();
+				throw new HttpException(Response::HTTP_FORBIDDEN);
 			}
 
 			// fall back to "layout.php" as parent template, when template has no "extend" directive
@@ -43,7 +44,7 @@ class DefaultController extends Controller {
 				);
 
 			}
-			
+
 			else {
 
 				return new Response($include
@@ -55,7 +56,7 @@ class DefaultController extends Controller {
 		}
 
 		catch(SimpleTemplateException $e) {
-			$this->generateHttpError();
+			throw new HttpException(Response::HTTP_NOT_FOUND); 
 		}
 
 	}

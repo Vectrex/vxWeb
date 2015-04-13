@@ -58,3 +58,12 @@ $application = vxPHP\Application\Application::getInstance($config);
 
 $application->setRootPath			($rootPath);
 $application->setAbsoluteAssetsPath	($assetsPath);
+
+// set debugging and error reporting level depending on environment
+
+if($application->runsLocally()) {
+	ini_set('display_errors', TRUE);
+}
+else {
+	\vxPHP\Debug\Debug::enable(E_ALL, FALSE);
+}

@@ -22,8 +22,4 @@ else {
 
 // place any custom initialisation code here
 
-//vxPHP\Debug\Debug::enable(E_ALL);
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require $rootPath . DIRECTORY_SEPARATOR . 'application.php';
