@@ -21,7 +21,7 @@ class ProfileController extends Controller {
 		$admin					= User::getSessionUser();
 		$availableNotifications	= Notification::getAvailableNotifications($admin->getAdmingroup());
 		$assignedNotifications	= $admin->getNotifications();
-
+		
 		$checkBoxHtml = '';
 
 		$form =
@@ -42,12 +42,16 @@ class ProfileController extends Controller {
 				continue;
 			}
 
+			$form->initVar('has_notifications', 1);
+
 			$e = new CheckboxElement($n->alias, 1, $admin->getsNotified($n->alias));
 			$e->setLabel('&nbsp;' . $n->description);
 			$form->addElement($e);
 
 			$checkBoxHtml .= '<div class="formItem">' . $e->render() . '</div>';
 		}
+		
+		$form->addMiscHtml('notifications', $checkBoxHtml);
 
 		if($this->request->getMethod() === 'POST') {
 
@@ -90,6 +94,7 @@ class ProfileController extends Controller {
 								$add[] = $n->alias;
 							}
 						}
+
 						$admin->setNotifications($add);
 						
 						return new JsonResponse(array('success' => TRUE));
