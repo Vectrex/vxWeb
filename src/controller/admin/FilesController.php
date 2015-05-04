@@ -419,6 +419,11 @@ class FilesController extends Controller {
 						)
 					);
 				}
+
+				// avoid browser-side decoration of response with <pre> tags, since this response will end up in an IFrame
+
+				return new Response(json_encode($response));
+
 				break;
 
 			default:
