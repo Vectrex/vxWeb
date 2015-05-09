@@ -588,7 +588,7 @@ this.vxWeb.fileManager = function(config) {
 						xForm,
 						"check",
 						function() {
-							var r = this.getLastXhrResponse();
+							var r = this.getLastXhrResponse().response;
 
 							if(r.elements) {
 								//@todo: possible error handling
