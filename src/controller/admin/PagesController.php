@@ -7,9 +7,9 @@ use vxPHP\Template\Filter\ShortenText;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Application\Application;
-use vxPHP\User\Admin;
 use vxPHP\User\User;
 use vxPHP\Routing\Router;
+use vxWeb\TemplateUtil;
 
 class PagesController extends Controller {
 
@@ -17,7 +17,7 @@ class PagesController extends Controller {
 
 	protected function execute() {
 
-		vxWeb\SimpleTemplateUtil::syncTemplates();
+		TemplateUtil::syncTemplates();
 
 		if(($id = $this->request->query->getInt('id'))) {
 
@@ -73,7 +73,7 @@ class PagesController extends Controller {
 					return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl(), array('id' => $id, 'nochange' => 'true'));
 				}
 
-				if(($newId = vxWeb\SimpleTemplateUtil::addRevision(array(
+				if(($newId = TemplateUtil::addRevision(array(
 					'authorsID' => User::getSessionUser()->getAdminId(),
 
 					'Title' => $v['Title'],

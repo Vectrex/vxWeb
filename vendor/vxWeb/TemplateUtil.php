@@ -5,22 +5,21 @@ namespace vxWeb;
 use vxPHP\File\FilesystemFolder;
 use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\Application\Application;
+use vxPHP\Application\Locale\Locale;
 use vxPHP\Http\Request;
 
 /**
  * helper class to sync and update templates both in filesystem and database
  *
  * @author Gregor Kofler
- * @version 0.3.9 2013-10-05
- *
- * @todo re-establish handling of localized templates
+ * @version 0.4.0 2015-06-09
  *
  */
 
-class SimpleTemplateUtil {
+class TemplateUtil {
 
 	private static $maxPageRevisions;
-
+	
 	/**
 	 * public function for
 	 * syncing file and db based templates
@@ -36,14 +35,23 @@ class SimpleTemplateUtil {
 	 */
 	public static function syncTemplates() {
 
-		$config		= Application::getInstance()->getConfig();
-		$db			= Application::getInstance()->getDb();
-
-		$locales	= array();
+		$app		= Application::getInstance();
+		$config		= $app->getConfig();
+		$db			= $app->getDb();
+		$locales	= $app->getAvailableLocales();
 
 		// fetch file templates
 
-		$fileTpl = self::getTplFiles();
+		// universal templates
+
+		$fileTpl = array();
+		self::getTplFiles($fileTpl);
+
+		// localized templates
+
+		foreach($locales as $locale) {
+			self::getTplFiles($fileTpl, $locale);
+		}
 
 		// fetch db templates
 
@@ -61,7 +69,7 @@ class SimpleTemplateUtil {
 							p.pagesID,
 							p.Template,
 							p.Alias,
-							UNIX_TIMESTAMP(max(r.templateUpdated)) AS newestUpdateTS
+							UNIX_TIMESTAMP(max(r.templateUpdated)) AS newestUpdatedTS
 						FROM
 							pages p
 							LEFT JOIN revisions r ON r.pagesID = p.pagesID
@@ -96,7 +104,7 @@ class SimpleTemplateUtil {
 							p.pagesID,
 							p.Template,
 							p.Alias,
-							UNIX_TIMESTAMP(max(r.templateUpdated)) AS newestUpdateTS
+							UNIX_TIMESTAMP(max(r.templateUpdated)) AS newestUpdatedTS
 						FROM
 							pages p
 							LEFT JOIN revisions r ON r.pagesID = p.pagesID
@@ -109,7 +117,7 @@ class SimpleTemplateUtil {
 					)
 					AS sq
 					LEFT JOIN revisions ar ON ar.pagesID = sq.pagesID AND ar.active = 1			
-				", array($l));
+				", array($l->getLocaleId()));
 
 			foreach($rows as $r) {
 				$dbTpl[$l][$r['Template']] = $r;
@@ -136,29 +144,39 @@ class SimpleTemplateUtil {
 	
 				else {
 	
-					// compare timestamps
-	
-					// active template of db or newest template is newer than file template
-	
+					/*
+					 * compare timestamps
+					 * 
+					 * do nothing, when timestamps match
+					 * create new revision when active or newest template in db are older than file template
+					 * create new template file when file template is outdated
+					 */
+
 					if(
-						(int) $template['activeUpdatedTS'] > $fileTpl[$locale][$filename]['fmtime'] ||
-						(int) $template['newestUpdatedTS'] > $fileTpl[$locale][$filename]['fmtime']
+						(int) $template['activeUpdatedTS'] === (int) $fileTpl[$locale][$filename]['fmtime']
 					) {
-	
-						// store revision id to create file template
 						
-						$revisionIdsToCreate[] = $template['revisionsID'];
-						
+						// do nothing
+
 					}
-					
-					// file template is newer than both active and newest db template
-	
-					else {
+
+					else if(
+						(int) $template['activeUpdatedTS'] < $fileTpl[$locale][$filename]['fmtime'] ||
+						(int) $template['newestUpdatedTS'] < $fileTpl[$locale][$filename]['fmtime']
+					) {
 	
 						// add revision
 	
 						self::updateTemplate(array_merge($template, $fileTpl[$locale][$filename]), $locale);
+
+					}
+					
+					else {
 	
+						// store revision id to create file template
+						
+						$revisionIdsToCreate[] = $template['revisionsID'];
+
 					}
 					
 					// remove file template from hash
@@ -169,18 +187,18 @@ class SimpleTemplateUtil {
 	
 			}
 
-			// create db entries which are not present in database
+		}
+		
+		// create db entries which are not present in database
 
-			foreach($fileTpl as $locale => $templates) {
+		foreach($fileTpl as $locale => $templates) {
 
-				foreach($templates as $filename => $template) {
-					self::insertTemplate($template, $locale);
-				}
-
+			foreach($templates as $filename => $template) {
+				self::insertTemplate($template, $locale);
 			}
 
 		}
-		
+
 		// create files by retrieving revision data
 		
 		foreach($revisionIdsToCreate as $revisionId) {
@@ -248,34 +266,32 @@ class SimpleTemplateUtil {
 	}
 
 	/**
-	 * retrieve template files
-	 * @param unknown $locale
-	 * @param unknown $tpl
+	 * retrieve file templates for a given locale
+	 * 
+	 * @param array $fileTemplates
+	 * @param Locale $locale
+	 * @return array
 	 */
-	private static function getTplFiles() {
+	private static function getTplFiles(array &$fileTemplates, Locale $locale = NULL) {
 
-		$tpl = array('universal' => array());
+		$ndx	= $locale ? $locale->getLocaleId() : 'universal';
+		$subdir	= $locale ? $locale->getLocaleId() . DIRECTORY_SEPARATOR : '';
 
-		$path	= self::getPath();
+		$path	= self::getPath() . $subdir;
 
 		try {
-			$files	= FilesystemFolder::getInstance($path)->getFiles('php');
+			foreach(FilesystemFolder::getInstance($path)->getFiles('php') as $f) {
+
+				$fi = $f->getFileInfo();
+
+				$fileTemplates[$ndx][$f->getFilename()] = array(
+					'template' => $f,
+					'fmtime' => $fi->getMTime()
+				);
+
+			}
 		}
-		catch(FilesystemFolderException $e) {
-			return;
-		}
-
-		foreach($files as $f) {
-
-			$fi = $f->getFileInfo();
-
-			$tpl['universal'][$f->getFilename()] = array(
-				'template' => $f,
-				'fmtime' => $fi->getMTime()
-			);
-		}
-
-		return $tpl;
+		catch(FilesystemFolderException $e) {}
 	}
 
 	/**
@@ -289,9 +305,10 @@ class SimpleTemplateUtil {
 		$rows = Application::getInstance()->getDb()->doPreparedQuery("
 			SELECT
 				r.Markup,
-				r.Template
+				p.Template
 			FROM
 				revisions r
+				INNER JOIN pages p ON r.pagesID = p.pagesID
 			WHERE
 				revisionsID = ?
 			", array((int) $revisionId)
@@ -360,17 +377,17 @@ class SimpleTemplateUtil {
 	private static function updateTemplate($data, $locale = 'universal') {
 
 		$metaData = self::getPageMetaData($data['Alias']);
-		$markup = file_get_contents($data['Template']->getPath());
+		$markup = file_get_contents($data['template']->getPath());
 
 		self::deleteOldRevisions($data['pagesID'], $locale);
 
 		return self::insertRevision(
 			array_merge($metaData,
 			array(
-				'Markup' => $markup,
-				'Rawtext' => self::extractRawtext($markup),
-				'pagesID' => $data['pagesID'],
-				'templateUpdated' => $data['fmtimef']
+				'Markup'			=> $markup,
+				'Rawtext'			=> self::extractRawtext($markup),
+				'pagesID'			=> $data['pagesID'],
+				'templateUpdated'	=> date('Y-m-d H:i:s', (int) $data['fmtime'])
 			)), $locale
 		);
 	}
@@ -489,7 +506,7 @@ class SimpleTemplateUtil {
 		}
 
 		return
-			rtrim($app->getRootPath()) .
+			rtrim($app->getRootPath(), DIRECTORY_SEPARATOR) .
 			$config->paths['editable_tpl_path']['subdir'];
 	}
 
