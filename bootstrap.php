@@ -18,7 +18,7 @@ $cachedConfigFilename	= $cachedConfigPath . 'app_config';
 // read configuration and cache if necessary
 
 if(!file_exists($configFilename)) {
-	throw new \Exception('No site.ini.xml in ' . $iniPath . ' found.');
+	die ('No site.ini.xml in ' . $iniPath . ' found.');
 }
 
 if(file_exists($cachedConfigFilename)) {
@@ -41,14 +41,14 @@ else {
 
 	if(!file_exists($cachedConfigPath)) {
 		if(!mkdir($cachedConfigPath, 0777, TRUE)) {
-			throw new \Exception('Cannot create directory ' . $cachedConfigPath);
+			die ('Cannot create directory ' . $cachedConfigPath);
 		}
 	}
 
 	// create file
 
 	if(FALSE === file_put_contents($cachedConfigFilename, serialize($config))) {
-		throw new \Exception('Cannot create serialized config file ' . $cachedConfigFilename);
+		die ('Cannot create serialized config file ' . $cachedConfigFilename);
 	}
 }
 
