@@ -10,7 +10,7 @@ use vxPHP\Application\Locale\Locale;
  * Mapper class for page revisions, stored in table `revisions`
  *
  * @author Gregor Kofler
- * @version 0.3.0 2015-06-16
+ * @version 0.3.3 2015-06-18
  * 
  * @todo retrieve and save locale
  * @todo attribute sanitation
@@ -50,11 +50,6 @@ class Revision {
 	 */
 	private $locale;
 
-	/**
-	 * @var \DateTime
-	 */
-	private $templateUpdated;
-	
 	/**
 	 * @var \DateTime
 	 */
@@ -158,9 +153,10 @@ class Revision {
 	 * instantiate all revisions of a page
 	 * 
 	 * @param Page $page
+	 * @param Locale $locale
 	 * @return multitype:Revision
 	 */
-	public static function getInstancesForPage(Page $page) {
+	public static function getInstancesForPage(Page $page, Locale $locale = NULL) {
 		
 		$pageId = $page->getId();
 
@@ -169,15 +165,37 @@ class Revision {
 			return self::$instancesByPage[$pageId];
 
 		}
+
+		// get all revisions
+
+		if(is_null($locale)) {
+
+			$rows = Application::getInstance()->getDb()->doPreparedQuery("
+				SELECT
+					*
+				FROM
+					revisions
+				WHERE
+					pagesID = ?", array($pageId)
+			);
+
+		}
 		
-		$rows = Application::getInstance()->getDb()->doPreparedQuery("
-			SELECT
-				*
-			FROM
-				revisions
-			WHERE
-				pagesID = ?", array($pageId)
-		);
+		// get revisions for specified locale
+
+		else {
+
+			$rows = Application::getInstance()->getDb()->doPreparedQuery("
+				SELECT
+					*
+				FROM
+					revisions
+				WHERE
+					locale = ? AND
+					pagesID = ?", array($locale->getLocaleId(), $pageId)
+			);
+
+		}
 
 		$instances = array();
 		
@@ -218,12 +236,15 @@ class Revision {
 
 		$revision->id				= (int) $data['revisionsid'];
 		$revision->active			= !!$data['active'];
-		$revision->author			= $data['authorid']			? User::getInstance($data['authorid'])		: NULL;
+		$revision->author			= $data['authorid']			? User::getInstance((int) $data['authorid']): NULL;
 
 		$revision->firstCreated		= $data['firstcreated']		? new \DateTime($data['firstcreated'])		: NULL;
 		$revision->lastUpdated		= $data['lastupdated']		? new \DateTime($data['lastupdated'])		: NULL;
-		$revision->templateUpdated	= $data['templateupdated']	? new \DateTime($data['templateupdated'])	: NULL;
-		
+
+		if(!is_null($data['locale'])) {
+			$revision->locale = new Locale($data['locale']);
+		}
+
 		foreach($revision->monitoredAttributes as $attr) {
 			$revision->$attr = $data[$attr];
 		}
@@ -334,9 +355,9 @@ class Revision {
 			throw new PageException('Cannot save a previously saved revision');
 		}
 
-		// @FIXME: firstCreated contains current timestamp, not the one when written
-
-		$this->firstCreated = new \DateTime();
+		if(is_null($this->firstCreated)) {
+			$this->firstCreated = new \DateTime();
+		}
 
 		$toSave = array();
 
@@ -352,7 +373,8 @@ class Revision {
 			$toSave, array(
 				'pagesID'		=> $this->page->getId(),
 				'authorID'		=> $this->author ? $this->author->getAdminId() : NULL,
-				'active'		=> (int) $this->active
+				'active'		=> (int) $this->active,
+				'firstCreated'	=> $this->firstCreated->format('Y-m-d H:i:s')
 			)
 		));
 
@@ -434,16 +456,6 @@ class Revision {
 	}
 
 	/**
-	 * get stored template update time
-	 * @return DateTime
-	 */
-	public function getTemplateUpdated() {
-
-		return $this->templateUpdated;
-
-	}
-
-	/**
 	 * get stored timestamp of last update
 	 * this timestamp is set by DB wrapper or db itself
 	 * @return DateTime
@@ -456,13 +468,37 @@ class Revision {
 
 	/**
 	 * get stored timestamp of record creation
-	 * this timestamp is set by DB wrapper
+	 * this timestamp is set by DB wrapper upon saving, if not set explicitly
 	 * @return DateTime
 	 */
 	public function getFirstCreated() {
 
 		return $this->firstCreated;
 
+	}
+
+	/**
+	 * set timestamp of record creation
+	 * required to synchronize timestamps with imported template files
+	 * @return Revision
+	 */
+	public function setFirstCreated(\DateTime $firstCreated) {
+
+		$this->firstCreated = $firstCreated;
+		return $this;
+
+	}
+
+	/**
+	 * clear timestamp of record creation
+	 * so that the DB wrapper can set the attribute value
+	 * @return Revision
+	 */
+	public function clearFirstCreated() {
+	
+		$this->firstCreated = NULL;
+		return $this;
+	
 	}
 
 	/**
@@ -667,7 +703,7 @@ class Revision {
 	 */
 	private function setContainsPHP() {
 
-		$this->containsPHP = !preg_match('~\\<\\?(\\s+|php).*?(\\?\\>)~is', $this->markup);
+		$this->containsPHP = preg_match('~\\<\\?(\\s+|php).*?(\\?\\>)~is', $this->markup);
 
 	}
 

@@ -3,16 +3,18 @@
 namespace vxWeb\Orm\Page;
 
 use vxPHP\Application\Application;
+use vxPHP\Observer\SubjectInterface;
+use vxPHP\Observer\EventDispatcher;
 
 /**
  * Mapper class to handle revisioned pages, stored in table `pages`
  *
  * @author Gregor Kofler
- * @version 0.2.0 2015-06-16
+ * @version 0.2.3 2015-06-17
  * 
  * @todo creation of new pages (several setters are superfluous ATM)
  */
-class Page {
+class Page implements SubjectInterface {
 	
 	/**
 	 * map of page instances indexed by their primary key
@@ -188,7 +190,7 @@ class Page {
 	/**
 	 * get all revisions
 	 * 
-	 * @return multitype:\vxWeb\Orm\Page\vxWeb\Orm\Revision
+	 * @return multitype:Revision
 	 */
 	public function getRevisions() {
 
@@ -203,11 +205,19 @@ class Page {
 	 * @return Revision
 	 */
 	public function getActiveRevision() {
-		
-		foreach($this->getRevisions() as $revision)  {
 
-			if($revision->isActive()) {
-				return $revision;
+		$revisions = $this->getRevisions();
+		
+		// proceed when revisions were found at all
+		
+		if($revisions) {
+		
+			foreach($revisions as $revision)  {
+
+				if($revision->isActive()) {
+					return $revision;
+				}
+
 			}
 
 		}
@@ -224,21 +234,27 @@ class Page {
 		
 		$revisions = $this->getRevisions();
 
-		usort($revisions, function (Revision $a, Revision $b) {
+		// proceed when revisions were found at all
 
-			$tsa = $a->getFirstCreated()->format(\DateTime::W3C);
-			$tsb = $b->getFirstCreated()->format(\DateTime::W3C);
-			if($tsa === $tsb) {
-				return 0;
-			}
+		if($revisions) {
+
+			usort($revisions, function (Revision $a, Revision $b) {
+	
+				$tsa = $a->getFirstCreated()->format(\DateTime::W3C);
+				$tsb = $b->getFirstCreated()->format(\DateTime::W3C);
+				if($tsa === $tsb) {
+					return 0;
+				}
+				
+				// sort descending
+	
+				return $tsa < $tsb ? 1 : -1;
+	
+			});
 			
-			// sort descending
+			return $revisions[0];
 
-			return $tsa < $tsb ? 1 : -1;
-
-		});
-		
-		return $revisions[0];
+		}
 
 	}
 
@@ -252,21 +268,27 @@ class Page {
 
 		$revisions = $this->getRevisions();
 
-		usort($revisions, function (Revision $a, Revision $b) {
-		
-			$tsa = $a->getFirstCreated()->format(\DateTime::W3C);
-			$tsb = $b->getFirstCreated()->format(\DateTime::W3C);
-			if($tsa === $tsb) {
-				return 0;
-			}
-				
-			// sort ascending
-		
-			return $tsa > $tsb ? 1 : -1;
-		
-		});
-		
-		return $revisions[0];
+		// proceed when revisions were found at all
+
+		if($revisions) {
+
+			usort($revisions, function (Revision $a, Revision $b) {
+			
+				$tsa = $a->getFirstCreated()->format(\DateTime::W3C);
+				$tsb = $b->getFirstCreated()->format(\DateTime::W3C);
+				if($tsa === $tsb) {
+					return 0;
+				}
+					
+				// sort ascending
+			
+				return $tsa > $tsb ? 1 : -1;
+
+			});
+
+			return $revisions[0];
+
+		}
 
 	}
 
@@ -295,7 +317,11 @@ class Page {
 	 * @throws PageException
 	 */
 	public function exportActiveRevision() {
-		
+
+		// dispatch 'beforePageRevisionExport' event to inform optional listeners
+
+		EventDispatcher::getInstance()->notify($this, 'beforePageRevisionExport');
+
 		$app	= Application::getInstance();
 		$config	= $app->getConfig();
 		
@@ -327,8 +353,13 @@ class Page {
 
 		fclose($handle);
 
-		@chmod($path, 0666);
-		@touch($path, $revision->getFirstCreated()->getTimestamp());
+		if(!chmod($path, 0666) || !touch($path, $revision->getFirstCreated()->getTimestamp())) {
+			throw new PageException(sprintf("Cannot set mode or timestamp of template file '%s'.", $path));
+		}
+
+		// dispatch 'afterPageRevisionExport' event to inform optional listeners
+
+		EventDispatcher::getInstance()->notify($this, 'afterPageRevisionExport');
 
 	}
 

@@ -7,12 +7,14 @@ use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\Application\Application;
 use vxPHP\Application\Locale\Locale;
 use vxPHP\Http\Request;
+use vxWeb\Orm\Page\Page;
+use vxWeb\Orm\Page\Revision;
 
 /**
  * helper class to sync and update templates both in filesystem and database
  *
  * @author Gregor Kofler
- * @version 0.4.0 2015-06-09
+ * @version 0.4.0 2015-06-19
  *
  */
 
@@ -53,215 +55,110 @@ class TemplateUtil {
 			self::getTplFiles($fileTpl, $locale);
 		}
 
-		// fetch db templates
-
-		$dbTpl = array();
-
-		foreach (
-			$db->doPreparedQuery("
-				SELECT
-					sq.*,
-					ar.revisionsID,
-					UNIX_TIMESTAMP(ar.templateUpdated) AS activeUpdatedTS
-				FROM
-					(
-						SELECT
-							p.pagesID,
-							p.Template,
-							p.Alias,
-							UNIX_TIMESTAMP(max(r.templateUpdated)) AS newestUpdatedTS
-						FROM
-							pages p
-							LEFT JOIN revisions r ON r.pagesID = p.pagesID
-						WHERE
-							r.Locale IS NULL
-							OR r.Locale = ''
-						GROUP BY
-							pagesID,
-							Template,
-							Alias
-					)
-					AS sq
-					LEFT JOIN revisions ar ON ar.pagesID = sq.pagesID AND ar.active = 1			
-			")
-			as $r) {
-
-				$dbTpl['universal'][$r['Template']] = $r;
-		}
-
-		// localized templates
-
-		foreach($locales as $l) {
-
-			$rows = $db->doPreparedQuery("
-				SELECT
-					sq.*,
-					ar.revisionsID,
-					UNIX_TIMESTAMP(ar.templateUpdated) AS activeUpdatedTS
-				FROM
-					(
-						SELECT
-							p.pagesID,
-							p.Template,
-							p.Alias,
-							UNIX_TIMESTAMP(max(r.templateUpdated)) AS newestUpdatedTS
-						FROM
-							pages p
-							LEFT JOIN revisions r ON r.pagesID = p.pagesID
-						WHERE
-							r.Locale = ?
-						GROUP BY
-							pagesID,
-							Template,
-							Alias
-					)
-					AS sq
-					LEFT JOIN revisions ar ON ar.pagesID = sq.pagesID AND ar.active = 1			
-				", array($l->getLocaleId()));
-
-			foreach($rows as $r) {
-				$dbTpl[$l][$r['Template']] = $r;
-			}
-		}
-
+		
 		// update templates based on db info
 
-		$revisionIdsToCreate = array();
+		$pages = Page::getInstances();
 
-		foreach($dbTpl as $locale => $templates) {
+		$pagesToExport = array();
 
-			foreach($templates as $filename => $template) {
+		foreach($pages as $page) {
 
-				// file template not found
-	
-				if(!isset($fileTpl[$locale][$filename])) {
-	
-					// store revision id to create file template
-	
-					$revisionIdsToCreate[] = $template['revisionsID'];
-	
-				}
-	
-				else {
-	
-					/*
-					 * compare timestamps
-					 * 
-					 * do nothing, when timestamps match
-					 * create new revision when active or newest template in db are older than file template
-					 * create new template file when file template is outdated
-					 */
+			$filename		= $page->getTemplate();
+			$activeRevision	= $page->getActiveRevision();
+			$newestRevision = $page->getNewestRevision();
 
-					if(
-						(int) $template['activeUpdatedTS'] === (int) $fileTpl[$locale][$filename]['fmtime']
-					) {
-						
-						// do nothing
+			// file template not found
 
-					}
+			if(!isset($fileTpl['universal'][$filename])) {
 
-					else if(
-						(int) $template['activeUpdatedTS'] < $fileTpl[$locale][$filename]['fmtime'] ||
-						(int) $template['newestUpdatedTS'] < $fileTpl[$locale][$filename]['fmtime']
-					) {
-	
-						// add revision
-	
-						self::updateTemplate(array_merge($template, $fileTpl[$locale][$filename]), $locale);
+				// store revision id to create file template
 
-					}
+				$pagesToExport[] = $page;
+
+			}
+
+			else {
+
+				/*
+				 * compare timestamps
+				 * 
+				 * do nothing, when timestamps match
+				 * create initial revision when no revision exists; create page with initial revision when page does not exist 
+				 * create new revision when active or newest revision in db are older than file template
+				 * create new template file when file template is outdated
+				 */
+
+				if(
+					$activeRevision && $activeRevision->getFirstCreated()->getTimestamp() === (int) $fileTpl['universal'][$filename]['fmtime']
+				) {
 					
+					// do nothing
+
+				}
+				
+				// create initial revision
+
+				else if(!$newestRevision && !$activeRevision) {
+
+					self::createPage($fileTpl['universal'][$filename]);
+
+				}
+
+				// add new revision
+
+				else if(
+					$activeRevision && $activeRevision->getFirstCreated()->getTimestamp() < $fileTpl['universal'][$filename]['fmtime'] ||
+					$newestRevision && $newestRevision->getFirstCreated()->getTimestamp() < $fileTpl['universal'][$filename]['fmtime']
+				) {
+
+					// add revision
+
+					if($activeRevision) {
+						$newRevision = clone $activeRevision;
+					}
 					else {
-	
-						// store revision id to create file template
-						
-						$revisionIdsToCreate[] = $template['revisionsID'];
-
+						$newRevision = clone $newestRevision;
 					}
 					
-					// remove file template from hash
-					
-					unset($fileTpl[$locale][$filename]);
+					$newRevision
+						->setMarkup(file_get_contents($fileTpl['universal'][$filename]['template']->getPath()))
+						->activate()
+						->save();
 
 				}
-	
+
+				// store revision id to create file template
+
+				else {
+
+					$pagesToExport[] = $page;
+
+				}
+				
+				// remove file template from hash
+				
+				unset($fileTpl['universal'][$filename]);
+
 			}
 
 		}
-		
+
 		// create db entries which are not present in database
 
 		foreach($fileTpl as $locale => $templates) {
 
 			foreach($templates as $filename => $template) {
-				self::insertTemplate($template, $locale);
+				self::createPage($template);
 			}
 
 		}
 
 		// create files by retrieving revision data
 		
-		foreach($revisionIdsToCreate as $revisionId) {
-			self::createTemplateFromRevision($revisionId);
+		foreach($pagesToExport as $page) {
+			$page->exportActiveRevision();
 		}
-
-	}
-
-	/**
-	 * retrieve metadata of template stored in database
-	 *
-	 * @param string $pageId
-	 */
-	public static function getPageMetaData($pageId, $locale = '') {
-
-		if(($db = Application::getInstance()->getDb())) {
-
-			if($db->tableExists('pages') && $db->tableExists('revisions')) {
-
-				$data = $db->doPreparedQuery("
-					SELECT
-						r.Title,
-						a.Name,
-						r.Keywords,
-						r.Description,
-						r.templateUpdated as lastChanged,
-						IFNULL(r.locale, '') AS locale_sort
-					FROM
-						revisions r
-						INNER JOIN pages p ON r.pagesID = p.pagesID
-						LEFT JOIN admin a ON r.authorID = a.adminID
-					WHERE
-						p.Alias = ? AND
-						r.locale IS NULL OR r.locale = ?
-					ORDER BY
-						locale_sort DESC, active DESC, r.lastUpdated DESC
-					LIMIT 1
-					",
-					array(
-						strtoupper($pageId),
-						$locale
-					)
-				);
-
-				if(!empty($data[0])) {
-					unset($data[0]['locale_sort']);
-					return $data[0];
-				}
-			}
-		}
-	}
-
-	/**
-	 * public function for
-	 * adding a revision to a template
-	 * @param array $data new revision data
-	 */
-	public static function addRevision($data) {
-
-		$locale = $data['Locale'];
-		unset($data['Locale']);
-		self::deleteOldRevisions($data['pagesID'], $locale);
-		return self::insertRevision($data, $locale);
 
 	}
 
@@ -274,10 +171,16 @@ class TemplateUtil {
 	 */
 	private static function getTplFiles(array &$fileTemplates, Locale $locale = NULL) {
 
+		$app = Application::getInstance();
+		$config = $app->getConfig();
+		
+		if(is_null($config->paths['editable_tpl_path'])) {
+			throw new \Exception('No path for templates defined.');
+		}
+		
 		$ndx	= $locale ? $locale->getLocaleId() : 'universal';
 		$subdir	= $locale ? $locale->getLocaleId() . DIRECTORY_SEPARATOR : '';
-
-		$path	= self::getPath() . $subdir;
+		$path	= rtrim($app->getRootPath(), DIRECTORY_SEPARATOR) . $config->paths['editable_tpl_path']['subdir'] . $subdir;
 
 		try {
 			foreach(FilesystemFolder::getInstance($path)->getFiles('php') as $f) {
@@ -291,53 +194,19 @@ class TemplateUtil {
 
 			}
 		}
+
 		catch(FilesystemFolderException $e) {}
 	}
 
 	/**
-	 * create a new template file from a db entry
-	 * 
-	 * @param int $revisionId
-	 * @return boolean
-	 */
-	private static function createTemplateFromRevision($revisionId) {
-
-		$rows = Application::getInstance()->getDb()->doPreparedQuery("
-			SELECT
-				r.Markup,
-				p.Template
-			FROM
-				revisions r
-				INNER JOIN pages p ON r.pagesID = p.pagesID
-			WHERE
-				revisionsID = ?
-			", array((int) $revisionId)
-		);
-
-		$path = self::getPath() . $rows[0]['Template'];
-
-		if(!($handle = fopen($path, 'w'))) {
-			return FALSE;
-		}
-		if(fwrite($handle, $rows[0]['Markup']) === FALSE) {
-			return FALSE;
-		}
-		fclose($handle);
-
-		@chmod($path, 0666);
-		@touch($path, $rows[0]['lastUpdateTS']);
-
-		return TRUE;
-	}
-
-	/**
-	 * insert page data and first revision
+	 * create page and a first revision
+	 * if page already exists, just a revision is added
 	 * 
 	 * @param array $data template data
 	 * @param string $locale of template
 	 * @return boolean
 	 */
-	private static function insertTemplate($data, $locale = 'universal') {
+	private static function createPage($data, $locale = NULL) {
 
 		$db = Application::getInstance()->getDb();
 
@@ -348,8 +217,9 @@ class TemplateUtil {
 		// insert only revision (locale might differ)
 
 		if(!empty($rows)) {
-			$newId = $rows[0]['pagesID'];
+			$page = Page::getInstance((int) $rows[0]['pagesID']);
 		}
+
 		else {
 			$newId = $db->insertRecord('pages',
 				array(
@@ -357,157 +227,19 @@ class TemplateUtil {
 					'Alias'		=> $alias
 				)
 			);
+			$page = Page::getInstance((int) $newId);
 		}
 
-		$markup = file_get_contents($data['template']->getPath());
+		$creationDate = new \DateTime();
+		$creationDate->setTimestamp((int) $data['fmtime']);
 
-		return self::insertRevision(
-			array(
-				'Markup'			=> $markup,
-				'Rawtext'			=> self::extractRawtext($markup),
-				'pagesID'			=> $newId,
-				'templateUpdated'	=> date('Y-m-d H:i:s', (int) $data['fmtime'])
-			), $locale
-		);
-	}
-
-	/**
-	 * delete old revisions and add new revision
-	 */
-	private static function updateTemplate($data, $locale = 'universal') {
-
-		$metaData = self::getPageMetaData($data['Alias']);
-		$markup = file_get_contents($data['template']->getPath());
-
-		self::deleteOldRevisions($data['pagesID'], $locale);
-
-		return self::insertRevision(
-			array_merge($metaData,
-			array(
-				'Markup'			=> $markup,
-				'Rawtext'			=> self::extractRawtext($markup),
-				'pagesID'			=> $data['pagesID'],
-				'templateUpdated'	=> date('Y-m-d H:i:s', (int) $data['fmtime'])
-			)), $locale
-		);
-	}
-
-	private static function insertRevision($row, $locale = 'universal') {
-
-		$config	= Application::getInstance()->getConfig();
-		$db		= Application::getInstance()->getDb();
-
-		$row			= self::sanitizeTemplateData($row);
-		$row['Rawtext']	= self::extractRawtext($row['Markup']);
-
-		$parameters = array((int) $row['pagesID']);
-
-		if(!empty($locale) && $locale != 'universal' && in_array($locale, $config->site->locales)) {
-			$row['Locale'] = $locale;
-			$localeSQL = 'r.Locale = ?';
-			$parameters[] = $locale;
-		}
-		else {
-			$localeSQL = "(r.Locale IS NULL OR r.Locale = '')";
-		}
-
-		$db->execute('
-			UPDATE
-				revisions r
-			SET
-				active = NULL
-			WHERE
-				active = 1 AND
-				pagesID = ? AND ' .
-				$localeSQL
-			,$parameters
-		);
-
-		$row['active'] = 1;
-
-		return $db->insertRecord('revisions', $row);
-	}
-
-	private static function deleteOldRevisions($pagesID, $locale = 'universal') {
-
-		$config	= Application::getInstance()->getConfig();
-		$db		= Application::getInstance()->getDb();
-
-		if(empty(self::$maxPageRevisions)) {
-			self::$maxPageRevisions =	isset($config->site->max_page_revisions) &&
-										is_numeric($config->site->max_page_revisions) ?
-										((int) $config->site->max_page_revisions > 0 ? (int) $config->site->max_page_revisions : 1) :
-										5;
-		}
-
-		$parameters = array((int) $pagesID);
-		
-		if(!empty($locale) && $locale != 'universal' && in_array($locale, $config->site->locales)) {
-			$localeSQL = 'Locale = ?';
-			$parameters[] = $locale;
-		}
-		else {
-			$localeSQL = "(Locale IS NULL OR Locale = '')";
-		}
-		
-		// get all revisions sorted from new to old
-
-		$rows = $db->doPreparedQuery('
-			SELECT
-				revisionsID
-			FROM
-				revisions r
-			WHERE
-				pagesID = ? AND ' .
-				$localeSQL . '
-			ORDER BY
-				templateUpdated DESC
-			', $parameters
-		);
-
-		if(count($rows) < self::$maxPageRevisions) {
-			return TRUE;
-		}
-
-		$keepsIds = array();
-
-		// remove old revisions
-
-		for($i = 0; $i < self::$maxPageRevisions - 1; ++$i) {
-			$keepIds[] = $rows[$i]['revisionsID'];
-		}
-
-		return $db->execute('
-			DELETE FROM
-				revisions
-			WHERE
-				revisionsID NOT IN (' .
-				implode(', ', array_fill(0, count($keepIds), '?')) .
-				') AND pagesID = ? AND '.
-				$localeSQL,
-			array_merge($keepIds, $parameters)
-		);
-		
-	}
-
-	/**
-	 * get path to editable templates
-	 *
-	 * @throws \Exception
-	 * @return string
-	 */
-	private static function getPath() {
-
-		$app = Application::getInstance();
-		$config = $app->getConfig();
-
-		if(is_null($config->paths['editable_tpl_path'])) {
-			throw new \Exception('No path for templates defined.');
-		}
-
-		return
-			rtrim($app->getRootPath(), DIRECTORY_SEPARATOR) .
-			$config->paths['editable_tpl_path']['subdir'];
+		$revision = new Revision($page);
+		$revision
+			->setMarkup(file_get_contents($data['template']->getPath()))
+			->setFirstCreated($creationDate)
+			->activate()
+			->save();
+			
 	}
 
 	/**
