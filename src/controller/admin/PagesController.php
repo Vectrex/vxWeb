@@ -1,132 +1,104 @@
 <?php
 use vxPHP\Template\SimpleTemplate;
-
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Template\Filter\ShortenText;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
+use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxPHP\User\User;
 use vxPHP\Routing\Router;
+
 use vxWeb\TemplateUtil;
+use vxWeb\Orm\Page\Page;
+use vxWeb\Orm\Page\PageException;
+use vxPHP\Application\Locale\Locale;
+use vxWeb\Orm\Page\Revision;
+
+/**
+ * @todo sanitize markup with HTMLPurifier
+ */
 
 class PagesController extends Controller {
 
-	private $allowNiceEdit = TRUE;
+	private $maxPageRevisions = 5;
 
 	protected function execute() {
 
-		TemplateUtil::syncTemplates();
-
 		if(($id = $this->request->query->getInt('id'))) {
 
-			$rows = Application::getInstance()->getDb()->doPreparedQuery("
-				SELECT
-					p.pagesID,
-					p.Alias,
-					p.Template,
-					r.Keywords,
-					r.Title,
-					r.Markup,
-					r.Description,
-					r.Locale,
-					DATE_FORMAT(r.templateUpdated, '%Y-%m-%d %H:%i:%s') as lastUpdate
-				FROM
-					revisions r
-					INNER JOIN pages p ON p.pagesID = r.pagesID
-				WHERE
-					(p.Locked IS NULL OR p.Locked = 0) AND
-					r.revisionsID = ?
-				", array(
-					(int) $id
-				)
-			);
-
-			if(empty($rows)) {
+			try {
+				$page		= Page::getInstance($id);
+				$revision	= $page->getActiveRevision();
+				if(!$revision) {
+					$revision = $page->getNewestRevision();
+				}
+			}
+			catch (PageException $e) {
 				return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl());
 			}
-
-			$page = $rows[0];
-
-			$this->allowNiceEdit = !preg_match('~<\\?(php)?.*?\\?>~', $page['Markup']);
 
 			$form = HtmlForm::create('admin_page_edit.htm')
 				->initVar('success', (int) !is_null($this->request->query->get('success')))
 				->initVar('nochange', (int) !is_null($this->request->query->get('nochange')))
-				->addElement(FormElementFactory::create('input', 'Title', $page['Title'], array('maxlength' => 128, 'class' => 'pct_100'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('input', 'Alias', $page['Alias'], array('maxlength' => 64, 'class' => 'pct_100'), array(), TRUE, array('trim', 'uppercase')))
-				->addElement(FormElementFactory::create('textarea', 'Keywords', $page['Keywords'], array('rows' => 4, 'cols' => '30', 'class' => 'pct_100'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('textarea', 'Description', $page['Description'], array('rows' => 4, 'cols' => '30', 'class' => 'pct_100'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('textarea', 'Markup', htmlspecialchars($page['Markup'], ENT_NOQUOTES, 'UTF-8'), array('rows' => 20, 'cols' => 40, 'class' => 'pct_100'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('button', 'submit_edit', '', array('type' => 'submit'))->setInnerHTML('Änderungen übernehmen'));
-
+				->addElement(FormElementFactory::create('input',	'Title',		$revision	->getTitle($page->getTitle()), array('maxlength' => 128, 'class' => 'pct_100'), array(), FALSE, array('trim')))
+				->addElement(FormElementFactory::create('input',	'Alias',		$page		->getAlias(), array('maxlength' => 64, 'class' => 'pct_100'), array(), TRUE, array('trim', 'uppercase')))
+				->addElement(FormElementFactory::create('textarea', 'Keywords',		$revision	->getKeywords($page->getKeywords()), array('rows' => 4, 'cols' => '30', 'class' => 'pct_100'), array(), FALSE, array('trim')))
+				->addElement(FormElementFactory::create('textarea', 'Description',	$revision	->getDescription(), array('rows' => 4, 'cols' => '30', 'class' => 'pct_100'), array(), FALSE, array('trim')))
+				->addElement(FormElementFactory::create('textarea', 'Markup',		htmlspecialchars($revision->getMarkup(), ENT_NOQUOTES, 'UTF-8'), array('rows' => 20, 'cols' => 40, 'class' => 'pct_100'), array(), FALSE, array('trim')))
+				->addElement(FormElementFactory::create('button', 'submit_edit', '', array('type' => 'submit'))->setInnerHTML('Änderungen übernehmen und neue Revision erzeugen'));
+				
 			if($form->bindRequestParameters()->wasSubmittedByName('submit_edit')) {
+
 				$v = $form->getValidFormValues();
 
-				if(
-					$v['Title']			== $page['Title'] &&
-					$v['Description']	== $page['Description'] &&
-					$v['Keywords']		== $page['Keywords'] &&
-					$v['Markup']		== $page['Markup']
-				) {
+				$revision
+					->setTitle		($v['Title'])
+					->setDescription($v['Description'])
+					->setKeywords	($v['Keywords'])
+					->setMarkup		($v['Markup']);
+				
+				if($revision->wasChanged()) {
+					try {
+						$revisionToAdd = clone $revision;
+						$revisionToAdd
+							->setActive(TRUE)
+							->setAuthor(User::getSessionUser())
+							->save();
+						$page->exportActiveRevision();
+
+						// remove oldest revision, when maxPageRevisions is exceeded
+
+						//$this->purgeRevision($page);
+
+						return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl(), array('id' => $page->getId(), 'success' => 'true'));
+					}
+					catch(PageException $e) {
+						$form->setError('system');
+					}
+				}
+				
+				else {
 					return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl(), array('id' => $id, 'nochange' => 'true'));
 				}
-
-				if(($newId = TemplateUtil::addRevision(array(
-					'authorsID' => User::getSessionUser()->getAdminId(),
-
-					'Title' => $v['Title'],
-					'Markup' => $v['Markup'],
-					'Keywords' => $v['Keywords'],
-					'Description' => $v['Description'],
-					'templateUpdated' => date('Y-m-d H:i:s'),
-
-					'pagesID' => $page['pagesID'],
-					'Locale' => $page['Locale']
-				)))) {
-					return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl(), array('id' => $newId, 'success' => 'true'));
-				}
-				$form->setError('system');
+				
 			}
 
 			return new Response(
 				SimpleTemplate::create('admin/page_edit.php')
 					->assign('form', $form->render())
-					->assign('allow_nice_edit', $this->allowNiceEdit)
+					->assign('allow_nice_edit', !$revision->containsPHP())
 					->display()
 			);
 		}
 
-		$pages = Application::getInstance()->getDb()->doPreparedQuery("
-			SELECT
-				pg.*,
-				rev.revisionsID,
-				rev.Rawtext,
-				IFNULL(rev.Title, pg.PageTitle) AS `Title`
-			FROM
-				(SELECT
-					p.pagesID,
-					p.Template,
-					p.Alias,
-					p.Title as PageTitle,
-					IF(r.Locale IS NULL OR r.Locale = '', 'universal', r.Locale) as Locale,
-					MAX(r.templateUpdated) as LastRevision,
-					COUNT(r.revisionsID) as RevCount
-				FROM
-					pages p
-					inner join revisions r on r.pagesID = p.pagesID
-				WHERE
-					(p.Locked IS NULL OR p.Locked = 0)
-				GROUP BY
-					pagesID, Alias, Locale)
-				as pg
-				inner join revisions rev ON (rev.templateUpdated = pg.LastRevision AND rev.pagesID = pg.pagesID)
-			ORDER BY
-				Alias,
-				Locale
-		");
+		TemplateUtil::syncTemplates();
 
+		$pages = Page::getInstances();
+		
+		usort($pages, function(Page $a, Page $b) { return $a->getAlias() < $b->getAlias() ? -1 : 1; });
+		
 		return new Response(
 			SimpleTemplate::create('admin/pages_list.php')
 				->assign('pages', $pages)
@@ -134,4 +106,75 @@ class PagesController extends Controller {
 				->display()
 		);
 	}
+	
+	protected function xhrExecute() {
+
+		try {
+			$page = Page::getInstance($this->request->query->getInt('id'));
+
+			$request = $this->request->request;
+	
+			switch($request->get('httpRequest')) {
+	
+				case 'getRevisions':
+	
+					$revisions = array();
+	
+					foreach($page->getRevisions() as $revision) {
+						$revisions[] = array(
+							'id'			=> $revision->getId(),
+							'active'		=> $revision->isActive(),
+							'locale'		=> (string) $revision->getLocale(),
+							'firstCreated'	=> $revision->getFirstCreated()->format(DateTime::W3C)
+						);
+					}
+					return new JsonResponse(array('revisions' => $revisions));
+					
+				case 'getRevisionData':
+	
+					$id			= $request->getInt('id');
+					$revision	= Revision::getInstance($id);
+
+					return new JsonResponse(array(
+						'id'			=> $id,
+						'title'			=> $revision->getTitle(),
+						'markup' 		=> $revision->getMarkup(),
+						'description'	=> $revision->getDescription(),
+						'keywords'		=> $revision->getKeywords()
+					));
+					
+				case 'changeActivationOfRevision':
+					
+					$revision = Revision::getInstance($request->getInt('id'));
+					$activate = (boolean) $request->getInt('activate');
+
+					if($activate === $revision->isActive()) {
+						return new JsonResponse(array('success' => TRUE));
+					}
+
+					$revision->setActive($activate);
+
+					if($activate) {
+						$page->exportActiveRevision();
+					}
+
+					return new JsonResponse(array('success' => TRUE));
+			}
+		}
+			
+		catch (PageException $e) {
+			return new JsonResponse(array('success' => FALSE, 'message' => $e->getMessage()));
+		}
+
+	}
+
+	private function purgeRevision(Page $page, Locale $locale = NULL) {
+
+		if(count($page->getRevisions()) > $this->maxPageRevisions) {
+			
+			$page->getOldestRevision()->delete();
+			
+		}
+	}
+
 }

@@ -17,7 +17,6 @@
 /*
  * main menu
  */
-
 #adminmenu_level_0,
 #adminmenu							{ position: fixed; padding: 1em 0; float: left; width: 13em; font-weight: bold; }
 #adminmenu_level_0 ul,
@@ -31,7 +30,6 @@
 /*
  * standard classes and rules
  */
-
 h1									{ margin: 0 0 0.5em 0; padding: 0; color: #444; font-size: 150%; text-transform: uppercase; font-weight: bold; }
 h2									{ font-size: 120%; color: #444; font-weight: bold; margin: 0.5em 0; padding: 0; font-size: 100%; text-transform: uppercase; font-style: normal; padding: 0;}
 h3									{ font-size: 100%; color: #444; font-weight: bold; margin: 0.5em 0; }
@@ -71,7 +69,6 @@ div.separator						{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pa
 /*
  * files
  */
-
 #filesList img										{ vertical-align: middle; }
 #filesList tr.fileFunctions td						{ padding: 0; }
 #filesList tr.folderRow td:first-child a:before		{ font-family: icomoon; font-weight: normal; content: "\e006"; padding-right: 0.25em; font-size: 150%; }
@@ -95,7 +92,6 @@ div.separator						{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pa
 /*
  * folderTree popup
  */
-
 .vxJS_tree											{ list-style-type: none; margin: 0; padding: 0; font-size: 100%; }
 .vxJS_tree li										{ padding: 0; margin: 0 0 0 32px; background: url(../js/assets/tree_guide.gif) repeat-y 0% 0%; }
 .vxJS_tree li.lastBranch							{ background-image: none; }
@@ -115,7 +111,6 @@ div.separator						{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pa
 /*
  * confirm
  */
-
 .vxJS_overlay										{ background: #fff; opacity: 0.5; }
 .confirmForm										{ background: #ccc !important; box-shadow: 0 0 6px #666; border: solid 3px #808080; }
 .confirmForm .vxJS_dragBar							{ height: 1.5em; background: #808080; }
@@ -128,7 +123,6 @@ div.separator						{ color: #444; text-shadow: 1px 1px #fff; margin: 0.5em 0; pa
 /*
  * login
  */
-
 div#adminLogin										{ width: 32em; margin: 0 auto; }
 div#adminLogin form									{ background: #fff; border: solid 1px #08c; padding: 2em 3em; border-radius: 0.5em; box-shadow: 0 0 1em #444; }
 div#adminLogin .inputGroup span:first-child			{ background: #888; border-color: #888; color: #fff; }
@@ -136,7 +130,6 @@ div#adminLogin .inputGroup span:first-child			{ background: #888; border-color: 
 /*
  * articles
  */
-
 span.calendarPopper									{ cursor: pointer; }
 
 .linkedFilesTable									{ }
@@ -160,13 +153,16 @@ img.thumb											{ box-shadow: 1px 1px 3px #444; }
 /*
  * user
  */
-tr.locked					{ color: #888; text-shadow: 1px 1px #fff; }
+tr.locked											{ color: #888; text-shadow: 1px 1px #fff; }
 
+/*
+ * pages
+ */
+#revisions tr.active								{ background: #FF9400; }
 
 /*
  * SimpleTabs
  */
-
 .vxJS_tabBar ul				{ padding: 0; margin: 1em 0 0 0; list-style-type: none; font-size: 100%; }
 .vxJS_tabThis				{ }
 .vxJS_tabThis .section		{ clear: both; overflow: auto; }

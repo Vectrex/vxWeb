@@ -57,13 +57,13 @@
 	<?php foreach($tpl->pages as $p): ?>
 	<tr>
 
-		<td><?php echo $p['Alias']; ?><br><em><?php echo $p['Title']; ?></em></td>
-		<td><?php echo $p['Template']; ?></td>
-		<td class="shortened_60" style="font-size: 85%;"><?php echo $p['Rawtext']; ?></td>
-		<td class="right"><?php echo $p['LastRevision']; ?></td>
-		<td class="right"><?php echo $p['RevCount']; ?></td>
+		<td><?php echo $p->getAlias(); ?><br><em><?php echo $p->getTitle(); ?></em></td>
+		<td><?php echo $p->getTemplate(); ?></td>
+		<td class="shortened_60" style="font-size: 85%;"><?php echo ''; ?></td>
+		<td class="right"><?php echo $p->getActiveRevision()->getFirstCreated()->format('Y-m-d H:i:s'); ?></td>
+		<td class="right"><?php echo count($p->getRevisions()); ?></td>
 		<td>
-			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$pages?id=<?php echo $p['revisionsID']; ?>"></a>
+			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$pages?id=<?php echo $p->getId(); ?>"></a>
 		</td>
 	</tr>
 
