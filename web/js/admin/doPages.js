@@ -63,7 +63,7 @@ this.vxWeb.doPages = function() {
 							"a".setProp("href", "#rev" + rev.id).create((new Date(rev.firstCreated)).format("%Y-%M-%D %H:%I:%S"))
 						),
 						"td".create(
-							"input".setProp( { value: "rev" + rev.id, type: "checkbox", checked: rev.active } ).create()
+							"input".setProp( { value: "rev" + rev.id, type: "checkbox", checked: rev.active, disabled: rev.active } ).create()
 						),
 						"td".create()
 						
@@ -184,10 +184,14 @@ this.vxWeb.doPages = function() {
 			case "input":
 				id		= this.value.match(/^rev([1-9][0-9]*)$/)[1];
 				checked	= this.checked;
+				
 				vxJS.collectionToArray(revisionsContainer.querySelectorAll("input[type='checkbox']")).forEach(function(elem) {
 					elem.checked = false;
+					elem.disabled = false;
 				});
 				this.checked = checked;
+				this.disabled = true;
+
 				activationXhr.use(null, { id: id, activate: checked } ).submit();
 				break;
 				
