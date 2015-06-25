@@ -153,8 +153,8 @@ this.vxWeb.doArticles = function() {
 		if(id) {
 			this.setPayload( { id: id });
 		}
-		if(typeof CKEDITOR != "undefined" && CKEDITOR.instances['Content']) {
-			this.element.elements['Content'].value = CKEDITOR.instances['Content'].getData();
+		if(CKEDITOR && CKEDITOR.instances.Content) {
+			this.element.elements['Content'].value = CKEDITOR.instances.Content.getData();
 		}
 	});
 

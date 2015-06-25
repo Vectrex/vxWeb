@@ -10,7 +10,7 @@ use vxPHP\Application\Locale\Locale;
  * Mapper class for page revisions, stored in table `revisions`
  *
  * @author Gregor Kofler
- * @version 0.3.3 2015-06-18
+ * @version 0.3.4 2015-06-25
  * 
  * @todo retrieve and save locale
  * @todo attribute sanitation
@@ -404,10 +404,12 @@ class Revision {
 			unset(self::$instancesById[$this->id]);
 		}
 
-		foreach(self::$instancesByPage[$this->page->getId()] as $ndx => $revision) {
-			if($revision === $this) {
-				array_splice(self::$instancesByPage[$this->page->getId()], $ndx, 1);
-				break;
+		if(isset(self::$instancesByPage[$this->page->getId()])) {
+			foreach(self::$instancesByPage[$this->page->getId()] as $ndx => $revision) {
+				if($revision === $this) {
+					array_splice(self::$instancesByPage[$this->page->getId()], $ndx, 1);
+					break;
+				}
 			}
 		} 
 		

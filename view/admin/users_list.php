@@ -65,7 +65,7 @@
 		<td><?php echo $user->getAdmingroup(); ?></td>
 		<td class="right"><?php if (vxPHP\User\User::getSessionUser()->getAdminId() !== $user->getAdminId()): ?>
 			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$users?id=<?php echo $user->getAdminId(); ?>"></a>
-			<a class="buttonLink iconOnly" data-icon="&#xe01d;" href="$users/del?id=<?php echo $user->getAdminId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+			<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$users/del?id=<?php echo $user->getAdminId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
 			<?php endif; ?>
 		</td>
 
