@@ -9,6 +9,7 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxPHP\User\User;
 use vxPHP\Routing\Router;
+use vxPHP\Webpage\MenuGenerator;
 
 use vxWeb\TemplateUtil;
 use vxWeb\Orm\Page\Page;
@@ -28,6 +29,8 @@ class PagesController extends Controller {
 
 		if(($id = $this->request->query->getInt('id'))) {
 
+			MenuGenerator::setForceActiveMenu(TRUE);
+
 			try {
 				$page		= Page::getInstance($id);
 				$revision	= $page->getActiveRevision();
@@ -39,7 +42,7 @@ class PagesController extends Controller {
 				return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl());
 			}
 
-			$form = HtmlForm::create('admin_page_edit.htm')
+			$form = HtmlForm::create('admin_edit_page.htm')
 				->addElement(FormElementFactory::create('input',	'Title',		NULL, array('maxlength' => 128, 'class' => 'pct_100'), array(), FALSE, array('trim')))
 				->addElement(FormElementFactory::create('input',	'Alias',		NULL, array('maxlength' => 64, 'class' => 'pct_100'), array(), TRUE, array('trim', 'uppercase')))
 				->addElement(FormElementFactory::create('textarea', 'Keywords',		NULL, array('rows' => 4, 'cols' => '30', 'class' => 'pct_100'), array(), FALSE, array('trim')))
@@ -104,7 +107,8 @@ class PagesController extends Controller {
 
 						return new JsonResponse(array(
 							'data'		=> array(
-								'id' => $revision->getId(),
+								'id'			=> $revision->getId(),
+								'alias'			=> $revision->getPage()->getAlias(),
 								'title'			=> $revision->getTitle(),
 								'markup' 		=> $revision->getMarkup(),
 								'description'	=> $revision->getDescription(),
@@ -149,6 +153,7 @@ class PagesController extends Controller {
 
 					return new JsonResponse(array(
 						'id'			=> $id,
+						'alias'			=> $page->getAlias(),
 						'title'			=> $revision->getTitle(),
 						'markup' 		=> $revision->getMarkup(),
 						'description'	=> $revision->getDescription(),
@@ -186,6 +191,13 @@ class PagesController extends Controller {
 
 	}
 
+	/**
+	 * purge old revisions
+	 * currently not used
+	 * 
+	 * @param Page $page
+	 * @param Locale $locale
+	 */
 	private function purgeRevision(Page $page, Locale $locale = NULL) {
 
 		if(count($page->getRevisions()) > $this->maxPageRevisions) {

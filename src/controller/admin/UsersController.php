@@ -12,6 +12,7 @@ use vxPHP\Util\Rex;
 use vxPHP\Http\JsonResponse;
 use vxPHP\User\Util;
 use vxPHP\Routing\Router;
+use vxPHP\Webpage\MenuGenerator;
 
 class UsersController extends Controller {
 
@@ -55,6 +56,8 @@ class UsersController extends Controller {
 		// edit or add article
 		
 		if(isset($user) || count($this->pathSegments) > 1 && end($this->pathSegments) == 'new') {
+
+			MenuGenerator::setForceActiveMenu(TRUE);
 
 			$form = HtmlForm::create('admin_edit_user.htm')->setAttribute('class', 'editUserForm');
 			

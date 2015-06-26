@@ -33,6 +33,7 @@ use vxPHP\Application\Application;
 use vxPHP\User\User;
 use vxPHP\Database\vxPDOUtil;
 use vxPHP\Routing\Router;
+use vxPHP\Webpage\MenuGenerator;
 
 class ArticlesController extends Controller {
 
@@ -74,6 +75,8 @@ class ArticlesController extends Controller {
 		// edit or add article
 
 		if(isset($article) || count($this->pathSegments) > 1 && $this->pathSegments[1] == 'new') {
+			
+			MenuGenerator::setForceActiveMenu(TRUE);
 
 			// fill category related properties - replacing default method allows user privilege considerations
 

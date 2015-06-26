@@ -108,6 +108,7 @@ this.vxWeb.doPages = function() {
 				}
 			);
 	
+			form["Alias"].value			= data.alias;
 			form["Title"].value			= data.title;
 			form["Keywords"].value		= data.keywords;
 			form["Description"].value	= data.description;
