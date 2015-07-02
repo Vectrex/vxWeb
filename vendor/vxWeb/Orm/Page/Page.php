@@ -353,7 +353,7 @@ class Page implements SubjectInterface {
 
 		fclose($handle);
 
-		if(!chmod($path, 0666) || !touch($path, $revision->getFirstCreated()->getTimestamp())) {
+		if(!@chmod($path, 0666) || !@touch($path, $revision->getFirstCreated()->getTimestamp())) {
 			throw new PageException(sprintf("Cannot set mode or timestamp of template file '%s'.", $path));
 		}
 
