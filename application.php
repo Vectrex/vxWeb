@@ -7,7 +7,7 @@ if(!is_dir($application->getAbsoluteAssetsPath())) {
 // parse route
 
 $route = vxPHP\Routing\Router::getRouteFromPathInfo();
-vxPHP\Application\Application::getInstance()->setCurrentRoute($route);
+$application->setCurrentRoute($route);
 
 // render output
 

@@ -56,8 +56,12 @@ else {
 
 $application = vxPHP\Application\Application::getInstance($config);
 
-$application->setRootPath			($rootPath);
-$application->setAbsoluteAssetsPath	($assetsPath);
+// make loader in application available
+
+$application
+	->setLoader				($loader)
+	->setRootPath			($rootPath)
+	->setAbsoluteAssetsPath	($assetsPath);
 
 // set debugging and error reporting level depending on environment
 
