@@ -115,7 +115,7 @@ class ProfileController extends Controller {
 				$response[] = array('name' => $err, 'error' => 1, 'errorText' => isset($texts[$err]) ? $texts[$err] : NULL);
 			}
 
-			return new JsonResponse(array('elements' => $response));
+			return new JsonResponse(array('success' => FALSE, 'elements' => $response));
 
 		}
 		

@@ -14,7 +14,7 @@ this.vxWeb.doLogin = function() {
 
 		var txt = r.message || "Benutzername oder Passwort falsch!";
 
-		vxJS.dom.addClassName(mBox, "messageBoxError");
+		vxJS.dom.addClassName(mBox, "error");
 
 		mBox.firstChild.nodeValue = txt;
 

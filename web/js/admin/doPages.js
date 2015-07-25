@@ -208,15 +208,15 @@ this.vxWeb.doPages = function() {
 	var parseServerCheck = function(r) {
 		
 		if(r.success) {
-			vxJS.dom.removeClassName(mBox, "messageBoxError");
-			vxJS.dom.addClassName(mBox, "messageBoxSuccess");
+			vxJS.dom.removeClassName(mBox, "error");
+			vxJS.dom.addClassName(mBox, "success");
 			//@todo set "purified" revision data
 			revisionsXhr.submit();
 		}
 		
 		else {
-			vxJS.dom.removeClassName(mBox, "messageBoxSuccess");
-			vxJS.dom.addClassName(mBox, "messageBoxError");
+			vxJS.dom.removeClassName(mBox, "success");
+			vxJS.dom.addClassName(mBox, "error");
 		}
 
 		mBox.firstChild.nodeValue = r.message;

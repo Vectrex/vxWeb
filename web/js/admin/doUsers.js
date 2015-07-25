@@ -11,8 +11,8 @@ this.vxWeb.doUsers = function() {
 		if(r.success) {
 			txt = r.message || "Daten erfolgreich übernommen!";
 
-			vxJS.dom.removeClassName(mBox, "messageBoxError");
-			vxJS.dom.addClassName(mBox, "messageBoxSuccess");
+			vxJS.dom.removeClassName(mBox, "error");
+			vxJS.dom.addClassName(mBox, "success");
 			
 			if(r.id) {
 				vxWeb.parameters.id = r.id;
@@ -22,8 +22,8 @@ this.vxWeb.doUsers = function() {
 		else {
 			txt = r.message || "Fehler bei Übernahme der Daten!";
 
-			vxJS.dom.removeClassName(mBox, "messageBoxSuccess");
-			vxJS.dom.addClassName(mBox, "messageBoxError");
+			vxJS.dom.removeClassName(mBox, "success");
+			vxJS.dom.addClassName(mBox, "error");
 		}
 
 		mBox.firstChild.nodeValue = txt;
