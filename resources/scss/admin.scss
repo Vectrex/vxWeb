@@ -376,6 +376,12 @@ span.calendarPopper	{
 				}
 			}
 
+			&.disabled	{
+				a	{
+					color: $neutralDark; cursor: default;
+				}
+			}
+
 			&.shown	{
 				cursor: default;
 

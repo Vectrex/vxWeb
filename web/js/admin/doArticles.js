@@ -105,7 +105,7 @@ this.vxWeb.doArticles = function() {
 				if(vxWeb.parameters) {
 					vxWeb.parameters.articlesId = id;
 				}
-				tabs.enable();
+				tabs.getTabByNdx(1).enable();
 				articleXhrForm.element.elements["submit_article"].firstChild.nodeValue = "Änderungen übernehmen";
 			}
 		}
@@ -162,7 +162,7 @@ this.vxWeb.doArticles = function() {
 	vxJS.event.addListener(sortXhr, "complete", handleSortResponse);
 	
 	if(!vxWeb.parameters.articlesId) {
-		tabs.disable();
+		tabs.getTabByNdx(1).disable();
 	}
 	initSorTable();
 
