@@ -1,7 +1,6 @@
 /*
  * colors: #0089CC, #FF9400 - #005680, #e59517, hover: #aef
  */
-
 $colorBright:		#0089CC;
 $colorDark:			desaturate(darken($colorBright, 10%), 10%);
 $altColorBright:	#FF9400;
@@ -15,18 +14,21 @@ $neutralDark:		#444;
 $tableRowEvenColor:	#fff;
 $tableRowOddColor:	#ddd;
 
+@CHARSET "UTF-8";
+
+@import "base/_normalize";
+
 @import "mixin/animation";
 @import	"include/vxjs";
-@import "vxweb";
+@import "include/vxweb";
 
-@CHARSET "UTF-8";
 @import "../fonts/verb_condensed/webfont.css";
 @import "../fonts/icomoon/webfont.css";
 
 /**
  * containers
  */
-*	{
+*, *:before, *:after	{
 	font-family: verbcond, sans-serif;
 }
 

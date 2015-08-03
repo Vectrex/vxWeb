@@ -119,10 +119,10 @@ button[disabled=disabled]	{
 }
 
 span.iconOnly, button.iconOnly, a.iconOnly	{
-	font-family: icomoon; font-weight: normal; padding: 0.25em; color: $colorDark; background: none; border-color: transparent; border-width: 2px; line-height: 100%; text-decoration: none;
+	font-weight: normal; padding: 0.25em; color: $colorDark; background: none; border-color: transparent; border-width: 2px; line-height: 100%; text-decoration: none;
 
 	&:before	{
-		content: attr(data-icon);
+		font-family: icomoon; content: attr(data-icon);
 	}
 }
 
