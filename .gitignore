@@ -1,6 +1,5 @@
 .settings
 .buildpath
 .project
-composer.phar
 vendor
 !vendor/vxWeb
