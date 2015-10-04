@@ -20,7 +20,6 @@ class ProfileController extends Controller {
 		
 		$admin					= User::getSessionUser();
 		$availableNotifications	= Notification::getAvailableNotifications($admin->getAdmingroup());
-		$assignedNotifications	= $admin->getNotifications();
 		
 		$checkBoxHtml = '';
 
@@ -33,7 +32,6 @@ class ProfileController extends Controller {
 				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd_input'),		array(),	FALSE, array(),						array('/^(|[^\s].{4,}[^\s])$/')))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	'',						array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd2_input')))
 				->addElement(FormElementFactory::create('button', 'submit_profile', '', array('type' => 'submit'))->setInnerHTML('Änderungen speichern'))
-				->addMiscHtml('notifications', $checkBoxHtml)
 				->initVar('success', (int) end($this->pathSegments) === 'success')
 				->initVar('has_notifications', (int) !empty($checkBoxHtml));
 

@@ -1,49 +1,4 @@
 /*
- * defaults
- */
-
-*	{
-	font-size: 100%; margin: 0; padding: 0; line-height: normal; box-sizing: border-box; -moz-box-sizing: border-box;
-
-	&:before, &:after	{
-		box-sizing: border-box; -moz-box-sizing: border-box;
-	}
-}
-
-html, body	{
-	height: 100%; background: #fff; color: #000;
-}
-
-p	{
-	line-height: 125%; margin-bottom: 0.5em; padding: 0;
-}
-
-a	{
-	text-decoration: none; color: $colorDark;
-
-	&:hover, &:active {
-		color: $colorBright;
-	}
-
-	img	{
-		border-width: 0;
-	}
-}
-
-table	{
-	border-collapse: collapse; margin-bottom: 1em;
-
-	td {
-		padding: 0.25em 0.5em; text-align: left; vertical-align: middle;
-	}
-
-	th {
-		@extend td;
-		padding-top: 0.5em; background: #c0c0c0; font-weight: bold;
-	}
-}
-
-/*
  * form elements
  */
 
@@ -99,7 +54,7 @@ option	{
  */
 
 button, a.buttonLink	{
-	display: inline-block; vertical-align: middle; padding: 0.25em 1em; background: $colorDark; color: #fff; font-weight: bold; border: solid 1px #003b59; border-radius: 0.25em; margin-right: 0.25em; transition: all 0.25s ease 0s;
+	display: inline-block; vertical-align: middle; padding: 0.25em 1em; background: $colorDark; color: #fff !important; font-weight: bold; border: solid 1px #003b59; border-radius: 0.25em; margin-right: 0.25em; transition: all 0.25s ease 0s;
 
 	&:hover, &:active {
 		background: $colorBright; border-color: $colorDark; cursor: pointer; box-shadow: 0 0 2px $colorBright; text-decoration: none;
@@ -334,7 +289,7 @@ tr	{
  * animated throbber
  */
 div.vxJS_xhrThrobber {
-	display: inline-block; color: $colorDark; padding: 0.5em; text-align: center; vertical-align: middle; visibility: hidden; z-index: 100;
+	font-family: icomoon; display: inline-block; color: $colorDark; padding: 0.5em; text-align: center; vertical-align: middle; visibility: hidden; z-index: 100;
 
 	&.active	{
 		background: none; visibility: visible; @include animation(rotate 1s linear infinite);

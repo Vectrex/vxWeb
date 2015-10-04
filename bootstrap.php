@@ -23,12 +23,28 @@ if(!file_exists($configFilename)) {
 
 if(file_exists($cachedConfigFilename)) {
 
+	// check whether cached file is outdated
+
 	if(filemtime($cachedConfigFilename) > filemtime($configFilename)) {
 		$config = unserialize(file_get_contents($cachedConfigFilename));
 	}
 	else {
-		$config = new vxPHP\Application\Config($configFilename);
-		file_put_contents($cachedConfigFilename, serialize($config));
+
+		// create config instance
+
+		try {
+			$config = new vxPHP\Application\Config($configFilename);
+		}
+		
+		catch(\vxPHP\Application\Exception\ConfigException $e) {
+			die('Cannot create Config instance: ' . $e->getMessage());
+		}
+
+		// write file to cache
+
+		if(FALSE === file_put_contents($cachedConfigFilename, serialize($config))) {
+			die ('Cannot create serialized config file ' . $cachedConfigFilename);
+		}
 	}
 
 }
