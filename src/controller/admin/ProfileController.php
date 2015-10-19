@@ -27,7 +27,7 @@ class ProfileController extends Controller {
 			HtmlForm::create('admin_profile.htm')
 				->setAttribute('class', 'editProfileForm')
 				->addElement(FormElementFactory::create('input',	'username',			$admin->getUsername(),	array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'username_input'),	array(),	FALSE, array('trim', 'lowercase'),	array(Rex::NOT_EMPTY_TEXT)))
-				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'email_input'),		array(),	FALSE, array('trim', 'lowercase'),	array('/'.Rex::EMAIL.'/i')))
+				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'email_input'),		array(),	FALSE, array('trim', 'lowercase'),	array(Rex::EMAIL)))
 				->addElement(FormElementFactory::create('input',	'name',				$admin->getName(),		array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'name_input'),		array(),	FALSE, array('trim'),				array(Rex::NOT_EMPTY_TEXT)))
 				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd_input'),		array(),	FALSE, array(),						array('/^(|[^\s].{4,}[^\s])$/')))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	'',						array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd2_input')))

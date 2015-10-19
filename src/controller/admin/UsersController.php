@@ -148,7 +148,7 @@ class UsersController extends Controller {
 
 		$form = HtmlForm::create('admin_edit_user.htm')
 			->addElement(FormElementFactory::create('input',	'username',			NULL,	array(),	array(),	FALSE, array('trim'),	array(Rex::NOT_EMPTY_TEXT)))
-			->addElement(FormElementFactory::create('input',	'email',			NULL,	array(),	array(),	FALSE, array('trim', 'lowercase'),	array('/'.Rex::EMAIL.'/i')))
+			->addElement(FormElementFactory::create('input',	'email',			NULL,	array(),	array(),	FALSE, array('trim', 'lowercase'),	array(Rex::EMAIL)))
 			->addElement(FormElementFactory::create('input',	'name',				NULL,	array(),	array(),	FALSE, array('trim'),				array(Rex::NOT_EMPTY_TEXT)))
 			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	array(),	array(),	FALSE, array(),						array('/^(|[^\s].{4,}[^\s])$/')))
 			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL	))
