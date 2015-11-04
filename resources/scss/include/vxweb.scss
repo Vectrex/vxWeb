@@ -273,14 +273,14 @@ tr	{
 	&.row0	{
 		background: $tableRowEvenColor;
 		.active	{
-			background: lighten(desaturate($altColorBright, 30%), 40%);
+			background: lighten(desaturate($altColorBright, 50%), 40%);
 		}
 	}
 
 	&.row1	{
 		background: $tableRowOddColor;
 		.active	{
-			background: lighten(desaturate($altColorBright, 20%), 30%);
+			background: lighten(desaturate($altColorBright, 40%), 30%);
 		}
 	}
 }
