@@ -13,24 +13,31 @@
 		font-size: 80%; position: relative; padding: 0; margin: 0.25em 0.5em;
 	}
 
-	.mon	{
-		display: block; text-align: center;
+	.selMon, .selYear {
+		display: table-row;
+		width: 100%;
 	}
 
-	.prevMon, .nextMon	{
-		cursor: pointer; display: block; position: absolute; top: 0;
+	.mon, .year	{
+		display: table-cell; text-align: center;
+		vertical-align: middle;
 	}
 
-	.prevMon	{
-		 left: 0;
+	.prevMon, .nextMon, .prevYear, .nextYear	{
+		cursor: pointer;
+		display: table-cell;
+		vertical-align: middle;
+		padding: 0.125em 0.5em;
+	}
 
+	.prevMon, .prevYear	{
 		 &:before	{
 		 	font-family: icomoon; content: "\e025";
 		 }
 	}
 
-	.nextMon	{
-		right: 0; left: auto; text-align: right;
+	.nextMon, .nextYear	{
+		text-align: right;
 
 		 &:before	{
 		 	font-family: icomoon; content: "\e023";
@@ -38,11 +45,10 @@
 	}
 
 	table	{
-		font-size: 80%; border-collapse: separate; border-spacing: 2px;
-
-		th	{
-			padding: 0.125em 0.25em; text-align: center; color: #fff; vertical-align: middle; width: 1.75em; background: $neutralLight;
-		}
+		font-size: 80%;
+		width: 100%;
+		border-collapse: separate;
+		border-spacing: 2px;
 
 		td	{
 			padding: 0.125em 0.25em; text-align: center; vertical-align: middle; cursor: pointer; background: #fff; height: 2.5em;
@@ -61,6 +67,10 @@
 			&.disabled	{
 				color: $neutralMedium; cursor: default;
 			}
+		}
+
+		th	{
+			padding: 0.125em 0.25em; text-align: center; color: #fff; vertical-align: middle; width: 1.75em; background: $neutralLight;
 		}
 	}
 }
@@ -96,5 +106,5 @@
  * overlay
  */
 .vxJS_overlay	{
-	background: #fff; opacity: 0.5;
+	background: $altColorBright; opacity: 0.3;
 }
