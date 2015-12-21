@@ -381,7 +381,7 @@ class FilesController extends Controller {
 
 				// turn uploaded file into metafile, extract archive if neccessary
 
-				$uploadedFiles = vxWeb\FileUtil::processFileUpload($folder, $upload, $values, isset($values['unpack_archives']));
+				$uploadedFiles = vxWeb\FileUtil::processFileUpload($folder, $upload, $values->all(), !!$values->get('unpack_archives'));
 
 				if(FALSE !== $uploadedFiles) {
 					
