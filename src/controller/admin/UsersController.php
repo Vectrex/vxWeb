@@ -155,6 +155,7 @@ class UsersController extends Controller {
 			->addElement(FormElementFactory::create('select',	'admingroup',		NULL,	array(),	array(),	FALSE, array(),						array('/^(' . implode('|', array_keys($admingroups)) . ')$/i')));
 		
 		$v = $form
+				->disableCsrfToken()
 				->bindRequestParameters($this->request->request)
 				->validate()
 				->getValidFormValues();

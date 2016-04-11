@@ -1,7 +1,6 @@
 <?php
 
 use vxPHP\Util\Rex;
-use vxPHP\Util\Uuid;
 
 use vxPHP\Image\ImageModifierFactory;
 use vxPHP\Template\SimpleTemplate;
@@ -12,12 +11,6 @@ use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\Validator\DateTime;
 
 use vxPHP\File\MetaFile;
-use vxPHP\File\MetaFolder;
-use vxPHP\File\FilesystemFile;
-use vxPHP\File\FilesystemFolder;
-use vxPHP\File\Exception\MetaFileException;
-use vxPHP\File\Exception\FilesystemFileException;
-use vxPHP\File\Exception\MetaFolderException;
 
 use vxPHP\Orm\Custom\Article;
 use vxPHP\Orm\Custom\ArticleCategory;
@@ -27,7 +20,6 @@ use vxPHP\Orm\Custom\ArticleQuery;
 
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
-
 
 use vxPHP\Application\Application;
 use vxPHP\User\User;
@@ -228,8 +220,11 @@ class ArticlesController extends Controller {
 					->addElement(FormElementFactory::create('input', 'Display_from', NULL, array(), array(), FALSE, array('trim')))
 					->addElement(FormElementFactory::create('input', 'Display_until', NULL, array(), array(), FALSE, array('trim')))
 					->addElement(FormElementFactory::create('input', 'customSort', NULL, array(), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)));
+						
+				// @todo allow CSRF token; currently the action mismatch between initial form and XHR form request prevent checking
 
 				$v = $form
+					->disableCsrfToken()
 					->bindRequestParameters($this->request->request)
 					->validate()
 					->getValidFormValues();

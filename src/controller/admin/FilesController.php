@@ -257,10 +257,11 @@ class FilesController extends Controller {
 
 				if(!($errors = $form
 					->bindRequestParameters($this->request->request)
+					->disableCsrfToken()
 					->validate()
 					->getFormErrors()
 				)) {
-					$file->setMetaData($form->getValidFormValues());
+					$file->setMetaData($form->getValidFormValues()->all());
 					$response = $this->getFiles($file->getMetafolder());
 				}
 
@@ -290,6 +291,7 @@ class FilesController extends Controller {
 
 				if(!($errors = $this->getAddForm()
 					->bindRequestParameters($this->request->request)
+					->disableCsrfToken()
 					->validate()
 					->getFormErrors()
 				)) {
