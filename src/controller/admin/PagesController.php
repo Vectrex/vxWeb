@@ -17,10 +17,6 @@ use vxWeb\Orm\Page\PageException;
 use vxPHP\Application\Locale\Locale;
 use vxWeb\Orm\Page\Revision;
 
-/**
- * @todo sanitize markup with HTMLPurifier
- */
-
 class PagesController extends Controller {
 
 	private $maxPageRevisions = 5;
