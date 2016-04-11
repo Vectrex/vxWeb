@@ -3,18 +3,19 @@
 namespace vxWeb\Orm\Page;
 
 use vxPHP\Application\Application;
-use vxPHP\Observer\SubjectInterface;
 use vxPHP\Observer\EventDispatcher;
+use vxPHP\Observer\PublisherInterface;
+use vxPHP\Observer\GenericEvent;
 
 /**
  * Mapper class to handle revisioned pages, stored in table `pages`
  *
  * @author Gregor Kofler
- * @version 0.2.3 2015-06-17
+ * @version 0.2.4 2016-04-11
  * 
  * @todo creation of new pages (several setters are superfluous ATM)
  */
-class Page implements SubjectInterface {
+class Page implements PublisherInterface {
 	
 	/**
 	 * map of page instances indexed by their primary key
@@ -320,7 +321,7 @@ class Page implements SubjectInterface {
 
 		// dispatch 'beforePageRevisionExport' event to inform optional listeners
 
-		EventDispatcher::getInstance()->notify($this, 'beforePageRevisionExport');
+		EventDispatcher::getInstance()->dispatch(new GenericEvent('beforePageRevisionExport', $this));
 
 		$app	= Application::getInstance();
 		$config	= $app->getConfig();
@@ -359,7 +360,7 @@ class Page implements SubjectInterface {
 
 		// dispatch 'afterPageRevisionExport' event to inform optional listeners
 
-		EventDispatcher::getInstance()->notify($this, 'afterPageRevisionExport');
+		EventDispatcher::getInstance()->dispatch(new GenericEvent('afterPageRevisionExport', $this));
 
 	}
 
