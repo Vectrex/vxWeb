@@ -28,6 +28,7 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxPHP\User\User;
 use vxPHP\Orm\Custom\Article;
+use vxPHP\File\MimeTypeGetter;
 
 /**
  *
@@ -98,39 +99,110 @@ class FilesController extends Controller {
 			else {
 				$folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
 			}
+			
+			$fsFolder = $folder->getFilesystemFolder();
 		}
 
 		catch(MetaFolderException $e) {
-			return new JsonResponse(array ('error' => $e->getMessage()));
+			return new JsonResponse(['error' => $e->getMessage()]);
 		}
 
+		// get articles reference
+		
+		if($articlesId = $this->request->query->get('articlesId')) {
+			$article = Article::getInstance($articlesId);
+		}
+		
 		// get filename
 
-		$filename = FilesystemFile::sanitizeFilename($this->request->headers->get('x-file-name'), $folder->getFilesystemFolder());
-		file_put_contents($folder->getFilesystemFolder()->getPath() . $filename, file_get_contents('php://input'));
+		$filename = FilesystemFile::sanitizeFilename($this->request->headers->get('x-file-name'), $fsFolder);
+		$contents = file_get_contents('php://input');
 
-		
+		try {
+			$mimeType = MimeTypeGetter::getForBuffer($contents);
+		}
+		catch (\RuntimeException $e) {
+			$mimeType = '';
+		}
+
+		try {
+			if($mimeType === 'application/zip' && $this->request->query->getInt('unpack')) {
+				
+				// unpack ZIP files
+				
+				$tmpFile	= tmpfile();
+				$tmpName	= stream_get_meta_data($tmpFile)['uri'];
+				fwrite($tmpFile, $contents);
+				fseek($tmpFile, 0);
+				
+				$zip = new \ZipArchive();
+	
+				if($zip->open($tmpName)) {
+					
+					for($i = 0; $i < $zip->numFiles; ++$i) {
+					
+						$name = $zip->getNameIndex($i);
+					
+						if(substr($name, -1) == '/') {
+							continue;
+						}
+	
+						$dest = FilesystemFile::sanitizeFilename(basename($name), $fsFolder);
+	
+						// $zip->extractTo($fsFolder->getPath());
+						copy("zip://{$tmpName}#$name", $fsFolder->getPath() . $dest);
+	
+						// link to article, when in "article" mode
+	
+						if(isset($article)) {
+							$article->linkMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $dest)->createMetaFile());
+							$article->save();
+						}
+	
+					}
+
+					$zip->close();
+
+				}
+			}
+			
+			else {
+	
+				file_put_contents($fsFolder->getPath() . $filename, $contents);
+	
+				// link to article, when in "article" mode
+	
+				if(isset($article)) {
+					$article->linkMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename)->createMetaFile());
+					$article->save();
+				}
+			}
+		}
+
+		catch(\Exception $e) {
+			return new JsonResponse(
+				[
+					'response' => [
+						'error' => 1,
+						'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())
+					]
+				]
+			);
+		}
+
 		// @todo better way to handle columns
 		
-		$fileColumns = array('name', 'size', 'mime', 'mTime');
+		$fileColumns = ['name', 'size', 'mime', 'mTime'];
 
-		// link to article, when in "article" mode
-
-		if($articlesId = $this->request->query->get('articlesId')) {
-
-			try {
-				$article = Article::getInstance($articlesId);
-				$article->linkMetaFile(FilesystemFile::getInstance($folder->getFilesystemFolder()->getPath() . $filename)->createMetaFile());
-				$article->save();
-			}
-			catch(\Exception $e) {
-				return new JsonResponse(array ('error' => $e->getMessage()));
-			}
-
+		if(isset($article)) {
 			$fileColumns[] = 'linked';
 		}
 		
-		return new JsonResponse(array('echo' => array('folder' => $id), 'response' => $this->getFiles($folder, $fileColumns)));
+		return new JsonResponse([
+			'echo' => ['folder' => $id],
+			'response' => $this->getFiles($folder, $fileColumns)
+		]);
+
 	}
 
 	/**

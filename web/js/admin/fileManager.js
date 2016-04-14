@@ -506,7 +506,7 @@ this.vxWeb.fileManager = function(config) {
 
 		if(!files.length && !folders.length) {
 			t.insertRow(
-				"tr".setProp("class", "fileRow").create(["td".create("em".create("Dieser Ordner ist leer.")), "td".create(), "td".create(), "td".create(), "td".create(), "td".create()])
+				"tr".setProp("class", "fileRow").create(["td".create("em".create("Dieser Ordner ist leer.")), "td".create(), "td".create(), "td".create(), "td".create()])
 			);
 		}
 		else {
@@ -708,13 +708,16 @@ this.vxWeb.fileManager = function(config) {
 			});
 
 			vxJS.event.addListener(config.filesList, "drop", function(e) {
-				var i, l, f, files = e.target.files || e.dataTransfer.files;
+				var i, l, f, files = e.target.files || e.dataTransfer.files, unpackZips;
 
 				for(i = 0, l = files.length; i < l; ++i) {
 					if(files[i].size > config.uploadMaxFilesize) {
-						window.alert("'" + files[i].name +"' übersteigt die maximale Größe eines Uploads und wird nicht hochgeladen.");
+						window.alert("'" + files[i].name + "' übersteigt die maximale Größe eines Uploads und wird nicht hochgeladen.");
 					}
 					else {
+						if(unpackZips === undefined && /application\/.*?zip.*?/.test(files[i].type)) {
+							unpackZips = window.confirm("ZIP Datei(en) entpacken (Verzeichnisstruktur wird beibehalten)?");
+						}
 						filesQueue.push(files[i]);
 					}
 				}
@@ -724,16 +727,15 @@ this.vxWeb.fileManager = function(config) {
 						startUpload();
 						progressBar.setLabel(f.name);
 						
-						uploadQuery = [];
+						uploadQuery = ['unpack=' + (+unpackZips)];
 						if(vxWeb.parameters.folder) {
 							uploadQuery.push("folder=" + vxWeb.parameters.folder);
 						}
 						if(vxWeb.parameters.articlesId) {
 							uploadQuery.push("articlesId=" + vxWeb.parameters.articlesId);
 						}
-						if(uploadQuery.length) {
-							uploadQuery = (vxWeb.routes.upload.indexOf("?") === -1 ? "?" : "&") + uploadQuery.join("&");
-						}
+						uploadQuery = (vxWeb.routes.upload.indexOf("?") === -1 ? "?" : "&") + uploadQuery.join("&");
+
 						uploadXhr.use({ uri: vxWeb.routes.upload + uploadQuery }, { filename: f.name, file: f }).submit();
 					}
 				}
@@ -752,21 +754,29 @@ this.vxWeb.fileManager = function(config) {
 			vxJS.event.addListener(uploadXhr, "complete", function() {
 				var f, r = this.response, e = r.echo;
 
-				if(f = filesQueue.shift()) {
-					progressBar.setLabel(f.name);
-					this.use(null, { filename: f.name, file: f }).submit();
-				}
-				else {
+				if(r.response.error) {
+					filesQueue = [];
 					finishUpload();
+					window.alert(r.response.message || "Upload Error!");
+				}
 
-					// refresh folder, in case folder was not changed by user (weak comparison in case folder[Id] is undefined)
-
-					if(!r.response.error) {
-						if(e.folder == vxWeb.parameters.folder) {
-							buildFilesTable(r.response);
-						}
+				else {
+					if(f = filesQueue.shift()) {
+						progressBar.setLabel(f.name);
+						this.use(null, { filename: f.name, file: f }).submit();
+					}
+					else {
+						finishUpload();
 					}
 				}
+				
+				// refresh folder, in case folder was not changed by user (weak comparison in case folder[Id] is undefined)
+				// response determines when update of file list happens
+				
+				if(r.response.files && e.folder == vxWeb.parameters.folder) {
+					buildFilesTable(r.response);
+				}
+
 			});
 
 			// vxJS.event.addListener won't detect XHR.upload as host object
