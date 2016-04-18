@@ -1,5 +1,12 @@
 <?php
 
+// $loader is initialized in bootstrap.php
+// place additional libraries here
+
+$loader->addPrefix('vxWeb', $rootPath . '/vendor/vxWeb');
+
+// ensure the presence of a valid assets path
+
 if(!is_dir($application->getAbsoluteAssetsPath())) {
 	throw new \Exception("Assets path '" . $application->getRelativeAssetsPath() . "' not found.");
 }
