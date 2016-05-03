@@ -128,6 +128,8 @@ span.buttonGroup	{
 
 div.inputGroup	{
 	display: table;
+	border-collapse: separate !important;
+	border-spacing: 0 !important;
 
 	&.inline	{
 		display: inline-table;
