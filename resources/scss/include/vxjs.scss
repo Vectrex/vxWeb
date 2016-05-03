@@ -10,7 +10,9 @@
 	}
 
 	.vxJS_dragBar	{
-		font-size: 80%; position: relative; padding: 0; margin: 0.25em 0.5em;
+		position: relative;
+		padding: 0;
+		display: table;
 	}
 
 	.selMon, .selYear {
@@ -19,7 +21,8 @@
 	}
 
 	.mon, .year	{
-		display: table-cell; text-align: center;
+		display: table-cell;
+		text-align: center;
 		vertical-align: middle;
 	}
 
@@ -51,7 +54,7 @@
 		border-spacing: 2px;
 
 		td	{
-			padding: 0.125em 0.25em; text-align: center; vertical-align: middle; cursor: pointer; background: #fff; height: 2.5em;
+			padding: 0.25em 0.25em; text-align: center; vertical-align: middle; cursor: pointer; background: #fff;
 			&.trail	{
 				color: $neutralLight;
 			}
