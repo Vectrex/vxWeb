@@ -272,6 +272,14 @@ table.list	{
 			border-left: none;
 		}
 	}
+
+	*.displayOnlyWhenHover {
+		visibility: hidden; opacity: 0; transition: opacity 0.5s;
+	}
+
+	td:hover *.displayOnlyWhenHover {
+		visibility: visible; opacity: 1;
+	}
 }
 
 th.vxJS_sorTable_header_desc, th.vxJS_sorTable_header_asc	{

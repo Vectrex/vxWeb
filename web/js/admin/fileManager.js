@@ -44,11 +44,12 @@ this.vxWeb.fileManager = function(config) {
 			 	{ key: "move",		title: "Verschieben",	icon: "\ue004" },
 			 	{ key: "del",		title: "Löschen",		icon: "\ue011" },
 			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue02a" },
-			 	{ key: "rename",	title: "Umbenennen",	icon: "\ue001" },
+			 	{ key: "rename",	title: "Umbenennen",	icon: "\ue001", className: "displayOnlyWhenHover" },
 			 	{ key: "delFolder",	title: "Ordner leeren und löschen", icon: "\ue008" },
 			 	{ key: "locked",	title: "Gesperrt", icon: "\ue00f", element: "span" }
 			].forEach(function(props) {
-				var e = (props.element || "button").setProp( { title: props.title, className: "iconOnly " + props.key }).create();
+				var cN = "iconOnly " + props.key + (props.className ? (" " + props.className) : ""),
+				e = (props.element || "button").setProp( { title: props.title, className: cN }).create();
 				e.setAttribute("data-icon", props.icon);
 				elements[props.key] = e;
 			});

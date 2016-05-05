@@ -221,11 +221,7 @@ div.errorContainer .errorBox		{ font-size: 80%; font-weight: bold; line-height: 
 
 		&.fileRow	{
 			button.rename	{
-				margin-left: 0.5em; visibility: hidden; opacity: 0; transition: opacity 0.5s;
-			}
-
-			td:hover button.rename	{
-				visibility: visible; opacity: 1;
+				margin-left: 0.5em;
 			}
 
 			td + td, td + td + td + td	{
