@@ -1,5 +1,7 @@
 <h1>Profil</h1>
 
+{form {"class": "editProfileForm"} }
+
 <div class="errorContainer">
 {error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
 </div>
@@ -10,24 +12,24 @@
 
 <div class="formSect">
 	<div class="formItem">
-		<label class="m{error_username: error}" for="username_input">Username*</label>{input:username}
+		<label class="m{error_username: error}" for="username_input">Username*</label>{input:username {"autocomplete": "off", "maxlength": 128, "class": "xl", "id": "username_input"} }
 		<span id="error_username"></span>{error_Email:<span class="error">Ungültiger Username!</span>}
 		<span id="error_duplicate_username"></span>{error_duplicate_username:<span class="error">Username wird bereits verwendet!</span>}
 	</div>
 	<div class="formItem">
-		<label class="m{error_email: error}" for="email_input">Email*</label>{input:email}
+		<label class="m{error_email: error}" for="email_input">Email*</label>{input:email {"autocomplete": "off", "maxlength": 128, "class": "xl", "id": "email_input"} }
 		<span id="error_email"></span>{error_email:<span class="error">Ungültige Email!</span>}
 		<span id="error_duplicate_email"></span>{error_duplicate_email:<span class="error">Email wird bereits verwendet!</span>}
 	</div>
 	<div class="formItem">
-		<label class="m{error_name: error}" for="name_input">Name*</label>{input:name}
+		<label class="m{error_name: error}" for="name_input">Name*</label>{input:name {"autocomplete": "off", "maxlength": 128, "class": "xl", "id": "name_input"} }
 	</div>
 	<div class="formItem">
-		<label class="m" for="pwd_input">Neues Passwort</label>{input:new_PWD}
+		<label class="m" for="pwd_input">Neues Passwort</label>{input:new_PWD {"autocomplete": "off", "maxlength": 128, "class": "xl", "id": "pwd_input"} }
 		<span id="error_new_PWD"></span>{error_new_PWD:<span class="error">Passwort zu kurz!</span>}
 	</div>
 	<div class="formItem">
-		<label class="m" for="pwd2_input">Passwort wiederholen</label>{input:new_PWD_verify}
+		<label class="m" for="pwd2_input">Passwort wiederholen</label>{input:new_PWD_verify {"autocomplete": "off", "maxlength": 128, "class": "xl", "id": "pwd2_input"} }
 		<span id="error_PWD_mismatch"></span>{error_PWD_mismatch:<span class="error">Passwörter stimmen nicht überein!</span>}
 	</div>
 </div>
@@ -41,6 +43,8 @@
 
 <div class="formBase">
 	<div class="formItem">
-		<label class="m"></label>{button:submit_profile}
+		<label class="m"></label>{button:submit_profile { "type": "submit" } }
 	</div>
 </div>
+
+{end_form}

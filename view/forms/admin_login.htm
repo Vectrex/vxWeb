@@ -3,13 +3,13 @@
 
 	<div class="formItem">
 		<div class="inputGroup pct_100">
-			<span class="ssm">Username</span>{input:UID}
+			<span class="ssm">Username</span>{input:UID { "maxlength": 128, "class": "pct_100" } }
 		</div>
 	</div>
 	
 	<div class="formItem">
 		<div class="inputGroup pct_100">
-			<span class="ssm">Passwort</span>{input:pwd}<span class="inputGroupBtn">{button:submit_login}</span>
+			<span class="ssm">Passwort</span>{input:pwd { "maxlength": 128, "class": "pct_100" } }<span class="inputGroupBtn">{button:submit_login { "data-throbber-position": "outside-left" } }</span>
 		</div>
 	</div>
 	

@@ -22,7 +22,7 @@ class LoginController extends Controller {
 
 			foreach(Application::getInstance()->getConfig()->routes['admin.php'] as $route) {
 
-				if(in_array($route->getRouteId(), array('login', 'logout'))) {
+				if(in_array($route->getRouteId(), ['login', 'logout'])) {
 					continue;
 				}
 
@@ -33,9 +33,9 @@ class LoginController extends Controller {
 
 		$form =
 			HtmlForm::create('admin_login.htm')
-				->addElement(FormElementFactory::create('input',	'UID',	'',	array('maxlength' => 128, 'class' => 'pct_100'),	array(),	FALSE,	array('trim')))
-				->addElement(FormElementFactory::create('password',	'pwd',	'',	array('maxlength' => 128, 'class' => 'pct_100')))
-				->addElement(FormElementFactory::create('button',	'submit_login',	'',	array('type' => 'submit', 'class' => '', 'data-icon' => '&#xe02e;', 'data-throbber-position' => 'outside-left'))->setInnerHTML('Login'));
+				->addElement(FormElementFactory::create('input',	'UID',	'',	[],	[],	FALSE,	['trim']))
+				->addElement(FormElementFactory::create('password',	'pwd',	'',	[]))
+				->addElement(FormElementFactory::create('button',	'submit_login',	'',	['type' => 'submit'])->setInnerHTML('Login'));
 
 		// form was submitted by XHR
 
@@ -49,12 +49,12 @@ class LoginController extends Controller {
 
 				if($admin->isAuthenticated()) {
 					$admin->storeInSession();
-					return new JsonResponse(array('command' => 'submit'));
+					return new JsonResponse(['command' => 'submit']);
 				}
 			}
 			catch(UserException $e) {}
 
-			return new JsonResponse(array('message' => 'Ungültige Email oder ungültiges Passwort!'));
+			return new JsonResponse(['message' => 'Ungültige Email oder ungültiges Passwort!']);
 
 		}
 

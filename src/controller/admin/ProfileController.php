@@ -25,13 +25,12 @@ class ProfileController extends Controller {
 
 		$form =
 			HtmlForm::create('admin_profile.htm')
-				->setAttribute('class', 'editProfileForm')
-				->addElement(FormElementFactory::create('input',	'username',			$admin->getUsername(),	array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'username_input'),	array(),	FALSE, array('trim', 'lowercase'),	array(Rex::NOT_EMPTY_TEXT)))
-				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'email_input'),		array(),	FALSE, array('trim', 'lowercase'),	array(Rex::EMAIL)))
-				->addElement(FormElementFactory::create('input',	'name',				$admin->getName(),		array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'name_input'),		array(),	FALSE, array('trim'),				array(Rex::NOT_EMPTY_TEXT)))
-				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd_input'),		array(),	FALSE, array(),						array('/^(|[^\s].{4,}[^\s])$/')))
-				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	'',						array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd2_input')))
-				->addElement(FormElementFactory::create('button', 'submit_profile', '', array('type' => 'submit'))->setInnerHTML('Änderungen speichern'))
+				->addElement(FormElementFactory::create('input',	'username',			$admin->getUsername(),	[],	[], FALSE, ['trim', 'lowercase'],	[Rex::NOT_EMPTY_TEXT]))
+				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		[], [], FALSE, ['trim', 'lowercase'],	[Rex::EMAIL]))
+				->addElement(FormElementFactory::create('input',	'name',				$admin->getName(),		[], [], FALSE, ['trim'],				[Rex::NOT_EMPTY_TEXT]))
+				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						[], [],	FALSE, [],						['/^(|[^\s].{4,}[^\s])$/']))
+				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	''))
+				->addElement(FormElementFactory::create('button', 'submit_profile', '')->setInnerHTML('Änderungen speichern'))
 				->initVar('success', (int) end($this->pathSegments) === 'success')
 				->initVar('has_notifications', (int) !empty($checkBoxHtml));
 
@@ -85,7 +84,7 @@ class ProfileController extends Controller {
 							->setEmail		($v['email'])
 							->save			();
 	
-						$add = array();
+						$add = [];
 
 						foreach($availableNotifications as $n) {
 							if(!empty($v[$n->alias])) {
@@ -95,11 +94,11 @@ class ProfileController extends Controller {
 
 						$admin->setNotifications($add);
 						
-						return new JsonResponse(array('success' => TRUE));
+						return new JsonResponse(['success' => TRUE]);
 
 					}
 					catch (\Exception $e) {
-						return new JsonResponse(array('success' => FALSE, 'message' => $e->getMessage()));
+						return new JsonResponse(['success' => FALSE, 'message' => $e->getMessage()]);
 					}
 				}
 			}
@@ -107,13 +106,13 @@ class ProfileController extends Controller {
 			$errors	= $form->getFormErrors();
 			$texts	= $form->getErrorTexts();
 
-			$response = array();
+			$response = [];
 
 			foreach(array_keys($errors) as $err) {
-				$response[] = array('name' => $err, 'error' => 1, 'errorText' => isset($texts[$err]) ? $texts[$err] : NULL);
+				$response[] = ['name' => $err, 'error' => 1, 'errorText' => isset($texts[$err]) ? $texts[$err] : NULL];
 			}
 
-			return new JsonResponse(array('success' => FALSE, 'elements' => $response));
+			return new JsonResponse(['success' => FALSE, 'elements' => $response]);
 
 		}
 		
