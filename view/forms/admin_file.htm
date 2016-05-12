@@ -19,13 +19,13 @@
 	{end_if}
 
 	<div class="formItem">
-		<label class="m label{error_Title: error}">Titel</label>{input:Title}
+		<label class="m label{error_Title: error}">Titel</label>{input:Title {"maxlength": 64, "class": "xl"}}
 	</div>
 	<div class="formItem">
-		<label class="m label">Untertitel</label>{input:Subtitle}
+		<label class="m label">Untertitel</label>{input:Subtitle {"maxlength": 64, "class": "xl"}}
 	</div>
 	<div class="formItem">
-		<label class="m label">Beschreibung</label>{textarea:Description}
+		<label class="m label">Beschreibung</label>{textarea:Description {"rows": 5, "cols": 40, "class": "xl"}}
 	</div>
 </div>
 
@@ -33,13 +33,13 @@
 
 <div class="formSect extras">
 	<div class="formItem">
-		<label class="m label{error_customSort: error}">Sortierwert</label>{input:customSort}
+		<label class="m label{error_customSort: error}">Sortierwert</label>{input:customSort {"maxlength": 4, "class": "s"}}
 	</div>
 </div>
 
 <div class="formBase">
 	<div class="formItem">
 		<label class="m"></label>
-		{button:submit_cancel}{button:submit_add {"id": "foo"} }{button:submit_edit}
+		{button:submit_cancel {"type": "submit"}}{button:submit_add {"type": "submit"}}{button:submit_edit {"type": "submit"}}
 	</div>
 </div>

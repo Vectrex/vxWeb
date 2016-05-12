@@ -34,7 +34,7 @@ class LoginController extends Controller {
 		$form =
 			HtmlForm::create('admin_login.htm')
 				->addElement(FormElementFactory::create('input',	'UID',	'',	[],	[],	FALSE,	['trim']))
-				->addElement(FormElementFactory::create('password',	'pwd',	'',	[]))
+				->addElement(FormElementFactory::create('password',	'pwd',	''))
 				->addElement(FormElementFactory::create('button',	'submit_login',	'',	['type' => 'submit'])->setInnerHTML('Login'));
 
 		// form was submitted by XHR

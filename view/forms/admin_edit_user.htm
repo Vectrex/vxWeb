@@ -8,27 +8,27 @@
 
 <div class="formSect">
 	<div class="formItem">
-		<label class="m{error_username: error}" for="username_input">Username*</label>{input:username}
+		<label class="m{error_username: error}" for="username_input">Username*</label>{input:username {"id": "username_input", "class": "xl", "autocomplete": "off", "maxlength": 128  }}
 		<span id="error_username"></span>{error_username:<span class="error">Ungültiger Username!</span>}
 		<span id="error_duplicate_username"></span>{error_duplicate_username:<span class="error">Username wird bereits verwendet!</span>}
 	</div>
 	<div class="formItem">
-		<label class="m{error_email: error}" for="email_input">Email*</label>{input:email}
+		<label class="m{error_email: error}" for="email_input">Email*</label>{input:email {"id": "email_input", "class": "xl", "autocomplete": "off", "maxlength": 128  }}
 		<span id="error_email"></span>{error_email:<span class="error">Ungültige Email!</span>}
 		<span id="error_duplicate_email"></span>{error_duplicate_email:<span class="error">Email wird bereits verwendet!</span>}
 	</div>
 	<div class="formItem">
-		<label class="m{error_name: error}" for="name_input">Name*</label>{input:name}
+		<label class="m{error_name: error}" for="name_input">Name*</label>{input:name {"id": "name_input", "class": "xl", "autocomplete": "off", "maxlength": 128  }}
 	</div>
 	<div class="formItem">
-		<label class="m{error_admingroup: error}" for="admingroup_select">Gruppe*</label>{dropdown:admingroup}
+		<label class="m{error_admingroup: error}" for="admingroup_select">Gruppe*</label>{dropdown:admingroup {"id": "admingroup_select", "class": "xl" }}
 	</div>
 	<div class="formItem">
-		<label class="m" for="pwd_input">Neues Passwort</label>{input:new_PWD}
+		<label class="m" for="pwd_input">Neues Passwort</label>{input:new_PWD {"id": "pwd_input", "class": "xl", "autocomplete": "off", "maxlength": 128  }}
 		<span id="error_new_PWD"></span>{error_new_PWD:<span class="error">Passwort zu kurz!</span>}
 	</div>
 	<div class="formItem">
-		<label class="m" for="pwd2_input">Passwort wiederholen</label>{input:new_PWD_verify}
+		<label class="m" for="pwd2_input">Passwort wiederholen</label>{input:new_PWD_verify {"id": "pwd2_input", "class": "xl", "autocomplete": "off", "maxlength": 128  }}
 		<span id="error_PWD_mismatch"></span>{error_PWD_mismatch:<span class="error">Passwörter stimmen nicht überein!</span>}
 	</div>
 </div>

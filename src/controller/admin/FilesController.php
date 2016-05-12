@@ -338,7 +338,7 @@ class FilesController extends Controller {
 				}
 
 				else {
-					$e = array();
+					$e = [];
 					foreach(array_keys($errors) as $k) {
 						$e[] = array('name' => $k, 'error' => 1);
 					}
@@ -370,7 +370,7 @@ class FilesController extends Controller {
 					$response = array('command' => 'submit');
 				}
 				else {
-					$e = array();
+					$e = [];
 					foreach(array_keys($errors) as $k) {
 						$e[] = array('name' => $k, 'error' => 1);
 					}
@@ -445,9 +445,9 @@ class FilesController extends Controller {
 				unset($_FILES['File']);
 
 				$form = HtmlForm::create()
-					->addElement(FormElementFactory::create('input', 'Title', '', array(), array(), FALSE, array('trim')))
-					->addElement(FormElementFactory::create('input', 'Subtitle', '', array(), array(), FALSE, array('trim')))
-					->addElement(FormElementFactory::create('input', 'customSort', '', array(), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT)))
+					->addElement(FormElementFactory::create('input', 'Title', '', [], [], FALSE, array('trim')))
+					->addElement(FormElementFactory::create('input', 'Subtitle', '', [], [], FALSE, array('trim')))
+					->addElement(FormElementFactory::create('input', 'customSort', '', [], [], FALSE, array('trim'), array(Rex::EMPTY_OR_INT)))
 					->addElement(FormElementFactory::create('textarea', 'Description', ''))
 					->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1));
 
@@ -642,14 +642,14 @@ class FilesController extends Controller {
 			->initVar('add', 1)
 			->setEncType('multipart/form-data')
 			->setAttribute('class', 'editFileForm')
-			->addElement(FormElementFactory::create('input', 'Title', '', array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')))
-			->addElement(FormElementFactory::create('input', 'Subtitle', '', array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')))
-			->addElement(FormElementFactory::create('input', 'customSort', '', array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT)))
-			->addElement(FormElementFactory::create('input', 'File', '', array('type' => 'file')))
+			->addElement(FormElementFactory::create('input', 'Title', '', [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('input', 'Subtitle', '', [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('input', 'customSort', '', [], [], FALSE, ['trim'], [Rex::EMPTY_OR_INT]))
+			->addElement(FormElementFactory::create('input', 'File', '', ['type' => 'file']))
 			->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1))
-			->addElement(FormElementFactory::create('textarea', 'Description', '', array('rows' => 5, 'cols' => 40, 'class' => 'xl')))
-			->addElement(FormElementFactory::create('button', 'submit_add', '', array('type' => 'submit'))->setInnerHTML('Speichern'))
-			->addElement(FormElementFactory::create('button', 'submit_cancel', '', array('type' => 'submit'))->setInnerHTML('Abbrechen'));
+			->addElement(FormElementFactory::create('textarea', 'Description'))
+			->addElement(FormElementFactory::create('button', 'submit_add')->setInnerHTML('Speichern'))
+			->addElement(FormElementFactory::create('button', 'submit_cancel')->setInnerHTML('Abbrechen'));
 	}
 
 	private function getEditForm(MetaFile $file) {
@@ -691,19 +691,19 @@ class FilesController extends Controller {
 
 		return HtmlForm::create('admin_file.htm')
 			->setAttribute('class', 'editFileForm')
-			->addElement(FormElementFactory::create('input', 'Title', NULL, array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')))
-			->addElement(FormElementFactory::create('input', 'Subtitle', NULL, array('maxlength' => 64, 'class' => 'xl'), array(), FALSE, array('trim')))
-			->addElement(FormElementFactory::create('input', 'customSort', NULL, array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT)))
-			->addElement(FormElementFactory::create('textarea', 'Description', NULL, array('rows' => 5, 'cols' => 40, 'class' => 'xl')))
-			->addElement(FormElementFactory::create('button', 'submit_edit', '', array('type' => 'submit'))->setInnerHTML('Speichern'))
-			->addElement(FormElementFactory::create('button', 'submit_cancel', '', array('type' => 'submit'))->setInnerHTML('Abbrechen'))
+			->addElement(FormElementFactory::create('input', 'Title', NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('input', 'Subtitle', NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('input', 'customSort', NULL, [], [], FALSE, ['trim'], [Rex::EMPTY_OR_INT]))
+			->addElement(FormElementFactory::create('textarea', 'Description'))
+			->addElement(FormElementFactory::create('button', 'submit_edit')->setInnerHTML('Speichern'))
+			->addElement(FormElementFactory::create('button', 'submit_cancel')->setInnerHTML('Abbrechen'))
 			->addMiscHtml('Fileinfo', $infoHtml)
 			->setInitFormValues($data);
 	}
 
 	private function getFolderList(MetaFolder $folder) {
 
-		$folders	= array();
+		$folders	= [];
 
 		foreach($folder->getMetaFolders() as $f) {
 			$folders[] = array(
@@ -717,7 +717,7 @@ class FilesController extends Controller {
 
 	private function getFileList(MetaFolder $folder, array $columns) {
 
-		$files		= array();
+		$files		= [];
 		$app		= Application::getInstance();
 		$assetsPath	= !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
 
@@ -729,7 +729,7 @@ class FilesController extends Controller {
 
 			$isImage	= $f->isWebImage();
 			$metaData	= $f->getData();
-			$file		= array('columns' => array(), 'id' => $f->getId(), 'filename' => $f->getMetaFilename());
+			$file		= array('columns' => [], 'id' => $f->getId(), 'filename' => $f->getMetaFilename());
 
 			foreach($columns as $c) {
 
@@ -816,7 +816,7 @@ class FilesController extends Controller {
 
 			$subTrees = $f->getMetaFolders();
 
-			$branches = array();
+			$branches = [];
 
 			if(count($subTrees)) {
 				foreach($subTrees as $s) {
@@ -838,7 +838,7 @@ class FilesController extends Controller {
 			);
 		};
 
-		$trees = array();
+		$trees = [];
 
 		foreach(MetaFolder::getRootFolders() as $f) {
 			$trees[] = $parseFolder($f, $currentFolder);

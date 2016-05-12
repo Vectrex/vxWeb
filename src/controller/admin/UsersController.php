@@ -63,12 +63,12 @@ class UsersController extends Controller {
 			
 			if(isset($user)) {
 
-				$form->setInitFormValues(array(
+				$form->setInitFormValues([
 					'username'		=> $user->getUsername(),
 					'email'			=> $user->getEmail(),
 					'name'			=> $user->getName(),
 					'admingroup'	=> $user->getAdmingroup()
-				));
+				]);
 
 				$submitLabel = 'Änderungen übernehmen';
 			
@@ -85,13 +85,13 @@ class UsersController extends Controller {
 			$admingroups = $db->query('SELECT LOWER(alias) AS alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
 
 			$form
-				->addElement(FormElementFactory::create('button', 'submit_user', '', array('type' => 'submit'))->setInnerHTML($submitLabel))
-				->addElement(FormElementFactory::create('input',	'username',			NULL,	array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'username_input')))
-				->addElement(FormElementFactory::create('input',	'email',			NULL,	array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'email_input')))
-				->addElement(FormElementFactory::create('input',	'name',				NULL,	array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'name_input')))
-				->addElement(FormElementFactory::create('password',	'new_PWD',			'',		array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd_input')))
-				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	'',		array('autocomplete' => 'off', 	'maxlength' => 128, 'class' => 'xl', 'id' => 'pwd2_input')))
-				->addElement(FormElementFactory::create('select',	'admingroup',		NULL,	array('size' => 1, 'class' => 'xl', 'id' => 'admingroup_select'), $admingroups));
+				->addElement(FormElementFactory::create('button', 'submit_user', '', ['type' => 'submit'])->setInnerHTML($submitLabel))
+				->addElement(FormElementFactory::create('input',	'username'))
+				->addElement(FormElementFactory::create('input',	'email'))
+				->addElement(FormElementFactory::create('input',	'name'))
+				->addElement(FormElementFactory::create('password',	'new_PWD'))
+				->addElement(FormElementFactory::create('password',	'new_PWD_verify'))
+				->addElement(FormElementFactory::create('select',	'admingroup',		NULL, [], $admingroups));
 			
 			$form->bindRequestParameters();
 			
@@ -104,7 +104,7 @@ class UsersController extends Controller {
 		}
 		
 		$stmt	= $db->query('SELECT adminID FROM admin');
-		$users	= array();
+		$users	= [];
 
 		foreach($stmt->fetchAll(\PDO::FETCH_COLUMN, 0) as $id) {
 			$users[] = User::getInstance((int) $id);
@@ -135,7 +135,10 @@ class UsersController extends Controller {
 				$user = User::getInstance($id);
 			}
 			catch(UserException $e) {
-				return new JsonResponse(array('success' => FALSE, 'message' => $e->getMessage()));
+				return new JsonResponse([
+					'success' => FALSE,
+					'message' => $e->getMessage()
+				]);
 			}
 		
 		}
@@ -147,12 +150,12 @@ class UsersController extends Controller {
 		$admingroups = Application::getInstance()->getDb()->query('SELECT alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
 
 		$form = HtmlForm::create('admin_edit_user.htm')
-			->addElement(FormElementFactory::create('input',	'username',			NULL,	array(),	array(),	FALSE, array('trim'),	array(Rex::NOT_EMPTY_TEXT)))
-			->addElement(FormElementFactory::create('input',	'email',			NULL,	array(),	array(),	FALSE, array('trim', 'lowercase'),	array(Rex::EMAIL)))
-			->addElement(FormElementFactory::create('input',	'name',				NULL,	array(),	array(),	FALSE, array('trim'),				array(Rex::NOT_EMPTY_TEXT)))
-			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	array(),	array(),	FALSE, array(),						array('/^(|[^\s].{4,}[^\s])$/')))
-			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL	))
-			->addElement(FormElementFactory::create('select',	'admingroup',		NULL,	array(),	array(),	FALSE, array(),						array('/^(' . implode('|', array_keys($admingroups)) . ')$/i')));
+			->addElement(FormElementFactory::create('input',	'username',			NULL,	[],	[],	FALSE, ['trim'],				[Rex::NOT_EMPTY_TEXT]))
+			->addElement(FormElementFactory::create('input',	'email',			NULL,	[],	[],	FALSE, ['trim', 'lowercase'],	[Rex::EMAIL]))
+			->addElement(FormElementFactory::create('input',	'name',				NULL,	[],	[],	FALSE, ['trim'],				[Rex::NOT_EMPTY_TEXT]))
+			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	[],	[],	FALSE, [],						['/^(|[^\s].{4,}[^\s])$/']))
+			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL))
+			->addElement(FormElementFactory::create('select',	'admingroup',		NULL,	[],	[],	FALSE, [],						['/^(' . implode('|', array_keys($admingroups)) . ')$/i']));
 		
 		$v = $form
 				->disableCsrfToken()
@@ -192,24 +195,34 @@ class UsersController extends Controller {
 					->setAdmingroup	($v['admingroup'])
 					->save			();
 
-				return new JsonResponse(array('success' => TRUE, 'id' => $user->getAdminId()));
+				return new JsonResponse([
+					'success' => TRUE,
+					'id' => $user->getAdminId()
+				]);
 		
 			}
 			catch (\Exception $e) {
-				return new JsonResponse(array('success' => FALSE, 'message' => $e->getMessage()));
+				return new JsonResponse([
+					'success' => FALSE,
+					'message' => $e->getMessage()
+				]);
 			}
 		}
 		
 		$errors	= $form->getFormErrors();
 		$texts	= $form->getErrorTexts();
 
-		$response = array();
+		$response = [];
 		
 		foreach(array_keys($errors) as $err) {
-			$response[] = array('name' => $err, 'error' => 1, 'errorText' => isset($texts[$err]) ? $texts[$err] : NULL);
+			$response[] = [
+				'name' => $err,
+				'error' => 1,
+				'errorText' => isset($texts[$err]) ? $texts[$err] : NULL
+			];
 		}
 		
-		return new JsonResponse(array('elements' => $response));
+		return new JsonResponse(['elements' => $response]);
 		
 	}
 }
