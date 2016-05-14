@@ -1,24 +1,27 @@
-/*
- * colors: #0089CC, #FF9400 - #005680, #e59517, hover: #aef
- */
-$colorBright:		#0089CC;
-$colorDark:			desaturate(darken($colorBright, 10%), 10%);
-$altColorBright:	#FF9400;
-$altColorDark:		desaturate(darken($altColorBright, 10%), 10%);
-
-$neutralExtraLight:	#eee;
-$neutralLight:		#bbb;
-$neutralMedium:		#888;
-$neutralDark:		#444;
-
-$tableRowEvenColor:	#fff;
-$tableRowOddColor:	#ddd;
-
 @CHARSET "UTF-8";
 
 @import "base/_normalize";
 
 @import "mixin/animation";
+@import "mixin/color";
+
+/*
+ * colors: #0089CC, #FF9400 - #005680, #e59517, hover: #aef
+ */
+
+$colorBright:		#0089CC;
+$colorDark: shade($colorBright, 25%);
+$altColorBright:	#FF9400;
+$altColorDark: shade($altColorBright, 25%);
+
+$neutralExtraLight:	#eee;
+$neutralLight: #bbb;
+$neutralMedium: #888;
+$neutralDark: #444;
+
+$tableRowEvenColor: #fff;
+$tableRowOddColor: #ddd;
+
 @import	"include/vxjs";
 @import "include/vxweb";
 

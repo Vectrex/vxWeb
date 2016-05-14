@@ -60,7 +60,7 @@ button, a.buttonLink	{
 	background: $colorDark;
 	color: #fff;
 	font-weight: bold;
-	border: solid 1px darken($colorDark, 20%);
+	border: solid 1px shade($colorDark, 25%);
 	border-radius: 0.25em;
 	margin-right: 0.25em;
 	transition: all 0.25s ease 0s;
@@ -298,14 +298,14 @@ tr	{
 	&.row0	{
 		background: $tableRowEvenColor;
 		.active	{
-			background: lighten(desaturate($altColorBright, 50%), 40%);
+			background: tint($altColorBright, 75%);
 		}
 	}
 
 	&.row1	{
 		background: $tableRowOddColor;
 		.active	{
-			background: lighten(desaturate($altColorBright, 40%), 30%);
+			background: tint($altColorBright, 60%);
 		}
 	}
 }
