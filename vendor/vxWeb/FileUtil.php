@@ -45,7 +45,7 @@ class FileUtil {
 				$nestingInfo['level'] + 1
 		));
 
-		$db->beginTransaction();
+		$db->getConnection()->beginTransaction();
 
 		foreach($mFolders as $d) {
 			if(!is_dir($fileRoot . $d['Path'])) {
@@ -64,7 +64,7 @@ class FileUtil {
 			}
 		}
 
-		$db->commit();
+		$db->getConnection()->commit();
 
 		// create metafolder entries for filesystemfolders
 

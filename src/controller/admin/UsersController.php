@@ -19,7 +19,7 @@ class UsersController extends Controller {
 	protected function execute() {
 
 		$admin			= User::getSessionUser();
-		$db				= Application::getInstance()->getDb();
+		$connection		= Application::getInstance()->getDb()->getConnection();
 		$redirectUrl	= Router::getRoute('users', 'admin.php')->getUrl();
 
 		// editing or deleting something?
@@ -82,7 +82,7 @@ class UsersController extends Controller {
 				$form->initVar('is_add', 1);
 			}
 
-			$admingroups = $db->query('SELECT LOWER(alias) AS alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
+			$admingroups = $connection->query('SELECT LOWER(alias) AS alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
 
 			$form
 				->addElement(FormElementFactory::create('button', 'submit_user', '', ['type' => 'submit'])->setInnerHTML($submitLabel))
@@ -103,7 +103,7 @@ class UsersController extends Controller {
 			);
 		}
 		
-		$stmt	= $db->query('SELECT adminID FROM admin');
+		$stmt	= $connection->query('SELECT adminID FROM admin');
 		$users	= [];
 
 		foreach($stmt->fetchAll(\PDO::FETCH_COLUMN, 0) as $id) {
@@ -147,7 +147,10 @@ class UsersController extends Controller {
 			$user = new User();
 		}
 
-		$admingroups = Application::getInstance()->getDb()->query('SELECT alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
+		$admingroups = Application::getInstance()
+			->getDb()
+			->getConnection()
+			->query('SELECT alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
 
 		$form = HtmlForm::create('admin_edit_user.htm')
 			->addElement(FormElementFactory::create('input',	'username',			NULL,	[],	[],	FALSE, ['trim'],				[Rex::NOT_EMPTY_TEXT]))
