@@ -11,7 +11,7 @@ use vxPHP\Observer\GenericEvent;
  * Mapper class to handle revisioned pages, stored in table `pages`
  *
  * @author Gregor Kofler
- * @version 0.2.4 2016-04-11
+ * @version 0.2.5 2016-06-05
  * 
  * @todo creation of new pages (several setters are superfluous ATM)
  */
@@ -128,7 +128,7 @@ class Page implements PublisherInterface {
 	 * 
 	 * @return multitype:Page
 	 */
-	public function getInstances() {
+	public static function getInstances() {
 
 		foreach(Application::getInstance()->getDb()->doPreparedQuery("
 			SELECT
