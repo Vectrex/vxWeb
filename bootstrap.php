@@ -2,6 +2,9 @@
 
 // register autoloaders
 
+ini_set('display_errors', TRUE);
+error_reporting(E_ALL);
+
 require_once $rootPath . '/vendor/vxPHP/Autoload/Psr4.php';
 
 $loader = new vxPHP\Autoload\Psr4();
@@ -81,9 +84,6 @@ $application
 
 // set debugging and error reporting level depending on environment
 
-if($application->runsLocally()) {
-	ini_set('display_errors', TRUE);
-}
-else {
+if(!$application->runsLocally()) {
 	vxPHP\Debug\Debug::enable(E_ALL, FALSE);
 }
