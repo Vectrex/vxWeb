@@ -55,6 +55,7 @@
 		<page id="logout"			controller="admin/logout"/>
 		<page id="profile"			controller="admin/profile"						auth="observe_row" />
 		<page id="pages"			controller="admin/pages"						auth="superadmin" />
+		<page id="pagesXhr"			controller="admin/pages"	method="xhrExecute"	auth="superadmin" />
 
 		<page id="users"			controller="admin/users"						auth="superadmin" />
 		<page id="usersXhr"			controller="admin/users"	method="xhrExecute"	auth="superadmin" />
