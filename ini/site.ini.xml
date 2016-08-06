@@ -61,6 +61,7 @@
 		<page id="usersXhr"			controller="admin/users"	method="xhrExecute"	auth="superadmin" />
 
 		<page id="articles"			controller="admin/articles"						auth="privileged" />
+		<page id="publishXhr"		controller="admin/articles"	method="xhrPublish"	auth="superadmin" />
 		<page id="articlesXhr"		controller="admin/articles" method="xhrExecute"	auth="privileged" />
 
 		<page id="files"			controller="admin/files"						auth="privileged" />
