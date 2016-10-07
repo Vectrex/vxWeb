@@ -31,7 +31,7 @@
 
 <script type="text/javascript">
 vxJS.event.addDomReadyListener(function() {
-	CKEDITOR.replace(document.forms[0].elements['Content'], {
+	CKEDITOR.replace(document.forms[0].elements['content'], {
 		extraAllowedContent: "div(*)",
 		toolbar:
 			[

@@ -78,14 +78,12 @@ class ArticlesController extends Controller {
 
 			if(isset($article)) {
 
-				$data = $article->getData();
-
 				$articleForm->setInitFormValues(array(
 					'articlecategoriesID'	=> $article->getCategory()->getId(),
 					'Headline'				=> $article->getHeadline(),
 					'customSort'			=> $article->getCustomSort(),
-					'Teaser'				=> $data['Teaser'],
-					'Content'				=> isset($data['Content']) ? htmlspecialchars($data['Content'], ENT_NOQUOTES, 'UTF-8') : '',
+					'teaser'				=> $article->getData('teaser'),
+					'content'				=> htmlspecialchars($article->getData('content'), ENT_NOQUOTES, 'UTF-8'),
 					'Article_Date'			=> is_null($article->getDate())			? '' : $article->getDate()->format('d.m.Y'),
 					'Display_from'			=> is_null($article->getDisplayFrom())	? '' : $article->getDisplayFrom()->format('d.m.Y'),
 					'Display_until'			=> is_null($article->getDisplayUntil())	? '' : $article->getDisplayUntil()->format('d.m.Y')
@@ -105,8 +103,8 @@ class ArticlesController extends Controller {
 			$articleForm
 				->addElement(FormElementFactory::create('select', 'articlecategoriesID', NULL, array('size' => 1, 'class' => 'xxl'), $categories, FALSE, array(), array(Rex::INT_EXCL_NULL)))
 				->addElement(FormElementFactory::create('input', 'Headline', NULL, array('maxlength' => 200, 'class' => 'xxl'), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
-				->addElement(FormElementFactory::create('textarea', 'Teaser', NULL, array('rows' => 3, 'cols' => 40, 'class' => 'xxl'), array(), FALSE, array('trim', 'strip_tags')))
-				->addElement(FormElementFactory::create('textarea', 'Content', NULL, array('rows' => 10, 'cols' => 40, 'class' => 'xxl'), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
+				->addElement(FormElementFactory::create('textarea', 'teaser', NULL, array('rows' => 3, 'cols' => 40, 'class' => 'xxl'), array(), FALSE, array('trim', 'strip_tags')))
+				->addElement(FormElementFactory::create('textarea', 'content', NULL, array('rows' => 10, 'cols' => 40, 'class' => 'xxl'), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
 				->addElement(FormElementFactory::create('input', 'Article_Date', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')))
 				->addElement(FormElementFactory::create('input', 'Display_from', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')))
 				->addElement(FormElementFactory::create('input', 'Display_until', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')))
@@ -214,8 +212,8 @@ class ArticlesController extends Controller {
 				$form = HtmlForm::create()
 					->addElement(FormElementFactory::create('select', 'articlecategoriesID', NULL, array(), array(), FALSE, array(), array(Rex::INT_EXCL_NULL)))
 					->addElement(FormElementFactory::create('input', 'Headline', NULL, array(), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
-					->addElement(FormElementFactory::create('textarea', 'Teaser', NULL, array(), array(), FALSE, array('trim', 'strip_tags')))
-					->addElement(FormElementFactory::create('textarea', 'Content', NULL, array(), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
+					->addElement(FormElementFactory::create('textarea', 'teaser', NULL, array(), array(), FALSE, array('trim', 'strip_tags')))
+					->addElement(FormElementFactory::create('textarea', 'content', NULL, array(), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
 					->addElement(FormElementFactory::create('input', 'Article_Date', NULL, array(), array(), FALSE, array('trim')))
 					->addElement(FormElementFactory::create('input', 'Display_from', NULL, array(), array(), FALSE, array('trim')))
 					->addElement(FormElementFactory::create('input', 'Display_until', NULL, array(), array(), FALSE, array('trim')))
@@ -283,7 +281,7 @@ class ArticlesController extends Controller {
 
 					$article->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesID'])));
 					$article->setHeadline($v['Headline']);
-					$article->setData(array('Teaser' => $v['Teaser'], 'Content' => $v['Content']));
+					$article->setData(['teaser' => $v['teaser'], 'content' => $v['content']]);
 					$article->setCustomSort($v['customSort']);
 
 					$article->setCreatedBy(User::getSessionUser());
