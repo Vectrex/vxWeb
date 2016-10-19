@@ -3,3 +3,4 @@
 .project
 vendor
 !vendor/vxWeb
+/.externalToolBuilders/

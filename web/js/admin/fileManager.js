@@ -23,6 +23,12 @@ this.vxWeb.fileManager = function(config) {
 			}
 			return path;
 		}()),
+		
+		bytesToSize = function(bytes) {
+		   var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+		   return Math.round(bytes / Math.pow(1024, i), 2) + ['Bytes', 'KB', 'MB', 'GB', 'TB'][i];
+		},
+
 		breadCrumbs = [],
 		folderInput		= "input".setProp([["type", "hidden"], ["name", "folder"]]).create(),
 		articlesIdInput	= "input".setProp([["type", "hidden"], ["name", "articlesId"]]).create(),
@@ -202,6 +208,9 @@ this.vxWeb.fileManager = function(config) {
 					addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", form)[0], "general").
 					enableIframeUpload();
 
+		/*
+		 * add additional data required for server side handling of upload 
+		 */
 		vxJS.event.addListener(
 			xhrForm,
 			"beforeSubmit",
@@ -209,6 +218,24 @@ this.vxWeb.fileManager = function(config) {
 				folderInput.value = vxWeb.parameters.folder || ""; 
 				articlesIdInput.value = vxWeb.parameters.articlesId || "";
 				this.setPayload(vxWeb.parameters);
+			}
+		);
+
+		/*
+		 * check whether filesize exceeds server limits
+		 * after preliminary server check
+		 */
+		vxJS.event.addListener(
+			xhrForm,
+			"beforeResponseCheck",
+			function(r) {
+				var input = this.element.elements["File"];
+				if(input.files && input.files[0] && input.files[0].size > config.uploadMaxFilesize) {
+					if(!r.elements) {
+						r.elements = [];
+					}
+					r.elements.push( { name: "File", error: 1 });
+				} 
 			}
 		);
 
@@ -713,7 +740,7 @@ this.vxWeb.fileManager = function(config) {
 
 				for(i = 0, l = files.length; i < l; ++i) {
 					if(files[i].size > config.uploadMaxFilesize) {
-						window.alert("'" + files[i].name + "' übersteigt die maximale Größe eines Uploads und wird nicht hochgeladen.");
+						window.alert("'" + files[i].name + "' übersteigt die maximale Größe eines Uploads (" + bytesToSize(config.uploadMaxFilesize) + ") und wird nicht hochgeladen.");
 					}
 					else {
 						if(unpackZips === undefined && /application\/.*?zip.*?/.test(files[i].type)) {
