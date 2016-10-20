@@ -234,6 +234,7 @@ this.vxWeb.fileManager = function(config) {
 					if(!r.elements) {
 						r.elements = [];
 					}
+					delete r.response;
 					r.elements.push( { name: "File", error: 1 });
 					r.msgBoxes = [
 						{
