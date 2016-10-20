@@ -235,7 +235,17 @@ this.vxWeb.fileManager = function(config) {
 						r.elements = [];
 					}
 					r.elements.push( { name: "File", error: 1 });
-				} 
+					r.msgBoxes = [
+						{
+							id: "general",
+							elements: [
+								{
+									html: "<div class='errorBox'>File zu groß!</div>"
+								}
+							]
+						}
+					];
+				}
 			}
 		);
 
