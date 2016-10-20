@@ -234,14 +234,14 @@ this.vxWeb.fileManager = function(config) {
 					if(!r.elements) {
 						r.elements = [];
 					}
-					delete r.response;
+					r.response = null;
 					r.elements.push( { name: "File", error: 1 });
 					r.msgBoxes = [
 						{
 							id: "general",
 							elements: [
 								{
-									html: "<div class='errorBox'>File zu groß!</div>"
+									html: "<div class='errorBox'>File übersteigt die maximale Größe eines Uploads (" + bytesToSize(config.uploadMaxFilesize) + ")!</div>"
 								}
 							]
 						}
