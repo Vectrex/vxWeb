@@ -197,7 +197,8 @@ class FileUtil {
 	private static function handleArchive(UploadedFile $f) {
 
 		$zip = new \ZipArchive();
-		$status = $zip->open($f->getPath());
+		$tmpName = $f->getPath();
+		$status = $zip->open($tmpName);
 
 		if($status !== TRUE) {
 			throw new \Exception("Archive file reports error: $status");
@@ -215,10 +216,18 @@ class FileUtil {
 				continue;
 			}
 
-			$dest = FilesystemFile::sanitizeFilename(basename($name), $folder);
+			if(dirname($name)) {
+				$dir = $folder->createFolder(dirname($name));
+			}
+			else {
+				$dir = $folder;
+			}
 
-			copy("zip://{$f->getPath()}#$name", $path . $dest);
-			$files[] = FilesystemFile::getInstance($path . $dest);
+			$dest = FilesystemFile::sanitizeFilename(basename($name), $dir);
+
+			copy('zip://' . $tmpName . '#' . $name, $dir->getPath() . $dest);
+
+			$files[] = FilesystemFile::getInstance($dir->getPath() . $dest);
 		}
 
 		return $files;

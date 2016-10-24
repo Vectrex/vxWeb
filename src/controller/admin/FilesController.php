@@ -129,6 +129,8 @@ class FilesController extends Controller {
 			if($mimeType === 'application/zip' && $this->request->query->getInt('unpack')) {
 				
 				// unpack ZIP files
+
+				$files = [];
 				
 				$tmpFile	= tmpfile();
 				$tmpName	= stream_get_meta_data($tmpFile)['uri'];
@@ -147,22 +149,34 @@ class FilesController extends Controller {
 							continue;
 						}
 	
-						$dest = FilesystemFile::sanitizeFilename(basename($name), $fsFolder);
-	
-						// $zip->extractTo($fsFolder->getPath());
-						copy("zip://{$tmpName}#$name", $fsFolder->getPath() . $dest);
-	
-						// link to article, when in "article" mode
-	
-						if(isset($article)) {
-							$article->linkMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $dest)->createMetaFile());
-							$article->save();
+						if(dirname($name)) {
+							$dir = $fsFolder->createFolder(dirname($name));
 						}
+						else {
+							$dir = $fsFolder;
+						}
+
+						$dest = FilesystemFile::sanitizeFilename(basename($name), $dir);
+
+						copy('zip://' . $tmpName . '#' . $name, $dir->getPath() . $dest);
 	
+						$files[] = FilesystemFile::getInstance($dir->getPath() . $dest);
+
 					}
 
 					$zip->close();
+					
+					// link to article, when in "article" mode
 
+					if(isset($article)) {
+
+						foreach($files as $file) {
+							$article->linkMetaFile($file->createMetaFile());
+						}
+
+						$article->save();
+
+					}
 				}
 			}
 			
@@ -706,10 +720,10 @@ class FilesController extends Controller {
 		$folders	= [];
 
 		foreach($folder->getMetaFolders() as $f) {
-			$folders[] = array(
+			$folders[] = [
 				'id'	=> $f->getId(),
 				'name'	=> $f->getName()
-			);
+			];
 		}
 
 		return $folders;
