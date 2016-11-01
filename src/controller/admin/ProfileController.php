@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Controller\Admin;
+
 use vxPHP\User\Util;
 use vxPHP\User\Notification\Notification;
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Controller\Admin;
+
 /* @TODO sanitize metadata */
 
 use vxPHP\Util\Rex;

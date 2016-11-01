@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Controller\Admin;
+
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;

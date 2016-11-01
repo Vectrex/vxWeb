@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Controller\Admin;
+
 use vxPHP\Util\Rex;
 
 use vxPHP\Image\ImageModifierFactory;

@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Controller\Admin;
+
 use vxPHP\User\Exception\UserException;
 use vxPHP\Application\Application;
 use vxPHP\Session\Session;

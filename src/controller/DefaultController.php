@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Controller;
+
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\Exception\HttpException;

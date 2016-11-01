@@ -11,8 +11,8 @@
 	],
 
 	"require": {
-		"php":					">=5.3.10",
+		"php":					">=5.6.0",
 		"vectrex/vxphp":		"dev-master",
 		"ckeditor/ckeditor":	"dev-standard/stable"
-	},
+	}
 }

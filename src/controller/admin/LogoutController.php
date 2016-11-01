@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Controller\Admin;
+
 use vxPHP\Controller\Controller;
 use vxPHP\User\User;
 use vxPHP\Routing\Router;
