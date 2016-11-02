@@ -10,7 +10,6 @@ use vxPHP\Controller\Controller;
 
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
-use vxPHP\Form\Validator\DateTime;
 
 use vxPHP\File\MetaFile;
 
@@ -28,6 +27,8 @@ use vxPHP\User\User;
 use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Database\MysqlPDOUtil;
+use vxPHP\Constraint\Validator\Date;
+use vxPHP\Application\Locale\Locale;
 
 class ArticlesController extends Controller {
 
@@ -216,12 +217,12 @@ class ArticlesController extends Controller {
 					->addElement(FormElementFactory::create('input', 'Headline', NULL, array(), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
 					->addElement(FormElementFactory::create('textarea', 'teaser', NULL, array(), array(), FALSE, array('trim', 'strip_tags')))
 					->addElement(FormElementFactory::create('textarea', 'content', NULL, array(), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
-					->addElement(FormElementFactory::create('input', 'Article_Date', NULL, array(), array(), FALSE, array('trim')))
-					->addElement(FormElementFactory::create('input', 'Display_from', NULL, array(), array(), FALSE, array('trim')))
-					->addElement(FormElementFactory::create('input', 'Display_until', NULL, array(), array(), FALSE, array('trim')))
+					->addElement(FormElementFactory::create('input', 'Article_Date', NULL, [], [], FALSE, ['trim'], [new Date(TRUE, ['locale' => new Locale('de')])]))
+					->addElement(FormElementFactory::create('input', 'Display_from', NULL, [], [], FALSE, ['trim'], [new Date(TRUE, ['locale' => new Locale('de')])]))
+					->addElement(FormElementFactory::create('input', 'Display_until', NULL, [], [], FALSE, ['trim'], [new Date(TRUE, ['locale' => new Locale('de')])]))
 					->addElement(FormElementFactory::create('input', 'customSort', NULL, array(), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)));
 						
-				// @todo allow CSRF token; currently the action mismatch between initial form and XHR form request prevent checking
+				// @todo allow CSRF token; currently the action mismatch between initial form and XHR form request prevents checking
 
 				$v = $form
 					->disableCsrfToken()
@@ -230,36 +231,21 @@ class ArticlesController extends Controller {
 					->getValidFormValues();
 
 				if($v['Article_Date'] != '') {
-					if(!DateTime::checkDate($v['Article_Date'])) {
-						$form->setError('Article_Date');
-					}
-					else {
-						$article->setDate(new \DateTime(MysqlPDOUtil::unFormatDate($v['Article_Date'], 'de')));
-					}
+					$article->setDate(new \DateTime(MysqlPDOUtil::unFormatDate($v['Article_Date'], 'de')));
 				}
 				else {
 					$article->setDate();
 				}
 
 				if($v['Display_from'] != '') {
-					if(!DateTime::checkDate($v['Display_from'])) {
-						$form->setError('Display_from');
-					}
-					else {
-						$article->setDisplayFrom(new \DateTime(MysqlPDOUtil::unFormatDate($v['Display_from'], 'de')));
-					}
+					$article->setDisplayFrom(new \DateTime(MysqlPDOUtil::unFormatDate($v['Display_from'], 'de')));
 				}
 				else {
 					$article->setDisplayFrom();
 				}
 
 				if($v['Display_until'] != '') {
-					if(!DateTime::checkDate($v['Display_until'])) {
-						$form->setError('Display_until');
-					}
-					else {
-						$article->setDisplayUntil(new \DateTime(MysqlPDOUtil::unFormatDate($v['Display_until'], 'de')));
-					}
+					$article->setDisplayUntil(new \DateTime(MysqlPDOUtil::unFormatDate($v['Display_until'], 'de')));
 				}
 				else {
 					$article->setDisplayUntil();
