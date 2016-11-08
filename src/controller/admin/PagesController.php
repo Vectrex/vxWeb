@@ -140,7 +140,7 @@ class PagesController extends Controller {
 							'id'			=> $revision->getId(),
 							'active'		=> $revision->isActive(),
 							'locale'		=> (string) $revision->getLocale(),
-							'firstCreated'	=> $revision->getFirstCreated()->format(DateTime::W3C)
+							'firstCreated'	=> $revision->getFirstCreated()->format(\DateTime::W3C)
 						);
 					}
 					return new JsonResponse(array('revisions' => $revisions));
