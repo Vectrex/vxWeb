@@ -84,7 +84,7 @@ class UsersController extends Controller {
 				$form->initVar('is_add', 1);
 			}
 
-			$admingroups = $connection->query('SELECT LOWER(alias) AS alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
+			$admingroups = $connection->query('SELECT LOWER(alias) AS alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(\PDO::FETCH_KEY_PAIR);
 
 			$form
 				->addElement(FormElementFactory::create('button', 'submit_user', '', ['type' => 'submit'])->setInnerHTML($submitLabel))
@@ -152,7 +152,7 @@ class UsersController extends Controller {
 		$admingroups = Application::getInstance()
 			->getDb()
 			->getConnection()
-			->query('SELECT alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(PDO::FETCH_KEY_PAIR);
+			->query('SELECT alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(\PDO::FETCH_KEY_PAIR);
 
 		$form = HtmlForm::create('admin_edit_user.htm')
 			->addElement(FormElementFactory::create('input',	'username',			NULL,	[],	[],	FALSE, ['trim'],				[Rex::NOT_EMPTY_TEXT]))
