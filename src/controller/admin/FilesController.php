@@ -31,6 +31,7 @@ use vxPHP\Application\Application;
 use vxPHP\User\User;
 use vxPHP\Orm\Custom\Article;
 use vxPHP\File\MimeTypeGetter;
+use vxWeb\FileUtil;
 
 /**
  *
@@ -471,7 +472,7 @@ class FilesController extends Controller {
 
 				// turn uploaded file into metafile, extract archive if neccessary
 
-				$uploadedFiles = vxWeb\FileUtil::processFileUpload($folder, $upload, $values->all(), !!$values->get('unpack_archives'));
+				$uploadedFiles = FileUtil::processFileUpload($folder, $upload, $values->all(), !!$values->get('unpack_archives'));
 
 				if(FALSE !== $uploadedFiles) {
 					
@@ -619,7 +620,7 @@ class FilesController extends Controller {
 
 	private function getFiles(MetaFolder $mf, array $fileColumns = NULL) {
 		
-		vxWeb\FileUtil::cleanupMetaFolder($mf);
+		FileUtil::cleanupMetaFolder($mf);
 
 		if(!$fileColumns) {
 			$fileColumns = $this->request->request->get('fileColumns', array('name', 'size', 'mime', 'mTime'));
