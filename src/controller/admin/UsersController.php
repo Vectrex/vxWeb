@@ -16,6 +16,7 @@ use vxPHP\User\Util;
 use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Constraint\Validator\RegularExpression;
+use vxPHP\Constraint\Validator\Email;
 
 class UsersController extends Controller {
 
@@ -157,7 +158,7 @@ class UsersController extends Controller {
 
 		$form = HtmlForm::create('admin_edit_user.htm')
 			->addElement(FormElementFactory::create('input',	'username',			NULL,	[],	[],	TRUE, ['trim'], 				[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-			->addElement(FormElementFactory::create('input',	'email',			NULL,	[],	[],	TRUE, ['trim', 'lowercase'],	[new RegularExpression(Rex::EMAIL)]))
+			->addElement(FormElementFactory::create('input',	'email',			NULL,	[],	[],	TRUE, ['trim', 'lowercase'],	[new Email()]))
 			->addElement(FormElementFactory::create('input',	'name',				NULL,	[],	[],	TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
 			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	[],	[],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')]))
 			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL))

@@ -16,6 +16,7 @@ use vxPHP\Template\SimpleTemplate;
 use vxPHP\Http\JsonResponse;
 use vxPHP\User\User;
 use vxPHP\Constraint\Validator\RegularExpression;
+use vxPHP\Constraint\Validator\Email;
 
 class ProfileController extends Controller {
 
@@ -29,7 +30,7 @@ class ProfileController extends Controller {
 		$form =
 			HtmlForm::create('admin_profile.htm')
 				->addElement(FormElementFactory::create('input',	'username',			$admin->getUsername(),	[],	[], TRUE, ['trim', 'lowercase'],	[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		[], [], TRUE, ['trim', 'lowercase'],	[new RegularExpression(Rex::EMAIL)]))
+				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		[], [], TRUE, ['trim', 'lowercase'],	[new Email()]))
 				->addElement(FormElementFactory::create('input',	'name',				$admin->getName(),		[], [], TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
 				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						[], [],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')]))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	''))
