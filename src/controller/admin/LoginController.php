@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use vxPHP\User\Exception\UserException;
 use vxPHP\Application\Application;
-use vxPHP\Session\Session;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Template\SimpleTemplate;
@@ -12,7 +11,6 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 use vxPHP\User\User;
-use vxPHP\Routing\Router;
 
 class LoginController extends Controller {
 
@@ -35,8 +33,8 @@ class LoginController extends Controller {
 
 		$form =
 			HtmlForm::create('admin_login.htm')
-				->addElement(FormElementFactory::create('input',	'UID',	'',	[],	[],	FALSE,	['trim']))
-				->addElement(FormElementFactory::create('password',	'pwd',	''))
+				->addElement(FormElementFactory::create('input',	'UID',	'',	[],	[],	TRUE, ['trim']))
+				->addElement(FormElementFactory::create('password',	'pwd',	'', [], [], TRUE, ['trim']))
 				->addElement(FormElementFactory::create('button',	'submit_login',	'',	['type' => 'submit'])->setInnerHTML('Login'));
 
 		// form was submitted by XHR
@@ -60,43 +58,7 @@ class LoginController extends Controller {
 
 		}
 
-		// non-XHR submission
-
 		else {
-
-			$form->bindRequestParameters();
-
-			if($form->wasSubmittedByName('submit_login')) {
-
-				$values = $form->getValidFormValues();
-
-				try {
-
-					$admin = User::getInstance($values['UID']);
-					$admin->authenticate($values['pwd']);
-
-					if(!$admin->isAuthenticated()) {
-						$form->setError('submit_login');
-					}
-
-					else {
-
-						$admin->storeInSession();
-						
-						$session = Session::getSessionDataBag();
-
-						if(($redir = $session->get('authViolatingUri'))) {
-							$session->remove('authViolatingUri');
-							return $this->redirect($redir);
-						}
-						return $this->redirect(Router::getRoute('profile', 'admin.php')->getUrl());
-					}
-				}
-
-				catch(UserException $e) {
-					$form->setError('submit_login');
-				}
-			}
 
 			return new Response(
 				SimpleTemplate::create('admin/login.php')

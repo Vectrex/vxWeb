@@ -15,7 +15,7 @@ use vxPHP\Http\Response;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Http\JsonResponse;
 use vxPHP\User\User;
-use vxPHP\User\Exception\UserException;
+use vxPHP\Constraint\Validator\RegularExpression;
 
 class ProfileController extends Controller {
 
@@ -28,10 +28,10 @@ class ProfileController extends Controller {
 
 		$form =
 			HtmlForm::create('admin_profile.htm')
-				->addElement(FormElementFactory::create('input',	'username',			$admin->getUsername(),	[],	[], FALSE, ['trim', 'lowercase'],	[Rex::NOT_EMPTY_TEXT]))
-				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		[], [], FALSE, ['trim', 'lowercase'],	[Rex::EMAIL]))
-				->addElement(FormElementFactory::create('input',	'name',				$admin->getName(),		[], [], FALSE, ['trim'],				[Rex::NOT_EMPTY_TEXT]))
-				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						[], [],	FALSE, [],						['/^(|[^\s].{4,}[^\s])$/']))
+				->addElement(FormElementFactory::create('input',	'username',			$admin->getUsername(),	[],	[], TRUE, ['trim', 'lowercase'],	[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		[], [], TRUE, ['trim', 'lowercase'],	[new RegularExpression(Rex::EMAIL)]))
+				->addElement(FormElementFactory::create('input',	'name',				$admin->getName(),		[], [], TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						[], [],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')]))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	''))
 				->addElement(FormElementFactory::create('button', 'submit_profile', '')->setInnerHTML('Änderungen speichern'))
 				->initVar('success', (int) end($this->pathSegments) === 'success')

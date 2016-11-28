@@ -7,32 +7,32 @@
 
 <div class="formSect">
  	<div class="formItem">
-		<label class="m{error_Article_Date: error}">Artikeldatum</label><div class="inputGroup inline">{input:Article_Date}<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
+		<label class="m{error_Article_Date: error}">Artikeldatum</label><div class="inputGroup inline">{input:Article_Date {"maxlength": "10", "class": "m"} }<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
 	</div>
  	<div class="formItem">
- 		<label class="m{error_Display_from: error}">Anzeige von</label><div class="inputGroup inline">{input:Display_from}<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
+ 		<label class="m{error_Display_from: error}">Anzeige von</label><div class="inputGroup inline">{input:Display_from {"maxlength": "10", "class": "m"} }<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
 	</div>
  	<div class="formItem">
-		<label class="m{error_Display_until: error}">Anzeige bis</label><div class="inputGroup inline">{input:Display_until}<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
+		<label class="m{error_Display_until: error}">Anzeige bis</label><div class="inputGroup inline">{input:Display_until {"maxlength": "10", "class": "m"} }<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
 	</div>
  	<div class="formItem">
-		<label class="m{error_customSort: error}">generische Sortierung</label>{input:customSort}
+		<label class="m{error_customSort: error}">generische Sortierung</label>{input:customSort {"maxlength": "4", "class": "s"} }
 	</div>
  	<div class="formItem">
-		<label class="m{error_articlecategoriesID: error}"><strong>*Kategorie</strong></label>{dropdown:articlecategoriesID}
+		<label class="m{error_articlecategoriesID: error}"><strong>*Kategorie</strong></label>{dropdown:articlecategoriesID {"size": "1", "class": "xxl"} }
 	</div>
 	<div class="formItem">
-		<label class="m{error_Headline: error}"><strong>*Überschrift/Titel</strong></label>{textarea:Headline}
+		<label class="m{error_Headline: error}"><strong>*Überschrift/Titel</strong></label>{input:Headline {"maxlength": "200", "class": "xxl"} }
 	</div>
 	<div class="formItem">
-		<label class="m{error_teaser: error}" style="vertical-align: top;">Anrisstext</label>{textarea:teaser}
+		<label class="m{error_teaser: error}" style="vertical-align: top;">Anrisstext</label>{textarea:teaser {"rows": "3", "cols": "40", "class": "xxl"} }
 	</div>
 	<div class="formItem">
-		<label class="m{error_content: error}" style="vertical-align: top;"><strong>*Seiteninhalt</strong></label>{textarea:content}
+		<label class="m{error_content: error}" style="vertical-align: top;"><strong>*Seiteninhalt</strong></label>{textarea:content {"rows": "10", "cols": "40", "class": "xxl"} }
 	</div>
 </div>
 <div class="formBase">
 	<div class="formItem">
-			<label class="m"></label>{input:submit_article}
+			<label class="m"></label>{button:submit_article {"type": "submit"} }
 	</div>
 </div>

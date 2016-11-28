@@ -9,7 +9,6 @@ use vxPHP\Template\Filter\ShortenText;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
-use vxPHP\Application\Application;
 use vxPHP\User\User;
 use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
@@ -19,6 +18,8 @@ use vxWeb\Orm\Page\Page;
 use vxWeb\Orm\Page\PageException;
 use vxPHP\Application\Locale\Locale;
 use vxWeb\Orm\Page\Revision;
+use vxPHP\Constraint\Validator\RegularExpression;
+use vxPHP\Util\Rex;
 
 class PagesController extends Controller {
 
@@ -41,14 +42,8 @@ class PagesController extends Controller {
 				return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl());
 			}
 
-			$form = HtmlForm::create('admin_edit_page.htm')
-				->addElement(FormElementFactory::create('input',	'Title',		NULL, array('maxlength' => 128, 'class' => 'pct_100'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('input',	'Alias',		NULL, array('maxlength' => 64, 'class' => 'pct_100'), array(), TRUE, array('trim', 'uppercase')))
-				->addElement(FormElementFactory::create('textarea', 'Keywords',		NULL, array('rows' => 4, 'cols' => '30', 'class' => 'pct_100'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('textarea', 'Description',	NULL, array('rows' => 4, 'cols' => '30', 'class' => 'pct_100'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('textarea', 'Markup',		NULL, array('rows' => 20, 'cols' => 40, 'class' => 'pct_100'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('button', 'submit_page', '', array('type' => 'submit'))->setInnerHTML('Änderungen übernehmen und neue Revision erzeugen'));
-				
+			$form = $this->buildEditForm();
+
 			return new Response(
 				SimpleTemplate::create('admin/page_edit.php')
 					->assign('form', $form->render())
@@ -77,12 +72,9 @@ class PagesController extends Controller {
 			
 			if($revisionId = $this->request->request->getInt('revisionId')) {
 				
-				$form = HtmlForm::create()
-					->addElement(FormElementFactory::create('input',	'Title',		NULL, array(), array(), FALSE, array('trim')))
-					->addElement(FormElementFactory::create('textarea', 'Keywords',		NULL, array(), array(), FALSE, array('trim')))
-					->addElement(FormElementFactory::create('textarea', 'Description',	NULL, array(), array(), FALSE, array('trim')))
-					->addElement(FormElementFactory::create('textarea', 'Markup',		NULL, array(), array(), FALSE, array('trim')))
-					->bindRequestParameters();
+				$form = $this->buildEditForm();
+
+				$form->bindRequestParameters();
 
 				if(!$form->getFormErrors()) {
 					$v = $form->getValidFormValues();
@@ -104,21 +96,24 @@ class PagesController extends Controller {
 
 						$revision->getPage()->exportActiveRevision();
 
-						return new JsonResponse(array(
-							'data'		=> array(
+						return new JsonResponse([
+							'data'		=> [
 								'id'			=> $revision->getId(),
 								'alias'			=> $revision->getPage()->getAlias(),
 								'title'			=> $revision->getTitle(),
 								'markup' 		=> $revision->getMarkup(),
 								'description'	=> $revision->getDescription(),
 								'keywords'		=> $revision->getKeywords()
-							),
+							],
 							'success'	=> TRUE,
 							'message'	=> 'Aktualisierte Revision gespeichert und aktiviert.'
-						));
+						]);
 					}
 					
-					return new JsonResponse(array('success' => FALSE, 'message' => 'Keine Änderungen erkannt, keine aktualisierte Revision gespeichert.'));
+					return new JsonResponse([
+						'success' => FALSE,
+						'message' => 'Keine Änderungen erkannt, keine aktualisierte Revision gespeichert.'
+					]);
 
 				}
 				
@@ -133,31 +128,31 @@ class PagesController extends Controller {
 	
 				case 'getRevisions':
 	
-					$revisions = array();
+					$revisions = [];
 	
 					foreach($page->getRevisions() as $revision) {
-						$revisions[] = array(
+						$revisions[] = [
 							'id'			=> $revision->getId(),
 							'active'		=> $revision->isActive(),
 							'locale'		=> (string) $revision->getLocale(),
 							'firstCreated'	=> $revision->getFirstCreated()->format(\DateTime::W3C)
-						);
+						];
 					}
-					return new JsonResponse(array('revisions' => $revisions));
+					return new JsonResponse(['revisions' => $revisions]);
 					
 				case 'getRevisionData':
 	
 					$id			= $request->getInt('id');
 					$revision	= Revision::getInstance($id);
 
-					return new JsonResponse(array(
+					return new JsonResponse([
 						'id'			=> $id,
 						'alias'			=> $page->getAlias(),
 						'title'			=> $revision->getTitle(),
 						'markup' 		=> $revision->getMarkup(),
 						'description'	=> $revision->getDescription(),
 						'keywords'		=> $revision->getKeywords()
-					));
+					]);
 					
 				case 'changeActivationOfRevision':
 					
@@ -165,7 +160,7 @@ class PagesController extends Controller {
 					$activate = (boolean) $request->getInt('activate');
 
 					if($activate === $revision->isActive()) {
-						return new JsonResponse(array('success' => TRUE));
+						return new JsonResponse(['success' => TRUE]);
 					}
 
 					$revision->setActive($activate);
@@ -174,18 +169,18 @@ class PagesController extends Controller {
 						$page->exportActiveRevision();
 					}
 
-					return new JsonResponse(array('success' => TRUE));
-					
+					return new JsonResponse(['success' => TRUE]);
+						
 				case 'deleteRevision':
 
 					$revision = Revision::getInstance($request->getInt('id'))->delete();
-					return new JsonResponse(array('success' => TRUE));
+					return new JsonResponse(['success' => TRUE]);
 
 			}
 		}
 			
 		catch (PageException $e) {
-			return new JsonResponse(array('success' => FALSE, 'message' => $e->getMessage()));
+			return new JsonResponse(['success' => FALSE, 'message' => $e->getMessage()]);
 		}
 
 	}
@@ -206,4 +201,15 @@ class PagesController extends Controller {
 		}
 	}
 
+	private function buildEditForm() {
+		
+		return HtmlForm::create('admin_edit_page.htm')
+			->addElement(FormElementFactory::create('input',	'Title',		NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+			->addElement(FormElementFactory::create('input',	'Alias',		NULL, [], [], FALSE, ['trim', 'uppercase']))
+			->addElement(FormElementFactory::create('textarea', 'Keywords',		NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('textarea', 'Description',	NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('textarea', 'Markup',		NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('button', 'submit_page')->setInnerHTML('Änderungen übernehmen und neue Revision erzeugen'));
+
+	}
 }

@@ -15,6 +15,7 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\User\Util;
 use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
+use vxPHP\Constraint\Validator\RegularExpression;
 
 class UsersController extends Controller {
 
@@ -155,12 +156,12 @@ class UsersController extends Controller {
 			->query('SELECT alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(\PDO::FETCH_KEY_PAIR);
 
 		$form = HtmlForm::create('admin_edit_user.htm')
-			->addElement(FormElementFactory::create('input',	'username',			NULL,	[],	[],	FALSE, ['trim'],				[Rex::NOT_EMPTY_TEXT]))
-			->addElement(FormElementFactory::create('input',	'email',			NULL,	[],	[],	FALSE, ['trim', 'lowercase'],	[Rex::EMAIL]))
-			->addElement(FormElementFactory::create('input',	'name',				NULL,	[],	[],	FALSE, ['trim'],				[Rex::NOT_EMPTY_TEXT]))
-			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	[],	[],	FALSE, [],						['/^(|[^\s].{4,}[^\s])$/']))
+			->addElement(FormElementFactory::create('input',	'username',			NULL,	[],	[],	TRUE, ['trim'], 				[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+			->addElement(FormElementFactory::create('input',	'email',			NULL,	[],	[],	TRUE, ['trim', 'lowercase'],	[new RegularExpression(Rex::EMAIL)]))
+			->addElement(FormElementFactory::create('input',	'name',				NULL,	[],	[],	TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	[],	[],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')]))
 			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL))
-			->addElement(FormElementFactory::create('select',	'admingroup',		NULL,	[],	[],	FALSE, [],						['/^(' . implode('|', array_keys($admingroups)) . ')$/i']));
+			->addElement(FormElementFactory::create('select',	'admingroup',		NULL,	[],	[],	TRUE, [],						[new RegularExpression('/^(' . implode('|', array_keys($admingroups)) . ')$/i')]));
 		
 		$v = $form
 				->disableCsrfToken()

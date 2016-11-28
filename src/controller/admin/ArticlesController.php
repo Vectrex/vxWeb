@@ -29,6 +29,7 @@ use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Database\MysqlPDOUtil;
 use vxPHP\Constraint\Validator\Date;
 use vxPHP\Application\Locale\Locale;
+use vxPHP\Constraint\Validator\RegularExpression;
 
 class ArticlesController extends Controller {
 
@@ -75,13 +76,11 @@ class ArticlesController extends Controller {
 
 			// fill category related properties - replacing default method allows user privilege considerations
 
-			$categories = $this->getArticleCategories();
-
-			$articleForm = HtmlForm::create('admin_edit_article.htm')->setAttribute('class', 'editArticleForm');
+			$articleForm = $this->buildEditForm();
 
 			if(isset($article)) {
 
-				$articleForm->setInitFormValues(array(
+				$articleForm->setInitFormValues([
 					'articlecategoriesID'	=> $article->getCategory()->getId(),
 					'Headline'				=> $article->getHeadline(),
 					'customSort'			=> $article->getCustomSort(),
@@ -90,7 +89,7 @@ class ArticlesController extends Controller {
 					'Article_Date'			=> is_null($article->getDate())			? '' : $article->getDate()->format('d.m.Y'),
 					'Display_from'			=> is_null($article->getDisplayFrom())	? '' : $article->getDisplayFrom()->format('d.m.Y'),
 					'Display_until'			=> is_null($article->getDisplayUntil())	? '' : $article->getDisplayUntil()->format('d.m.Y')
-				));
+				]);
 
 				$submitLabel = 'Änderungen übernehmen';
 
@@ -103,16 +102,7 @@ class ArticlesController extends Controller {
 				$articleForm->initVar('is_add', 1);
 			}
 
-			$articleForm
-				->addElement(FormElementFactory::create('select', 'articlecategoriesID', NULL, array('size' => 1, 'class' => 'xxl'), $categories, FALSE, array(), array(Rex::INT_EXCL_NULL)))
-				->addElement(FormElementFactory::create('input', 'Headline', NULL, array('maxlength' => 200, 'class' => 'xxl'), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
-				->addElement(FormElementFactory::create('textarea', 'teaser', NULL, array('rows' => 3, 'cols' => 40, 'class' => 'xxl'), array(), FALSE, array('trim', 'strip_tags')))
-				->addElement(FormElementFactory::create('textarea', 'content', NULL, array('rows' => 10, 'cols' => 40, 'class' => 'xxl'), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
-				->addElement(FormElementFactory::create('input', 'Article_Date', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('input', 'Display_from', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('input', 'Display_until', NULL, array('maxlength' => 10, 'class' => 'm'), array(), FALSE, array('trim')))
-				->addElement(FormElementFactory::create('input', 'customSort', NULL, array('maxlength' => 4, 'class' => 's'), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)))
-				->addElement(FormElementFactory::create('button', 'submit_article', '', array('type' => 'submit'))->setInnerHTML($submitLabel));
+			$articleForm->addElement(FormElementFactory::create('button', 'submit_article')->setInnerHTML($submitLabel));
 
 			$articleForm->bindRequestParameters();
 
@@ -177,11 +167,11 @@ class ArticlesController extends Controller {
 				else {
 					$article->unpublish()->save();
 				}
-				return new JsonResponse(array('success' => TRUE));
+				return new JsonResponse(['success' => TRUE]);
 			}
 		}
 		catch(\Exception $e) {
-			return new JsonResponse(array('success' => FALSE, 'error' => $e->getMessage()));
+			return new JsonResponse(['success' => FALSE, 'error' => $e->getMessage()]);
 		}
 	}
 
@@ -212,15 +202,7 @@ class ArticlesController extends Controller {
 
 			case 'checkForm':
 
-				$form = HtmlForm::create()
-					->addElement(FormElementFactory::create('select', 'articlecategoriesID', NULL, array(), array(), FALSE, array(), array(Rex::INT_EXCL_NULL)))
-					->addElement(FormElementFactory::create('input', 'Headline', NULL, array(), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
-					->addElement(FormElementFactory::create('textarea', 'teaser', NULL, array(), array(), FALSE, array('trim', 'strip_tags')))
-					->addElement(FormElementFactory::create('textarea', 'content', NULL, array(), array(), FALSE, array('trim'), array(Rex::NOT_EMPTY_TEXT)))
-					->addElement(FormElementFactory::create('input', 'Article_Date', NULL, [], [], FALSE, ['trim'], [new Date(TRUE, ['locale' => new Locale('de')])]))
-					->addElement(FormElementFactory::create('input', 'Display_from', NULL, [], [], FALSE, ['trim'], [new Date(TRUE, ['locale' => new Locale('de')])]))
-					->addElement(FormElementFactory::create('input', 'Display_until', NULL, [], [], FALSE, ['trim'], [new Date(TRUE, ['locale' => new Locale('de')])]))
-					->addElement(FormElementFactory::create('input', 'customSort', NULL, array(), array(), FALSE, array('trim'), array(Rex::EMPTY_OR_INT_EXCL_NULL)));
+				$form = $this->buildEditForm();
 						
 				// @todo allow CSRF token; currently the action mismatch between initial form and XHR form request prevents checking
 
@@ -256,11 +238,11 @@ class ArticlesController extends Controller {
 				if(!empty($errors)) {
 					$texts	= $form->getErrorTexts();
 
-					$response = array();
+					$response = [];
 					foreach(array_keys($errors) as $err) {
-						$response[] = array('name' => $err, 'error' => 1, 'errorText' => isset($texts[$err]) ? $texts[$err] : NULL);
+						$response[] = ['name' => $err, 'error' => 1, 'errorText' => isset($texts[$err]) ? $texts[$err] : NULL];
 					}
-					return new JsonResponse(array('elements' => $response));
+					return new JsonResponse(['elements' => $response]);
 				}
 
 				try {
@@ -280,25 +262,25 @@ class ArticlesController extends Controller {
 					if($article->wasChanged()) {
 						$article->save();
 						if(!$id) {
-							return new JsonResponse(array(
+							return new JsonResponse([
 								'success' => TRUE,
 								'id' => $article->getId()
-							));
+							]);
 						}
 						else {
-							return new JsonResponse(array('success' => TRUE));
+							return new JsonResponse(['success' => TRUE]);
 						}
 					}
 
 					else {
-						return new JsonResponse(array('success' => TRUE, 'message' =>'Keine Änderung, nichts gespeichert!'));
+						return new JsonResponse(['success' => TRUE, 'message' =>'Keine Änderung, nichts gespeichert!']);
 					}
 				}
 				catch(ArticleException $e) {
-					return new JsonResponse(array('message' => 'Beim Anlegen/Aktualisieren des Artikels ist ein Fehler aufgetreten!'));
+					return new JsonResponse(['message' => 'Beim Anlegen/Aktualisieren des Artikels ist ein Fehler aufgetreten!']);
 				}
 				catch(ArticleCategoryException $e) {
-					return new JsonResponse(array('message' => 'Beim Anlegen/Aktualisieren des Artikels ist ein Fehler aufgetreten!'));
+					return new JsonResponse(['message' => 'Beim Anlegen/Aktualisieren des Artikels ist ein Fehler aufgetreten!']);
 				}
 
 			case 'sortFiles':
@@ -314,20 +296,20 @@ class ArticlesController extends Controller {
 				
 			case 'getFiles':
 
-				$rows = array();
+				$rows = [];
 
 				foreach(Article::getInstance($this->request->request->getInt('articlesId'))->getLinkedMetaFiles() as $mf) {
-					$rows[] = array(
+					$rows[] = [
 						'id'		=> $mf->getId(),
 						'folderId'	=> $mf->getMetaFolder()->getId(),
 						'filename'	=> $mf->getFilename(),
 						'isThumb'	=> $mf->isWebImage(),
 						'type'		=> $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
 						'path'		=> $mf->getMetaFolder()->getRelativePath()
-					);
+					];
 				}
 
-				return new JsonResponse(array('files' => $rows));
+				return new JsonResponse(['files' => $rows]);
 
 				break;
 				
@@ -335,19 +317,6 @@ class ArticlesController extends Controller {
 
 		return new JsonResponse();
 
-	}
-
-	/**
-	 * @return array
-	 */
-	private function getArticleCategories() {
-		$categories = array('-1' => 'Bitte Kategorie wählen...');
-
-		foreach(ArticleCategory::getArticleCategories('sortByCustomSort') as $c) {
-			$categories[$c->getId()] = $c->getTitle();
-		}
-
-		return $categories;
 	}
 
 	/**
@@ -359,6 +328,32 @@ class ArticlesController extends Controller {
 	}
 
 	/**
+	 * build edit form
+	 * 
+	 * @return \vxPHP\Form\HtmlForm
+	 */
+	private function buildEditForm() {
+
+		$categories = ['-1' => 'Bitte Kategorie wählen...'];
+		
+		foreach(ArticleCategory::getArticleCategories('sortByCustomSort') as $c) {
+			$categories[$c->getId()] = $c->getTitle();
+		}
+
+		return HtmlForm::create('admin_edit_article.htm')
+			->setAttribute('class', 'editArticleForm')
+			->addElement(FormElementFactory::create('select', 'articlecategoriesID', NULL, [], $categories, TRUE, [], [new RegularExpression(Rex::INT_EXCL_NULL)]))
+			->addElement(FormElementFactory::create('input', 'Headline', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+			->addElement(FormElementFactory::create('textarea', 'teaser', NULL, [], [], FALSE, ['trim', 'strip_tags']))
+			->addElement(FormElementFactory::create('textarea', 'content', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+			->addElement(FormElementFactory::create('input', 'Article_Date', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
+			->addElement(FormElementFactory::create('input', 'Display_from', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
+			->addElement(FormElementFactory::create('input', 'Display_until', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
+			->addElement(FormElementFactory::create('input', 'customSort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)]));
+
+	}
+
+	/**
 	 * @param MetaFile $f
 	 * @return string
 	 */
@@ -367,7 +362,7 @@ class ArticlesController extends Controller {
 		// check and - if required - generate thumbnail
 
 		$fi			= $f->getFileInfo();
-		$actions	= array('crop 1', 'resize 0 40');
+		$actions	= ['crop 1', 'resize 0 40'];
 		$dest		=
 			$f->getMetaFolder()->getFilesystemFolder()->createCache() .
 			$fi->getFilename() .
@@ -385,7 +380,7 @@ class ArticlesController extends Controller {
 				$method = array_shift($params);
 
 				if(method_exists($imgEdit, $method)) {
-					call_user_func_array(array($imgEdit, $method), $params);
+					call_user_func_array([$imgEdit, $method], $params);
 				}
 			}
 

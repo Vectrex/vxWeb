@@ -32,6 +32,7 @@ use vxPHP\User\User;
 use vxPHP\Orm\Custom\Article;
 use vxPHP\File\MimeTypeGetter;
 use vxWeb\FileUtil;
+use vxPHP\Constraint\Validator\RegularExpression;
 
 /**
  *
@@ -248,10 +249,10 @@ class FilesController extends Controller {
 					$article = Article::getInstance($this->request->request->getInt('articlesId'));
 					$article->linkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('file')));
 					$article->save();
-					$response = array('error' => FALSE);
+					$response = ['error' => FALSE];
 				}
 				catch(\Exception $e) {
-					$response = array('error' => $e->getMessage());
+					$response = ['error' => $e->getMessage()];
 				}
 				break;
 
@@ -262,10 +263,10 @@ class FilesController extends Controller {
 					$article = Article::getInstance($this->request->request->getInt('articlesId'));
 					$article->unlinkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('file')));
 					$article->save();
-					$response = array('error' => FALSE);
+					$response = ['error' => FALSE];
 				}
 				catch(\Exception $e) {
-					$response = array('error' => $e->getMessage());
+					$response = ['error' => $e->getMessage()];
 				}
 				break;
 
@@ -308,17 +309,17 @@ class FilesController extends Controller {
 			// return form for adding new file(delivered only once)
 
 			case 'requestAddForm':
-				$response = array('html' => $this->getAddForm()->render());
+				$response = ['html' => $this->getAddForm()->render()];
 				break;
 
 			// get complete folder tree
 
 			case 'getFolderTree':
-				$response = array(
-					'branches' => array(
+				$response = [
+					'branches' => [
 						$this->getFolderTree(($id = $this->request->request->getInt('file')) ? MetaFile::getInstance(NULL, $id)->getMetafolder() : NULL)
-					)
-				);
+					]
+				];
 				break;
 
 			// return form for editing file
@@ -330,10 +331,10 @@ class FilesController extends Controller {
 					ImageCache::create()->apply($markup);
 					AssetsPath::create()->apply($markup);
 
-					$response = array('html' => $markup);
+					$response = ['html' => $markup];
 				}
 				else {
-					$response = array('error' => TRUE);
+					$response = ['error' => TRUE];
 				}
 				break;
 
@@ -357,18 +358,18 @@ class FilesController extends Controller {
 				else {
 					$e = [];
 					foreach(array_keys($errors) as $k) {
-						$e[] = array('name' => $k, 'error' => 1);
+						$e[] = ['name' => $k, 'error' => 1];
 					}
 
-					$response = array(
+					$response = [
 						'elements' => $e,
-						'msgBoxes' => array(
-							array(
+						'msgBoxes' => [
+							[
 								'id' => 'general',
-								'elements' => array(array('html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>'))
-							)
-						)
-					);
+								'elements' => [['html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>']]
+							]
+						]
+					];
 				}
 				break;
 
@@ -384,23 +385,23 @@ class FilesController extends Controller {
 					->validate()
 					->getFormErrors()
 				)) {
-					$response = array('command' => 'submit');
+					$response = ['command' => 'submit'];
 				}
 				else {
 					$e = [];
 					foreach(array_keys($errors) as $k) {
-						$e[] = array('name' => $k, 'error' => 1);
+						$e[] = ['name' => $k, 'error' => 1];
 					}
 
-					$response = array(
+					$response = [
 						'elements' => $e,
-						'msgBoxes' => array(
-							array(
+						'msgBoxes' => [
+							[
 								'id' => 'general',
-								'elements' => array(array('html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>'))
-							)
-						)
-					);
+								'elements' => [['html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>']]
+							]
+						]
+					];
 				}
 				break;
 
@@ -413,20 +414,20 @@ class FilesController extends Controller {
 				// was a file uploaded at all?
 
 				if($upload === NULL) {
-					$response = array(
-						'msgBoxes' => array(
-							array(
+					$response = [
+						'msgBoxes' => [
+							[
 								'id' => 'general',
-								'elements' => array(
-									array(
+								'elements' => [
+									[
 										'node' => 'div',
-										'properties' => array('className' => 'errorBox'),
-										'childnodes' => array(array('text' => 'Es wurde keine Datei zum Upload angegeben!'))
-									)
-								)
-							)
-						)
-					);
+										'properties' => ['className' => 'errorBox'],
+										'childnodes' => [['text' => 'Es wurde keine Datei zum Upload angegeben!']]
+									]
+								]
+							]
+						]
+					];
 					break;
 				}
 
@@ -437,20 +438,20 @@ class FilesController extends Controller {
 				}
 				
 				catch(FilesystemFileException $e) {
-					$response = array(
-						'msgBoxes' => array(
-							array(
+					$response = [
+						'msgBoxes' => [
+							[
 								'id' => 'general',
-								'elements' => array(
-									array(
+								'elements' => [
+									[
 										'node' => 'div',
-										'properties' => array('className' => 'errorBox'),
-										'childnodes' => array(array('text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'))
-									)
-								)
-							)
-						)
-					);
+										'properties' => ['className' => 'errorBox'],
+										'childnodes' => [['text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!']]
+									]
+								]
+							]
+						]
+					];
 					break;
 				}
 
@@ -462,9 +463,9 @@ class FilesController extends Controller {
 				unset($_FILES['File']);
 
 				$form = HtmlForm::create()
-					->addElement(FormElementFactory::create('input', 'Title', '', [], [], FALSE, array('trim')))
-					->addElement(FormElementFactory::create('input', 'Subtitle', '', [], [], FALSE, array('trim')))
-					->addElement(FormElementFactory::create('input', 'customSort', '', [], [], FALSE, array('trim'), array(Rex::EMPTY_OR_INT)))
+					->addElement(FormElementFactory::create('input', 'Title', '', [], [], FALSE, ['trim']))
+					->addElement(FormElementFactory::create('input', 'Subtitle', '', [], [], FALSE, ['trim']))
+					->addElement(FormElementFactory::create('input', 'customSort', '', [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
 					->addElement(FormElementFactory::create('textarea', 'Description', ''))
 					->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1));
 
@@ -472,7 +473,7 @@ class FilesController extends Controller {
 
 				// turn uploaded file into metafile, extract archive if neccessary
 
-				$uploadedFiles = FileUtil::processFileUpload($folder, $upload, $values->all(), !!$values->get('unpack_archives'));
+				$uploadedFiles = FileUtil::processFileUpload($folder, $upload, $values->all(), (bool) $values->get('unpack_archives'));
 
 				if(FALSE !== $uploadedFiles) {
 					
@@ -491,24 +492,24 @@ class FilesController extends Controller {
 						}
 					}
 
-					$response = array('success' => TRUE);
+					$response = ['success' => TRUE];
 				}
 
 				else {
-					$response = array(
-						'msgBoxes' => array(
-							array(
+					$response = [
+						'msgBoxes' => [
+							[
 								'id' => 'general',
-								'elements' => array(
-									array(
+								'elements' => [
+									[
 										'node' => 'div',
-										'properties' => array('className' => 'errorBox'),
-										'childnodes' => array(array('text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'))
-									)
-								)
-							)
-						)
-					);
+										'properties' => ['className' => 'errorBox'],
+										'childnodes' => [['text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!']]
+									]
+								]
+							]
+						]
+					];
 				}
 
 				// avoid browser-side decoration of response with <pre> tags, since this response will end up in an IFrame
@@ -536,15 +537,15 @@ class FilesController extends Controller {
 
 				$metaData = $file->getData();
 
-				return array(
+				return [
 					'filename' => $file->getMetaFilename(),
-					'elements' => array('html' => "<span title='{$metaData['Title']}'>{$file->getMetaFilename()}</span>"),
+					'elements' => ['html' => "<span title='{$metaData['Title']}'>{$file->getMetaFilename()}</span>"],
 					'error' => FALSE
-				);
+				];
 			}
 		}
 		catch (MetaFileException $e) {
-			return array('error' => $e->getMessage());
+			return ['error' => $e->getMessage()];
 		}
 	}
 
@@ -564,7 +565,7 @@ class FilesController extends Controller {
 		}
 
 		catch (MetaFileException $e) {
-			return array('error' => $e->getMessage());
+			return ['error' => $e->getMessage()];
 		}
 	}
 
@@ -584,7 +585,7 @@ class FilesController extends Controller {
 			}
 		}
 		catch (\Exception $e) {
-			return array('error' => $e->getMessage());
+			return ['error' => $e->getMessage()];
 		}
 	}
 
@@ -595,7 +596,7 @@ class FilesController extends Controller {
 			return $this->getFiles($folder);
 		}
 		catch (\Exception $e) {
-			return array('error' => $e->getMessage());
+			return ['error' => $e->getMessage()];
 		}
 	}
 
@@ -614,7 +615,7 @@ class FilesController extends Controller {
 			}
 		}
 		catch (\Exception $e) {
-			return array('error' => $e->getMessage());
+			return ['error' => $e->getMessage()];
 		}
 	}
 
@@ -623,34 +624,34 @@ class FilesController extends Controller {
 		FileUtil::cleanupMetaFolder($mf);
 
 		if(!$fileColumns) {
-			$fileColumns = $this->request->request->get('fileColumns', array('name', 'size', 'mime', 'mTime'));
+			$fileColumns = $this->request->request->get('fileColumns', ['name', 'size', 'mime', 'mTime']);
 		}
 
 		$folders	= $this->getFolderList($mf);
 		$files		= $this->getFileList($mf, $fileColumns);
 
-		$pathSegments = array(array('name' => $mf->getName(), 'id' => $mf->getId()));
+		$pathSegments = [['name' => $mf->getName(), 'id' => $mf->getId()]];
 
 		while(($mf = $mf->getParentMetafolder())) {
-			array_unshift($pathSegments, array('name' => $mf->getName(), 'id' => $mf->getId()));
+			array_unshift($pathSegments, ['name' => $mf->getName(), 'id' => $mf->getId()]);
 		}
 
 		switch($this->route->getRouteId()) {
 
 			case 'filepickerXhr':
-				$fileFunctions = array('rename', 'edit', 'move', 'del', 'forward');
+				$fileFunctions = ['rename', 'edit', 'move', 'del', 'forward'];
 				break;
 
 			default:
-				$fileFunctions = array('rename', 'edit', 'move', 'del');
+				$fileFunctions = ['rename', 'edit', 'move', 'del'];
 		}
 
-		return array(
+		return [
 			'pathSegments'	=> $pathSegments,
 			'folders'		=> $folders,
 			'files'			=> $files,
 			'fileFunctions'	=> $fileFunctions
-		);
+		];
 	}
 
 	private function getAddForm() {
@@ -661,7 +662,7 @@ class FilesController extends Controller {
 			->setAttribute('class', 'editFileForm')
 			->addElement(FormElementFactory::create('input', 'Title', '', [], [], FALSE, ['trim']))
 			->addElement(FormElementFactory::create('input', 'Subtitle', '', [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('input', 'customSort', '', [], [], FALSE, ['trim'], [Rex::EMPTY_OR_INT]))
+			->addElement(FormElementFactory::create('input', 'customSort', '', [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
 			->addElement(FormElementFactory::create('input', 'File', '', ['type' => 'file']))
 			->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1))
 			->addElement(FormElementFactory::create('textarea', 'Description'))
@@ -710,7 +711,7 @@ class FilesController extends Controller {
 			->setAttribute('class', 'editFileForm')
 			->addElement(FormElementFactory::create('input', 'Title', NULL, [], [], FALSE, ['trim']))
 			->addElement(FormElementFactory::create('input', 'Subtitle', NULL, [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('input', 'customSort', NULL, [], [], FALSE, ['trim'], [Rex::EMPTY_OR_INT]))
+			->addElement(FormElementFactory::create('input', 'customSort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
 			->addElement(FormElementFactory::create('textarea', 'Description'))
 			->addElement(FormElementFactory::create('button', 'submit_edit')->setInnerHTML('Speichern'))
 			->addElement(FormElementFactory::create('button', 'submit_cancel')->setInnerHTML('Abbrechen'))
@@ -746,13 +747,13 @@ class FilesController extends Controller {
 
 			$isImage	= $f->isWebImage();
 			$metaData	= $f->getData();
-			$file		= array('columns' => [], 'id' => $f->getId(), 'filename' => $f->getMetaFilename());
+			$file		= ['columns' => [], 'id' => $f->getId(), 'filename' => $f->getMetaFilename()];
 
 			foreach($columns as $c) {
 
 				switch($c) {
 					case 'name':
-						$file['columns'][] = array('html' => sprintf('<span title="%s">%s</span>', $metaData['Title'], $f->getMetaFilename()));
+						$file['columns'][] = ['html' => sprintf('<span title="%s">%s</span>', $metaData['Title'], $f->getMetaFilename())];
 						break;
 
 					case 'size':
@@ -769,7 +770,7 @@ class FilesController extends Controller {
 							// check and - if required - generate thumbnail
 
 							$fi			= $f->getFileInfo();
-							$actions	= array('crop 1', 'resize 0 40');
+							$actions	= ['crop 1', 'resize 0 40'];
 							$dest		=
 								$folder->getFilesystemFolder()->createCache() .
 								"{$fi->getFilename()}@" .
@@ -785,13 +786,13 @@ class FilesController extends Controller {
 
 									$method = array_shift($params);
 									if(method_exists($imgEdit, $method)) {
-										call_user_func_array(array($imgEdit, $method), $params);
+										call_user_func_array([$imgEdit, $method], $params);
 									}
 								}
 								$imgEdit->export($dest);
 							}
 
-							$file['columns'][] = array('html' => '<img class="thumb" src="' . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) . '" alt="" />');
+							$file['columns'][] = ['html' => '<img class="thumb" src="' . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) . '" alt="" />'];
 						}
 
 						else {
@@ -801,11 +802,11 @@ class FilesController extends Controller {
 
 					case 'linked':
 						if(isset($linkedFiles) && in_array($f, $linkedFiles, TRUE)) {
-							$file['columns'][] = array('html' => '<input class="link" type="checkbox" checked="checked">');
+							$file['columns'][] = ['html' => '<input class="link" type="checkbox" checked="checked">'];
 							$file['linked'] = TRUE;
 						}
 						else {
-							$file['columns'][] = array('html' => '<input class="link" type="checkbox">');
+							$file['columns'][] = ['html' => '<input class="link" type="checkbox">'];
 							$file['linked'] = FALSE;
 						}
 						break;
@@ -818,7 +819,7 @@ class FilesController extends Controller {
 					$this->request->query->get('filter') != 'image' ||
 					$isImage
 				)) {
-				$file['forward'] = array('filename' => '/' . $assetsPath . $f->getRelativePath(), 'ckEditorFuncNum' => (int) $this->request->query->get('CKEditorFuncNum'));
+				$file['forward'] = ['filename' => '/' . $assetsPath . $f->getRelativePath(), 'ckEditorFuncNum' => (int) $this->request->query->get('CKEditorFuncNum')];
 			}
 
 			$files[] = $file;
@@ -841,18 +842,18 @@ class FilesController extends Controller {
 				}
 			}
 
-			return array(
+			return [
 				'key'			=>	$f->getId(),
-				'elements'		=>	array(
+				'elements'		=>	[
 										'node' => 'span',
-										'properties' => array('className' => $f === $currentFolder ? 'current' : ''),
-										'childnodes' => array(array('text' => array_pop(explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR)))))
-									),
+										'properties' => ['className' => $f === $currentFolder ? 'current' : ''],
+										'childnodes' => [['text' => array_pop(explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR)))]]
+									],
 				'terminates'	=>	!count($branches),
 				'branches'		=>	$branches,
 				'current'		=>	$f === $currentFolder,
 				'path'			=>	$f->getRelativePath()
-			);
+			];
 		};
 
 		$trees = [];
