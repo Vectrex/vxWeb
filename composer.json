@@ -15,6 +15,7 @@
 
 	"require": {
 		"php": ">=5.6.0",
+		"mnsami/composer-custom-directory-installer": "1.1.*",
 		"vectrex/vxphp": "dev-master",
 		"ckeditor/ckeditor": "dev-standard/stable"
 	},
@@ -22,6 +23,12 @@
 	"autoload": {
 		"psr-4": {
 			"App\\": "src"
+		}
+	},
+	
+	"extra": {
+		"installer-paths": {
+			"web/js/ckeditor": ["ckeditor/ckeditor"]
 		}
 	}
 }
