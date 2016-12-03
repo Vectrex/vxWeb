@@ -5,12 +5,26 @@
 ini_set('display_errors', TRUE);
 error_reporting(E_ALL);
 
-require_once $rootPath . '/vendor/vxPHP/Autoload/Psr4.php';
+// package was installed with composer?
 
-$loader = new vxPHP\Autoload\Psr4();
-$loader->register();
+if(file_exists($rootPath . '/vendor/autoload.php')) {
 
-$loader->addPrefix('vxPHP', $rootPath . '/vendor/vxPHP');
+	require_once $rootPath . '/vendor/autoload.php';
+
+}
+
+// if not set up own autoloaders
+
+else {
+
+	require_once $rootPath . '/vendor/vxPHP/Autoload/Psr4.php';
+	
+	$loader = new vxPHP\Autoload\Psr4();
+	$loader->register();
+	
+	$loader->addPrefix('vxPHP', $rootPath . '/vendor/vxPHP');
+
+}
 
 $iniPath				= $rootPath . DIRECTORY_SEPARATOR . 'ini' . DIRECTORY_SEPARATOR;
 $configFilename			= $iniPath . 'site.ini.xml';
@@ -77,7 +91,6 @@ $application = vxPHP\Application\Application::getInstance($config);
 // make loader in application available
 
 $application
-	->setLoader				($loader)
 	->setRootPath			($rootPath)
 	->setAbsoluteAssetsPath	($assetsPath)
 	->registerPlugins		();

@@ -7,15 +7,21 @@ use vxPHP\Application\Application;
 
 $app = Application::getInstance();
 
-$loader->addPrefix(
-	'vxWeb',
-	$app->getRootPath() . 'vendor/vxWeb'
-);
+// if autoloading is not handled by composer, add namespaces explicitly 
 
-$loader->addPrefix(
-	$app->getApplicationNamespace(),
-	$app->getSourcePath()
-);
+if(isset($loader)) {
+
+	$loader->addPrefix(
+		'vxWeb',
+		$app->getRootPath() . 'vendor/vxWeb'
+	);
+	
+	$loader->addPrefix(
+		$app->getApplicationNamespace(),
+		$app->getSourcePath()
+	);
+
+}
 
 // ensure the presence of a valid assets path
 
