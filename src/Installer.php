@@ -39,6 +39,16 @@ class Installer {
 		else {
 			chmod($rootDir . 'view/default', 0777);
 		}
+		
+		// create ini dir cache
+
+		if(!file_exists($rootDir . 'ini/.cache')) {
+			mkdir($rootDir . 'ini/.cache', 0777);
+		}
+		else {
+			chmod($rootDir . 'ini/.cache', 0777);
+		}
+		
 	}
 	
 	public static function postUpdate() {
