@@ -4,7 +4,7 @@ namespace App;
 
 class Installer {
 	
-	public static function postInstall() {
+	public static function postCreateProject() {
 		
 		$rootDir = dirname(__DIR__);
 		$publicDir = $rootDir . '/web/';
@@ -51,6 +51,9 @@ class Installer {
 		
 	}
 	
+	public static function postInstall() {
+	}
+
 	public static function postUpdate() {
 	}
 
