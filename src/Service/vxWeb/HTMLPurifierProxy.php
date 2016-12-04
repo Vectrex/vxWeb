@@ -1,6 +1,6 @@
 <?php
 
-namespace vxWeb;
+namespace App\Service\vxWeb;
 
 use vxPHP\Service\Service;
 use vxPHP\Application\Application;
@@ -12,7 +12,7 @@ use vxPHP\Application\Application;
  * <application_root>/vendor/HTMLPurifier
  * 
  * @author Gregor Kofler
- * @version 0.1.0 2015-07-09
+ * @version 0.2.0 2015-07-09
  */
 class HTMLPurifierProxy extends Service {
 	
