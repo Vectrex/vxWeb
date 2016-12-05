@@ -58,6 +58,9 @@ class Installer {
 	}
 	
 	public static function postInstall() {
+		
+		self::postCreateProject();
+		
 	}
 
 	public static function postUpdate() {
