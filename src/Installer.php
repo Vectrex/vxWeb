@@ -35,7 +35,7 @@ class Installer {
 				mkdir($publicDir . '/js/vendor', 0755);
 			}
 
-			symlink($vendorDir . '/vxjs/src', $publicDir . '/js/vendor/vxJS');
+			symlink($vendorDir . '/vectrex/vxjs/src', $publicDir . '/js/vendor/vxJS');
 
 		}
 
