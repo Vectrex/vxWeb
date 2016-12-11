@@ -153,8 +153,10 @@ class FilesController extends Controller {
 							continue;
 						}
 	
-						if(dirname($name)) {
-							$dir = $fsFolder->createFolder(dirname($name));
+						$dirname = dirname($name);
+
+						if($dirname && $dirname !== '.' ) {
+							$dir = $fsFolder->createFolder($dirname);
 						}
 						else {
 							$dir = $fsFolder;
