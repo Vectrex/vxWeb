@@ -9,9 +9,9 @@
  * colors: #0089CC, #FF9400 - #005680, #e59517, hover: #aef
  */
 
-$colorBright:		#0089CC;
+$colorBright: #0089CC;
 $colorDark: shade($colorBright, 25%);
-$altColorBright:	#FF9400;
+$altColorBright: #FF9400;
 $altColorDark: shade($altColorBright, 25%);
 
 $neutralExtraLight:	#eee;
@@ -22,8 +22,12 @@ $neutralDark: #444;
 $tableRowEvenColor: #fff;
 $tableRowOddColor: #ddd;
 
+$switchWidth: 56px;
+$switchHeight: 24px;
+
 @import	"include/vxjs";
 @import "include/vxweb";
+@import "include/switch";
 
 @import "../fonts/verb_condensed/webfont.css";
 @import "../fonts/icomoon/webfont.css";

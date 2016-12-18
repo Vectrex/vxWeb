@@ -97,10 +97,14 @@
 			<td><?php echo $article->getCategory()->getTitle(); ?></td>
 			<td><?php echo $article->getHeadline(); ?></td>
 			<td class="centered">
-				<input type="checkbox" name="publish[<?php echo $article->getId(); ?>]"
-					<?php if ($article->isPublished()): ?>checked="checked"<?php endif; ?>
-					<?php if(!$this->can_publish): ?> disabled="disabled"<?php endif; ?>
-				>
+				<label class="switch">
+					<input type="checkbox" name="publish[<?php echo $article->getId(); ?>]"
+						<?php if ($article->isPublished()): ?>checked="checked"<?php endif; ?>
+						<?php if(!$this->can_publish): ?> disabled="disabled"<?php endif; ?>
+					>
+					<span class="trough" data-on="&#xe01e;" data-off="&#xe01d;"></span>
+					<span class="handle"></span>  
+				</label>
 			</td>
 			<td class="right"><?php echo is_null($article->getDate()) ? '' : $article->getDate()->format('Y-m-d'); ?></td>
 			<td class="right"><?php echo is_null($article->getDisplayFrom()) ? '' : $article->getDisplayFrom()->format('Y-m-d'); ?></td>
