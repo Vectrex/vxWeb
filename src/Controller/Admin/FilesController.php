@@ -64,7 +64,7 @@ class FilesController extends Controller {
 			default:
 				$tpl = 'admin/files_js.php';
 		}
-		
+
 		return new Response(
 			SimpleTemplate::create($tpl)
 				->assign('upload_max_filesize',		$uploadMaxFilesize)
@@ -74,7 +74,7 @@ class FilesController extends Controller {
 
 	/**
 	 * simple helper function to convert ini values like 10M or 256K to integer
-	 * 
+	 *
 	 * @param string $val
 	 */
 	private function toBytes($val) {
@@ -103,7 +103,7 @@ class FilesController extends Controller {
 			else {
 				$folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
 			}
-			
+
 			$fsFolder = $folder->getFilesystemFolder();
 		}
 
@@ -112,14 +112,14 @@ class FilesController extends Controller {
 		}
 
 		// get articles reference
-		
+
 		if($articlesId = $this->request->query->get('articlesId')) {
 			$article = Article::getInstance($articlesId);
 		}
-		
+
 		// get filename
 
-		$filename = FilesystemFile::sanitizeFilename($this->request->headers->get('x-file-name'), $fsFolder);
+		$filename = FilesystemFile::sanitizeFilename(urldecode($this->request->headers->get('x-file-name')), $fsFolder);
 		$contents = file_get_contents('php://input');
 
 		try {
@@ -131,28 +131,28 @@ class FilesController extends Controller {
 
 		try {
 			if($mimeType === 'application/zip' && $this->request->query->getInt('unpack')) {
-				
+
 				// unpack ZIP files
 
 				$files = [];
-				
+
 				$tmpFile	= tmpfile();
 				$tmpName	= stream_get_meta_data($tmpFile)['uri'];
 				fwrite($tmpFile, $contents);
 				fseek($tmpFile, 0);
-				
+
 				$zip = new \ZipArchive();
-	
+
 				if($zip->open($tmpName)) {
-					
+
 					for($i = 0; $i < $zip->numFiles; ++$i) {
-					
+
 						$name = $zip->getNameIndex($i);
-					
+
 						if(substr($name, -1) == '/') {
 							continue;
 						}
-	
+
 						$dirname = dirname($name);
 
 						if($dirname && $dirname !== '.' ) {
@@ -165,13 +165,13 @@ class FilesController extends Controller {
 						$dest = FilesystemFile::sanitizeFilename(basename($name), $dir);
 
 						copy('zip://' . $tmpName . '#' . $name, $dir->getPath() . $dest);
-	
+
 						$files[] = FilesystemFile::getInstance($dir->getPath() . $dest);
 
 					}
 
 					$zip->close();
-					
+
 					// link to article, when in "article" mode
 
 					if(isset($article)) {
@@ -185,13 +185,13 @@ class FilesController extends Controller {
 					}
 				}
 			}
-			
+
 			else {
-	
+
 				file_put_contents($fsFolder->getPath() . $filename, $contents);
-	
+
 				// link to article, when in "article" mode
-	
+
 				if(isset($article)) {
 					$article->linkMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename)->createMetaFile());
 					$article->save();
@@ -211,13 +211,13 @@ class FilesController extends Controller {
 		}
 
 		// @todo better way to handle columns
-		
+
 		$fileColumns = ['name', 'size', 'mime', 'mTime'];
 
 		if(isset($article)) {
 			$fileColumns[] = 'linked';
 		}
-		
+
 		return new JsonResponse([
 			'echo' => ['folder' => $id],
 			'response' => $this->getFiles($folder, $fileColumns)
@@ -438,7 +438,7 @@ class FilesController extends Controller {
 				try {
 					$upload->move($folder->getFilesystemFolder());
 				}
-				
+
 				catch(FilesystemFileException $e) {
 					$response = [
 						'msgBoxes' => [
@@ -459,7 +459,7 @@ class FilesController extends Controller {
 
 				/*
 				 * @todo
-				 * Kludge: HtmlForm calls Request::createFromGlobals() which in turn parses $_FILES and throws an exception 
+				 * Kludge: HtmlForm calls Request::createFromGlobals() which in turn parses $_FILES and throws an exception
 				 * since the uploaded file was already moved
 				 */
 				unset($_FILES['File']);
@@ -478,12 +478,12 @@ class FilesController extends Controller {
 				$uploadedFiles = FileUtil::processFileUpload($folder, $upload, $values->all(), (bool) $values->get('unpack_archives'));
 
 				if(FALSE !== $uploadedFiles) {
-					
+
 					if($articlesId = $this->request->request->get('articlesId')) {
-						
+
 						try {
 							$article = Article::getInstance($articlesId);
-							
+
 							foreach($uploadedFiles as $mf) {
 								$article->linkMetaFile($mf);
 								$article->save();
@@ -622,7 +622,7 @@ class FilesController extends Controller {
 	}
 
 	private function getFiles(MetaFolder $mf, array $fileColumns = NULL) {
-		
+
 		FileUtil::cleanupMetaFolder($mf);
 
 		if(!$fileColumns) {
