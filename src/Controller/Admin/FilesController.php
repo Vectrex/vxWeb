@@ -78,7 +78,12 @@ class FilesController extends Controller {
 	 * @param string $val
 	 */
 	private function toBytes($val) {
-		switch(strtolower(substr(trim($val),-1))) {
+
+		$suffix = strtolower(substr(trim($val),-1));
+		
+		$val = (int) $val;
+		
+		switch($suffix) {
 			case 'g':
 				$val *= 1024;
 			case 'm':
