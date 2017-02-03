@@ -753,14 +753,14 @@ class FilesController extends Controller {
 		foreach(MetaFile::getMetaFilesInFolder($folder) as $f) {
 
 			$isImage	= $f->isWebImage();
-			$metaData	= $f->getData();
+			$metaData	= array_change_key_case($f->getData(), CASE_LOWER);
 			$file		= ['columns' => [], 'id' => $f->getId(), 'filename' => $f->getMetaFilename()];
 
 			foreach($columns as $c) {
 
 				switch($c) {
 					case 'name':
-						$file['columns'][] = ['html' => sprintf('<span title="%s">%s</span>', $metaData['Title'], $f->getMetaFilename())];
+						$file['columns'][] = ['html' => sprintf('<span title="%s">%s</span>', $metaData['title'], $f->getMetaFilename())];
 						break;
 
 					case 'size':
