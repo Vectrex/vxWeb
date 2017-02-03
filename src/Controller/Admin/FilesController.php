@@ -470,10 +470,10 @@ class FilesController extends Controller {
 				unset($_FILES['File']);
 
 				$form = HtmlForm::create()
-					->addElement(FormElementFactory::create('input', 'Title', '', [], [], FALSE, ['trim']))
-					->addElement(FormElementFactory::create('input', 'Subtitle', '', [], [], FALSE, ['trim']))
-					->addElement(FormElementFactory::create('input', 'customSort', '', [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
-					->addElement(FormElementFactory::create('textarea', 'Description', ''))
+					->addElement(FormElementFactory::create('input', 'title', '', [], [], FALSE, ['trim']))
+					->addElement(FormElementFactory::create('input', 'subtitle', '', [], [], FALSE, ['trim']))
+					->addElement(FormElementFactory::create('input', 'customsort', '', [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
+					->addElement(FormElementFactory::create('textarea', 'description', ''))
 					->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1));
 
 				$values = $form->bindRequestParameters($this->request->request)->getValidFormValues();
@@ -667,19 +667,19 @@ class FilesController extends Controller {
 			->initVar('add', 1)
 			->setEncType('multipart/form-data')
 			->setAttribute('class', 'editFileForm')
-			->addElement(FormElementFactory::create('input', 'Title', '', [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('input', 'Subtitle', '', [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('input', 'customSort', '', [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
+			->addElement(FormElementFactory::create('input', 'title', '', [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('input', 'subtitle', '', [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('input', 'customsort', '', [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
 			->addElement(FormElementFactory::create('input', 'File', '', ['type' => 'file']))
 			->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1))
-			->addElement(FormElementFactory::create('textarea', 'Description'))
+			->addElement(FormElementFactory::create('textarea', 'description'))
 			->addElement(FormElementFactory::create('button', 'submit_add')->setInnerHTML('Speichern'))
 			->addElement(FormElementFactory::create('button', 'submit_cancel')->setInnerHTML('Abbrechen'));
 	}
 
 	private function getEditForm(MetaFile $file) {
 
-		$data		= $file->getData();
+		$data		= array_change_key_case($file->getData(), CASE_LOWER);
 		$app		= Application::getInstance();
 		$assetsPath	= !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
 
@@ -693,7 +693,7 @@ class FilesController extends Controller {
 		if(!preg_match('~^image/(png|gif|jpeg)$~', $file->getMimeType())) {
 			$infoHtml = sprintf(
 					'<strong>%s</strong> <em>(%s%s)</em><br /><span class="smaller"><a href="/%s" target="_blank">/%s%s</a></span>',
-					$data['File'],
+					$data['file'],
 					$file->getMimetype(),
 					$cacheText,
 					$file->getRelativePath(),
@@ -704,7 +704,7 @@ class FilesController extends Controller {
 		else {
 			$infoHtml = sprintf(
 					'<strong>%s</strong> <em>(%s%s)</em><br /><span class="smaller"><a href="/%s" target="_blank">/%s%s</a></span><br /><img class="thumb" src="/%s#resize 0 80" alt="">',
-					$data['File'],
+					$data['file'],
 					$file->getMimetype(),
 					$cacheText,
 					$file->getRelativePath(),
@@ -716,10 +716,10 @@ class FilesController extends Controller {
 
 		return HtmlForm::create('admin_file.htm')
 			->setAttribute('class', 'editFileForm')
-			->addElement(FormElementFactory::create('input', 'Title', NULL, [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('input', 'Subtitle', NULL, [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('input', 'customSort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
-			->addElement(FormElementFactory::create('textarea', 'Description'))
+			->addElement(FormElementFactory::create('input', 'title', NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('input', 'subtitle', NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('input', 'customsort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
+			->addElement(FormElementFactory::create('textarea', 'description'))
 			->addElement(FormElementFactory::create('button', 'submit_edit')->setInnerHTML('Speichern'))
 			->addElement(FormElementFactory::create('button', 'submit_cancel')->setInnerHTML('Abbrechen'))
 			->addMiscHtml('Fileinfo', $infoHtml)
