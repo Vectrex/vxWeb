@@ -766,7 +766,7 @@ this.vxWeb.fileManager = function(config) {
 						startUpload();
 						progressBar.setLabel(f.name);
 						
-						uploadQuery = ['unpack=' + (+unpackZips)];
+						uploadQuery = ['unpack=' + (unpackZips ? 1 : 0)];
 						if(vxWeb.parameters.folder) {
 							uploadQuery.push("folder=" + vxWeb.parameters.folder);
 						}
