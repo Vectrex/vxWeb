@@ -69,7 +69,7 @@ class FileUtil {
 		// create metafolder entries for filesystemfolders
 
 		foreach($metaFolder->getFilesystemFolder()->getFolders() as $d) {
-			$d->createMetaFolder();
+			MetaFolder::createMetaFolder($d);
 		}
 
 		$mFiles = $db->doPreparedQuery('SELECT filesID, IFNULL(Obscured_Filename, File) AS Filename FROM files f WHERE f.foldersID = ?', array((int) $metaFolder->getId()));
@@ -92,9 +92,9 @@ class FileUtil {
 		$missing = array_diff($fsFiles, $existing);
 
 		foreach($missing as $m) {
-			$add = FilesystemFile::getInstance($metaFolder->getFullPath() . $m);
-			$add->createMetaFile();
+			MetaFile::createMetaFile(FilesystemFile::getInstance($metaFolder->getFullPath() . $m));
 		}
+
 	}
 
 	/**
@@ -130,7 +130,7 @@ class FileUtil {
 
 		foreach($uploads as $upload) {
 			try {
-				$metaFile = $upload->createMetaFile();
+				$metaFile = MetaFile::createMetaFile($upload);
 				$metaFile->setMetaData($metaData);
 
 				// obscure file if folder has the Obscure_Files attribute set
@@ -157,7 +157,7 @@ class FileUtil {
 
 					$upload->rename("{$matches[1]}({$matches[2]}){$matches[4]}");
 
-					$metaFile = $upload->createMetaFile();
+					$metaFile = MetaFile::createMetaFile($upload);
 					$metaFile->setMetaData($metaData);
 
 					// obscure file if folder has the Obscure_Files attribute set
@@ -217,7 +217,7 @@ class FileUtil {
 			}
 
 			if(dirname($name)) {
-				$dir = $folder->createFolder(dirname($name));
+				$dir = MetaFolder::createMetaFolder(dirname($name));
 			}
 			else {
 				$dir = $folder;

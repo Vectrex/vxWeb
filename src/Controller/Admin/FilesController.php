@@ -182,7 +182,7 @@ class FilesController extends Controller {
 					if(isset($article)) {
 
 						foreach($files as $file) {
-							$article->linkMetaFile($file->createMetaFile());
+							$article->linkMetaFile(MetaFile::createMetaFile($file));
 						}
 
 						$article->save();
@@ -198,7 +198,7 @@ class FilesController extends Controller {
 				// link to article, when in "article" mode
 
 				if(isset($article)) {
-					$article->linkMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename)->createMetaFile());
+					$article->linkMetaFile(MetaFile::createMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename)));
 					$article->save();
 				}
 			}
@@ -546,7 +546,7 @@ class FilesController extends Controller {
 
 				return [
 					'filename' => $file->getMetaFilename(),
-					'elements' => ['html' => "<span title='{$metaData['Title']}'>{$file->getMetaFilename()}</span>"],
+					'elements' => ['html' => sprintf("<span title='%s'>%s</span>", $metaData['title'], $file->getMetaFilename())],
 					'error' => FALSE
 				];
 			}
@@ -753,7 +753,7 @@ class FilesController extends Controller {
 		foreach(MetaFile::getMetaFilesInFolder($folder) as $f) {
 
 			$isImage	= $f->isWebImage();
-			$metaData	= array_change_key_case($f->getData(), CASE_LOWER);
+			$metaData	= $f->getData();
 			$file		= ['columns' => [], 'id' => $f->getId(), 'filename' => $f->getMetaFilename()];
 
 			foreach($columns as $c) {
@@ -849,12 +849,13 @@ class FilesController extends Controller {
 				}
 			}
 
+			$segments = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
 			return [
 				'key'			=>	$f->getId(),
 				'elements'		=>	[
 										'node' => 'span',
 										'properties' => ['className' => $f === $currentFolder ? 'current' : ''],
-										'childnodes' => [['text' => array_pop(explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR)))]]
+										'childnodes' => [['text' => array_pop($segments)]]
 									],
 				'terminates'	=>	!count($branches),
 				'branches'		=>	$branches,
