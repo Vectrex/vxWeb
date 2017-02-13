@@ -17,21 +17,22 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\User\User;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Constraint\Validator\Email;
+use vxPHP\Application\Application;
 
 class ProfileController extends Controller {
 
 	public function execute() {
 		
-		$admin					= User::getSessionUser();
-		$availableNotifications	= Notification::getAvailableNotifications($admin->getAdmingroup());
+		$admin = Application::getInstance()->getCurrentUser();
+		$availableNotifications	= [];//Notification::getAvailableNotifications($admin->getAdmingroup());
 		
 		$checkBoxHtml = '';
 
 		$form =
 			HtmlForm::create('admin_profile.htm')
 				->addElement(FormElementFactory::create('input',	'username',			$admin->getUsername(),	[],	[], TRUE, ['trim', 'lowercase'],	[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-				->addElement(FormElementFactory::create('input',	'email',			$admin->getEmail(),		[], [], TRUE, ['trim', 'lowercase'],	[new Email()]))
-				->addElement(FormElementFactory::create('input',	'name',				$admin->getName(),		[], [], TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+				->addElement(FormElementFactory::create('input',	'email',			$admin->getAttribute('email'),		[], [], TRUE, ['trim', 'lowercase'],	[new Email()]))
+				->addElement(FormElementFactory::create('input',	'name',				$admin->getAttribute('name'),		[], [], TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
 				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						[], [],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')]))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	''))
 				->addElement(FormElementFactory::create('button', 'submit_profile', '')->setInnerHTML('Änderungen speichern'))

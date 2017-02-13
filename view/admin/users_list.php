@@ -57,15 +57,15 @@
 
 	<?php foreach($this->users as $user): ?>
 
-	<tr<?php if (vxPHP\User\User::getSessionUser()->getAdminId() === $user->getAdminId()): ?> class="locked"<?php endif; ?>>
+	<tr<?php if (vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() === $user['username']): ?> class="locked"<?php endif; ?>>
 
-		<td><?php echo $user->getUsername(); ?></td>
-		<td><?php echo $user->getName(); ?></td>
-		<td><?php echo $user->getEmail(); ?></td>
-		<td><?php echo $user->getAdmingroup(); ?></td>
-		<td class="right"><?php if (vxPHP\User\User::getSessionUser()->getAdminId() !== $user->getAdminId()): ?>
-			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$users?id=<?php echo $user->getAdminId(); ?>"></a>
-			<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$users/del?id=<?php echo $user->getAdminId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+		<td><?= $user['username'] ?></td>
+		<td><?= $user['name'] ?></td>
+		<td><?= $user['email'] ?></td>
+		<td><?= $user['alias'] ?></td>
+		<td class="right"><?php if (vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() != $user['username']): ?>
+			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$users?id=<?= $user['adminID'] ?>"></a>
+			<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$users/del?id=<?= $user['adminID'] ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
 			<?php endif; ?>
 		</td>
 

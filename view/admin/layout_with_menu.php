@@ -41,13 +41,13 @@
 
 		<div id="page">
 			<div id="statusBar">
-					<span class="userInfo">Angemeldet <strong><?php echo vxPHP\User\User::getSessionUser()->getName(); ?></strong> (<?php echo vxPHP\User\User::getSessionUser()->getEmail(); ?>)</span> &bull;
-					<a class="withIcon" data-icon="&#xe009;" href="<?php echo vxPHP\Routing\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
-					<a  class="withIcon" data-icon="&#xe021;" href="<?php echo vxPHP\Routing\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
-					Gehe zu <a href="/" class="withIcon" data-icon="&#xe000;"><?php echo vxPHP\Http\Request::createFromGlobals()->getHost(); ?></a>
+					<span class="userInfo">Angemeldet <strong><?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() ?></strong> (<?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getAttribute('email') ?>)</span> &bull;
+					<a class="withIcon" data-icon="&#xe009;" href="<?= vxPHP\Routing\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
+					<a  class="withIcon" data-icon="&#xe021;" href="<?= vxPHP\Routing\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
+					Gehe zu <a href="/" class="withIcon" data-icon="&#xe000;"><?= vxPHP\Http\Request::createFromGlobals()->getHost() ?></a>
 			</div>
 
-			<?php echo vxPHP\Webpage\MenuGenerator::create('admin', 0)->render(); ?>
+			<?= vxPHP\Webpage\MenuGenerator::create('admin', 0)->render() ?>
 
 			<div id="content">
 				<!-- { block: content_block } -->

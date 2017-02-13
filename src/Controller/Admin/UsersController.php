@@ -22,24 +22,28 @@ class UsersController extends Controller {
 
 	protected function execute() {
 
-		$admin			= User::getSessionUser();
-		$connection		= Application::getInstance()->getDb()->getConnection();
+		$app = Application::getInstance();
+		$admin = $app->getCurrentUser();
+		$db = $app->getDb();
+		
+		$connection		= $app->getDb()->getConnection();
 		$redirectUrl	= Router::getRoute('users', 'admin.php')->getUrl();
 
-		// editing or deleting something?
+		// editing or deleting something? Ensure user exists
 
 		if(($id = $this->request->query->getInt('id'))) {
 
-			// editing own record is not allowed
-
-			if($admin->getAdminId() == $id) {
+			$userRows = $db->doPreparedQuery("SELECT a.* FROM admin a WHERE a.adminID = ?", [$id]);
+				
+			if(!count($userRows)) {
 				return $this->redirect($redirectUrl);
 			}
 
-			try {
-				$user = User::getInstance($id);
-			}
-			catch(UserException $e) {
+			$userRow = $userRows[0];
+
+			// editing own record is not allowed
+
+			if($admin->getUsername() == $userRow['username']) {
 				return $this->redirect($redirectUrl);
 			}
 
@@ -47,46 +51,36 @@ class UsersController extends Controller {
 		
 		// delete user
 		
-		if(isset($user) && count($this->pathSegments) > 1 && end($this->pathSegments) == 'del') {
+		if($id && count($this->pathSegments) > 1 && end($this->pathSegments) == 'del') {
 		
-			try {
-				$user->delete();
-			}
-			catch(ArticleException $e) { }
-		
+			$db->deleteRecord('admin', $id);
+
 			return $this->redirect($redirectUrl);
+			
 		}
 
-		// edit or add article
+		// edit or add user
 		
-		if(isset($user) || count($this->pathSegments) > 1 && end($this->pathSegments) == 'new') {
+		if($id || count($this->pathSegments) > 1 && end($this->pathSegments) == 'new') {
 
 			MenuGenerator::setForceActiveMenu(TRUE);
 
 			$form = HtmlForm::create('admin_edit_user.htm')->setAttribute('class', 'editUserForm');
 			
-			if(isset($user)) {
+			if($id) {
 
-				$form->setInitFormValues([
-					'username'		=> $user->getUsername(),
-					'email'			=> $user->getEmail(),
-					'name'			=> $user->getName(),
-					'admingroup'	=> $user->getAdmingroup()
-				]);
-
+				$form->setInitFormValues($userRow);
 				$submitLabel = 'Änderungen übernehmen';
 			
 			}
 			
 			else {
 			
-				$user = new User();
-			
 				$submitLabel = 'User anlegen';
 				$form->initVar('is_add', 1);
 			}
 
-			$admingroups = $connection->query('SELECT LOWER(alias) AS alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(\PDO::FETCH_KEY_PAIR);
+			$admingroups = $connection->query('SELECT admingroupsID, name FROM admingroups ORDER BY privilege_level')->fetchAll(\PDO::FETCH_KEY_PAIR);
 
 			$form
 				->addElement(FormElementFactory::create('button', 'submit_user', '', ['type' => 'submit'])->setInnerHTML($submitLabel))
@@ -95,24 +89,19 @@ class UsersController extends Controller {
 				->addElement(FormElementFactory::create('input',	'name'))
 				->addElement(FormElementFactory::create('password',	'new_PWD'))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify'))
-				->addElement(FormElementFactory::create('select',	'admingroup',		NULL, [], $admingroups));
+				->addElement(FormElementFactory::create('select',	'admingroupsID',		NULL, [], $admingroups));
 			
 			$form->bindRequestParameters();
 			
 			return new Response(
 				SimpleTemplate::create('admin/users_edit.php')
-					->assign('user', $user)
+					->assign('user', $userRow)
 					->assign('form', $form->render())
 					->display()
 			);
 		}
 		
-		$stmt	= $connection->query('SELECT adminID FROM admin');
-		$users	= [];
-
-		foreach($stmt->fetchAll(\PDO::FETCH_COLUMN, 0) as $id) {
-			$users[] = User::getInstance((int) $id);
-		}
+		$users	= $db->doPreparedQuery("SELECT a.*, ag.alias FROM admin a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
 
 		return new Response(
 			SimpleTemplate::create('admin/users_list.php')

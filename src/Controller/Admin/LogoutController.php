@@ -3,17 +3,15 @@
 namespace App\Controller\Admin;
 
 use vxPHP\Controller\Controller;
-use vxPHP\User\User;
 use vxPHP\Routing\Router;
+use vxPHP\User\SessionUserProvider;
 
 class LogoutController extends Controller {
 
 	protected function execute() {
 
-		if($admin = User::getSessionUser()) {
-			$admin->removeFromSession();
-		}
-
+		(new SessionUserProvider())->unsetSessionUser();
+		
 		return $this->redirect(Router::getRoute('login', 'admin.php')->getUrl());
 	}
 }

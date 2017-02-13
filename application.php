@@ -1,6 +1,8 @@
 <?php
 
 use vxPHP\Application\Application;
+use vxPHP\User\vxWebRoleHierarchy;
+use vxPHP\User\SessionUserProvider;
 
 // $loader is initialized in bootstrap.php
 // place additional libraries here
@@ -23,13 +25,23 @@ if(isset($loader)) {
 
 }
 
+// set role hierarchy
+
+$app->setRoleHierarchy(new vxWebRoleHierarchy());
+
+// set current user; might be required for route and menu authentication
+
+if($currentUser = (new SessionUserProvider())->getSessionUser()) {
+	$app->setCurrentUser($currentUser);
+}
+
 // ensure the presence of a valid assets path
 
 if(!is_dir($application->getAbsoluteAssetsPath())) {
 	throw new \Exception("Assets path '" . $application->getRelativeAssetsPath() . "' not found.");
 }
 
-// parse route
+// parse path and determine route
 
 $route = vxPHP\Routing\Router::getRouteFromPathInfo();
 $application->setCurrentRoute($route);

@@ -10,13 +10,13 @@ use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
-use vxPHP\User\User;
+use vxPHP\User\SessionUserProvider;
 
 class LoginController extends Controller {
 
 	protected function execute() {
 
-		$admin = User::getSessionUser();
+		$admin = Application::getInstance()->getCurrentUser();
 
 		if($admin && $admin->isAuthenticated()) {
 
@@ -41,20 +41,21 @@ class LoginController extends Controller {
 
 		if($this->request->getMethod() === 'POST') {
 
+			$userProvider = new SessionUserProvider();
+			$userProvider->unsetSessionUser();
+
 			$values = $form->bindRequestParameters($this->request->request)->getValidFormValues();
 
 			try {
-				$admin = User::getInstance($values['UID']);
-				$admin->authenticate($values['pwd']);
+				$admin = $userProvider->instanceUserByUsername($values['UID']);
 
-				if($admin->isAuthenticated()) {
-					$admin->storeInSession();
+				if($admin && $admin->authenticate($values['pwd'])->isAuthenticated()) {
 					return new JsonResponse(['command' => 'submit']);
 				}
 			}
 			catch(UserException $e) {}
 
-			return new JsonResponse(['message' => 'Ungültige Email oder ungültiges Passwort!']);
+			return new JsonResponse(['message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);
 
 		}
 
