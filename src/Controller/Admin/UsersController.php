@@ -17,6 +17,7 @@ use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Constraint\Validator\Email;
+use vxPHP\Security\Password\PasswordEncrypter;
 
 class UsersController extends Controller {
 
@@ -31,9 +32,15 @@ class UsersController extends Controller {
 
 		// editing or deleting something? Ensure user exists
 
-		if(($id = $this->request->query->getInt('id'))) {
+		if(($id = $this->request->query->get('id'))) {
 
-			$userRows = $db->doPreparedQuery("SELECT a.* FROM admin a WHERE a.adminID = ?", [$id]);
+			// editing own record is not allowed
+			
+			if($admin->getUsername() == $id) {
+				return $this->redirect($redirectUrl);
+			}
+				
+			$userRows = $db->doPreparedQuery("SELECT a.* FROM admin a WHERE a.username = ?", [$id]);
 				
 			if(!count($userRows)) {
 				return $this->redirect($redirectUrl);
@@ -41,19 +48,13 @@ class UsersController extends Controller {
 
 			$userRow = $userRows[0];
 
-			// editing own record is not allowed
-
-			if($admin->getUsername() == $userRow['username']) {
-				return $this->redirect($redirectUrl);
-			}
-
 		}
 		
 		// delete user
 		
 		if($id && count($this->pathSegments) > 1 && end($this->pathSegments) == 'del') {
 		
-			$db->deleteRecord('admin', $id);
+			$db->deleteRecord('admin', ['username' => $id]);
 
 			return $this->redirect($redirectUrl);
 			
@@ -89,13 +90,13 @@ class UsersController extends Controller {
 				->addElement(FormElementFactory::create('input',	'name'))
 				->addElement(FormElementFactory::create('password',	'new_PWD'))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify'))
-				->addElement(FormElementFactory::create('select',	'admingroupsID',		NULL, [], $admingroups));
+				->addElement(FormElementFactory::create('select',	'admingroupsID', NULL, [], $admingroups));
 			
 			$form->bindRequestParameters();
 			
 			return new Response(
 				SimpleTemplate::create('admin/users_edit.php')
-					->assign('user', $userRow)
+					->assign('user', isset($userRow) ? $userRow : NULL)
 					->assign('form', $form->render())
 					->display()
 			);
@@ -114,36 +115,29 @@ class UsersController extends Controller {
 
 		// id comes either via URL or as an extra form field
 
-		$id = $this->request->query->getInt('id', $this->request->request->getInt('id'));
+		$id = $this->request->query->get('id', $this->request->request->get('id'));
+
+		$app = Application::getInstance();
+		$admin = $app->getCurrentUser();
+		$db = $app->getDb();
 
 		// editing own record is not allowed
 		
-		if(User::getSessionUser()->getAdminId() == $id) {
+		if($admin->getUsername() === $id) {
 			return new Response('', Response::HTTP_FORBIDDEN);
 		}
 		
 		if($id) {
 
-			try {
-				$user = User::getInstance($id);
+			$userRows = $db->doPreparedQuery("SELECT a.* FROM admin a WHERE a.username = ?", [$id]);
+			
+			if(!count($userRows)) {
+				return new Response('', Response::HTTP_FORBIDDEN);
 			}
-			catch(UserException $e) {
-				return new JsonResponse([
-					'success' => FALSE,
-					'message' => $e->getMessage()
-				]);
-			}
-		
-		}
+			
+			$userRow = $userRows[0];
 
-		else {
-			$user = new User();
 		}
-
-		$admingroups = Application::getInstance()
-			->getDb()
-			->getConnection()
-			->query('SELECT alias, name FROM admingroups ORDER BY privilege_level')->fetchAll(\PDO::FETCH_KEY_PAIR);
 
 		$form = HtmlForm::create('admin_edit_user.htm')
 			->addElement(FormElementFactory::create('input',	'username',			NULL,	[],	[],	TRUE, ['trim'], 				[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
@@ -151,13 +145,15 @@ class UsersController extends Controller {
 			->addElement(FormElementFactory::create('input',	'name',				NULL,	[],	[],	TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
 			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	[],	[],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')]))
 			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL))
-			->addElement(FormElementFactory::create('select',	'admingroup',		NULL,	[],	[],	TRUE, [],						[new RegularExpression('/^(' . implode('|', array_keys($admingroups)) . ')$/i')]));
-		
+			->addElement(FormElementFactory::create('select',	'admingroupsID',	NULL,	[],	[],	TRUE, [],						[new RegularExpression(Rex::INT_EXCL_NULL)]))
+		;
+
 		$v = $form
-				->disableCsrfToken()
-				->bindRequestParameters($this->request->request)
-				->validate()
-				->getValidFormValues();
+			->disableCsrfToken()
+			->bindRequestParameters($this->request->request)
+			->validate()
+			->getValidFormValues()
+		;
 
 		$errors = $form->getFormErrors();
 
@@ -168,32 +164,33 @@ class UsersController extends Controller {
 					$form->setError('PWD_mismatch');
 				}
 				else {
-					$user->setPassword($v['new_PWD']);
+					$v['pwd'] = (new PasswordEncrypter())->hashPassword($v['new_PWD']);
 				}
 			}
 		}
 
-		if(!isset($errors['email']) && $v['email'] != strtolower($user->getEmail()) && !Util::isAvailableEmail($v['email'])) {
+		if(!isset($errors['email']) && (!$id || $v['email'] != strtolower($userRow['email'])) && !Util::isAvailableEmail($v['email'])) {
 			$form->setError('duplicate_email');
 		}
-		if(!isset($errors['username']) && $v['username'] != $user->getUsername() && !Util::isAvailableUsername($v['username'])) {
+		if(!isset($errors['username']) && (!$id || $v['username'] != $userRow['username']) && !Util::isAvailableUsername($v['username'])) {
 			$form->setError('duplicate_username');
 		}
 			
 		if(!$form->getFormErrors()) {
-	
+
 			try {
 
-				$user
-					->setUsername	($v['username'])
-					->setName		($v['name'])
-					->setEmail		($v['email'])
-					->setAdmingroup	($v['admingroup'])
-					->save			();
+				if($id) {
+					$db->updateRecord('admin', ['username' => $id], $v->all());
+				}
+				
+				else {
+					$id = $db->insertRecord('admin', $v->all());
+				}
 
 				return new JsonResponse([
 					'success' => TRUE,
-					'id' => $user->getAdminId()
+					'id' => $id
 				]);
 		
 			}

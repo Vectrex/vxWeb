@@ -64,8 +64,8 @@
 		<td><?= $user['email'] ?></td>
 		<td><?= $user['alias'] ?></td>
 		<td class="right"><?php if (vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() != $user['username']): ?>
-			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$users?id=<?= $user['adminID'] ?>"></a>
-			<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$users/del?id=<?= $user['adminID'] ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$users?id=<?= $user['username'] ?>"></a>
+			<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$users/del?id=<?= $user['username'] ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
 			<?php endif; ?>
 		</td>
 
