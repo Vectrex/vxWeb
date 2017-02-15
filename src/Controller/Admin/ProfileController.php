@@ -18,6 +18,8 @@ use vxPHP\User\User;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Constraint\Validator\Email;
 use vxPHP\Application\Application;
+use vxPHP\Security\Password\PasswordEncrypter;
+use vxPHP\User\SessionUserProvider;
 
 class ProfileController extends Controller {
 
@@ -68,11 +70,11 @@ class ProfileController extends Controller {
 						$form->setError('PWD_mismatch');
 					}
 					else {
-						$admin->setPassword($v['new_PWD']);
+						$v['pwd'] = (new PasswordEncrypter())->hashPassword($v['new_PWD']);
 					}
 				}
 
-				if($v['email'] != $admin->getEmail() && !Util::isAvailableEmail($v['email'])) {
+				if($v['email'] != $admin->getAttribute('email') && !Util::isAvailableEmail($v['email'])) {
 					$form->setError('duplicate_email');
 				}
 
@@ -83,12 +85,9 @@ class ProfileController extends Controller {
 				if(!$form->getFormErrors()) {
 
 					try {
-						$admin
-							->setUsername	($v['username'])
-							->setName		($v['name'])
-							->setEmail		($v['email'])
-							->save			();
-	
+						Application::getInstance()->getDb()->updateRecord('admin', ['username' => $admin->getUsername()], $v->all());
+
+						/*
 						$add = [];
 
 						foreach($availableNotifications as $n) {
@@ -98,7 +97,20 @@ class ProfileController extends Controller {
 						}
 
 						$admin->setNotifications($add);
-						
+						*/
+						$userProvider = new SessionUserProvider();
+
+						// refresh user data if username hasn't changed
+
+						if($v['username'] === $admin->getUsername()) {
+							$userProvider->refreshUser($admin);
+						}
+						else {
+							$previousUser = $userProvider->unsetSessionUser();
+							$admin = $userProvider->instanceUserByUsername($v['username']);
+							$admin->setAuthenticated($previousUser->isAuthenticated());
+						}
+
 						return new JsonResponse(['success' => TRUE]);
 
 					}
