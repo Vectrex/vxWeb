@@ -35,7 +35,7 @@ class ArticlesController extends Controller {
 
 	protected function execute() {
 
-		$admin			= User::getSessionUser();
+		$admin			= Application::getInstance()->getCurrentUser();
 		$redirectUrl	= Router::getRoute('articles', 'admin.php')->getUrl();
 
 		// editing something?
@@ -51,7 +51,7 @@ class ArticlesController extends Controller {
 
 			// check permission of non superadmin
 
-			if(!$admin->hasSuperAdminPrivileges() && $admin->getAdminId() != $article->getCreatedBy()->getAdminId()) {
+			if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedBy()->getAdminId()) {
 				return $this->redirect($redirectUrl);
 			}
 		}
@@ -123,12 +123,12 @@ class ArticlesController extends Controller {
 			);
 		}
 
-		$restrictingWhere = $admin->hasSuperAdminPrivileges() ? '1 = 1' : ('createdBy = ' . $admin->getAdminId());
+		$restrictingWhere = $admin->hasRole('superadmin') ? '1 = 1' : ('createdBy = ' . $admin->getAttribute('id'));
 
 		return new Response(
 			SimpleTemplate::create('admin/articles_list.php')
 				->assign('page', $this->pathSegments[0])
-				->assign('can_publish', $admin->hasSuperAdminPrivileges())
+				->assign('can_publish', $admin->hasRole('superadmin'))
 				->assign('articles', ArticleQuery::create(Application::getInstance()->getDb())
 					->where($restrictingWhere)
 					->sortBy('lastUpdated', FALSE)
@@ -186,6 +186,7 @@ class ArticlesController extends Controller {
 		// id comes either via URL or as an extra form field
 
 		$id = $this->request->query->get('id', $this->request->request->get('id'));
+		$admin = Application::getInstance()->getCurrentUser();
 
 		if($id) {
 
@@ -260,8 +261,8 @@ class ArticlesController extends Controller {
 					$article->setData(['teaser' => $v['teaser'], 'content' => $v['content']]);
 					$article->setCustomSort($v['customSort']);
 
-					$article->setCreatedBy(User::getSessionUser());
-					$article->setUpdatedBy(User::getSessionUser());
+					$article->setCreatedBy($admin);
+					$article->setUpdatedBy($admin);
 
 					$id = $article->getId();
 
