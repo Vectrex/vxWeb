@@ -1,16 +1,16 @@
 <?php
 
-namespace vxWeb\Orm\Page;
+namespace vxWeb\Model\Page;
 
-use vxPHP\User\User;
 use vxPHP\Application\Application;
 use vxPHP\Application\Locale\Locale;
+use vxPHP\User\User2;
 
 /**
  * Mapper class for page revisions, stored in table `revisions`
  *
  * @author Gregor Kofler
- * @version 0.3.4 2015-06-25
+ * @version 0.4.0 2017-02-17
  * 
  * @todo retrieve and save locale
  * @todo attribute sanitation
@@ -39,10 +39,10 @@ class Revision {
 	private $page;
 	
 	/**
-	 * user associated with this revision
-	 * @var User 
+	 * user id which authored/updated this revision
+	 * @var integer
 	 */
-	private $author;
+	private $authorId;
 	
 	/**
 	 * locale of template
@@ -89,7 +89,7 @@ class Revision {
 	/**
 	 * @var array
 	 */
-	private $monitoredAttributes = array('title', 'keywords', 'description', 'markup');
+	private $monitoredAttributes = ['title', 'keywords', 'description', 'markup'];
 	
 	/**
 	 * hash of saved data, to allow quick check for updated data
@@ -129,7 +129,7 @@ class Revision {
 			FROM
 				revisions
 			WHERE
-				revisionsID = ?", array($id)
+				revisionsID = ?", [$id]
 		);
 		
 		if(!count($rows)) {
@@ -176,7 +176,7 @@ class Revision {
 				FROM
 					revisions
 				WHERE
-					pagesID = ?", array($pageId)
+					pagesID = ?", [$pageId]
 			);
 
 		}
@@ -192,12 +192,12 @@ class Revision {
 					revisions
 				WHERE
 					locale = ? AND
-					pagesID = ?", array($locale->getLocaleId(), $pageId)
+					pagesID = ?", [$locale->getLocaleId(), $pageId]
 			);
 
 		}
 
-		$instances = array();
+		$instances = [];
 		
 		// generate and store instance
 
@@ -236,10 +236,10 @@ class Revision {
 
 		$revision->id				= (int) $data['revisionsid'];
 		$revision->active			= !!$data['active'];
-		$revision->author			= $data['authorid']			? User::getInstance((int) $data['authorid']): NULL;
+		$revision->authorId			= $data['authorid'] ?: NULL;
 
-		$revision->firstCreated		= $data['firstcreated']		? new \DateTime($data['firstcreated'])		: NULL;
-		$revision->lastUpdated		= $data['lastupdated']		? new \DateTime($data['lastupdated'])		: NULL;
+		$revision->firstCreated		= $data['firstcreated'] ? new \DateTime($data['firstcreated']) : NULL;
+		$revision->lastUpdated		= $data['lastupdated'] ? new \DateTime($data['lastupdated']) : NULL;
 
 		if(!is_null($data['locale'])) {
 			$revision->locale = new Locale($data['locale']);
@@ -252,6 +252,7 @@ class Revision {
 		$revision->updateHash();
 
 		return $revision;
+
 	}
 
 	/**
@@ -359,7 +360,7 @@ class Revision {
 			$this->firstCreated = new \DateTime();
 		}
 
-		$toSave = array();
+		$toSave = [];
 
 		foreach($this->monitoredAttributes as $attr) {
 			
@@ -370,12 +371,13 @@ class Revision {
 		// save by inserting new revision record
 
 		$this->id = (int) Application::getInstance()->getDb()->insertRecord('revisions', array_merge(
-			$toSave, array(
+			$toSave,
+			[
 				'pagesID'		=> $this->page->getId(),
-				'authorID'		=> $this->author ? $this->author->getAdminId() : NULL,
+				'authorID'		=> $this->authorId,
 				'active'		=> (int) $this->active,
 				'firstCreated'	=> $this->firstCreated->format('Y-m-d H:i:s')
-			)
+			]
 		));
 
 		// add to id map
@@ -436,23 +438,25 @@ class Revision {
 	}
 
 	/**
-	 * get author of revision
-	 * @return \vxPHP\User\User
+	 * get author id of revision
+	 * 
+	 * @return integer
 	 */
-	public function getAuthor() {
+	public function getAuthorId() {
 
-		return $this->author;
+		return $this->authorId;
 
 	}
 
 	/**
-	 * set author
-	 * @param User $author
+	 * set author id
+	 * 
+	 * @param integer $authorId
 	 * @return Revision
 	 */
-	public function setAuthor(User $author) {
+	public function setAuthorId($authorId) {
 
-		$this->author = $author;
+		$this->author = (int) $authorId;
 		return $this;
 
 	}

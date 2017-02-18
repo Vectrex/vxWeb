@@ -14,7 +14,6 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Http\JsonResponse;
-use vxPHP\User\User;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Constraint\Validator\Email;
 use vxPHP\Application\Application;

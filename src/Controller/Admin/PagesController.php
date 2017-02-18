@@ -9,17 +9,17 @@ use vxPHP\Template\Filter\ShortenText;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
-use vxPHP\User\User;
 use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
-
-use vxWeb\TemplateUtil;
-use vxWeb\Orm\Page\Page;
-use vxWeb\Orm\Page\PageException;
 use vxPHP\Application\Locale\Locale;
-use vxWeb\Orm\Page\Revision;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Util\Rex;
+use vxPHP\Application\Application;
+
+use vxWeb\Util\Template;
+use vxWeb\Model\Page\Page;
+use vxWeb\Model\Page\PageException;
+use vxWeb\Model\Page\Revision;
 
 class PagesController extends Controller {
 
@@ -91,7 +91,7 @@ class PagesController extends Controller {
 						$revisionToAdd = clone $revision;
 						$revisionToAdd
 							->setActive(TRUE)
-							->setAuthor(User::getSessionUser())
+							->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
 							->save();
 
 						$revision->getPage()->exportActiveRevision();

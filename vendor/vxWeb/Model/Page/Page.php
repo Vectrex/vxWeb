@@ -1,6 +1,6 @@
 <?php
 
-namespace vxWeb\Orm\Page;
+namespace vxWeb\Model\Page;
 
 use vxPHP\Application\Application;
 use vxPHP\Observer\EventDispatcher;
