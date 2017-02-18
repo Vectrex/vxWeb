@@ -1,5 +1,5 @@
 <?php
-namespace vxWeb;
+namespace vxWeb\Util;
 
 use vxPHP\Orm\Custom\Article;
 use vxPHP\File\Exception\FilesystemFileException;
@@ -18,7 +18,7 @@ use vxPHP\Application\Application;
  * @author Gregor Kofler
  *
  */
-class FileUtil {
+class File {
 
 	/**
 	 * add metafolder entries for filesystem subfolders

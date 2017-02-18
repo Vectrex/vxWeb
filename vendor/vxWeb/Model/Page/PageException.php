@@ -1,6 +1,6 @@
 <?php
 
-namespace vxWeb\Orm\Page;
+namespace vxWeb\Model\Page;
 
 
 class PageException extends \Exception{

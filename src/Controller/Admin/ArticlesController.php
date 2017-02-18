@@ -23,7 +23,6 @@ use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 
 use vxPHP\Application\Application;
-use vxPHP\User\User;
 use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Database\MysqlPDOUtil;
@@ -51,7 +50,7 @@ class ArticlesController extends Controller {
 
 			// check permission of non superadmin
 
-			if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedBy()->getAdminId()) {
+			if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
 				return $this->redirect($redirectUrl);
 			}
 		}
@@ -123,7 +122,7 @@ class ArticlesController extends Controller {
 			);
 		}
 
-		$restrictingWhere = $admin->hasRole('superadmin') ? '1 = 1' : ('createdBy = ' . $admin->getAttribute('id'));
+		$restrictingWhere = $admin->hasRole('superadmin') ? '1 = 1' : ('createdBy = ' . (int) $admin->getAttribute('id'));
 
 		return new Response(
 			SimpleTemplate::create('admin/articles_list.php')
@@ -261,8 +260,8 @@ class ArticlesController extends Controller {
 					$article->setData(['teaser' => $v['teaser'], 'content' => $v['content']]);
 					$article->setCustomSort($v['customSort']);
 
-					$article->setCreatedBy($admin);
-					$article->setUpdatedBy($admin);
+					$article->setCreatedById($admin->getAttribute('id'));
+					$article->setUpdatedById($admin->getAttribute('id'));
 
 					$id = $article->getId();
 

@@ -9,11 +9,9 @@ use vxPHP\Util\Rex;
 use vxPHP\File\MetaFile;
 use vxPHP\File\MetaFolder;
 use vxPHP\File\FilesystemFile;
-use vxPHP\File\FilesystemFolder;
 use vxPHP\File\Exception\MetaFileException;
 use vxPHP\File\Exception\FilesystemFileException;
 use vxPHP\File\Exception\MetaFolderException;
-use vxPHP\File\Util;
 
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
@@ -28,10 +26,9 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
-use vxPHP\User\User;
 use vxPHP\Orm\Custom\Article;
 use vxPHP\File\MimeTypeGetter;
-use vxWeb\FileUtil;
+use vxWeb\Util\File;
 use vxPHP\Constraint\Validator\RegularExpression;
 
 /**
@@ -480,7 +477,7 @@ class FilesController extends Controller {
 
 				// turn uploaded file into metafile, extract archive if neccessary
 
-				$uploadedFiles = FileUtil::processFileUpload($folder, $upload, $values->all(), (bool) $values->get('unpack_archives'));
+				$uploadedFiles = File::processFileUpload($folder, $upload, $values->all(), (bool) $values->get('unpack_archives'));
 
 				if(FALSE !== $uploadedFiles) {
 
@@ -536,9 +533,9 @@ class FilesController extends Controller {
 
 		try {
 			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
-			$user = User::getSessionUser();
+			$user = Application::getInstance()->getCurrentUser();
 
-			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
+			if($user->hasRole('superadmin') || $user->getAttribute('id') == $file->getData('createdby')) {
 
 				$file->rename(trim($this->request->request->get('filename')));
 
@@ -560,9 +557,9 @@ class FilesController extends Controller {
 
 		try {
 			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
-			$user = User::getSessionUser();
+			$user = Application::getInstance()->getCurrentUser();
 
-			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
+			if($user->hasRole('superadmin') || $user->getAttribute('id') == $file->getData('createdby')) {
 
 				$folder = $file->getMetaFolder();
 				$file->delete();
@@ -581,9 +578,9 @@ class FilesController extends Controller {
 		try {
 
 			$file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
-			$user = User::getSessionUser();
-
-			if($user->hasSuperAdminPrivileges() || $user === $file->getCreatedBy()) {
+			$user = Application::getInstance()->getCurrentUser();
+			
+			if($user->hasRole('superadmin') || $user->getAttribute('id') == $file->getData('createdby')) {
 
 				$folder = $file->getMetafolder();
 				$file->move(MetaFolder::getInstance(NULL, $this->request->request->getInt('destination')));
@@ -628,7 +625,7 @@ class FilesController extends Controller {
 
 	private function getFiles(MetaFolder $mf, array $fileColumns = NULL) {
 
-		FileUtil::cleanupMetaFolder($mf);
+		File::cleanupMetaFolder($mf);
 
 		if(!$fileColumns) {
 			$fileColumns = $this->request->request->get('fileColumns', ['name', 'size', 'mime', 'mTime']);

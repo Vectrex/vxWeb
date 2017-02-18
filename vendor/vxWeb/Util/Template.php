@@ -1,14 +1,14 @@
 <?php
 
-namespace vxWeb;
+namespace vxWeb\Util;
 
 use vxPHP\File\FilesystemFolder;
 use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\Application\Application;
 use vxPHP\Application\Locale\Locale;
 use vxPHP\Http\Request;
-use vxWeb\Orm\Page\Page;
-use vxWeb\Orm\Page\Revision;
+use vxWeb\Model\Page\Page;
+use vxWeb\Model\Page\Revision;
 
 /**
  * helper class to sync and update templates both in filesystem and database
@@ -18,7 +18,7 @@ use vxWeb\Orm\Page\Revision;
  *
  */
 
-class TemplateUtil {
+class Template {
 
 	private static $maxPageRevisions;
 	
