@@ -1,8 +1,8 @@
 <?php
 
 use vxPHP\Application\Application;
-use vxPHP\User\vxWebRoleHierarchy;
-use vxPHP\User\SessionUserProvider;
+use vxWeb\User\vxWebRoleHierarchy;
+use vxWeb\User\SessionUserProvider;
 
 // $loader is initialized in bootstrap.php
 // place additional libraries here

@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use vxPHP\User\Util;
 use vxPHP\User\Notification\Notification;
 
 use vxPHP\Form\HtmlForm;
@@ -18,7 +17,9 @@ use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Constraint\Validator\Email;
 use vxPHP\Application\Application;
 use vxPHP\Security\Password\PasswordEncrypter;
-use vxPHP\User\SessionUserProvider;
+
+use vxWeb\User\SessionUserProvider;
+use vxWeb\User\Util;
 
 class ProfileController extends Controller {
 

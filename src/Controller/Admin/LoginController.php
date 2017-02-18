@@ -10,7 +10,7 @@ use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
-use vxPHP\User\SessionUserProvider;
+use vxWeb\User\SessionUserProvider;
 
 class LoginController extends Controller {
 

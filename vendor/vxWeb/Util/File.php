@@ -1,16 +1,17 @@
 <?php
 namespace vxWeb\Util;
 
-use vxPHP\Orm\Custom\Article;
+use vxPHP\Model\Article\Article;
 use vxPHP\File\Exception\FilesystemFileException;
-use vxPHP\File\Exception\MetaFolderException;
-use vxPHP\File\MetaFile;
 use vxPHP\File\FilesystemFolder;
-use vxPHP\File\MetaFolder;
 use vxPHP\File\FilesystemFile;
 use vxPHP\File\UploadedFile;
 use vxPHP\Http\Request;
 use vxPHP\Application\Application;
+
+use vxWeb\Model\MetaFile\MetaFile;
+use vxWeb\Model\MetaFile\MetaFolder;
+use vxWeb\Model\MetaFile\Exception\MetaFolderException;
 
 /**
  * this class contains some static methods used in various controllers of vxWeb
@@ -39,11 +40,11 @@ class File {
 
 		$mFolders = $db->doPreparedQuery('
 			SELECT foldersID, Path, l, r FROM folders f WHERE l > ? AND r < ? AND f.level = ?
-			', array(
+			', [
 				$nestingInfo['l'],
 				$nestingInfo['r'],
 				$nestingInfo['level'] + 1
-		));
+		]);
 
 		$db->beginTransaction();
 
@@ -56,11 +57,11 @@ class File {
 
 				// delete "potential" subdirectories
 
-				$db->execute('DELETE FROM folders WHERE l >= ? AND r <= ?', array((int) $l, (int) $r));
+				$db->execute('DELETE FROM folders WHERE l >= ? AND r <= ?', [(int) $l, (int) $r]);
 
 				// update nesting
 
-				$db->execute('UPDATE folders SET r = r - ? WHERE r > ?', array((int) $rl, (int) $l));
+				$db->execute('UPDATE folders SET r = r - ? WHERE r > ?', [(int) $rl, (int) $l]);
 			}
 		}
 
@@ -72,8 +73,8 @@ class File {
 			MetaFolder::createMetaFolder($d);
 		}
 
-		$mFiles = $db->doPreparedQuery('SELECT filesID, IFNULL(Obscured_Filename, File) AS Filename FROM files f WHERE f.foldersID = ?', array((int) $metaFolder->getId()));
-		$existing = array();
+		$mFiles = $db->doPreparedQuery('SELECT filesID, IFNULL(Obscured_Filename, File) AS Filename FROM files f WHERE f.foldersID = ?', [(int) $metaFolder->getId()]);
+		$existing = [];
 
 		// delete orphaned metafile entries
 
@@ -108,9 +109,9 @@ class File {
 	 *
 	 * @return array metafiles | FALSE when failure
 	 */
-	public static function processFileUpload(MetaFolder $metaFolder, UploadedFile $upload, array $metaData = array(), $unpackArchives = FALSE) {
+	public static function processFileUpload(MetaFolder $metaFolder, UploadedFile $upload, array $metaData = [], $unpackArchives = FALSE) {
 
-		$metafiles = array();
+		$metafiles = [];
 
 		// check for archive
 
@@ -125,7 +126,7 @@ class File {
 		}
 
 		else {
-			$uploads = array($upload);
+			$uploads = [$upload];
 		}
 
 		foreach($uploads as $upload) {
@@ -206,7 +207,7 @@ class File {
 
 		$folder	= $f->getFolder();
 		$path	= $folder->getPath();
-		$files = array();
+		$files = [];
 
 		for($i = 0; $i < $zip->numFiles; ++ $i) {
 

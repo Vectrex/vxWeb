@@ -11,13 +11,12 @@ use vxPHP\Controller\Controller;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 
-use vxPHP\File\MetaFile;
-
-use vxPHP\Orm\Custom\Article;
-use vxPHP\Orm\Custom\ArticleCategory;
-use vxPHP\Orm\Custom\Exception\ArticleException;
-use vxPHP\Orm\Custom\Exception\ArticleCategoryException;
-use vxPHP\Orm\Custom\ArticleQuery;
+use vxWeb\Model\MetaFile\MetaFile;
+use vxWeb\Model\Article\Article;
+use vxWeb\Model\Article\ArticleCategory;
+use vxWeb\Model\Article\Exception\ArticleException;
+use vxWeb\Model\Article\Exception\ArticleCategoryException;
+use vxWeb\Model\Article\ArticleQuery;
 
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;

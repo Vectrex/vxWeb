@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use vxPHP\Controller\Controller;
 use vxPHP\Routing\Router;
-use vxPHP\User\SessionUserProvider;
+use vxWeb\User\SessionUserProvider;
 
 class LogoutController extends Controller {
 

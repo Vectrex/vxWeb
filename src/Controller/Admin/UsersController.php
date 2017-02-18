@@ -9,15 +9,15 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Application\Application;
 use vxPHP\User\User;
-use vxPHP\User\Exception\UserException;
 use vxPHP\Util\Rex;
 use vxPHP\Http\JsonResponse;
-use vxPHP\User\Util;
 use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Constraint\Validator\Email;
 use vxPHP\Security\Password\PasswordEncrypter;
+
+use vxWeb\User\Util;
 
 class UsersController extends Controller {
 
