@@ -15,7 +15,7 @@ use vxPHP\Application\Application;
 use vxPHP\User\Exception\UserException;
 use vxPHP\Session\Session;
 use vxPHP\User\UserProviderInterface;
-use vxPHP\User\User2;
+use vxPHP\User\User;
 use vxPHP\User\SessionUser;
 use vxPHP\User\Role;
 
@@ -40,7 +40,7 @@ class SessionUserProvider implements UserProviderInterface {
 	 *
 	 * @see \vxPHP\User\UserProviderInterface::refreshUser()
 	 */
-	public function refreshUser(User2 $user) {
+	public function refreshUser(User $user) {
 
 		$rows = $this->db->doPreparedQuery("
 			SELECT

@@ -2,8 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use vxPHP\User\Notification\Notification;
-
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\FormElement\CheckboxElement;
@@ -20,14 +18,15 @@ use vxPHP\Security\Password\PasswordEncrypter;
 
 use vxWeb\User\SessionUserProvider;
 use vxWeb\User\Util;
+use vxWeb\User\Notification\Notification;
 
 class ProfileController extends Controller {
 
 	public function execute() {
 		
 		$admin = Application::getInstance()->getCurrentUser();
-		$availableNotifications	= [];//Notification::getAvailableNotifications($admin->getAdmingroup());
-		
+		$availableNotifications	= Notification::getAvailableNotifications($admin->getRoles()[0]->getRoleName());
+
 		$checkBoxHtml = '';
 
 		$form =
@@ -48,7 +47,7 @@ class ProfileController extends Controller {
 
 			$form->initVar('has_notifications', 1);
 
-			$e = new CheckboxElement($n->alias, 1, $admin->getsNotified($n->alias));
+			$e = new CheckboxElement($n->alias, 1, $n->notifies($admin));
 			$e->setLabel('&nbsp;' . $n->description);
 			$form->addElement($e);
 
@@ -87,17 +86,17 @@ class ProfileController extends Controller {
 					try {
 						Application::getInstance()->getDb()->updateRecord('admin', ['username' => $admin->getUsername()], $v->all());
 
-						/*
-						$add = [];
-
 						foreach($availableNotifications as $n) {
 							if(!empty($v[$n->alias])) {
-								$add[] = $n->alias;
+								$n->subscribe($admin);
+							}
+							else {
+								$n->unsubscribe($admin);
 							}
 						}
 
-						$admin->setNotifications($add);
-						*/
+						//$admin->setNotifications($add);
+
 						$userProvider = new SessionUserProvider();
 
 						// refresh user data if username hasn't changed

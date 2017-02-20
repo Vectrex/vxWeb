@@ -4,7 +4,7 @@ namespace vxWeb\Model\Page;
 
 use vxPHP\Application\Application;
 use vxPHP\Application\Locale\Locale;
-use vxPHP\User\User2;
+use vxPHP\User\User;
 
 /**
  * Mapper class for page revisions, stored in table `revisions`
