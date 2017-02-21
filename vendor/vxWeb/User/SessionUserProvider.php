@@ -15,16 +15,16 @@ use vxPHP\Application\Application;
 use vxPHP\User\Exception\UserException;
 use vxPHP\Session\Session;
 use vxPHP\User\UserProviderInterface;
-use vxPHP\User\User;
 use vxPHP\User\SessionUser;
 use vxPHP\User\Role;
+use vxPHP\User\UserInterface;
 
 /**
  * represents users within a vxWeb application, which are stored in the
  * session after initialization
  * 
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.2.0, 2017-02-12
+ * @version 0.3.0, 2017-02-21
  *        
  */
 class SessionUserProvider implements UserProviderInterface {
@@ -40,7 +40,7 @@ class SessionUserProvider implements UserProviderInterface {
 	 *
 	 * @see \vxPHP\User\UserProviderInterface::refreshUser()
 	 */
-	public function refreshUser(User $user) {
+	public function refreshUser(UserInterface $user) {
 
 		$rows = $this->db->doPreparedQuery("
 			SELECT
