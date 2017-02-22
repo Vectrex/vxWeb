@@ -12,7 +12,7 @@ namespace vxWeb\Model\Article;
 
 use vxPHP\Orm\Query;
 use vxWeb\Model\Article\Article;
-use vxPHP\Model\Article\ArticleCategory;
+use vxWeb\Model\Article\ArticleCategory;
 
 use vxPHP\Database\DatabaseInterface;
 
