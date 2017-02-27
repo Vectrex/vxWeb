@@ -28,7 +28,7 @@ use vxWeb\Model\Article\ArticleQuery;
  *
  * @author Gregor Kofler
  *
- * @version 1.2.0 2017-02-16
+ * @version 1.2.1 2017-02-28
  *
  * @todo merge rename() with commit()
  * @todo cleanup getImagesForReference()
@@ -752,7 +752,7 @@ class MetaFile implements PublisherInterface {
 	 */
 	public function delete($keepFilesystemFile = FALSE) {
 		
-		FileEvent::create(FileEvent::BEFORE_METAFILE_DELETE, $this)->trigger();
+		MetaFileEvent::create(MetaFileEvent::BEFORE_METAFILE_DELETE, $this)->trigger();
 
 		if(Application::getInstance()->getDb()->deleteRecord('files', $this->id)) {
 			unset(self::$instancesById[$this->id]);
