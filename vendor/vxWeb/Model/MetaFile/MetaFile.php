@@ -871,7 +871,7 @@ class MetaFile implements PublisherInterface {
 		}
 		else {
 			$mfile = MetaFile::getInstance(NULL, $filesID);
-			FileEvent::create(FileEvent::AFTER_METAFILE_CREATE, $mfile)->trigger();
+			MetaFileEvent::create(MetaFileEvent::AFTER_METAFILE_CREATE, $mfile)->trigger();
 
 			return $mfile;
 		}
