@@ -1,3 +1,5 @@
+@import "icon_variables";
+
 /*
  * form elements
  */
@@ -177,6 +179,10 @@ form	{
 
 	.formItem	{
 		padding: 0.5em 0;
+		
+		& > * {
+			vertical-align: middle;
+		}
 	}
 }
 
@@ -286,12 +292,12 @@ th.vxJS_sorTable_header_desc, th.vxJS_sorTable_header_asc	{
 	background: $neutralLight;
 
 	&:before	{
-		font-family: icomoon; font-weight: normal; content: "\e033"; vertical-align: middle; font-size: 150%;
+		font-family: icomoon; font-weight: normal; content: $icon-arrow-down5; vertical-align: middle; font-size: 150%;
 	}
 }
 
 th.vxJS_sorTable_header_desc:before	{
-	content: "\e031";
+	content: $icon-arrow-up5;
 }
 
 tr	{
@@ -321,7 +327,7 @@ div.vxJS_xhrThrobber {
 	}
 
 	&:before	{
-		font-family: icomoon; content: "\e02f";
+		font-family: icomoon; content: $icon-spinner9;
 	}
 }
 
