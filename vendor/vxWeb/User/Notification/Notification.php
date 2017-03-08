@@ -171,7 +171,7 @@ class Notification {
 			SELECT
 				notificationsID as id,
 				n.Alias,
-				IFNULL(Description, n.Alias) AS Description,
+				COALESCE(Description, n.Alias) AS Description,
 				Subject,
 				Message,
 				Signature,
