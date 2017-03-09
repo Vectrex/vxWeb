@@ -146,12 +146,12 @@ class MetaFile implements PublisherInterface {
 			$rows = Application::getInstance()->getDb()->doPreparedQuery('
 				SELECT
 					f.*,
-					CONCAT(fo.Path, IFNULL(f.Obscured_Filename, f.File)) as FullPath
+					CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) as fullpath
 				FROM
 					files f
-					INNER JOIN folders fo ON fo.foldersID = f.foldersID
+					INNER JOIN folders fo ON fo.foldersid = f.foldersid
 				WHERE
-					f.filesID IN (' . implode(',', array_fill(0, count($toRetrieveById), '?')) . ')',
+					f.filesid IN (' . implode(',', array_fill(0, count($toRetrieveById), '?')) . ')',
 			$toRetrieveById);
 
 			foreach($rows as $row) {
@@ -208,18 +208,21 @@ class MetaFile implements PublisherInterface {
 
 		if(count($toRetrieveByPath)) {
 
-			$where = array_fill(0, count($toRetrieveByPath) / 3, 'f.File = ? AND fo.Path IN (?, ?)');
-
-			$rows = Application::getInstance()->getDb()->doPreparedQuery('
-				SELECT
-					f.*,
-					CONCAT(fo.Path, IFNULL(f.Obscured_Filename, f.File)) as FullPath
-				FROM
-					files f
-					INNER JOIN folders fo ON fo.foldersID = f.foldersID
-				WHERE
-					'. implode(' OR ', $where),
-			$toRetrieveByPath);
+			$rows = Application::getInstance()->getDb()->doPreparedQuery(
+				sprintf("
+					SELECT
+						f.*,
+						CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath
+					FROM
+						files f
+						INNER JOIN folders fo ON fo.foldersid = f.foldersid
+					WHERE
+						%s
+					",
+					implode(' OR ', array_fill(0, count($toRetrieveByPath) / 3, 'f.file = ? AND fo.path IN (?, ?)'))
+				),
+				$toRetrieveByPath
+			);
 
 			foreach($rows as $row) {
 				$mf = new self(NULL, NULL, $row);
@@ -257,11 +260,11 @@ class MetaFile implements PublisherInterface {
 
 		$result = [];
 
-		$files = Application::getInstance()->getDb()->doPreparedQuery("SELECT f.*, CONCAT(fo.Path, IFNULL(f.Obscured_Filename, f.File)) as FullPath FROM files f INNER JOIN folders fo ON f.foldersID = fo.foldersID WHERE fo.foldersID = ?", array((int) $folder->getId()));
+		$files = Application::getInstance()->getDb()->doPreparedQuery("SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON f.foldersID = fo.foldersID WHERE fo.foldersID = ?", [(int) $folder->getId()]);
 
 		foreach($files as &$f) {
-			if(isset(self::$instancesById[$f['filesID']])) {
-				$file = self::$instancesById[$f['filesID']];
+			if(isset(self::$instancesById[$f['filesid']])) {
+				$file = self::$instancesById[$f['filesid']];
 			}
 			else {
 				$file = new self(NULL, NULL, $f);
@@ -283,8 +286,9 @@ class MetaFile implements PublisherInterface {
 			return $result;
 		}
 		else {
-			throw new MetaFileException("'$callBackSort' is not callable.");
+			throw new MetaFileException(sprintf("'%s' is not callable.", $callBackSort));
 		}
+
 	}
 
 	/**
@@ -302,24 +306,24 @@ class MetaFile implements PublisherInterface {
 		$files = Application::getInstance()->getDb()->doPreparedQuery("
 			SELECT
 				f.*,
-				CONCAT(fo.Path, IFNULL(f.Obscured_Filename, f.File)) AS FullPath
+				CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) AS fullpath
 			FROM
 				files f
-				INNER JOIN folders fo ON f.foldersID = fo.foldersID
-				INNER JOIN articles_files af ON af.filesID = f.filesID
+				INNER JOIN folders fo ON f.foldersid = fo.foldersid
+				INNER JOIN articles_files af ON af.filesid = f.filesid
 			WHERE
-				af.articlesID = ?
+				af.articlesid = ?
 			ORDER BY
-				af.customSort
+				af.customsort
 			", array($article->getId()));
 		
 		foreach($files as &$f) {
-			if(isset(self::$instancesById[$f['filesID']])) {
-				$file = self::$instancesById[$f['filesID']];
+			if(isset(self::$instancesById[$f['filesid']])) {
+				$file = self::$instancesById[$f['filesid']];
 			}
 			else {
 				$file = new self(NULL, NULL, $f);
-				self::$instancesById[$f['filesID']]							= $file;
+				self::$instancesById[$f['filesid']]							= $file;
 				self::$instancesByPath[$file->filesystemFile->getPath()]	= $file;
 			}
 			$result[] = $file;
@@ -337,7 +341,7 @@ class MetaFile implements PublisherInterface {
 			return $result;
 		}
 		else {
-			throw new MetaFileException("'$callBackSort' is not callable.");
+			throw new MetaFileException(sprintf("'%s' is not callable.", $callBackSort));
 		}
 		
 	}
@@ -359,25 +363,25 @@ class MetaFile implements PublisherInterface {
 		$files = Application::getInstance()->getDb()->doPreparedQuery("
 			SELECT
 				f.*,
-				CONCAT(fo.Path, IFNULL(f.Obscured_Filename, f.File)) as FullPath
+				CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) as fullpath
 			FROM
 				files f
-				INNER JOIN folders fo ON f.foldersID = fo.foldersID
-				INNER JOIN articles_files af ON af.filesID = f.filesID
+				INNER JOIN folders fo ON f.foldersid = fo.foldersid
+				INNER JOIN articles_files af ON af.filesid = f.filesid
 			WHERE
-				af.articlesID = ?
+				af.articlesid = ?
 				AND f.Mimetype IN ('".implode("','", $mimeTypes)."')
 			ORDER BY
-				af.customSort
+				af.customsort
 			", [$article->getId()]);
 				
 		foreach($files as &$f) {
-			if(isset(self::$instancesById[$f['filesID']])) {
-				$file = self::$instancesById[$f['filesID']];
+			if(isset(self::$instancesById[$f['filesid']])) {
+				$file = self::$instancesById[$f['filesid']];
 			}
 			else {
 				$file = new self(NULL, NULL, $f);
-				self::$instancesById[$f['filesID']]							= $file;
+				self::$instancesById[$f['filesid']]							= $file;
 				self::$instancesByPath[$file->filesystemFile->getPath()]	= $file;
 			}
 			$result[] = $file;
@@ -395,8 +399,9 @@ class MetaFile implements PublisherInterface {
 			return $result;
 		}
 		else {
-			throw new MetaFileException("'$callBackSort' is not callable.");
+			throw new MetaFileException(sprintf("'%s' is not callable.", $callBackSort));
 		}
+
 	}
 
 	/**
@@ -421,16 +426,17 @@ class MetaFile implements PublisherInterface {
 			getDb()->
 			doPreparedQuery("
 				SELECT
-					filesID
+					filesid
 				FROM
 					files
 				WHERE
-					foldersID = ? AND
-					( File LIKE ? OR Obscured_Filename LIKE ? )
+					foldersid = ? AND
+					( file LIKE ? OR obscured_filename LIKE ? )
 				",
-				array((int) $f->getId(), (string) $filename, (string) $filename)
+				[(int) $f->getId(), (string) $filename, (string) $filename]
 			)
 		) === 0;
+
 	}
 
 	/**
@@ -444,6 +450,7 @@ class MetaFile implements PublisherInterface {
 	 * @param array $data
 	 */
 	private function __construct($path = NULL, $id = NULL, array $dbEntry = NULL) {
+
 		if(isset($path)) {
 			$this->data = $this->getDbEntryByPath($path);
 		}
@@ -461,10 +468,13 @@ class MetaFile implements PublisherInterface {
 		// when record features an obscured_filename, the FilesystemFile is bound to this obscured filename, while the metafile always references the non-obscured filename
 
 		$this->isObscured		= $this->data['file'] !== $this->filesystemFile->getFilename();
+	
 	}
 
 	public function __toString() {
+
 		return $this->getPath();
+
 	}
 
 	/**
@@ -480,12 +490,12 @@ class MetaFile implements PublisherInterface {
 		$pathinfo = pathinfo($path);
 
 		$rows = Application::getInstance()->getDb()->doPreparedQuery(
-			"SELECT f.*, CONCAT(fo.Path, IFNULL(f.Obscured_Filename, f.File)) as FullPath FROM files f INNER JOIN folders fo ON fo.foldersID = f.foldersID WHERE f.File = ? AND fo.Path IN(?, ?) LIMIT 1",
-			array(
+			"SELECT f.*, CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON fo.foldersid = f.foldersid WHERE f.file = ? AND fo.path IN(?, ?) LIMIT 1",
+			[
 				$pathinfo['basename'],
 				$pathinfo['dirname'] . DIRECTORY_SEPARATOR,
 				str_replace(Application::getInstance()->getAbsoluteAssetsPath(), '', $pathinfo['dirname']) . DIRECTORY_SEPARATOR
-			)
+			]
 		);
 
 		if(isset($rows[0])) {
@@ -494,13 +504,14 @@ class MetaFile implements PublisherInterface {
 		else {
 			throw new MetaFileException(sprintf("MetaFile database entry for '%s' not found.", $path));
 		}
+
 	}
 
 	private function getDbEntryById($id) {
 
 		$rows = Application::getInstance()->getDb()->doPreparedQuery(
-			"SELECT f.*, CONCAT(fo.Path, IFNULL(f.Obscured_Filename, f.File)) as FullPath FROM files f INNER JOIN folders fo ON fo.foldersID = f.foldersID WHERE f.filesID = ?",
-			array((int) $id)
+			"SELECT f.*, CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON fo.foldersid = f.foldersid WHERE f.filesid = ?",
+			[(int) $id]
 		);
 
 		if(isset($rows[0])) {
@@ -509,6 +520,7 @@ class MetaFile implements PublisherInterface {
 		else {
 			throw new MetaFileException(sprintf("MetaFile database entry for id '%d' not found.", $id));
 		}
+
 	}
 
 	/**
@@ -568,13 +580,14 @@ class MetaFile implements PublisherInterface {
 		if(is_null($this->linkedArticles)) {
 
 			$this->linkedArticles = ArticleQuery::create(Application::getInstance()->getDb())
-				->innerJoin('articles_files af', 'a.articlesID = af.articlesID')
-				->where('af.filesID = ?', array($this->id))
+				->innerJoin('articles_files af', 'a.articlesid = af.articlesid')
+				->where('af.filesid = ?', [$this->id])
 				->select();
 
 		}
-		
+
 		return $this->linkedArticles;
+
 	}
 
 	/**
@@ -584,7 +597,9 @@ class MetaFile implements PublisherInterface {
 	 * @return string
 	 */
 	public function getMimetype($force = FALSE) {
+
 		return $this->filesystemFile->getMimetype($force);
+
 	}
 
 	/**
@@ -595,7 +610,9 @@ class MetaFile implements PublisherInterface {
 	 * @return boolean
 	 */
 	public function isWebImage($force = FALSE) {
+
 		return $this->filesystemFile->isWebImage($force);
+
 	}
 
 	/**
@@ -604,7 +621,9 @@ class MetaFile implements PublisherInterface {
 	 * @return SplFileInfo
 	 */
 	public function getFileInfo() {
+
 		return $this->filesystemFile->getFileInfo();
+
 	}
 
 	/**
@@ -613,7 +632,9 @@ class MetaFile implements PublisherInterface {
 	 * @return string
 	 */
 	public function getPath() {
+
 		return $this->filesystemFile->getPath();
+
 	}
 
 	/**
@@ -624,7 +645,9 @@ class MetaFile implements PublisherInterface {
 	 * @return string
 	 */
 	public function getRelativePath($force = FALSE) {
+
 		return $this->filesystemFile->getRelativePath($force);
+
 	}
 
 	/**
@@ -633,7 +656,9 @@ class MetaFile implements PublisherInterface {
 	 * @return string
 	 */
 	public function getFilename() {
+
 		return $this->filesystemFile->getFilename();
+
 	}
 
 	/**
@@ -643,7 +668,9 @@ class MetaFile implements PublisherInterface {
 	 * @return string
 	 */
 	public function getMetaFilename() {
+		
 		return $this->getData('file');
+
 	}
 
 	/**
@@ -652,7 +679,9 @@ class MetaFile implements PublisherInterface {
 	 * @return MetaFolder
 	 */
 	public function getMetaFolder() {
+
 		return $this->metaFolder;
+
 	}
 
 	/**
@@ -661,7 +690,9 @@ class MetaFile implements PublisherInterface {
 	 * @return FilesystemFile
 	 */
 	public function getFilesystemFile() {
+
 		return $this->filesystemFile;
+
 	}
 
 	/**
@@ -685,12 +716,12 @@ class MetaFile implements PublisherInterface {
 				$this->filesystemFile->rename($to);
 			}
 			catch(FilesystemFileException $e) {
-				throw new MetaFileException("Rename from '$oldpath' to '$newpath' failed. '$oldpath' already exists.");
+				throw new MetaFileException(sprintf("Rename from '%s' to '%s' failed. '%s' already exists.", $oldpath, $newpath, $oldpath));
 			}
 		}
 
 		try {
-			Application::getInstance()->getDb()->execute('UPDATE files SET File = ? WHERE filesID = ?', array($to, $this->id));
+			Application::getInstance()->getDb()->execute('UPDATE files SET file = ? WHERE filesid = ?', array($to, $this->id));
 		}
 
 		catch(\Exception $e) {
@@ -723,16 +754,16 @@ class MetaFile implements PublisherInterface {
 			$this->filesystemFile->move($destination->getFilesystemFolder());
 		}
 		catch(FilesystemFileException $e) {
-			throw new MetaFileException("Moving '{$this->getFilename()}' to '{$destination->getFullPath()}' failed.");
+			throw new MetaFileException(sprintf("Moving '%s' to '%s' failed.",$this->getFilename(), $destination->getFullPath()));
 		}
 
 		// update reference in db
 
 		try {
-			Application::getInstance()->getDb()->execute('UPDATE files SET foldersID = ? WHERE filesID = ?', array($destination->getId(), $this->id));
+			Application::getInstance()->getDb()->execute('UPDATE files SET foldersid = ? WHERE filesid = ?', array($destination->getId(), $this->id));
 		}
 		catch(\Exception $e) {
-			throw new MetaFileException("Moving '{$this->getFilename()}' to '{$destination->getFullPath()}' failed.");
+			throw new MetaFileException(sprintf("Moving '%s' to '%s' failed.",$this->getFilename(), $destination->getFullPath()));
 		}
 
 		// update instance lookup
@@ -740,6 +771,7 @@ class MetaFile implements PublisherInterface {
 		unset(self::$instancesByPath[$this->getPath()]);
 		$this->metaFolder = $destination;
 		self::$instancesByPath[$this->getPath()] = $this;
+
 	}
 
 	/**
@@ -763,8 +795,9 @@ class MetaFile implements PublisherInterface {
 			}
 		}
 		else {
-			throw new MetaFileException("Delete of metafile '{$this->filesystemFile->getPath()}' failed.");
+			throw new MetaFileException(sprintf("Delete of metafile '%s' failed.", $this->filesystemFile->getPath()));
 		}
+
 	}
 
 	/**
@@ -835,13 +868,13 @@ class MetaFile implements PublisherInterface {
 	
 		if(count($db->doPreparedQuery("
 			SELECT
-				f.filesID
+				f.filesid
 			FROM
 				files f
-				INNER JOIN folders fo ON fo.foldersID = f.foldersID
+				INNER JOIN folders fo ON fo.foldersid = f.foldersid
 			WHERE
-				f.File  COLLATE utf8_bin = ? AND
-				fo.Path COLLATE utf8_bin = ?
+				f.file  COLLATE utf8_bin = ? AND
+				fo.path COLLATE utf8_bin = ?
 			LIMIT 1",
 			[
 				$file->getFilename(),
@@ -862,10 +895,10 @@ class MetaFile implements PublisherInterface {
 		$user	= Application::getInstance()->getCurrentUser();
 	
 		if(!($filesID = $db->insertRecord('files', [
-			'foldersID'		=> $mf->getId(),
-			'File'			=> $file->getFilename(),
-			'Mimetype'		=> $file->getMimetype(),
-			'createdBy'		=> is_null($user) ? NULL : $user->getAttribute('id')
+			'foldersid'		=> $mf->getId(),
+			'file'			=> $file->getFilename(),
+			'mimetype'		=> $file->getMimetype(),
+			'createdby'		=> is_null($user) ? NULL : $user->getAttribute('id')
 		]))) {
 			throw new FilesystemFileException(sprintf("Could not create metafile for '%s'.", $file->getFilename()), FilesystemFileException::METAFILE_CREATION_FAILED);
 		}
@@ -875,7 +908,7 @@ class MetaFile implements PublisherInterface {
 
 			return $mfile;
 		}
+
 	}
-	
-	
+
 }

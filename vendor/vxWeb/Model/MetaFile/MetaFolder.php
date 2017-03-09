@@ -175,7 +175,7 @@ class MetaFolder {
 		}
 
 		$rows = Application::getInstance()->getDb()->doPreparedQuery(
-			"SELECT * FROM folders WHERE Path = ? OR Path = ? LIMIT 1",
+			"SELECT * FROM folders WHERE path = ? OR path = ? LIMIT 1",
 			[(string) $path, (string) $altPath]
 		);
 
@@ -190,7 +190,7 @@ class MetaFolder {
 	private function getDbEntryById($id) {
 
 		$rows = Application::getInstance()->getDb()->doPreparedQuery(
-			"SELECT * FROM folders WHERE foldersID = ? LIMIT 1",
+			"SELECT * FROM folders WHERE foldersid = ? LIMIT 1",
 			[(int) $id]
 		);
 
@@ -208,7 +208,7 @@ class MetaFolder {
 	private function refreshNesting() {
 
 		$rows = Application::getInstance()->getDb()->doPreparedQuery(
-			"SELECT l, r, level FROM folders WHERE foldersID = ?",
+			"SELECT l, r, level FROM folders WHERE foldersid = ?",
 			[(int) $this->id]
 		);
 		$this->level	= $this->data['level']	= (int) $rows[0]['level'];
@@ -304,7 +304,7 @@ class MetaFolder {
 
 			foreach(
 				Application::getInstance()->getDb()->doPreparedQuery(
-					'SELECT filesID FROM files WHERE foldersID = ?',
+					'SELECT filesID FROM files WHERE foldersid = ?',
 					[(int) $this->id]
 				)
 			as $f) {

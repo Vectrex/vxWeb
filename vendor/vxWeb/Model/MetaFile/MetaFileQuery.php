@@ -53,7 +53,7 @@ class MetaFileQuery extends Query implements QueryInterface {
 	 */
 	public function filterByFolder(MetaFolder $folder) {
 
-		$this->addCondition("f.foldersID = ?", $folder->getId());
+		$this->addCondition("f.foldersid = ?", $folder->getId());
 		return $this;
 
 	}
@@ -68,8 +68,8 @@ class MetaFileQuery extends Query implements QueryInterface {
 	public function filterByArticle(Article $article) {
 
 		if($article->getId()) {
-			$this->innerJoin('articles_files af', 'af.filesID = f.filesID');
-			$this->addCondition("af.articlesID = ?", $article->getId());
+			$this->innerJoin('articles_files af', 'af.filesid = f.filesid');
+			$this->addCondition("af.articlesid = ?", $article->getId());
 		}
 			
 		return $this;
@@ -90,10 +90,11 @@ class MetaFileQuery extends Query implements QueryInterface {
 		$ids = array();
 
 		foreach($rows as $row) {
-			$ids[] = $row['filesID'];
+			$ids[] = $row['filesid'];
 		}
 
 		return MetaFile::getInstancesByIds($ids);
+
 	}
 
 	/**
@@ -107,17 +108,18 @@ class MetaFileQuery extends Query implements QueryInterface {
 		$this->buildQueryString();
 		$this->buildValuesArray();
 
-		$this->sql .= " LIMIT $rows";
+		$this->sql .= ' LIMIT ' . $rows;
 
 		$rows = $this->executeQuery();
 
-		$ids = array();
+		$ids = [];
 
 		foreach($rows as $row) {
-			$ids[] = $row['filesID'];
+			$ids[] = $row['filesid'];
 		}
 
 		return MetaFile::getInstancesByIds($ids);
+
 	}
 
 	/**
