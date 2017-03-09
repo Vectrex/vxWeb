@@ -98,7 +98,7 @@ this.vxWeb.doPages = function() {
 
 			revisionId = data.id;
 
-			CKEDITOR.instances.Markup.setData(
+			CKEDITOR.instances.markup.setData(
 				data.markup,
 				{
 					callback: function() {
@@ -108,10 +108,10 @@ this.vxWeb.doPages = function() {
 				}
 			);
 	
-			form["Alias"].value			= data.alias;
-			form["Title"].value			= data.title;
-			form["Keywords"].value		= data.keywords;
-			form["Description"].value	= data.description;
+			form.alias.value		= data.alias;
+			form.title.value		= data.title;
+			form.keywords.value		= data.keywords;
+			form.description.value	= data.description;
 			
 			markRevisionRow(data.id);
 	
@@ -237,12 +237,12 @@ this.vxWeb.doPages = function() {
 	revisionsXhr.submit();
 	vxJS.event.addListener(revisionsContainer, "click", handleRevisionsClick);
 
-	xhrForm.addSubmit(form.elements["submit_page"]);
+	xhrForm.addSubmit(form.elements.submit_page);
 	vxJS.event.addListener(xhrForm, "check", parseServerCheck);
 	vxJS.event.addListener(xhrForm, "beforeSubmit", function() {
 		this.setPayload( { revisionId: revisionId } );
-		if(CKEDITOR && CKEDITOR.instances.Markup) {
-			this.element.elements['Markup'].value = CKEDITOR.instances.Markup.getData();
+		if(CKEDITOR && CKEDITOR.instances.markup) {
+			this.element.elements.markup.value = CKEDITOR.instances.markup.getData();
 		}
 	});
 };

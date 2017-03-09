@@ -16,7 +16,7 @@
 
 		vxJS.event.addDomReadyListener(function() {
 	
-			CKEDITOR.replace(document.forms[0].elements["Markup"], {
+			CKEDITOR.replace(document.forms[0].elements["markup"], {
 				allowedContent: true,
 				autoParagraph: false,
 				// extraAllowedContent: "div(*)",

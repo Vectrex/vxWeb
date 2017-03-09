@@ -81,12 +81,14 @@ class PagesController extends Controller {
 
 					$revision = Revision::getInstance($revisionId);
 					$revision
-						->setTitle		($v['Title'])
-						->setDescription($v['Description'])
-						->setKeywords	($v['Keywords'])
-						->setMarkup		($v['Markup']);
-				
+						->setTitle		($v['title'])
+						->setDescription($v['description'])
+						->setKeywords	($v['keywords'])
+						->setMarkup		($v['markup']);
+
 					if($revision->wasChanged()) {
+
+						$revision->deactivate();
 
 						$revisionToAdd = clone $revision;
 						$revisionToAdd
@@ -94,7 +96,7 @@ class PagesController extends Controller {
 							->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
 							->save();
 
-						$revision->getPage()->exportActiveRevision();
+						$revisionToAdd->getPage()->exportActiveRevision();
 
 						return new JsonResponse([
 							'data'		=> [
@@ -204,11 +206,11 @@ class PagesController extends Controller {
 	private function buildEditForm() {
 		
 		return HtmlForm::create('admin_edit_page.htm')
-			->addElement(FormElementFactory::create('input',	'Title',		NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-			->addElement(FormElementFactory::create('input',	'Alias',		NULL, [], [], FALSE, ['trim', 'uppercase']))
-			->addElement(FormElementFactory::create('textarea', 'Keywords',		NULL, [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('textarea', 'Description',	NULL, [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('textarea', 'Markup',		NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('input',	'title',		NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+			->addElement(FormElementFactory::create('input',	'alias',		NULL, [], [], FALSE, ['trim', 'uppercase']))
+			->addElement(FormElementFactory::create('textarea', 'keywords',		NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('textarea', 'description',	NULL, [], [], FALSE, ['trim']))
+			->addElement(FormElementFactory::create('textarea', 'markup',		NULL, [], [], FALSE, ['trim']))
 			->addElement(FormElementFactory::create('button', 'submit_page')->setInnerHTML('Änderungen übernehmen und neue Revision erzeugen'));
 
 	}

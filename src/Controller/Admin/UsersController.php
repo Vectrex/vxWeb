@@ -90,7 +90,7 @@ class UsersController extends Controller {
 				->addElement(FormElementFactory::create('input',	'name'))
 				->addElement(FormElementFactory::create('password',	'new_PWD'))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify'))
-				->addElement(FormElementFactory::create('select',	'admingroupsID', NULL, [], $admingroups));
+				->addElement(FormElementFactory::create('select',	'admingroupsid', NULL, [], $admingroups));
 			
 			$form->bindRequestParameters();
 			
