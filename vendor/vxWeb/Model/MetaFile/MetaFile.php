@@ -260,7 +260,7 @@ class MetaFile implements PublisherInterface {
 
 		$result = [];
 
-		$files = Application::getInstance()->getDb()->doPreparedQuery("SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON f.foldersID = fo.foldersID WHERE fo.foldersID = ?", [(int) $folder->getId()]);
+		$files = Application::getInstance()->getDb()->doPreparedQuery("SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON f.foldersid = fo.foldersid WHERE fo.foldersid = ?", [(int) $folder->getId()]);
 
 		foreach($files as &$f) {
 			if(isset(self::$instancesById[$f['filesid']])) {
@@ -268,7 +268,7 @@ class MetaFile implements PublisherInterface {
 			}
 			else {
 				$file = new self(NULL, NULL, $f);
-				self::$instancesById[$f['filesID']]							= $file;
+				self::$instancesById[$f['filesid']]							= $file;
 				self::$instancesByPath[$file->filesystemFile->getPath()]	= $file;
 			}
 			$result[] = $file;
@@ -894,7 +894,7 @@ class MetaFile implements PublisherInterface {
 		$mf		= MetaFolder::createMetaFolder($file->getFolder());
 		$user	= Application::getInstance()->getCurrentUser();
 	
-		if(!($filesID = $db->insertRecord('files', [
+		if(!($filesid = $db->insertRecord('files', [
 			'foldersid'		=> $mf->getId(),
 			'file'			=> $file->getFilename(),
 			'mimetype'		=> $file->getMimetype(),
@@ -903,7 +903,7 @@ class MetaFile implements PublisherInterface {
 			throw new FilesystemFileException(sprintf("Could not create metafile for '%s'.", $file->getFilename()), FilesystemFileException::METAFILE_CREATION_FAILED);
 		}
 		else {
-			$mfile = MetaFile::getInstance(NULL, $filesID);
+			$mfile = MetaFile::getInstance(NULL, $filesid);
 			MetaFileEvent::create(MetaFileEvent::AFTER_METAFILE_CREATE, $mfile)->trigger();
 
 			return $mfile;

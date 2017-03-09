@@ -334,7 +334,7 @@ class MetaFolder {
 					[(int) $this->l, (int) $this->r, $this->level + 1]
 				)
 			as $f) {
-				$this->metaFolders[] = self::getInstance(NULL, $f['foldersID']);
+				$this->metaFolders[] = self::getInstance(NULL, $f['foldersid']);
 			}
 		}
 
@@ -425,7 +425,7 @@ class MetaFolder {
 				'SELECT * FROM folders'
 			)
 		as $r) {
-			if($force || !isset(self::$instancesById[$r['foldersID']])) {
+			if($force || !isset(self::$instancesById[$r['foldersid']])) {
 				$r = array_change_key_case($r, CASE_LOWER);
 				$f = new self(NULL, NULL, $r);
 

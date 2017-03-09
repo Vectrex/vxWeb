@@ -308,7 +308,7 @@ class ArticlesController extends Controller {
 						'id'		=> $mf->getId(),
 						'folderid'	=> $mf->getMetaFolder()->getId(),
 						'filename'	=> $mf->getFilename(),
-						'isthumb'	=> $mf->isWebImage(),
+						'isThumb'	=> $mf->isWebImage(),
 						'type'		=> $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
 						'path'		=> $mf->getMetaFolder()->getRelativePath()
 					];

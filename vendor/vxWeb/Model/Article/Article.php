@@ -944,7 +944,7 @@ class Article implements PublisherInterface {
 		
 		// ensure lower case keys
 		
-		$articleData = array_change_key_case(CASE_LOWER);
+		$articleData = array_change_key_case($articleData, CASE_LOWER);
 
 		// set identification
 
