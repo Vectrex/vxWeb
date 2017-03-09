@@ -70,7 +70,7 @@ class SessionUserProvider implements UserProviderInterface {
 				'misc_data' => $rows[0]['misc_data'],
 				'table_access' => $rows[0]['table_access'],
 				'row_access' => $rows[0]['row_access'],
-				'id' => $rows[0]['adminID'],
+				'id' => $rows[0]['adminid'],
 			])
 		;
 
@@ -117,7 +117,7 @@ class SessionUserProvider implements UserProviderInterface {
 				'misc_data' => $rows[0]['misc_data'],
 				'table_access' => $rows[0]['table_access'],
 				'row_access' => $rows[0]['row_access'],
-				'id' => $rows[0]['adminID'],
+				'id' => $rows[0]['adminid'],
 			]
 		);
 		

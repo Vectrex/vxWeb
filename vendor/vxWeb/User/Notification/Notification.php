@@ -190,8 +190,6 @@ class Notification {
 
 		foreach($rows as $r) {
 			
-			$r = array_change_key_case($r, CASE_LOWER);
-
 			$stmt->execute([$r['id']]);
 			$adminIds = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 

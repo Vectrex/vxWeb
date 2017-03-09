@@ -217,7 +217,7 @@ class Template {
 		// insert only revision (locale might differ)
 
 		if(!empty($rows)) {
-			$page = Page::getInstance((int) $rows[0]['pagesID']);
+			$page = Page::getInstance((int) $rows[0]['pagesid']);
 		}
 
 		else {

@@ -137,7 +137,7 @@ class Page implements PublisherInterface {
 				pages
 		") as $row) {
 
-			if(!isset(self::$instancesById[(int) $row['pagesID']])) {
+			if(!isset(self::$instancesById[(int) $row['pagesid']])) {
 
 				$page = self::createInstance($row);
 
@@ -163,24 +163,24 @@ class Page implements PublisherInterface {
 
 		// set identification
 		
-		$page->id		= (int) $data['pagesID'];
-		$page->alias	= $data['Alias'];
+		$page->id		= (int) $data['pagesid'];
+		$page->alias	= $data['alias'];
 
 		// set dates
 
-		if(!empty($data['firstCreated'])) {
-			$page->firstCreated = new \DateTime($data['firstCreated']);
+		if(!empty($data['firstcreated'])) {
+			$page->firstCreated = new \DateTime($data['firstcreated']);
 		}
 		
-		if(!empty($data['lastUpdated'])) {
-			$page->lastUpdated = new \DateTime($data['lastUpdated']);
+		if(!empty($data['lastupdated'])) {
+			$page->lastUpdated = new \DateTime($data['lastupdated']);
 		}
 
 		// set various text fields
 
-		$page->setTitle($data['Title']);
-		$page->setKeywords($data['Keywords']);
-		$page->setTemplate($data['Template']);
+		$page->setTitle($data['title']);
+		$page->setKeywords($data['keywords']);
+		$page->setTemplate($data['template']);
 
 		// get revisions
 

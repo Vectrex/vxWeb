@@ -138,7 +138,7 @@ class Revision {
 
 		// get Page instance; page has revisions not retrieved yet, otherwise instance would have been found
 
-		$page = Page::getInstance($rows[0]['pagesID']);
+		$page = Page::getInstance($rows[0]['pagesid']);
 
 		// create instance and cache it
 
@@ -203,8 +203,8 @@ class Revision {
 
 		foreach($rows as $row) {
 			
-			if(isset(self::$instancesById[$row['revisionsID']])) {
-				$revision = self::$instancesById[$row['revisionsID']];
+			if(isset(self::$instancesById[$row['revisionsid']])) {
+				$revision = self::$instancesById[$row['revisionsid']];
 			}
 			else {
 				$revision = self::createRevision($page, $row);
@@ -353,7 +353,7 @@ class Revision {
 	public function save() {
 		
 		if(isset($this->id)) {
-			throw new PageException('Cannot save a previously saved revision');
+			throw new PageException('Cannot save a previously saved revision.');
 		}
 
 		if(is_null($this->firstCreated)) {

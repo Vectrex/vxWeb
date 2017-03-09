@@ -145,7 +145,7 @@ class UsersController extends Controller {
 			->addElement(FormElementFactory::create('input',	'name',				NULL,	[],	[],	TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
 			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	[],	[],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')]))
 			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL))
-			->addElement(FormElementFactory::create('select',	'admingroupsID',	NULL,	[],	[],	TRUE, [],						[new RegularExpression(Rex::INT_EXCL_NULL)]))
+			->addElement(FormElementFactory::create('select',	'admingroupsid',	NULL,	[],	[],	TRUE, [],						[new RegularExpression(Rex::INT_EXCL_NULL)]))
 		;
 
 		$v = $form

@@ -49,7 +49,7 @@ class File {
 		$db->beginTransaction();
 
 		foreach($mFolders as $d) {
-			if(!is_dir($fileRoot . $d['Path'])) {
+			if(!is_dir($fileRoot . $d['path'])) {
 
 				$l = $d['l'];
 				$r = $d['r'];
@@ -79,11 +79,11 @@ class File {
 		// delete orphaned metafile entries
 
 		foreach($mFiles as $f) {
-			if(! file_exists($metaFolder->getFullPath() . $f['Filename'])) {
-				$db->deleteRecord('files', $f['filesID']);
+			if(! file_exists($metaFolder->getFullPath() . $f['filename'])) {
+				$db->deleteRecord('files', $f['filesid']);
 			}
 			else {
-				$existing[] = $f['Filename'];
+				$existing[] = $f['filename'];
 			}
 		}
 
