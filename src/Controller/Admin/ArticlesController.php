@@ -79,14 +79,14 @@ class ArticlesController extends Controller {
 			if(isset($article)) {
 
 				$articleForm->setInitFormValues([
-					'articlecategoriesID'	=> $article->getCategory()->getId(),
-					'Headline'				=> $article->getHeadline(),
-					'customSort'			=> $article->getCustomSort(),
+					'articlecategoriesid'	=> $article->getCategory()->getId(),
+					'headline'				=> $article->getHeadline(),
+					'customsort'			=> $article->getCustomSort(),
 					'teaser'				=> $article->getData('teaser'),
 					'content'				=> htmlspecialchars($article->getData('content'), ENT_NOQUOTES, 'UTF-8'),
-					'Article_Date'			=> is_null($article->getDate())			? '' : $article->getDate()->format('d.m.Y'),
-					'Display_from'			=> is_null($article->getDisplayFrom())	? '' : $article->getDisplayFrom()->format('d.m.Y'),
-					'Display_until'			=> is_null($article->getDisplayUntil())	? '' : $article->getDisplayUntil()->format('d.m.Y')
+					'article_date'			=> is_null($article->getDate())			? '' : $article->getDate()->format('d.m.Y'),
+					'display_from'			=> is_null($article->getDisplayFrom())	? '' : $article->getDisplayFrom()->format('d.m.Y'),
+					'display_until'			=> is_null($article->getDisplayUntil())	? '' : $article->getDisplayUntil()->format('d.m.Y')
 				]);
 
 				$submitLabel = 'Änderungen übernehmen';
@@ -218,21 +218,21 @@ class ArticlesController extends Controller {
 					->getValidFormValues();
 
 				if($v['Article_Date'] != '') {
-					$article->setDate(new \DateTime(MysqlPDOUtil::unFormatDate($v['Article_Date'], 'de')));
+					$article->setDate(new \DateTime(MysqlPDOUtil::unFormatDate($v['article_date'], 'de')));
 				}
 				else {
 					$article->setDate();
 				}
 
 				if($v['Display_from'] != '') {
-					$article->setDisplayFrom(new \DateTime(MysqlPDOUtil::unFormatDate($v['Display_from'], 'de')));
+					$article->setDisplayFrom(new \DateTime(MysqlPDOUtil::unFormatDate($v['display_from'], 'de')));
 				}
 				else {
 					$article->setDisplayFrom();
 				}
 
 				if($v['Display_until'] != '') {
-					$article->setDisplayUntil(new \DateTime(MysqlPDOUtil::unFormatDate($v['Display_until'], 'de')));
+					$article->setDisplayUntil(new \DateTime(MysqlPDOUtil::unFormatDate($v['display_until'], 'de')));
 				}
 				else {
 					$article->setDisplayUntil();
@@ -254,10 +254,10 @@ class ArticlesController extends Controller {
 
 					// validate submitted category id - replacing default method allows user privilege considerations
 
-					$article->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesID'])));
-					$article->setHeadline($v['Headline']);
+					$article->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])));
+					$article->setHeadline($v['headline']);
 					$article->setData(['teaser' => $v['teaser'], 'content' => $v['content']]);
-					$article->setCustomSort($v['customSort']);
+					$article->setCustomSort($v['customsort']);
 
 					$article->setCreatedById($admin->getAttribute('id'));
 					$article->setUpdatedById($admin->getAttribute('id'));
@@ -306,9 +306,9 @@ class ArticlesController extends Controller {
 				foreach(Article::getInstance($this->request->request->getInt('articlesId'))->getLinkedMetaFiles() as $mf) {
 					$rows[] = [
 						'id'		=> $mf->getId(),
-						'folderId'	=> $mf->getMetaFolder()->getId(),
+						'folderid'	=> $mf->getMetaFolder()->getId(),
 						'filename'	=> $mf->getFilename(),
-						'isThumb'	=> $mf->isWebImage(),
+						'isthumb'	=> $mf->isWebImage(),
 						'type'		=> $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
 						'path'		=> $mf->getMetaFolder()->getRelativePath()
 					];
@@ -347,14 +347,14 @@ class ArticlesController extends Controller {
 
 		return HtmlForm::create('admin_edit_article.htm')
 			->setAttribute('class', 'editArticleForm')
-			->addElement(FormElementFactory::create('select', 'articlecategoriesID', NULL, [], $categories, TRUE, [], [new RegularExpression(Rex::INT_EXCL_NULL)]))
-			->addElement(FormElementFactory::create('input', 'Headline', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+			->addElement(FormElementFactory::create('select', 'articlecategoriesid', NULL, [], $categories, TRUE, [], [new RegularExpression(Rex::INT_EXCL_NULL)]))
+			->addElement(FormElementFactory::create('input', 'headline', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
 			->addElement(FormElementFactory::create('textarea', 'teaser', NULL, [], [], FALSE, ['trim', 'strip_tags']))
 			->addElement(FormElementFactory::create('textarea', 'content', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-			->addElement(FormElementFactory::create('input', 'Article_Date', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
-			->addElement(FormElementFactory::create('input', 'Display_from', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
-			->addElement(FormElementFactory::create('input', 'Display_until', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
-			->addElement(FormElementFactory::create('input', 'customSort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)]));
+			->addElement(FormElementFactory::create('input', 'article_date', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
+			->addElement(FormElementFactory::create('input', 'display_from', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
+			->addElement(FormElementFactory::create('input', 'display_until', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
+			->addElement(FormElementFactory::create('input', 'customsort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)]));
 
 	}
 

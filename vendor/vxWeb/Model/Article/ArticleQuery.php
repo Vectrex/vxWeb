@@ -44,7 +44,7 @@ class ArticleQuery extends Query {
 
 		$this->table		= 'articles';
 		$this->alias		= 'a';
-		$this->columns		= array('a.articlesID');
+		$this->columns		= ['a.articlesid'];
 
 		parent::__construct($dbConnection);
 
@@ -59,7 +59,7 @@ class ArticleQuery extends Query {
 	 */
 	public function filterByCategory(ArticleCategory $category) {
 
-		$this->addCondition("a.articlecategoriesID = ?", $category->getId());
+		$this->addCondition("a.articlecategoriesid = ?", $category->getId());
 		return $this;
 
 	}
@@ -96,8 +96,8 @@ class ArticleQuery extends Query {
 	 * @return \vxPHP\Orm\Custom\ArticleQuery
 	 */
 	public function filterByCategoryNames(array $categoryNames) {
-		$this->innerJoin('articlecategories c', 'c.articlecategoriesID = a.articlecategoriesID');
-		$this->addCondition('c.Alias', $categoryNames, 'IN');
+		$this->innerJoin('articlecategories c', 'c.articlecategoriesid = a.articlecategoriesid');
+		$this->addCondition('c.alias', $categoryNames, 'IN');
 		return $this;
 	}
 	
@@ -115,8 +115,8 @@ class ArticleQuery extends Query {
 			$date = new \DateTime();
 		}
 		
-		$this->addCondition("a.Display_from IS NULL OR a.Display_from <= ?", $date->format('Y-m-d'));
-		$this->addCondition("a.Display_until IS NULL OR a.Display_until >= ?", $date->format('Y-m-d'));
+		$this->addCondition("a.display_from IS NULL OR a.display_from <= ?", $date->format('Y-m-d'));
+		$this->addCondition("a.display_until IS NULL OR a.display_until >= ?", $date->format('Y-m-d'));
 
 		return $this;
 	}
@@ -132,10 +132,10 @@ class ArticleQuery extends Query {
 		$this->buildQueryString();
 		$this->buildValuesArray();
 
-		$ids = array();
+		$ids = [];
 
 		foreach($this->executeQuery() as $row) {
-			$ids[] = $row['articlesID'];
+			$ids[] = $row['articlesid'];
 		}
 
 		return Article::getInstances($ids);
@@ -181,7 +181,7 @@ class ArticleQuery extends Query {
 		$ids = array();
 
 		foreach($this->executeQuery() as $row) {
-			$ids[] = $row['articlesID'];
+			$ids[] = $row['articlesid'];
 		}
 
 		return Article::getInstances($ids);

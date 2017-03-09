@@ -302,7 +302,7 @@ class Article implements PublisherInterface {
 
 		// a headline is a required attribute
 
-		if(is_null($this->headline) || trim($this->headline) == '') {
+		if(is_null($this->headline) || trim($this->headline) === '') {
 			throw new ArticleException("Headline not set. Article can't be inserted", ArticleException::ARTICLE_HEADLINE_NOT_SET);
 		}
 
@@ -321,17 +321,17 @@ class Article implements PublisherInterface {
 		$cols = array_merge(
 			(array) $this->getData(),
 			[
-				'Alias'					=> $this->alias,
-				'articlecategoriesID'	=> $this->category->getId(),
-				'Headline'				=> $this->headline,
-				'Article_Date'			=> is_null($this->articleDate) ? NULL : $this->articleDate->format('Y-m-d H:i:s'),
-				'Display_from'			=> is_null($this->displayFrom) ? NULL : $this->displayFrom->format('Y-m-d H:i:s'),
-				'Display_until'			=> is_null($this->displayUntil) ? NULL : $this->displayUntil->format('Y-m-d H:i:s'),
+				'alias'					=> $this->alias,
+				'articlecategoriesid'	=> $this->category->getId(),
+				'headline'				=> $this->headline,
+				'article_date'			=> is_null($this->articleDate) ? NULL : $this->articleDate->format('Y-m-d H:i:s'),
+				'display_from'			=> is_null($this->displayFrom) ? NULL : $this->displayFrom->format('Y-m-d H:i:s'),
+				'display_until'			=> is_null($this->displayUntil) ? NULL : $this->displayUntil->format('Y-m-d H:i:s'),
 				'published'				=> $this->published,
-				'customFlags'			=> $this->customFlags,
-				'customSort'			=> $this->customSort,
-				'publishedBy'			=> $this->publishedById ?: NULL,
-				'updatedBy'				=> $this->updatedById ?: NULL
+				'customflags'			=> $this->customFlags,
+				'customsort'			=> $this->customSort,
+				'publishedby'			=> $this->publishedById ?: NULL,
+				'updatedby'				=> $this->updatedById ?: NULL
 			]
 		);
 
@@ -370,17 +370,17 @@ class Article implements PublisherInterface {
 			$cols = array_merge(
 				(array) $this->getData(),
 				[
-					'Alias'					=> $this->alias,
-					'articlecategoriesID'	=> $this->category->getId(),
-					'Headline'				=> $this->headline,
-					'Article_Date'			=> is_null($this->articleDate) ? NULL : $this->articleDate->format('Y-m-d H:i:s'),
-					'Display_from'			=> is_null($this->displayFrom) ? NULL : $this->displayFrom->format('Y-m-d H:i:s'),
-					'Display_until'			=> is_null($this->displayUntil) ? NULL : $this->displayUntil->format('Y-m-d H:i:s'),
+					'alias'					=> $this->alias,
+					'articlecategoriesid'	=> $this->category->getId(),
+					'headline'				=> $this->headline,
+					'article_date'			=> is_null($this->articleDate) ? NULL : $this->articleDate->format('Y-m-d H:i:s'),
+					'display_from'			=> is_null($this->displayFrom) ? NULL : $this->displayFrom->format('Y-m-d H:i:s'),
+					'display_until'			=> is_null($this->displayUntil) ? NULL : $this->displayUntil->format('Y-m-d H:i:s'),
 					'published'				=> $this->published,
-					'customFlags'			=> $this->customFlags,
-					'customSort'			=> $this->customSort,
-					'publishedBy'			=> $this->publishedById ?: NULL,
-					'createdBy'				=> $this->createdById ?: NULL
+					'customflags'			=> $this->customFlags,
+					'customsort'			=> $this->customSort,
+					'publishedby'			=> $this->publishedById ?: NULL,
+					'createdby'				=> $this->createdById ?: NULL
 				]
 			);
 
@@ -400,9 +400,9 @@ class Article implements PublisherInterface {
 
 			foreach($this->linkedFiles as $sortPosition => $file) {
 				$db->insertRecord('articles_files', array(
-					'articlesID'	=> $this->id,
-					'filesID'		=> $file->getId(),
-					'customSort'	=> $sortPosition
+					'articlesid'	=> $this->id,
+					'filesid'		=> $file->getId(),
+					'customsort'	=> $sortPosition
 				));
 			}
 
@@ -445,7 +445,7 @@ class Article implements PublisherInterface {
 				}
 			}
 			
-			$db->deleteRecord('articles_files', array('articlesID' => $this->id));
+			$db->deleteRecord('articles_files', array('articlesid' => $this->id));
 
 			ArticleEvent::create(ArticleEvent::AFTER_ARTICLE_DELETE, $this)->trigger();
 
@@ -458,6 +458,7 @@ class Article implements PublisherInterface {
 	 * 
 	 * @param MetaFile $file
 	 * @param int $sortPosition
+	 * @return \vxWeb\Model\Article\Article
 	 */
 	public function linkMetaFile(MetaFile $file, $sortPosition = NULL) {
 
@@ -484,6 +485,8 @@ class Article implements PublisherInterface {
 			$file->linkArticle($this);
 			$this->updateLinkedFiles = TRUE;
 
+			return $this;
+
 		}
 	}
 	
@@ -492,6 +495,7 @@ class Article implements PublisherInterface {
 	 * ensures proper re-ordering of files array
 	 * 
 	 * @param MetaFile $file
+	 * @return \vxWeb\Model\Article\Article
 	 */
 	public function unlinkMetaFile(MetaFile $file) {
 
@@ -510,6 +514,9 @@ class Article implements PublisherInterface {
 			$this->updateLinkedFiles = TRUE;
 				
 		}
+		
+		return $this;
+
 	}
 	
 	/**
@@ -517,6 +524,7 @@ class Article implements PublisherInterface {
 	 * 
 	 * @param MetaFile $file
 	 * @param int $sortPosition
+	 * @return \vxWeb\Model\Article\Article
 	 */
 	public function setCustomSortOfMetaFile(MetaFile $file, $sortPosition) {
 
@@ -546,6 +554,9 @@ class Article implements PublisherInterface {
 
 			}
 		}
+		
+		return $this;
+		
 	}
 
 	/**
@@ -554,7 +565,9 @@ class Article implements PublisherInterface {
 	 * @return integer
 	 */
 	public function getId() {
+
 		return $this->id;
+
 	}
 
 	/**
@@ -563,7 +576,9 @@ class Article implements PublisherInterface {
 	 * @return string
 	 */
 	public function getAlias() {
+
 		return $this->alias;
+
 	}
 
 	/**
@@ -656,21 +671,27 @@ class Article implements PublisherInterface {
 	 * @return int
 	 */
 	public function getCustomSort() {
+
 		return $this->customSort;
+
 	}
 
 	/**
 	 * set custom sort value
 	 *
 	 * @param mixed $ndx
+	 * @return \vxWeb\Model\Article\Article
 	 */
 	public function setCustomSort($ndx) {
+
 		if(is_numeric($ndx)) {
 			$this->customSort = (int) $ndx;
 		}
 		else {
 			$this->customSort = NULL;
 		}
+		return $this;
+
 	}
 
 	/**
@@ -679,16 +700,22 @@ class Article implements PublisherInterface {
 	 * @return DateTime
 	 */
 	public function getDate() {
+
 		return $this->articleDate;
+
 	}
 
 	/**
 	 * set article date, omitting argument deletes date value
 	 *
 	 * @param DateTime $articleDate
+	 * @return \vxWeb\Model\Article\Article
 	 */
 	public function setDate(\DateTime $articleDate = NULL) {
+
 		$this->articleDate = $articleDate;
+		return $this;
+
 	}
 
 	/**
@@ -697,16 +724,22 @@ class Article implements PublisherInterface {
 	 * @return DateTime
 	 */
 	public function getDisplayFrom() {
+
 		return $this->displayFrom;
+
 	}
 
 	/**
 	 * set displayFrom date, omitting argument deletes date value
 	 *
 	 * @param DateTime $articleDate
+	 * @return \vxWeb\Model\Article\Article
 	 */
 	public function setDisplayFrom(\DateTime $displayFrom = NULL) {
+
 		$this->displayFrom = $displayFrom;
+		return $this;
+
 	}
 
 	/**
@@ -715,25 +748,36 @@ class Article implements PublisherInterface {
 	 * @return DateTime
 	 */
 	public function getDisplayUntil() {
+
 		return $this->displayUntil;
+
 	}
 
 	/**
 	 * set displayUntil date, omitting argument deletes date value
 	 *
 	 * @param DateTime $articleDate
+	 * @return \vxWeb\Model\Article\Article
 	 */
 	public function setDisplayUntil(\DateTime $displayUntil = NULL) {
+
 		$this->displayUntil = $displayUntil;
+		return $this;
+
 	}
 
 	/**
 	 * assign article to category
 	 *
 	 * @param ArticleCategory $category
+	 * @return \vxWeb\Model\Article\Article
 	 */
+	
 	public function setCategory(ArticleCategory $category) {
+
 		$this->category = $category;
+		return $this;
+
 	}
 
 	/**
@@ -742,7 +786,9 @@ class Article implements PublisherInterface {
 	 * @return ArticleCategory
 	 */
 	public function getCategory() {
+
 		return $this->category;
+
 	}
 
 	/**
@@ -895,53 +941,57 @@ class Article implements PublisherInterface {
 	private static function createInstance(array $articleData) {
 
 		$article = new self();
+		
+		// ensure lower case keys
+		
+		$articleData = array_change_key_case(CASE_LOWER);
 
 		// set identification
 
-		$article->alias		= $articleData['Alias'];
-		$article->id		= $articleData['articlesID'];
+		$article->alias		= $articleData['alias'];
+		$article->id		= $articleData['articlesid'];
 
 		// set category
 
-		$article->category	= ArticleCategory::getInstance($articleData['articlecategoriesID']);
+		$article->category	= ArticleCategory::getInstance($articleData['articlecategoriesid']);
 
 		// set user id's
 		
-		$article->setCreatedById($articleData['createdBy']);
-		$article->setUpdatedById($articleData['updatedBy']);
-		$article->setPublishedById($articleData['publishedBy']);
+		$article->setCreatedById($articleData['createdby']);
+		$article->setUpdatedById($articleData['updatedby']);
+		$article->setPublishedById($articleData['publishedby']);
 
 		// set date information
 
-		if(!empty($articleData['Display_from'])) {
-			$article->displayFrom = new \DateTime($articleData['Display_from']);
+		if(!empty($articleData['display_from'])) {
+			$article->displayFrom = new \DateTime($articleData['display_from']);
 		}
 
-		if(!empty($articleData['Display_until'])) {
-			$article->displayUntil = new \DateTime($articleData['Display_until']);
+		if(!empty($articleData['display_until'])) {
+			$article->displayUntil = new \DateTime($articleData['display_until']);
 		}
 
-		if(!empty($articleData['Article_Date'])) {
-			$article->articleDate = new \DateTime($articleData['Article_Date']);
+		if(!empty($articleData['article_date'])) {
+			$article->articleDate = new \DateTime($articleData['article_date']);
 		}
 
-		if(!empty($articleData['firstCreated'])) {
-			$article->firstCreated = new \DateTime($articleData['firstCreated']);
+		if(!empty($articleData['firstcreated'])) {
+			$article->firstCreated = new \DateTime($articleData['firstcreated']);
 		}
 
-		if(!empty($articleData['lastUpdated'])) {
-			$article->lastUpdated = new \DateTime($articleData['lastUpdated']);
+		if(!empty($articleData['lastupdated'])) {
+			$article->lastUpdated = new \DateTime($articleData['lastupdated']);
 		}
 
 		// flags and sort
 
 		$article->published		= $articleData['published'];
-		$article->customFlags	= $articleData['customFlags'];
-		$article->customSort	= $articleData['customSort'];
+		$article->customFlags	= $articleData['customflags'];
+		$article->customSort	= $articleData['customsort'];
 
 		// set various text fields
 
-		$article->setHeadline($articleData['Headline']);
+		$article->setHeadline($articleData['headline']);
 		$article->setData($articleData);
 
 		// backup values to check whether record was changed
@@ -979,26 +1029,31 @@ class Article implements PublisherInterface {
 				return self::$instancesById[$id];
 			}
 
-			$col = 'articlesID';
+			$col = 'articlesid';
 		}
 		else {
 			if(isset(self::$instancesByAlias[$id])) {
 				return self::$instancesByAlias[$id];
 			}
 
-			$col = 'Alias';
+			$col = 'alias';
 		}
 
-		$rows = $db->doPreparedQuery("
-			SELECT
-				a.*
-			FROM
-				articles a
-			WHERE
-				a.$col = ?", array($id));
+		$rows = $db->doPreparedQuery(
+			sprintf("
+				SELECT
+					a.*
+				FROM
+					articles a
+				WHERE
+					a.%s = ?",
+				$col
+			),
+			[$id]
+		);
 
 		if(empty($rows)) {
-			throw new ArticleException("Article with $col '$id' does not exist.", ArticleException::ARTICLE_DOES_NOT_EXIST);
+			throw new ArticleException(sprintf("Article with %s '%s' does not exist.", $col, $id), ArticleException::ARTICLE_DOES_NOT_EXIST);
 		}
 
 		// generate and store instance
@@ -1023,7 +1078,7 @@ class Article implements PublisherInterface {
 
 		$db = Application::getInstance()->getDb();
 
-		$articles = array();
+		$articles = [];
 
 		// get all articles
 
@@ -1031,7 +1086,7 @@ class Article implements PublisherInterface {
 
 			foreach($db->doPreparedQuery('SELECT a.* FROM articles a') as $row) {
 
-				if(!isset(self::$instancesById[$row['articlesID']])) {
+				if(!isset(self::$instancesById[$row['articlesid']])) {
 
 					$article = self::createInstance($row);
 
@@ -1040,14 +1095,14 @@ class Article implements PublisherInterface {
 						
 				}
 
-				$articles[] = self::$instancesById[$row['articlesID']];
+				$articles[] = self::$instancesById[$row['articlesid']];
 			}
 		}
 
 		else {
 
-			$toRetrieveById		= array();
-			$toRetrieveByAlias	= array();
+			$toRetrieveById		= [];
+			$toRetrieveByAlias	= [];
 	
 			foreach($ids as $id) {
 	
@@ -1070,7 +1125,7 @@ class Article implements PublisherInterface {
 			$where = array();
 
 			if(count($toRetrieveById)) {
-				$where[] = 'a.articlesID IN (' . implode(',', array_fill(0, count($toRetrieveById), '?')). ')';
+				$where[] = 'a.articlesid IN (' . implode(',', array_fill(0, count($toRetrieveById), '?')). ')';
 			}
 			if(count($toRetrieveByAlias)) {
 				$where[] = 'a.alias IN (' . implode(',', array_fill(0, count($toRetrieveByAlias), '?')). ')';
@@ -1109,12 +1164,13 @@ class Article implements PublisherInterface {
 	 * @return Array
 	 */
 	public static function getArticlesForCategory(ArticleCategory $category) {
-		$articles = array();
+
+		$articles = [];
 
 		$rows = Application::getInstance()->getDb()->doPreparedQuery('SELECT * FROM articles WHERE articlecategoriesID = ?', array($category->getId()));
 
 		foreach($rows as $r) {
-			if(!isset(self::$instancesById[$r['articlesID']])) {
+			if(!isset(self::$instancesById[$r['articlesid']])) {
 
 				// create Article instance if it does not yet exist
 
@@ -1124,7 +1180,7 @@ class Article implements PublisherInterface {
 				self::$instancesById[$article->id]			= $article;
 			}
 
-			$articles[] = self::$instancesById[$r['articlesID']];
+			$articles[] = self::$instancesById[$r['articlesid']];
 		}
 
 		return $articles;
