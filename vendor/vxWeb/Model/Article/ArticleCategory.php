@@ -8,43 +8,91 @@
  * file that was distributed with this source code.
  */
 
-
 namespace vxWeb\Model\Article;
 
 use vxWeb\Model\Article\Exception\ArticleCategoryException;
 use vxWeb\Model\Article\Article;
 use vxPHP\Application\Application;
-use vxPHP\Database\MysqlPDOUtil;
+use vxPHP\Database\Util;
 
 /**
  * Mapper class for articlecategories, stored in table `articlecategories`
  *
  * @author Gregor Kofler
- * @version 0.2.5 2016-05-14
+ * @version 0.3.0 2017-03-10
  */
 
 class ArticleCategory {
 
-	private static	$instancesById		= [],
-					$instancesByAlias	= [];
-
-	private	$id,
-			$alias,
-			$level, $l, $r,
-			$title,
-			$customSort,
-			$articles;
+	/**
+	 * instances index by primary key
+	 * 
+	 * @var ArticleCategory[]
+	 */
+	private static $instancesById = [];
 
 	/**
+	 * instances index by alias
+	 *
+	 * @var ArticleCategory[]
+	 */
+	private static $instancesByAlias = [];
+
+	/**
+	 * primary key of category
+	 * 
+	 * @var integer
+	 */
+	private	$id;
+	
+	/**
+	 * unique alias of category
+	 * 
+	 * @var string
+	 */
+	private $alias;
+	
+	/**
+	 * nesting information of category
+	 * 
+	 * @var integer $level
+	 * @var integer $l
+	 * @var integer $r
+	 */
+	private $level, $l, $r;
+	
+	/**
+	 * the descriptive title of the category
+	 * 
+	 * @var string
+	 */
+	private $title;
+	
+	/**
+	 * an optional value which can be used for sorting
+	 * 
+	 * @var integer
+	 */
+	private $customSort;
+	
+	/**
+	 * articles belonging to the category
+	 * 
+	 * @var Article[]
+	 */
+	private $articles;
+
+	/**
+	 * the parent category
+	 * 
 	 * @var ArticleCategory
 	 */
 	private $parentCategory;
 
-
 	/**
 	 * create a new category
-	 * a freshly created category has no representation in the database yet
-	 * persistence requires a save()
+	 * a freshly created category has no representation in the database
+	 * yet and persistence requires a save()
 	 *
 	 * @param string $title
 	 * @param ArticleCategory $parentCategory
@@ -115,7 +163,7 @@ class ArticleCategory {
 
 		// insert category data
 
-		$this->alias = MysqlPDOUtil::getAlias($db, $this->title, 'articlecategories');
+		$this->alias = Util::getAlias($db, $this->title, 'articlecategories');
 
 		$this->id = $db->insertRecord('articlecategories', array(
 			'alias'			=> $this->alias,

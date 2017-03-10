@@ -14,15 +14,15 @@ use vxWeb\Model\Article\Exception\ArticleException;
 
 use vxPHP\Application\Application;
 use vxPHP\Observer\PublisherInterface;
-use vxPHP\Database\MysqlPDOUtil;
+use vxPHP\Database\Util;
 
 use vxWeb\Model\MetaFile\MetaFile;
 
 /**
- * Mapper class for articles, stored in table `articles`
+ * Mapper class for articles, stored in table articles
  *
  * @author Gregor Kofler
- * @version 0.99.0 2017-02-17
+ * @version 0.2.0 2017-03-10
  */
 
 class Article implements PublisherInterface {
@@ -178,7 +178,7 @@ class Article implements PublisherInterface {
 	private	$updatedById;
 
 	/**
-	 * the id of the user which published or unpublished the article
+	 * the id of the user which published (or unpublished) the article
 	 *  
 	 * @var User
 	 */
@@ -192,7 +192,7 @@ class Article implements PublisherInterface {
 	 * @var array
 	 */
 	private	$notIndicatingChange = [
-		'published'
+		'published', 'publishedById'
 	];
 	
 	/**
@@ -327,7 +327,7 @@ class Article implements PublisherInterface {
 				'article_date'			=> is_null($this->articleDate) ? NULL : $this->articleDate->format('Y-m-d H:i:s'),
 				'display_from'			=> is_null($this->displayFrom) ? NULL : $this->displayFrom->format('Y-m-d H:i:s'),
 				'display_until'			=> is_null($this->displayUntil) ? NULL : $this->displayUntil->format('Y-m-d H:i:s'),
-				'published'				=> $this->published,
+				'published'				=> (int) $this->published ?: NULL,
 				'customflags'			=> $this->customFlags,
 				'customsort'			=> $this->customSort,
 				'publishedby'			=> $this->publishedById ?: NULL,
@@ -342,8 +342,10 @@ class Article implements PublisherInterface {
 			if($this->wasChanged()) {
 
 				// update
-	
-				$this->alias = MysqlPDOUtil::getAlias($db, $this->headline, 'articles', $this->id);
+
+				$this->alias = Util::getAlias($db, $this->headline, 'articles', $this->id);
+				$cols['alias'] = $this->alias;
+
 				$db->updateRecord('articles', $this->id, $cols);
 
 			}
@@ -355,8 +357,13 @@ class Article implements PublisherInterface {
 				// update, but don't set lastUpdated and updatedBy
 
 				unset($cols['updatedBy']);
-				$this->alias = MysqlPDOUtil::getAlias($db, $this->headline, 'articles', $this->id);
-				$db->ignoreLastUpdated()->updateRecord('articles', $this->id, $cols);
+				$db->ignoreLastUpdated();
+
+				$this->alias = Util::getAlias($db, $this->headline, 'articles', $this->id);
+				$cols['alias'] = $this->alias;
+				$db->updateRecord('articles', $this->id, $cols);
+				
+				$db->updateLastUpdated();
 			
 			}
 		}
@@ -365,7 +372,7 @@ class Article implements PublisherInterface {
 
 			// insert
 
-			$this->alias = MysqlPDOUtil::getAlias($db, $this->headline, 'articles');
+			$this->alias = Util::getAlias($db, $this->headline, 'articles');
 
 			$cols = array_merge(
 				(array) $this->getData(),
@@ -394,17 +401,21 @@ class Article implements PublisherInterface {
 
 			// delete all previous entries
 	
-			$db->deleteRecord('articles_files', array('articlesID' => $this->id), TRUE);
-			
+			$db->deleteRecord('articles_files', ['articlesID' => $this->id]);
+
 			// save new references and use position in array as customSort value
 
+			$rows = [];
+
 			foreach($this->linkedFiles as $sortPosition => $file) {
-				$db->insertRecord('articles_files', array(
+				$rows[] = [
 					'articlesid'	=> $this->id,
 					'filesid'		=> $file->getId(),
 					'customsort'	=> $sortPosition
-				));
+				];
 			}
+			
+			$db->insertRecords('articles_files', $rows);
 
 			$this->updateLinkedFiles = FALSE;
 		}
@@ -445,7 +456,7 @@ class Article implements PublisherInterface {
 				}
 			}
 			
-			$db->deleteRecord('articles_files', array('articlesid' => $this->id));
+			$db->deleteRecord('articles_files', ['articlesid' => $this->id]);
 
 			ArticleEvent::create(ArticleEvent::AFTER_ARTICLE_DELETE, $this)->trigger();
 
@@ -591,7 +602,7 @@ class Article implements PublisherInterface {
 	public function setCreatedById($userId) {
 
 		if(is_null($this->createdById)) {
-			$this->createdById = (int) $userId;
+			$this->createdById = (int) $userId ?: NULL;
 		}
 		return $this;
 
@@ -616,7 +627,7 @@ class Article implements PublisherInterface {
 	 */
 	public function setUpdatedById($userId) {
 	
-		$this->updatedById = (int) $userId;
+		$this->updatedById = (int) $userId ?: NULL;
 		return $this;
 	
 	}
@@ -871,9 +882,9 @@ class Article implements PublisherInterface {
 	 */
 	public function publish($userId = NULL) {
 
-		$this->setPublishedById($userId);
+		$this->publishedById = (int) $userId ?: NULL;
 		$this->published = TRUE;
-				
+
 		return $this;
 
 	}
@@ -886,7 +897,7 @@ class Article implements PublisherInterface {
 	 */
 	public function unpublish($userId = NULL) {
 
-		$this->setPublishedById($userId);
+		$this->publishedById = (int) $userId ?: NULL;
 		$this->published = FALSE;
 
 		return $this;
@@ -895,43 +906,15 @@ class Article implements PublisherInterface {
 
 	/**
 	 * get state of published flag
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function isPublished() {
-
-		return !!$this->published;
-
-	}
-
-	/**
-	 * set id of user who published or unpublished article 
-	 * helper method for publish and unpublish
-	 *  
-	 * @param integer $userId
-	 */
-	private function setPublishedById($userId = NULL) {
-
-		// was a user specified?
-
-		if($userId) {
-			$this->publishedById = $userId;
-		}
-
-		// do we have a session user?
-
-		else if($user = Application::getInstance()->getCurrentUser()) {
-			$this->publishedById = $user->getAttribute('id');
-		}
-
-		// delete any previously set user id
-
-		else {
-			$this->publishedById = NULL;
-		}
-
-	}
 	
+		return (boolean) $this->published;
+	
+	}
+
 	/**
 	 * create Article instance from data supplied in $articleData
 	 *
@@ -957,9 +940,9 @@ class Article implements PublisherInterface {
 
 		// set user id's
 		
-		$article->setCreatedById($articleData['createdby']);
-		$article->setUpdatedById($articleData['updatedby']);
-		$article->setPublishedById($articleData['publishedby']);
+		$article->createdById	= $articleData['createdby'];
+		$article->updatedById	= $articleData['updatedby'];
+		$article->publishedById	= $articleData['publishedby'];
 
 		// set date information
 

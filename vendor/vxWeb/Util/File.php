@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of the vxPHP/vxWeb framework
+ *
+ * (c) Gregor Kofler <info@gregorkofler.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace vxWeb\Util;
 
 use vxPHP\Model\Article\Article;
@@ -14,9 +23,12 @@ use vxWeb\Model\MetaFile\MetaFolder;
 use vxWeb\Model\MetaFile\Exception\MetaFolderException;
 
 /**
- * this class contains some static methods used in various controllers of vxWeb
+ * this class contains some static methods used in various controllers
+ * of vxWeb
  *
- * @author Gregor Kofler
+ * @author Gregor Kofler, info@gregorkofler.com
+ * 
+ * @version 0.4.0, 2017-03-10
  *
  */
 class File {
@@ -73,7 +85,7 @@ class File {
 			MetaFolder::createMetaFolder($d);
 		}
 
-		$mFiles = $db->doPreparedQuery('SELECT filesID, IFNULL(Obscured_Filename, File) AS Filename FROM files f WHERE f.foldersID = ?', [(int) $metaFolder->getId()]);
+		$mFiles = $db->doPreparedQuery('SELECT filesID, COALESCE(Obscured_Filename, File) AS Filename FROM files f WHERE f.foldersID = ?', [(int) $metaFolder->getId()]);
 		$existing = [];
 
 		// delete orphaned metafile entries

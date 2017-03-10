@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of the vxPHP/vxWeb framework
+ *
+ * (c) Gregor Kofler <info@gregorkofler.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace vxWeb\Util;
 
@@ -13,8 +21,8 @@ use vxWeb\Model\Page\Revision;
 /**
  * helper class to sync and update templates both in filesystem and database
  *
- * @author Gregor Kofler
- * @version 0.4.0 2015-06-19
+ * @author Gregor Kofler, info@gregorkofler.com
+ * @version 0.5.0 2017-03-10
  *
  */
 
@@ -212,7 +220,7 @@ class Template {
 
 		$alias = strtoupper(basename($data['template']->getFilename(), '.php'));
 
-		$rows = $db->doPreparedQuery("SELECT pagesID from pages WHERE Alias = ?", array($alias));
+		$rows = $db->doPreparedQuery("SELECT pagesid from pages WHERE alias = ?", [$alias]);
 
 		// insert only revision (locale might differ)
 

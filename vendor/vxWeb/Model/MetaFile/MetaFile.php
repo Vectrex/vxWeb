@@ -28,7 +28,7 @@ use vxWeb\Model\Article\ArticleQuery;
  *
  * @author Gregor Kofler
  *
- * @version 1.2.1 2017-02-28
+ * @version 1.3.0 2017-03-10
  *
  * @todo merge rename() with commit()
  * @todo cleanup getImagesForReference()
@@ -41,14 +41,14 @@ class MetaFile implements PublisherInterface {
 	 * 
 	 * @var MetaFile[]
 	 */
-	private static	$instancesById		= [];
+	private static $instancesById = [];
 
 	/**
 	 * retrieved instances accesible by their path
 	 *
 	 * @var MetaFile[]
 	 */
-	private static	$instancesByPath	= [];
+	private static $instancesByPath = [];
 
 	/**
 	 * @var FilesystemFile
@@ -146,7 +146,7 @@ class MetaFile implements PublisherInterface {
 			$rows = Application::getInstance()->getDb()->doPreparedQuery('
 				SELECT
 					f.*,
-					CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) as fullpath
+					CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath
 				FROM
 					files f
 					INNER JOIN folders fo ON fo.foldersid = f.foldersid
@@ -306,7 +306,7 @@ class MetaFile implements PublisherInterface {
 		$files = Application::getInstance()->getDb()->doPreparedQuery("
 			SELECT
 				f.*,
-				CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) AS fullpath
+				CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) AS fullpath
 			FROM
 				files f
 				INNER JOIN folders fo ON f.foldersid = fo.foldersid
@@ -363,7 +363,7 @@ class MetaFile implements PublisherInterface {
 		$files = Application::getInstance()->getDb()->doPreparedQuery("
 			SELECT
 				f.*,
-				CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) as fullpath
+				CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath
 			FROM
 				files f
 				INNER JOIN folders fo ON f.foldersid = fo.foldersid
@@ -490,7 +490,7 @@ class MetaFile implements PublisherInterface {
 		$pathinfo = pathinfo($path);
 
 		$rows = Application::getInstance()->getDb()->doPreparedQuery(
-			"SELECT f.*, CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON fo.foldersid = f.foldersid WHERE f.file = ? AND fo.path IN(?, ?) LIMIT 1",
+			"SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON fo.foldersid = f.foldersid WHERE f.file = ? AND fo.path IN(?, ?) LIMIT 1",
 			[
 				$pathinfo['basename'],
 				$pathinfo['dirname'] . DIRECTORY_SEPARATOR,
@@ -510,7 +510,7 @@ class MetaFile implements PublisherInterface {
 	private function getDbEntryById($id) {
 
 		$rows = Application::getInstance()->getDb()->doPreparedQuery(
-			"SELECT f.*, CONCAT(fo.path, IFNULL(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON fo.foldersid = f.foldersid WHERE f.filesid = ?",
+			"SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON fo.foldersid = f.foldersid WHERE f.filesid = ?",
 			[(int) $id]
 		);
 
@@ -873,8 +873,8 @@ class MetaFile implements PublisherInterface {
 				files f
 				INNER JOIN folders fo ON fo.foldersid = f.foldersid
 			WHERE
-				f.file  COLLATE utf8_bin = ? AND
-				fo.path COLLATE utf8_bin = ?
+				f.file = ? AND
+				fo.path = ?
 			LIMIT 1",
 			[
 				$file->getFilename(),
