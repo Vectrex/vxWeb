@@ -24,7 +24,7 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
-use vxPHP\Database\MysqlPDOUtil;
+use vxPHP\Database\Util;
 use vxPHP\Constraint\Validator\Date;
 use vxPHP\Application\Locale\Locale;
 use vxPHP\Constraint\Validator\RegularExpression;
@@ -162,13 +162,20 @@ class ArticlesController extends Controller {
 		
 		$id = $this->request->request->getInt('id');
 		$state = $this->request->request->getInt('state');
+		$admin = Application::getInstance()->getCurrentUser();
 		
 		try {
 			if($id && $article = Article::getInstance($id)) {
 				if($state) {
-					$article->publish()->save();
+					
+					// publish logs publishedById
+					
+					$article->publish($admin->getAttribute('id'))->save();
 				}
 				else {
+					
+					// unpublish sets publishedById to NULL
+
 					$article->unpublish()->save();
 				}
 				return new JsonResponse(['success' => TRUE]);
@@ -217,22 +224,22 @@ class ArticlesController extends Controller {
 					->validate()
 					->getValidFormValues();
 
-				if($v['Article_Date'] != '') {
-					$article->setDate(new \DateTime(MysqlPDOUtil::unFormatDate($v['article_date'], 'de')));
+				if($v['article_date'] != '') {
+					$article->setDate(new \DateTime(Util::unFormatDate($v['article_date'], 'de')));
 				}
 				else {
 					$article->setDate();
 				}
 
-				if($v['Display_from'] != '') {
-					$article->setDisplayFrom(new \DateTime(MysqlPDOUtil::unFormatDate($v['display_from'], 'de')));
+				if($v['display_from'] != '') {
+					$article->setDisplayFrom(new \DateTime(Util::unFormatDate($v['display_from'], 'de')));
 				}
 				else {
 					$article->setDisplayFrom();
 				}
 
-				if($v['Display_until'] != '') {
-					$article->setDisplayUntil(new \DateTime(MysqlPDOUtil::unFormatDate($v['display_until'], 'de')));
+				if($v['display_until'] != '') {
+					$article->setDisplayUntil(new \DateTime(Util::unFormatDate($v['display_until'], 'de')));
 				}
 				else {
 					$article->setDisplayUntil();
@@ -259,10 +266,14 @@ class ArticlesController extends Controller {
 					$article->setData(['teaser' => $v['teaser'], 'content' => $v['content']]);
 					$article->setCustomSort($v['customsort']);
 
-					$article->setCreatedById($admin->getAttribute('id'));
-					$article->setUpdatedById($admin->getAttribute('id'));
-
 					$id = $article->getId();
+					
+					if(!$id) {
+						$article->setCreatedById($admin->getAttribute('id'));
+					}
+					else {
+						$article->setUpdatedById($admin->getAttribute('id'));
+					}
 
 					if($article->wasChanged()) {
 						$article->save();

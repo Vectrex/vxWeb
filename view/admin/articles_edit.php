@@ -15,7 +15,7 @@
 	
 	this.vxWeb.routes.articles	= "<?php echo vxPHP\Routing\Router::getRoute('articlesXhr', 'admin.php')->getUrl(); ?>?<?php echo vxPHP\Http\Request::createFromGlobals()->getQueryString(); ?>";
 	this.vxWeb.routes.files		= "<?php echo vxPHP\Routing\Router::getRoute('fileincludeXhr', 'admin.php')->getUrl(); ?>";
-	this.vxWeb.routes.upload	= "<?php echo vxPHP\Routing\Router::getRoute('uploadXhr',	'admin.php')->getUrl(); ?>";
+	this.vxWeb.routes.upload	= "<?php echo vxPHP\Routing\Router::getRoute('uploadXhr', 'admin.php')->getUrl(); ?>";
 
 	this.vxWeb.parameters.fileColumns = ["name", "size", "mime", "mTime", "linked"];
 	this.vxWeb.parameters.articlesId = <?php echo vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null'); ?>;
@@ -42,7 +42,7 @@ vxJS.event.addDomReadyListener(function() {
 		} );
 
 	vxJS.widget.calendar(
-		document.getElementsByName("Article_Date")[0],
+		document.getElementsByName("article_date")[0],
 		{	trigger: vxJS.dom.getElementsByClassName("calendarPopper")[0],
 			noYearInput: true,
 			skinClass: 'calendarSkin',
@@ -51,7 +51,7 @@ vxJS.event.addDomReadyListener(function() {
 		}
 	);
 	vxJS.widget.calendar(
-		document.getElementsByName("Display_from")[0],
+		document.getElementsByName("display_from")[0],
 		{	trigger: vxJS.dom.getElementsByClassName("calendarPopper")[1],
 			noYearInput: true,
 			noPast: true,
@@ -61,7 +61,7 @@ vxJS.event.addDomReadyListener(function() {
 		}
 	);
 	vxJS.widget.calendar(
-		document.getElementsByName("Display_until")[0],
+		document.getElementsByName("display_until")[0],
 		{	trigger: vxJS.dom.getElementsByClassName("calendarPopper")[2],
 			noYearInput: true,
 			noPast: true,
