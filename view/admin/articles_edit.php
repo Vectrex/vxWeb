@@ -13,15 +13,15 @@
 	}
 	
 	
-	this.vxWeb.routes.articles	= "<?php echo vxPHP\Routing\Router::getRoute('articlesXhr', 'admin.php')->getUrl(); ?>?<?php echo vxPHP\Http\Request::createFromGlobals()->getQueryString(); ?>";
-	this.vxWeb.routes.files		= "<?php echo vxPHP\Routing\Router::getRoute('fileincludeXhr', 'admin.php')->getUrl(); ?>";
-	this.vxWeb.routes.upload	= "<?php echo vxPHP\Routing\Router::getRoute('uploadXhr', 'admin.php')->getUrl(); ?>";
+	this.vxWeb.routes.articles	= "<?= vxPHP\Routing\Router::getRoute('articlesXhr', 'admin.php')->getUrl() ?>?<?= vxPHP\Http\Request::createFromGlobals()->getQueryString() ?>";
+	this.vxWeb.routes.files		= "<?= vxPHP\Routing\Router::getRoute('fileincludeXhr', 'admin.php')->getUrl() ?>";
+	this.vxWeb.routes.upload	= "<?= vxPHP\Routing\Router::getRoute('uploadXhr', 'admin.php')->getUrl() ?>";
 
 	this.vxWeb.parameters.fileColumns = ["name", "size", "mime", "mTime", "linked"];
-	this.vxWeb.parameters.articlesId = <?php echo vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null'); ?>;
+	this.vxWeb.parameters.articlesId = <?= vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null') ?>;
 
-	this.vxWeb.serverConfig.uploadMaxFilesize = <?php echo $this->upload_max_filesize; ?>;
-	this.vxWeb.serverConfig.maxUploadTime = <?php echo $this->max_execution_time_ms; ?>; 
+	this.vxWeb.serverConfig.uploadMaxFilesize = <?= $this->upload_max_filesize ?>;
+	this.vxWeb.serverConfig.maxUploadTime = <?= $this->max_execution_time_ms ?>; 
 	
 	vxJS.event.addDomReadyListener(function() {
 		vxWeb.doArticles();
@@ -73,10 +73,10 @@ vxJS.event.addDomReadyListener(function() {
 });
 </script>
 
-<h1>Artikel &amp; News <em class="smaller"><?php echo $tpl->title; ?></em></h1>
+<h1>Artikel &amp; News <em class="smaller"><?= $tpl->title ?></em></h1>
 
 <div class="buttonBar">
-	<a class="buttonLink withIcon" data-icon="&#xe025;" href="$<?php echo $tpl->backlink; ?>">Zurück zur Übersicht</a>
+	<a class="buttonLink withIcon" data-icon="&#xe025;" href="$<?= $tpl->backlink ?>">Zurück zur Übersicht</a>
 </div>
 
 <div class="vxJS_tabThis">
@@ -85,7 +85,7 @@ vxJS.event.addDomReadyListener(function() {
 
 	<div class="section">
 		<h2 id="article_content">Inhalt</h2>
-		<?php echo $tpl->article_form; ?>
+		<?= $tpl->article_form ?>
 	</div>
 
 	<div class="section">

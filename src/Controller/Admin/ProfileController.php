@@ -37,7 +37,6 @@ class ProfileController extends Controller {
 				->addElement(FormElementFactory::create('password',	'new_PWD',			'',						[], [],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')]))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify',	''))
 				->addElement(FormElementFactory::create('button', 'submit_profile', '')->setInnerHTML('Änderungen speichern'))
-				->initVar('success', (int) end($this->pathSegments) === 'success')
 				->initVar('has_notifications', (int) !empty($checkBoxHtml));
 
 		foreach($availableNotifications as $n) {

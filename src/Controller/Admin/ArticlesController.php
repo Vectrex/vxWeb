@@ -33,9 +33,10 @@ class ArticlesController extends Controller {
 
 	protected function execute() {
 
-		$admin			= Application::getInstance()->getCurrentUser();
-		$redirectUrl	= Router::getRoute('articles', 'admin.php')->getUrl();
-
+		$admin = Application::getInstance()->getCurrentUser();
+		$redirectUrl = Router::getRoute('articles', 'admin.php')->getUrl();
+		$action = $this->route->getPathParameter('action');
+		
 		// editing something?
 
 		if(($id = $this->request->query->get('id'))) {
@@ -56,7 +57,7 @@ class ArticlesController extends Controller {
 
 		// delete article
 
-		if(isset($article) && count($this->pathSegments) > 1 && $this->pathSegments[1] == 'del') {
+		if(isset($article) && $action === 'del') {
 
 			try {
 				$article->delete();
@@ -68,7 +69,7 @@ class ArticlesController extends Controller {
 
 		// edit or add article
 
-		if(isset($article) || count($this->pathSegments) > 1 && $this->pathSegments[1] == 'new') {
+		if(isset($article) || $action === 'new') {
 			
 			MenuGenerator::setForceActiveMenu(TRUE);
 
@@ -125,7 +126,6 @@ class ArticlesController extends Controller {
 
 		return new Response(
 			SimpleTemplate::create('admin/articles_list.php')
-				->assign('page', $this->pathSegments[0])
 				->assign('can_publish', $admin->hasRole('superadmin'))
 				->assign('articles', ArticleQuery::create(Application::getInstance()->getDb())
 					->where($restrictingWhere)

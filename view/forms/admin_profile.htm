@@ -6,10 +6,6 @@
 {error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
 </div>
 
-{if($success == 1)}
-<div class="success_message">Änderungen erfolgreich übernommen</div>
-{end_if}
-
 <div class="formSect">
 	<div class="formItem">
 		<label class="m{error_username: error}" for="username_input">Username*</label>{input:username {"autocomplete": "off", "maxlength": 128, "class": "xl", "id": "username_input"} }

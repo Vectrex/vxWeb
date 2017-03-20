@@ -51,25 +51,26 @@
 	<pages />
 
 	<pages script="admin.php" default_redirect="login">
-		<page id="login"			controller="admin/login" />
-		<page id="logout"			controller="admin/logout"/>
-		<page id="profile"			controller="admin/profile"						auth="observe_row" />
-		<page id="pages"			controller="admin/pages"						auth="superadmin" />
-		<page id="pagesXhr"			controller="admin/pages"	method="xhrExecute"	auth="superadmin" />
+		<page id="login" controller="admin/login" />
+		<page id="logout" controller="admin/logout" />
+		<page id="profile" controller="admin/profile" auth="observe_row" />
 
-		<page id="users"			controller="admin/users"						auth="superadmin" />
-		<page id="usersXhr"			controller="admin/users"	method="xhrExecute"	auth="superadmin" />
+		<page id="pages" controller="admin/pages" auth="superadmin" />
+		<page id="pagesXhr" controller="admin/pages" method="xhrExecute" auth="superadmin" />
 
-		<page id="articles"			controller="admin/articles"						auth="privileged" />
-		<page id="publishXhr"		controller="admin/articles"	method="xhrPublish"	auth="superadmin" />
-		<page id="articlesXhr"		controller="admin/articles" method="xhrExecute"	auth="privileged" />
+		<page id="users" controller="admin/users" path="users/{action=}" auth="superadmin" />
+		<page id="usersXhr" controller="admin/users" method="xhrExecute" auth="superadmin" />
 
-		<page id="files"			controller="admin/files"						auth="privileged" />
-		<page id="filepicker"		controller="admin/files"						auth="privileged" />
-		<page id="filesXhr"			controller="admin/files"	method="xhrExecute"	auth="privileged" />
-		<page id="filepickerXhr"	controller="admin/files"	method="xhrExecute"	auth="privileged" />
-		<page id="fileincludeXhr"	controller="admin/files"	method="xhrExecute"	auth="privileged" />
-		<page id="uploadXhr"		controller="admin/files"	method="xhrUpload"	auth="privileged" />
+		<page id="articles" controller="admin/articles" path="articles/{action=}" auth="privileged" />
+		<page id="publishXhr" controller="admin/articles" method="xhrPublish" auth="superadmin" />
+		<page id="articlesXhr" controller="admin/articles" method="xhrExecute" auth="privileged" />
+
+		<page id="files" controller="admin/files" auth="privileged" />
+		<page id="filepicker" controller="admin/files" auth="privileged" />
+		<page id="filesXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
+		<page id="filepickerXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
+		<page id="fileincludeXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
+		<page id="uploadXhr" controller="admin/files" method="xhrUpload" auth="privileged" />
 	</pages>
 
 	<menus>
