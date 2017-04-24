@@ -3,6 +3,7 @@
 use vxPHP\Application\Application;
 use vxWeb\User\vxWebRoleHierarchy;
 use vxWeb\User\SessionUserProvider;
+use vxPHP\Controller\Controller;
 
 // $loader is initialized in bootstrap.php
 // place additional libraries here
@@ -48,4 +49,5 @@ $application->setCurrentRoute($route);
 
 // render output
 
-$route->getController()->renderResponse();
+Controller::createControllerFromRoute($route)->renderResponse();
+

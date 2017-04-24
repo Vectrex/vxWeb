@@ -22,7 +22,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.2.0 2017-02-16
+ * @version 1.2.1 2017-03-11
  *
  * @todo compatibility checks on windows systems
  */
@@ -308,7 +308,7 @@ class MetaFolder {
 					[(int) $this->id]
 				)
 			as $f) {
-				$this->metaFiles[] = MetaFile::getInstance(NULL, $f['filesID']);
+				$this->metaFiles[] = MetaFile::getInstance(NULL, $f['filesid']);
 			}
 		}
 

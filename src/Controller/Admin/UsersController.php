@@ -27,8 +27,9 @@ class UsersController extends Controller {
 		$admin = $app->getCurrentUser();
 		$db = $app->getDb();
 		
-		$connection		= $app->getDb()->getConnection();
-		$redirectUrl	= Router::getRoute('users', 'admin.php')->getUrl();
+		$connection = $app->getDb()->getConnection();
+		$redirectUrl = Router::getRoute('users', 'admin.php')->getUrl();
+		$action = $this->route->getPathParameter('action');
 
 		// editing or deleting something? Ensure user exists
 
@@ -52,7 +53,7 @@ class UsersController extends Controller {
 		
 		// delete user
 		
-		if($id && count($this->pathSegments) > 1 && end($this->pathSegments) == 'del') {
+		if($id && $action === 'del') {
 		
 			$db->deleteRecord('admin', ['username' => $id]);
 
@@ -62,7 +63,7 @@ class UsersController extends Controller {
 
 		// edit or add user
 		
-		if($id || count($this->pathSegments) > 1 && end($this->pathSegments) == 'new') {
+		if($id || $action === 'new') {
 
 			MenuGenerator::setForceActiveMenu(TRUE);
 

@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 
-	this.vxWeb.routes.publish = "<?php echo vxPHP\Routing\Router::getRoute('publishXhr', 'admin.php')->getUrl(); ?>";
+	this.vxWeb.routes.publish = "<?= vxPHP\Routing\Router::getRoute('publishXhr', 'admin.php')->getUrl() ?>";
 
 	/**
 	 * render filtered rows
@@ -285,12 +285,12 @@
 <?php if(!empty($tpl->articles)): ?>
 	<?php $color = 0; ?>
 	<?php foreach($tpl->articles as $article): ?>
-		<tr class="row<?php echo $color++ % 2; ?>">
-			<td><?php echo $article->getCategory()->getTitle(); ?></td>
-			<td><?php echo $article->getHeadline(); ?></td>
+		<tr class="row<?= $color++ % 2; ?>">
+			<td><?= $article->getCategory()->getTitle() ?></td>
+			<td><?= $article->getHeadline() ?></td>
 			<td class="centered">
 				<label class="switch">
-					<input type="checkbox" name="publish[<?php echo $article->getId(); ?>]"
+					<input type="checkbox" name="publish[<?= $article->getId(); ?>]"
 						<?php if ($article->isPublished()): ?>checked="checked"<?php endif; ?>
 						<?php if(!$this->can_publish): ?> disabled="disabled"<?php endif; ?>
 					>
@@ -298,14 +298,14 @@
 					<span class="handle"></span>  
 				</label>
 			</td>
-			<td class="right"><?php echo is_null($article->getDate()) ? '' : $article->getDate()->format('Y-m-d'); ?></td>
-			<td class="right"><?php echo is_null($article->getDisplayFrom()) ? '' : $article->getDisplayFrom()->format('Y-m-d'); ?></td>
-			<td class="right"><?php echo is_null($article->getDisplayUntil()) ? '' : $article->getDisplayUntil()->format('Y-m-d'); ?></td>
-			<td class="centered"><?php echo $article->getCustomSort(); ?></td>
-			<td class="right"><?php echo is_null($article->getLastUpdated()) ? '' : $article->getLastUpdated()->format('Y-m-d H:i:s'); ?></td>
+			<td class="right"><?= is_null($article->getDate()) ? '' : $article->getDate()->format('Y-m-d') ?></td>
+			<td class="right"><?= is_null($article->getDisplayFrom()) ? '' : $article->getDisplayFrom()->format('Y-m-d') ?></td>
+			<td class="right"><?= is_null($article->getDisplayUntil()) ? '' : $article->getDisplayUntil()->format('Y-m-d') ?></td>
+			<td class="centered"><?= $article->getCustomSort() ?></td>
+			<td class="right"><?= is_null($article->getLastUpdated()) ? '' : $article->getLastUpdated()->format('Y-m-d H:i:s') ?></td>
 			<td>
-				<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$articles?id=<?php echo $article->getId(); ?>" title="Bearbeiten"></a>
-				<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$articles/del?id=<?php echo $article->getId(); ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+				<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$articles?id=<?= $article->getId() ?>" title="Bearbeiten"></a>
+				<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$articles/del?id=<?= $article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>
