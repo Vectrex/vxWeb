@@ -12,23 +12,35 @@ class DefaultController extends Controller {
 
 	protected function execute() {
 
-		// pick page from the end of the segments sequence
-
-		if(count($this->pathSegments)) {
-			$page = array_pop($this->pathSegments);
-		}
-
-		// alternatively fall back to the route id (for example on splash pages)
-
-		else {
-			$page = $this->route->getRouteId();
-		}
-
 		try {
+			
+			// check for markup in parameters
+			
+			if(isset($this->parameters['markup'])) {
 
-			// load index template
+				$include = SimpleTemplate::create()->setRawContents($this->parameters['markup']);
+				$page = NULL;
+				
+			}
 
-			$include = new SimpleTemplate('default' . DIRECTORY_SEPARATOR . preg_replace('~[^a-z0-9_-]~i', '', $page) . '.php');
+			else {
+
+					// pick page from the end of the segments sequence
+		
+				if(count($this->pathSegments)) {
+					$page = array_pop($this->pathSegments);
+				}
+		
+				// alternatively fall back to the route id (for example on splash pages)
+		
+				else {
+					$page = $this->route->getRouteId();
+				}
+	
+				// load index template
+
+				$include = new SimpleTemplate('default' . DIRECTORY_SEPARATOR . preg_replace('~[^a-z0-9_-]~i', '', $page) . '.php');
+			}
 
 			if($include->containsPHP()) {
 				throw new HttpException(Response::HTTP_FORBIDDEN);
