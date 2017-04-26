@@ -12,11 +12,11 @@ use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 
 use vxWeb\Model\MetaFile\MetaFile;
-use vxWeb\Model\Article\Article;
-use vxWeb\Model\Article\ArticleCategory;
-use vxWeb\Model\Article\Exception\ArticleException;
-use vxWeb\Model\Article\Exception\ArticleCategoryException;
 use vxWeb\Model\Article\ArticleQuery;
+use vxWeb\Model\Article\Article;
+use vxWeb\Model\Article\Exception\ArticleException;
+use vxWeb\Model\ArticleCategory\ArticleCategory;
+use vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException;
 
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
@@ -28,6 +28,7 @@ use vxPHP\Database\Util;
 use vxPHP\Constraint\Validator\Date;
 use vxPHP\Application\Locale\Locale;
 use vxPHP\Constraint\Validator\RegularExpression;
+use vxWeb\Model\ArticleCategory\ArticleCategoryQuery;
 
 class ArticlesController extends Controller {
 
@@ -166,9 +167,10 @@ class ArticlesController extends Controller {
 	
 	private function filterArticlesList() {
 
+		$db = Application::getInstance()->getDb();
 		$filter = $this->request->request->get('filter');
-		
-		$query = ArticleQuery::create(Application::getInstance()->getDb());
+
+		$query = ArticleQuery::create($db);
 		
 		if(trim($filter['title'])) {
 			
@@ -178,7 +180,11 @@ class ArticlesController extends Controller {
 		
 		if(trim($filter['category'])) {
 			
-			//@TODO implement category query
+			$categories = ArticleCategoryQuery::create($db)->where('title LIKE ?', ['%' . trim($filter['category']) . '%'])->select();
+
+			if(count($categories)) {
+				$query->filterByCategories($categories);
+			}
 			
 		}
 

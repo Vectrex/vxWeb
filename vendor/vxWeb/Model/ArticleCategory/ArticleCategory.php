@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace vxWeb\Model\Article;
+namespace vxWeb\Model\ArticleCategory;
 
-use vxWeb\Model\Article\Exception\ArticleCategoryException;
+use vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException;
 use vxWeb\Model\Article\Article;
 use vxPHP\Application\Application;
 use vxPHP\Database\Util;
@@ -19,7 +19,7 @@ use vxPHP\Database\Util;
  * Mapper class for articlecategories, stored in table `articlecategories`
  *
  * @author Gregor Kofler
- * @version 0.3.0 2017-03-10
+ * @version 0.4.0 2017-04-26
  */
 
 class ArticleCategory {

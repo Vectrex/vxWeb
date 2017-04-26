@@ -9,7 +9,7 @@
  */
 
 
-namespace vxWeb\Model\Article\Exception;
+namespace vxWeb\Model\ArticleCategory\Exception;
 
 class ArticleCategoryException extends \Exception {
 	const ARTICLECATEGORY_NOT_SAVED						= 1;

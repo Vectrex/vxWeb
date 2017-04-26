@@ -11,18 +11,18 @@
 namespace vxWeb\Model\Article;
 
 use vxWeb\Model\Article\Exception\ArticleException;
+use vxWeb\Model\ArticleCategory\ArticleCategory;
+use vxWeb\Model\MetaFile\MetaFile;
 
 use vxPHP\Application\Application;
 use vxPHP\Observer\PublisherInterface;
 use vxPHP\Database\Util;
 
-use vxWeb\Model\MetaFile\MetaFile;
-
 /**
  * Mapper class for articles, stored in table articles
  *
  * @author Gregor Kofler
- * @version 0.2.0 2017-03-10
+ * @version 0.2.1 2017-04-26
  */
 
 class Article implements PublisherInterface {

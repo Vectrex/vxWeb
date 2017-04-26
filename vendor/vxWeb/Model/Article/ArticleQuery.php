@@ -12,7 +12,7 @@ namespace vxWeb\Model\Article;
 
 use vxPHP\Orm\Query;
 use vxWeb\Model\Article\Article;
-use vxWeb\Model\Article\ArticleCategory;
+use vxWeb\Model\ArticleCategory\ArticleCategory;
 
 use vxPHP\Database\DatabaseInterface;
 
@@ -30,13 +30,12 @@ use vxPHP\Database\DatabaseInterface;
  * 				selectFirst(2);
  *
  * @author Gregor Kofler
- * @version 0.4.0 2016-05-14
+ * @version 0.5.0 2017-04-26
  */
 class ArticleQuery extends Query {
 
 	/**
 	 * provide initial database connection
-	 * currently only allows a Mysqli backend
 	 *
 	 * @param DatabaseInterface $dbConnection
 	 */
@@ -64,6 +63,31 @@ class ArticleQuery extends Query {
 
 	}
 	
+	/**
+	 * add WHERE clause that filters for several categories
+	 *
+	 * @param ArticleCategory[] $categories
+	 * @return \vxPHP\Orm\Custom\ArticleQuery
+	 * @throws \InvalidArgumentException::
+	 */
+	public function filterByCategories(array $categories) {
+		
+		$ids = [];
+
+		foreach($categories as $category) {
+			if(!$category instanceof ArticleCategory) {
+				throw new \InvalidArgumentException(sprintf("Expected ArticleCategory, found %s.", gettype($category)));
+			}
+			
+			$ids[] = $category->getId();
+		}
+
+		$this->addCondition('a.articlecategoriesid', $ids, 'IN');
+
+		return $this;
+		
+	}
+
 	/**
 	 * add WHERE clause that removes all unpublished articles from resultset
 	 * 
@@ -159,7 +183,8 @@ class ArticleQuery extends Query {
 	}
 
 	/**
-	/* (non-PHPdoc)
+	 * (non-PHPdoc)
+	 * 
 	 * @see \vxPHP\Orm\Query::selectFromTo()
 	 * @return Article[]
 	 * @throws \RangeException
@@ -178,7 +203,7 @@ class ArticleQuery extends Query {
 		$this->buildValuesArray();
 		$this->sql .= ' LIMIT ' . (int) $from . ', ' . ($to - $from + 1);
 
-		$ids = array();
+		$ids = [];
 
 		foreach($this->executeQuery() as $row) {
 			$ids[] = $row['articlesid'];
