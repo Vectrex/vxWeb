@@ -7,189 +7,90 @@
 
 <script type="text/javascript">
 
+	"use strict";
+	
 	this.vxWeb.routes.publish = "<?= vxPHP\Routing\Router::getRoute('publishXhr', 'admin.php')->getUrl() ?>";
+	this.vxWeb.routes.filter = "<?= vxPHP\Routing\Router::getRoute('articles', 'admin.php')->getUrl(['action' => 'filter']) ?>";
 
 	/**
-	 * render filtered rows
+	 * executes XHR with filter parameters and returns filtered data
 	 */
-	var renderFilteredMatches = function() {
+	this.vxWeb.tableFilter = function(table, filterXhr) {
 
-		var i, l, rows, msg, s, data, selectors = document.querySelectorAll("#matchesCountContainer strong");
+		var timeoutId,
+			inputs = vxJS.collectionToArray(table.tHead.getElementsByTagName("input")), l = inputs.length,
+			filter = {},
+			that = {},
 
-		// write infobox
-		
-		vxJS.dom.deleteChildNodes(matchesInfoBox);
-		if(this.getQueryInfo()) {
-			matchesInfoBox.appendChild(vxJS.dom.parse(this.getQueryInfo()));
-		}
-		
-		// empty table
+			filteredRows,
+			totalCount,
+			filteredCount;
 
-		matchesTable.removeAllRows();
+		var applyFilter = function() {
+			filterXhr.use(null, vxJS.merge(filterXhr.getParameters(), { filter: filter }) ).submit();
+		};
 
-		// write counts and sample id
-		
-		selectors[0].innerHTML = this.getFilteredCount() || 0;
-		selectors[1].innerHTML = this.getTotalCount() || 0;
-		
-		// fill table
+		var handleKeyUp = function() {
+			var val = this.value.trim(), col = this.name.split("_")[1];
 
-		if(rows = this.getFilteredRows()) {
+			window.clearTimeout(timeoutId);
 
-			// ensure visible container
-
-			matchesContainer.style.display = "";
-
-			// ensure hidden message box
-
-			matchesMsgBox.style.display = "none";
-
-			// ensure hidden map container
-
-			for(i = 0, l = rows.length; i < l; ++i) {
-
-				s = rows[i];
-
-				data = (s.id ? ["td".create(s.id)] : []).concat(
-					s.originTree.split("#").concat(["", "", "", "", ""]).slice(0, 5).domWrapWithTag("td"),
-					"td".create(s.mp),
-					"td".create(s.ignoredMutations || ""),
-					"td".setProp("className", s.q[0]).create([
-						"a".setProp({ className: "showHgHeatmap", href: "#" + s.hg[0] }).create(s.hg[0]),
-						"a".setProp({ className: "showHoverInfo iconFont", href: "#extendedInfo|matches|r1|" + s.ndx }).create("\ue01a")
-					]),
-					"td".setProp("className", s.q[1]).create([
-						"a".setProp({ className: "showHgHeatmap", href: "#" + s.hg[1] }).create(s.hg[1]),
-						"a".setProp({ className: "showHoverInfo iconFont", href: "#extendedInfo|matches|r2|" + s.ndx }).create("\ue01a")
-					]),
-					"td".create(s.publications ? renderPublications(s.publications) : "")
-				);
-
-				matchesTable.insertRow("tr".create(data));
+			if(filter[col] !== val) {
+				filter[col] = val;
+				timeoutId = window.setTimeout(applyFilter, 350);
 			}
+		};
 
-			matchesTable.reSort();
+		var setRows = function() {
+			var r = this.response;
+
+			totalCount		= r.totalCount;
+			filteredCount	= r.filteredCount;
+			filteredRows	= r.rows;
+
+			vxJS.event.serve(that, "filterApplied");
+		};
+
+		while(l--) {
+
+			vxJS.event.addListener(inputs[l], "keyup", handleKeyUp);
+
+			filter[inputs[l].name.split("_")[1]] = inputs[l].value.trim();
 		}
 
-		// no rows found
+		vxJS.event.addListener(filterXhr, "complete", setRows);
 
-		else {
+		that.getFilteredCount = function() {
+			return filteredCount;
+		};
+		
+		that.getTotalCount = function() {
+			return totalCount;
+		};
 
-			// check for message box, and display message
+		that.getFilteredRows = function() {
+			return filteredRows;
+		};
 
-			if(msg = this.getMessage())  {
+		that.clearFilter = function() {
+			var l = inputs.length;
 
-				// ensure visible container
-
-				matchesContainer.style.display = "";
-
-				matchesMsgBox.innerHTML = msg;
-				matchesMsgBox.style.display = "";
+			while(l--) {
+				inputs[l].value = "";
 			}
 
-			// get EMMA result
+			filter = {};
+		};
 
-			else {
-				emmaXhr.use(null, { calcToken: calcToken }).submit();
-			}
-		}
+		that.applyFilter = applyFilter;
+
+		that.element = table;
+
+		return that;
+
 	};
-		
-	var tmp = {
 
-			/**
-			 * executes XHR with filter parameters and returns filtered data
-			 */
-			tableFilter: function(table, filterXhr) {
-
-				var timeoutId,
-					inputs = vxJS.collectionToArray(table.tHead.getElementsByTagName("input")), l = inputs.length,
-					filter = {},
-					that = {},
-
-					filteredRows,
-					totalCount,
-					filteredCount,
-					message,
-					queryInfo;
-
-				var applyFilter = function() {
-					filterXhr.use(null, vxJS.merge(filterXhr.getParameters(), { filter: filter }) ).submit();
-				};
-
-				var handleKeyUp = function() {
-					var val = this.value.trim(), col = this.name.split("_")[1];
-
-					window.clearTimeout(timeoutId);
-
-					if(filter[col] !== val) {
-						filter[col] = val;
-						timeoutId = window.setTimeout(applyFilter, 350);
-					}
-				};
-
-				var setRows = function() {
-					var r = this.response;
-
-					totalCount		= r.totalCount;
-					filteredCount	= r.filteredCount;
-					filteredRows	= r.rows;
-					message			= r.message;
-					queryInfo		= r.queryInfo;
-
-					vxJS.event.serve(that, "filterApplied");
-				};
-
-				while(l--) {
-
-					vxJS.event.addListener(inputs[l], "keyup", handleKeyUp);
-
-					filter[inputs[l].name.split("_")[1]] = inputs[l].value.trim();
-				}
-
-				vxJS.event.addListener(filterXhr, "complete", setRows);
-
-				that.getFilteredCount = function() {
-					return filteredCount;
-				};
-				
-				that.getTotalCount = function() {
-					return totalCount;
-				};
-
-				that.getFilteredRows = function() {
-					return filteredRows;
-				};
-
-				that.getMessage = function() {
-					return message;
-				};
-
-				that.getQueryInfo = function() {
-					return queryInfo;
-				};
-
-				that.clearFilter = function() {
-					var l = inputs.length;
-
-					while(l--) {
-						inputs[l].value = "";
-					}
-
-					filter = {};
-				};
-
-				that.applyFilter = applyFilter;
-
-				that.element = table;
-
-				return that;
-			}
-
-	}
-	
 	vxJS.event.addDomReadyListener(function() {
-
 		var lsValue, lsKey = window.location.href + "__sort__",
 			t = vxJS.widget.sorTable(
 			vxJS.dom.getElementsByClassName("list")[0],	{
@@ -234,13 +135,6 @@
 			}
 		);
 
-		if(window.localStorage) {
-			if((lsValue = window.localStorage.getItem(lsKey))) {
-				lsValue = JSON.parse(lsValue);
-				t.sortBy(lsValue.ndx, lsValue.asc ? "asc" : "desc");
-			}
-		}
-
 		vxJS.event.addListener(t, "click", function() {
 			var matches;
 
@@ -254,14 +148,48 @@
 			}
 
 		});
+
+		var filteredTable = vxWeb.tableFilter(
+			vxJS.dom.getElementsByClassName("list")[0],
+			vxJS.xhr(
+				{ uri: vxWeb.routes.filter },
+				null
+			)
+		);
+		
+		vxJS.event.addListener(filteredTable, "filterApplied", function() {
+			var i, l, rows, row, tmpTable;
+
+			t.removeAllRows();
+
+			if((rows = this.getFilteredRows()) && rows.length) {
+
+				tmpTable = "table".create();
+				tmpTable.innerHTML = rows.join("");
+		
+				while(row = tmpTable.tBodies[0].rows[0]) {
+					t.insertRow(row);
+				}
+		
+				t.reSort();
+				
+			}
+		});
+
+		if(window.localStorage) {
+			if((lsValue = window.localStorage.getItem(lsKey))) {
+				lsValue = JSON.parse(lsValue);
+				t.sortBy(lsValue.ndx, lsValue.asc ? "asc" : "desc");
+			}
+		}
 	});
 </script>
 
 <table class="list pct_100">
 	<thead>
 		<tr>
-			<th><input class="pct_100" name="categoryFilter" placeholder="Kategorie filtern..."></th>
-			<th><input class="pct_100" name="titleFilter" placeholder="Titel filtern..."></th>
+			<th><input class="pct_100" name="filter_category" placeholder="Kategorie filtern..."></th>
+			<th><input class="pct_100" name="filter_title" placeholder="Titel filtern..."></th>
 			<th></th>
 			<th></th>
 			<th></th>
@@ -283,31 +211,14 @@
 		</tr>
 	</thead>
 <?php if(!empty($tpl->articles)): ?>
-	<?php $color = 0; ?>
-	<?php foreach($tpl->articles as $article): ?>
-		<tr class="row<?= $color++ % 2; ?>">
-			<td><?= $article->getCategory()->getTitle() ?></td>
-			<td><?= $article->getHeadline() ?></td>
-			<td class="centered">
-				<label class="switch">
-					<input type="checkbox" name="publish[<?= $article->getId(); ?>]"
-						<?php if ($article->isPublished()): ?>checked="checked"<?php endif; ?>
-						<?php if(!$this->can_publish): ?> disabled="disabled"<?php endif; ?>
-					>
-					<span class="trough" data-on="&#xe01e;" data-off="&#xe01d;"></span>
-					<span class="handle"></span>  
-				</label>
-			</td>
-			<td class="right"><?= is_null($article->getDate()) ? '' : $article->getDate()->format('Y-m-d') ?></td>
-			<td class="right"><?= is_null($article->getDisplayFrom()) ? '' : $article->getDisplayFrom()->format('Y-m-d') ?></td>
-			<td class="right"><?= is_null($article->getDisplayUntil()) ? '' : $article->getDisplayUntil()->format('Y-m-d') ?></td>
-			<td class="centered"><?= $article->getCustomSort() ?></td>
-			<td class="right"><?= is_null($article->getLastUpdated()) ? '' : $article->getLastUpdated()->format('Y-m-d H:i:s') ?></td>
-			<td>
-				<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$articles?id=<?= $article->getId() ?>" title="Bearbeiten"></a>
-				<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$articles/del?id=<?= $article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
-			</td>
-		</tr>
+
+	<?php $this->color = 0; ?>
+
+	<?php foreach($tpl->articles as $this->article): ?>
+	
+		<?php $this->color = $this->color++ % 2; ?>
+		<?php $this->includeFile('admin/snippets/article_row.php'); ?>
+	
 	<?php endforeach; ?>
 
 <?php else: ?>

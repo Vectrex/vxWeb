@@ -37,6 +37,12 @@ class ArticlesController extends Controller {
 		$redirectUrl = Router::getRoute('articles', 'admin.php')->getUrl();
 		$action = $this->route->getPathParameter('action');
 		
+		if($action === 'filter') {
+			
+			return $this->filterArticlesList();
+			
+		}
+		
 		// editing something?
 
 		if(($id = $this->request->query->get('id'))) {
@@ -156,6 +162,40 @@ class ArticlesController extends Controller {
 				$val *= 1024;
 		}
 		return $val;
+	}
+	
+	private function filterArticlesList() {
+
+		$filter = $this->request->request->get('filter');
+		
+		$query = ArticleQuery::create(Application::getInstance()->getDb());
+		
+		if(trim($filter['title'])) {
+			
+			$query->where('headline LIKE ?', ['%' . trim($filter['title']) . '%']);
+			
+		}
+		
+		if(trim($filter['category'])) {
+			
+			//@TODO implement category query
+			
+		}
+
+		$canPublish = Application::getInstance()->getCurrentUser()->hasRole('superadmin');
+		$tpl = SimpleTemplate::create('admin/snippets/article_row.php');
+		$markup = [];
+
+		foreach($query->select() as $article) {
+			$markup[] = $tpl
+				->assign('article', $article)
+				->assign('can_publish', $canPublish)
+				->assign('color', 0)
+				->display();
+		}
+
+		return new JsonResponse(['rows' => $markup]);
+		
 	}
 	
 	protected function xhrPublish() {
