@@ -40,7 +40,7 @@ this.vxWeb.fileManager = function(config) {
 			overlay: true,
 			decoration: [{ html: '<div class="vxJS_dragBar"></div><div class="vxJS_confirm_content"></div><div class="vxJS_confirm_buttons"></div>' }]
 		}),
-		lsValue, lsKey = window.location.href + "__sort__",
+		lsValue, lsKey = window.location.origin + "/admin/files" + "__sort__",
 		folderRex = /(^| )folderRow( |$)/,
 
 		icons = (function() {

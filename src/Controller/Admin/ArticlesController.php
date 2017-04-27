@@ -38,15 +38,13 @@ class ArticlesController extends Controller {
 		$redirectUrl = Router::getRoute('articles', 'admin.php')->getUrl();
 		$action = $this->route->getPathParameter('action');
 		
-		if($action === 'filter') {
-			
-			return $this->filterArticlesList();
-			
+		if($action === 'list') {
+			return $this->createArticlesList($this->request->request->get('filter'));
 		}
-		
+
 		// editing something?
 
-		if(($id = $this->request->query->get('id'))) {
+		else if(($id = $this->request->query->get('id'))) {
 
 			try {
 				$article = Article::getInstance($id);
@@ -129,17 +127,8 @@ class ArticlesController extends Controller {
 			);
 		}
 
-		$restrictingWhere = $admin->hasRole('superadmin') ? '1 = 1' : ('createdBy = ' . (int) $admin->getAttribute('id'));
+		return new Response(SimpleTemplate::create('admin/articles_list.php')->display());
 
-		return new Response(
-			SimpleTemplate::create('admin/articles_list.php')
-				->assign('can_publish', $admin->hasRole('superadmin'))
-				->assign('articles', ArticleQuery::create(Application::getInstance()->getDb())
-					->where($restrictingWhere)
-					->sortBy('lastUpdated', FALSE)
-					->select())
-				->display()
-		);
 	}
 
 	/**
@@ -165,20 +154,29 @@ class ArticlesController extends Controller {
 		return $val;
 	}
 	
-	private function filterArticlesList() {
+	private function createArticlesList(array $filter = []) {
 
+		$admin = Application::getInstance()->getCurrentUser();
 		$db = Application::getInstance()->getDb();
-		$filter = $this->request->request->get('filter');
 
-		$query = ArticleQuery::create($db);
-		
-		if(trim($filter['title'])) {
+		// restrict list to articles which were created by user
+
+		$query = ArticleQuery::create($db)
+			->where($admin->hasRole('superadmin') ? '1 = 1' : ('createdBy = ' . (int) $admin->getAttribute('id')))
+			->sortBy('lastUpdated', FALSE)
+		;
 			
+		// apply filter for title
+
+		if(isset($filter['title']) && trim($filter['title'])) {
+
 			$query->where('headline LIKE ?', ['%' . trim($filter['title']) . '%']);
-			
+
 		}
 		
-		if(trim($filter['category'])) {
+		// apply filter for a category name
+		
+		if(isset($filter['category']) && trim($filter['category'])) {
 			
 			$categories = ArticleCategoryQuery::create($db)->where('title LIKE ?', ['%' . trim($filter['category']) . '%'])->select();
 
@@ -188,18 +186,19 @@ class ArticlesController extends Controller {
 			
 		}
 
-		$canPublish = Application::getInstance()->getCurrentUser()->hasRole('superadmin');
 		$tpl = SimpleTemplate::create('admin/snippets/article_row.php');
 		$markup = [];
+		$canPublish = $admin->hasRole('superadmin');
+		$colorNdx = 0;
 
 		foreach($query->select() as $article) {
 			$markup[] = $tpl
 				->assign('article', $article)
 				->assign('can_publish', $canPublish)
-				->assign('color', 0)
+				->assign('colorNdx', $colorNdx++ % 2)
 				->display();
 		}
-
+		
 		return new JsonResponse(['rows' => $markup]);
 		
 	}

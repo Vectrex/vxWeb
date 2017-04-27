@@ -10,7 +10,7 @@
 	"use strict";
 	
 	this.vxWeb.routes.publish = "<?= vxPHP\Routing\Router::getRoute('publishXhr', 'admin.php')->getUrl() ?>";
-	this.vxWeb.routes.filter = "<?= vxPHP\Routing\Router::getRoute('articles', 'admin.php')->getUrl(['action' => 'filter']) ?>";
+	this.vxWeb.routes.filter = "<?= vxPHP\Routing\Router::getRoute('articles', 'admin.php')->getUrl(['action' => 'list']) ?>";
 
 	/**
 	 * executes XHR with filter parameters and returns filtered data
@@ -91,7 +91,7 @@
 	};
 
 	vxJS.event.addDomReadyListener(function() {
-		var lsValue, lsKey = window.location.href + "__sort__",
+		var lsValue, lsKey = window.location.origin + "/admin/articles__sort__",
 			t = vxJS.widget.sorTable(
 			vxJS.dom.getElementsByClassName("list")[0],	{
 				columnFormat: [
@@ -125,13 +125,24 @@
 			}),
 			publishXhr = vxJS.xhr( { uri: vxWeb.routes.publish } );
 
+
+		var filterXhr = vxJS.xhr(
+			{ uri: vxWeb.routes.filter }
+		);
+
+		var filteredTable = vxWeb.tableFilter(
+			vxJS.dom.getElementsByClassName("list")[0],
+			filterXhr
+		);
+
 		vxJS.event.addListener(
 			t,
 			"finishSort",
 			function() {
-				var c = this.getActiveColumn();
+				var c = this.getActiveColumn(), columnName = t.element.parentNode.firstElementChild.rows[0].cells[c.ndx].getAttribute("data-column-name");
 				vxJS.widget.shared.shadeTableRows({ element: this.element });
-				window.localStorage.setItem(lsKey, JSON.stringify( { ndx: c.ndx, asc: c.asc } ));
+				window.localStorage.setItem(lsKey, JSON.stringify( { ndx: c.ndx, asc: c.asc, columnName: columnName } ));
+				filterXhr.use(null,  { sortByColumn: columnName });
 			}
 		);
 
@@ -149,14 +160,6 @@
 
 		});
 
-		var filteredTable = vxWeb.tableFilter(
-			vxJS.dom.getElementsByClassName("list")[0],
-			vxJS.xhr(
-				{ uri: vxWeb.routes.filter },
-				null
-			)
-		);
-		
 		vxJS.event.addListener(filteredTable, "filterApplied", function() {
 			var i, l, rows, row, tmpTable;
 
@@ -179,23 +182,27 @@
 		if(window.localStorage) {
 			if((lsValue = window.localStorage.getItem(lsKey))) {
 				lsValue = JSON.parse(lsValue);
+				filterXhr.use(null,  { sortByColumn: lsValue.columnName });
 				t.sortBy(lsValue.ndx, lsValue.asc ? "asc" : "desc");
 			}
 		}
+
+		filteredTable.applyFilter();
+
 	});
 </script>
 
 <table class="list pct_100">
 	<thead>
 		<tr>
-			<th><input class="pct_100" name="filter_category" placeholder="Kategorie filtern..."></th>
-			<th><input class="pct_100" name="filter_title" placeholder="Titel filtern..."></th>
-			<th></th>
-			<th></th>
-			<th></th>
-			<th></th>
-			<th></th>
-			<th></th>
+			<th data-column-name="category"><input class="pct_100" name="filter_category" placeholder="Kategorie filtern..."></th>
+			<th data-column-name="headline"><input class="pct_100" name="filter_title" placeholder="Titel filtern..."></th>
+			<th data-column-name="published"></th>
+			<th data-column-name="article_date"></th>
+			<th data-column-name="display_from"></th>
+			<th data-column-name="display_until"></th>
+			<th data-column-name="customsort"></th>
+			<th data-column-name="lastupdated"></th>
 			<th></th>
 		</tr>
 		<tr>
@@ -210,19 +217,4 @@
 			<th class="ssm">&nbsp;</th>
 		</tr>
 	</thead>
-<?php if(!empty($tpl->articles)): ?>
-
-	<?php $this->color = 0; ?>
-
-	<?php foreach($tpl->articles as $this->article): ?>
-	
-		<?php $this->color = $this->color++ % 2; ?>
-		<?php $this->includeFile('admin/snippets/article_row.php'); ?>
-	
-	<?php endforeach; ?>
-
-<?php else: ?>
-	<tr><td colspan="8">Keine angelegt.</td></tr>
-<?php endif;?>
-
 </table>

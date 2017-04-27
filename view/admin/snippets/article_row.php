@@ -1,4 +1,4 @@
-<tr class="row<?= $this->color ?>">
+<tr class="row<?= $this->colorNdx ?>">
 	<td><?= $this->article->getCategory()->getTitle() ?></td>
 	<td><?= $this->article->getHeadline() ?></td>
 	<td class="centered">
@@ -17,7 +17,7 @@
 	<td class="centered"><?= $this->article->getCustomSort() ?></td>
 	<td class="right"><?= is_null($this->article->getLastUpdated()) ? '' : $this->article->getLastUpdated()->format('Y-m-d H:i:s') ?></td>
 	<td>
-		<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$this->articles?id=<?= $this->article->getId() ?>" title="Bearbeiten"></a>
-		<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$this->articles/del?id=<?= $this->article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+		<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$articles?id=<?= $this->article->getId() ?>" title="Bearbeiten"></a>
+		<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$articles/del?id=<?= $this->article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
 	</td>
 </tr>

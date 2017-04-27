@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
 	vxJS.event.addDomReadyListener(function() {
-		var lsValue, lsKey = window.location.href + "__sort__",
+		var lsValue, lsKey = window.location.origin + "/admin/pages__sort__",
 			t = vxJS.widget.sorTable(
 			vxJS.dom.getElementsByClassName("list")[0],	{
 				columnFormat: [
