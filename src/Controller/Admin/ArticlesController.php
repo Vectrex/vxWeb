@@ -154,7 +154,7 @@ class ArticlesController extends Controller {
 		return $val;
 	}
 	
-	private function createArticlesList(array $filter = []) {
+	private function createArticlesList(array $filter = [], array $sort = NULL) {
 
 		$admin = Application::getInstance()->getCurrentUser();
 		$db = Application::getInstance()->getDb();
@@ -163,9 +163,21 @@ class ArticlesController extends Controller {
 
 		$query = ArticleQuery::create($db)
 			->where($admin->hasRole('superadmin') ? '1 = 1' : ('createdBy = ' . (int) $admin->getAttribute('id')))
-			->sortBy('lastUpdated', FALSE)
 		;
-			
+
+		// add sorting
+
+		if($sort) {
+			if($sort['column'] !== 'category') {
+				$query->$sortBy($sort['column'], $sort['asc']);
+			}
+			else {
+			}
+		}
+		else {
+			$query->sortBy('lastUpdated', FALSE);
+		}
+		
 		// apply filter for title
 
 		if(isset($filter['title']) && trim($filter['title'])) {
