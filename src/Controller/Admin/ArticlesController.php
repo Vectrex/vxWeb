@@ -127,7 +127,8 @@ class ArticlesController extends Controller {
 			);
 		}
 
-		return new Response(SimpleTemplate::create('admin/articles_list.php')->display());
+		$categories = ArticleCategoryQuery::create(Application::getInstance()->getDb())->sortBy('alias')->select();
+		return new Response(SimpleTemplate::create('admin/articles_list.php')->assign('categories', $categories)->display());
 
 	}
 
@@ -169,7 +170,7 @@ class ArticlesController extends Controller {
 
 		if($sort) {
 			if($sort['column'] !== 'category') {
-				$query->$sortBy($sort['column'], $sort['asc']);
+				$query->sortBy($sort['column'], $sort['asc']);
 			}
 			else {
 			}
@@ -188,14 +189,13 @@ class ArticlesController extends Controller {
 		
 		// apply filter for a category name
 		
-		if(isset($filter['category']) && trim($filter['category'])) {
+		if(isset($filter['category'])) {
 			
-			$categories = ArticleCategoryQuery::create($db)->where('title LIKE ?', ['%' . trim($filter['category']) . '%'])->select();
-
-			if(count($categories)) {
-				$query->filterByCategories($categories);
+			try {
+				$query->filterByCategory(ArticleCategory::getInstance($filter['category']));
 			}
-			
+			catch(ArticleCategoryException $e) {}
+
 		}
 
 		$tpl = SimpleTemplate::create('admin/snippets/article_row.php');

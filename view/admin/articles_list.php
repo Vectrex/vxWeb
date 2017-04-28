@@ -18,7 +18,8 @@
 	this.vxWeb.tableFilter = function(table, filterXhr) {
 
 		var timeoutId,
-			inputs = vxJS.collectionToArray(table.tHead.getElementsByTagName("input")), l = inputs.length,
+			inputs = vxJS.collectionToArray(table.tHead.getElementsByTagName("input")), i = inputs.length,
+			selects = vxJS.collectionToArray(table.tHead.getElementsByTagName("select")), s = inputs.length,
 			filter = {},
 			that = {},
 
@@ -41,6 +42,11 @@
 			}
 		};
 
+		var handleChange = function() {
+			filter[this.name.split("_")[1]] = this.value;
+			applyFilter();
+		};
+
 		var setRows = function() {
 			var r = this.response;
 
@@ -51,11 +57,13 @@
 			vxJS.event.serve(that, "filterApplied");
 		};
 
-		while(l--) {
-
-			vxJS.event.addListener(inputs[l], "keyup", handleKeyUp);
-
-			filter[inputs[l].name.split("_")[1]] = inputs[l].value.trim();
+		while(i--) {
+			vxJS.event.addListener(inputs[i], "keyup", handleKeyUp);
+			filter[inputs[i].name.split("_")[1]] = inputs[i].value.trim();
+		}
+		while(s--) {
+			vxJS.event.addListener(selects[s], "change", handleChange);
+			filter[selects[s].name.split("_")[1]] = selects[s].value;
 		}
 
 		vxJS.event.addListener(filterXhr, "complete", setRows);
@@ -195,7 +203,12 @@
 <table class="list pct_100">
 	<thead>
 		<tr>
-			<th data-column-name="category"><input class="pct_100" name="filter_category" placeholder="Kategorie filtern..."></th>
+			<th data-column-name="category"><select class="pct_100" name="filter_category">
+				<option value="">(kein Filter)</option>
+				<?php foreach($this->categories as $cat): ?>
+					<option value="<?= $cat->getId() ?>"><?= $cat->getTitle() ?></option>
+				<?php endforeach; ?>
+			</select></th>
 			<th data-column-name="headline"><input class="pct_100" name="filter_title" placeholder="Titel filtern..."></th>
 			<th data-column-name="published"></th>
 			<th data-column-name="article_date"></th>
