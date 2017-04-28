@@ -55,22 +55,11 @@
 		<th class="ssm">&nbsp;</th>
 	</tr>
 
-	<?php foreach($this->users as $user): ?>
+	<?php $rowNdx = 0; ?>
 
-	<tr<?php if (vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() === $user['username']): ?> class="locked"<?php endif; ?>>
-
-		<td><?= $user['username'] ?></td>
-		<td><?= $user['name'] ?></td>
-		<td><?= $user['email'] ?></td>
-		<td><?= $user['alias'] ?></td>
-		<td class="right"><?php if (vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() != $user['username']): ?>
-			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$users?id=<?= $user['username'] ?>"></a>
-			<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$users/del?id=<?= $user['username'] ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
-			<?php endif; ?>
-		</td>
-
-	</tr>
-
+	<?php foreach($this->users as $this->user): ?>
+		<?php $this->colorNdx = $rowNdx ++ % 2; ?>
+		<?php $this->includeFile('admin/snippets/user_row.php'); ?>
 	<?php endforeach; ?>
 
 </table>

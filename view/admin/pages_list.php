@@ -54,19 +54,11 @@
 		<th class="s">&nbsp;</th>
 	</tr>
 
-	<?php foreach($tpl->pages as $p): ?>
-	<tr>
+	<?php $rowNdx = 0; ?>
 
-		<td><?php echo $p->getAlias(); ?><br><em><?php echo $p->getTitle(); ?></em></td>
-		<td><?php echo $p->getTemplate(); ?></td>
-		<td class="shortened_60" style="font-size: 85%;"><?php echo ''; ?></td>
-		<td class="right"><?php echo $p->getActiveRevision()->getFirstCreated()->format('Y-m-d H:i:s'); ?></td>
-		<td class="right"><?php echo count($p->getRevisions()); ?></td>
-		<td>
-			<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$pages?id=<?php echo $p->getId(); ?>"></a>
-		</td>
-	</tr>
-
+	<?php foreach($this->pages as $this->page): ?>
+		<?php $this->colorNdx = $rowNdx++ % 2; ?>
+		<?php $this->includeFile('admin/snippets/page_row.php'); ?>
 	<?php endforeach; ?>
 
 </table>
