@@ -3,7 +3,7 @@
 // register autoloaders
 
 ini_set('display_errors', TRUE);
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~(E_STRICT|E_DEPRECATED));
 
 // package was installed with composer?
 
