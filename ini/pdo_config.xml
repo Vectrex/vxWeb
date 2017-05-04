@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<vxpdo>
+	<datasource name="vxweb">
+		<!-- currently postgresql or mysql -->
+		<driver>postgresql</driver>
+		<host>host</host>
+		<user>user</user>
+		<password>password</password>
+		<dbname>database_name</dbname>
+		<dsn>dsn</dsn>
+	</datasource>
+</vxpdo>
