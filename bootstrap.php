@@ -39,49 +39,69 @@ if(!file_exists($configFilename)) {
 
 if(file_exists($cachedConfigFilename)) {
 
-	// check whether cached file is outdated
+	/*
+	 * check whether cached file is outdated
+	 * 
+	 * checks all XML files in the ini folder tree (whether they are relevant or not)
+	 * does not consider any included XML files outside the ini folder
+	 */
 
-	if(filemtime($cachedConfigFilename) > filemtime($configFilename)) {
-		$config = unserialize(file_get_contents($cachedConfigFilename));
-	}
-	else {
+	
+	$cachedFileTimestamp = filemtime($cachedConfigFilename);
+	$cachedIsValid = TRUE;
 
-		// create config instance
-
-		try {
-			$config = new vxPHP\Application\Config($configFilename);
-		}
+	foreach(
+		new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator(
+				$iniPath,
+				\FilesystemIterator::SKIP_DOTS
+			),
+			\RecursiveIteratorIterator::CHILD_FIRST
+		) as $f) {
 		
-		catch(\vxPHP\Application\Exception\ConfigException $e) {
-			die('Cannot create Config instance: ' . $e->getMessage());
+		if(strtolower($f->getExtension()) === 'xml' && $f->getMTime() > $cachedFileTimestamp) {
+			$cachedIsValid = FALSE;
+			break;
 		}
-
-		// write file to cache
-
-		if(FALSE === file_put_contents($cachedConfigFilename, serialize($config))) {
-			die ('Cannot create serialized config file ' . $cachedConfigFilename);
-		}
+	}
+	
+	if($cachedIsValid) {
+		$config = unserialize(file_get_contents($cachedConfigFilename));
 	}
 
 }
 
-else {
+// cached config was either not found or is outdated 
 
-	$config = new vxPHP\Application\Config($configFilename);
+if(!isset($config)) {
 
-	// create path
+	// create cache path if no cached config was found and path does not exist
 
-	if(!file_exists($cachedConfigPath)) {
-		if(!mkdir($cachedConfigPath, 0777, TRUE)) {
-			die ('Cannot create directory ' . $cachedConfigPath);
+	if(!isset($cachedFileTimestamp)) {
+
+		if(!file_exists($cachedConfigPath)) {
+			if(!mkdir($cachedConfigPath, 0777, TRUE)) {
+				die ('Cannot create directory ' . $cachedConfigPath);
+			}
 		}
 	}
 
-	// create file
-
-	if(FALSE === file_put_contents($cachedConfigFilename, serialize($config))) {
-		die ('Cannot create serialized config file ' . $cachedConfigFilename);
+	// create config instance
+	
+	try {
+		$config = new vxPHP\Application\Config($configFilename);
 	}
+	
+	catch(\vxPHP\Application\Exception\ConfigException $e) {
+		die('<h1>Cannot create Config instance</h1><pre>' . $e->getMessage() . '</pre>');
+	}
+	
+	// write file to cache
+	
+	if(FALSE === file_put_contents($cachedConfigFilename, serialize($config))) {
+		die ('<h1>Cannot create serialized config file</h1>' . $cachedConfigFilename);
+	}
+
 }
 
 // initialize application
