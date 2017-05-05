@@ -24,18 +24,6 @@
 
 	<include>pdo_config.xml</include>
 
-	<paths>
-		<path id="mysql_log_path" subdir="log"/>
-		<path id="css_path" subdir="css"/>
-		<path id="js_path" subdir="js"/>
-		<path id="tpl_path" subdir="view"/>
-		<path id="formtemplates_path" subdir="view/forms"/>
-		<path id="editable_tpl_path" subdir="view/default" />
-		<path id="img_site_path" subdir="img/site"/>
-		<path id="locale_path" subdir="locales"/>
-		<path id="files_path" subdir="files" />
-	</paths>
-
 	<pages />
 
 	<!-- include routes and menu configuration for vxWeb admin pages -->
