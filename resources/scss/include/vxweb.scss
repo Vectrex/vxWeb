@@ -1,5 +1,3 @@
-@import "icon_variables";
-
 /*
  * form elements
  */
@@ -23,7 +21,10 @@ input	{
 }
 
 input, textarea, select	{
-	&:focus	{ box-shadow: 0 0 0.25em #aef; border-color: $colorBright !important; }
+	&:focus	{
+		box-shadow: 0 0 0.25em $colorBright;
+		border-color: tint($colorBright, 30%) !important;
+	}
 }
 
 select	{
@@ -56,29 +57,14 @@ option	{
  */
 
 button, a.buttonLink	{
-	display: inline-block;
-	vertical-align: middle;
-	padding: 0.25em 1em;
-	background: $colorDark;
-	color: #fff;
-	font-weight: bold;
-	border: solid 1px shade($colorDark, 25%);
-	border-radius: 0.25em;
-	margin-right: 0.25em;
-	transition: all 0.25s ease 0s;
+	display: inline-block; vertical-align: middle; padding: 0.25em 1em; background: $colorDark; color: #fff; font-weight: bold; border: solid 1px #003b59; border-radius: 0.25em; margin-right: 0.25em; transition: all 0.25s ease 0s;
 
 	&:hover, &:active {
-		background: $colorBright;
-		color: #fff;
-		border-color: $colorDark;
-		cursor: pointer;
-		box-shadow: 0 0 2px $colorBright;
-		text-decoration: none;
+		background: $colorBright; border-color: $colorDark; cursor: pointer; box-shadow: 0 0 2px $colorBright; text-decoration: none;
 	}
 
-	&.active {
-		background: $colorBright;
-		transition: all 0.25s ease 0s;
+	&.active	{
+		background: $colorBright; transition: all 0.25s ease 0s;
 	}
 }
 
@@ -86,8 +72,13 @@ button[disabled=disabled]	{
 	border-color: #444; color: #444; text-shadow: 1px 1px #ccc; background: #888;
 }
 
-.withIcon	{
-	&:before	{ font-family: icomoon; padding-right: 0.5em; font-weight: normal; content: attr(data-icon); line-height: 100%; }
+.withIcon {
+	&[data-icon-position="right"] {
+		&:before { font-family: icomoon; padding-right: 0.5em; font-weight: normal; content: attr(data-icon); line-height: 100%; vertical-align: middle; }
+	}
+	&:not([data-icon-position]), &[data-icon-position="left"] {
+		&:after { font-family: icomoon; padding-left: 0.5em; font-weight: normal; content: attr(data-icon); line-height: 100%; vertical-align: middle; }
+	}
 }
 
 span.iconOnly, button.iconOnly, a.iconOnly	{
@@ -130,8 +121,6 @@ span.buttonGroup	{
 
 div.inputGroup	{
 	display: table;
-	border-collapse: separate !important;
-	border-spacing: 0 !important;
 
 	&.inline	{
 		display: inline-table;
@@ -179,10 +168,6 @@ form	{
 
 	.formItem	{
 		padding: 0.5em 0;
-		
-		& > * {
-			vertical-align: middle;
-		}
 	}
 }
 
@@ -278,40 +263,32 @@ table.list	{
 			border-left: none;
 		}
 	}
-
-	*.displayOnlyWhenHover {
-		visibility: hidden; opacity: 0; transition: opacity 0.5s;
-	}
-
-	td:hover *.displayOnlyWhenHover {
-		visibility: visible; opacity: 1;
-	}
 }
 
 th.vxJS_sorTable_header_desc, th.vxJS_sorTable_header_asc	{
 	background: $neutralLight;
 
 	&:before	{
-		font-family: icomoon; font-weight: normal; content: $icon-arrow-down5; vertical-align: middle; font-size: 150%;
+		font-family: icomoon; font-weight: normal; content: "\e033"; vertical-align: middle; font-size: 150%;
 	}
 }
 
 th.vxJS_sorTable_header_desc:before	{
-	content: $icon-arrow-up5;
+	content: "\e031";
 }
 
 tr	{
 	&.row0	{
 		background: $tableRowEvenColor;
 		.active	{
-			background: tint($altColorBright, 75%);
+			background: lighten(desaturate($altColorBright, 50%), 50%);
 		}
 	}
 
 	&.row1	{
 		background: $tableRowOddColor;
 		.active	{
-			background: tint($altColorBright, 60%);
+			background: lighten(desaturate($altColorBright, 30%), 40%);
 		}
 	}
 }
@@ -327,7 +304,7 @@ div.vxJS_xhrThrobber {
 	}
 
 	&:before	{
-		font-family: icomoon; content: $icon-spinner9;
+		font-family: icomoon; content: "\e02f";
 	}
 }
 
