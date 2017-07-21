@@ -73,10 +73,10 @@ button[disabled=disabled]	{
 }
 
 .withIcon {
-	&[data-icon-position="right"] {
+	&:not([data-icon-position]), &[data-icon-position="left"] {
 		&:before { font-family: icomoon; padding-right: 0.5em; font-weight: normal; content: attr(data-icon); line-height: 100%; vertical-align: middle; }
 	}
-	&:not([data-icon-position]), &[data-icon-position="left"] {
+	&[data-icon-position="right"] {
 		&:after { font-family: icomoon; padding-left: 0.5em; font-weight: normal; content: attr(data-icon); line-height: 100%; vertical-align: middle; }
 	}
 }
