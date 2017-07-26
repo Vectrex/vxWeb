@@ -33,7 +33,7 @@ class UsersController extends Controller {
 
 		// editing or deleting something? Ensure user exists
 
-		if(($id = $this->request->query->get('id'))) {
+		if(($id = urldecode($this->request->query->get('id')))) {
 
 			// editing own record is not allowed
 			
@@ -116,7 +116,7 @@ class UsersController extends Controller {
 
 		// id comes either via URL or as an extra form field
 
-		$id = $this->request->query->get('id', $this->request->request->get('id'));
+		$id = urldecode($this->request->query->get('id', $this->request->request->get('id')));
 
 		$app = Application::getInstance();
 		$admin = $app->getCurrentUser();
