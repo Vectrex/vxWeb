@@ -10,38 +10,27 @@
 	}
 
 	.vxJS_dragBar	{
-		position: relative;
-		display: table;
-		width: 100%;
-		padding: 0;
+		font-size: 80%; position: relative; padding: 0; margin: 0.25em 0.5em;
 	}
 
-	.selMon, .selYear {
-		display: table-row;
-		width: 100%;
+	.mon	{
+		display: block; text-align: center;
 	}
 
-	.mon, .year	{
-		display: table-cell;
-		text-align: center;
-		vertical-align: middle;
+	.prevMon, .nextMon	{
+		cursor: pointer; display: block; position: absolute; top: 0;
 	}
 
-	.prevMon, .nextMon, .prevYear, .nextYear	{
-		cursor: pointer;
-		display: table-cell;
-		vertical-align: middle;
-		padding: 0.125em 0.5em;
-	}
+	.prevMon	{
+		 left: 0;
 
-	.prevMon, .prevYear	{
 		 &:before	{
 		 	font-family: icomoon; content: "\e025";
 		 }
 	}
 
-	.nextMon, .nextYear	{
-		text-align: right;
+	.nextMon	{
+		right: 0; left: auto; text-align: right;
 
 		 &:before	{
 		 	font-family: icomoon; content: "\e023";
@@ -49,13 +38,14 @@
 	}
 
 	table	{
-		font-size: 90%;
-		width: 100%;
-		border-collapse: separate;
-		border-spacing: 2px;
+		font-size: 80%; border-collapse: separate; border-spacing: 2px;
+
+		th	{
+			padding: 0.125em 0.25em; text-align: center; color: #fff; vertical-align: middle; width: 1.75em; background: $neutralLight;
+		}
 
 		td	{
-			padding: 0.25em 0.25em; text-align: center; vertical-align: middle; cursor: pointer; background: #fff;
+			padding: 0.125em 0.25em; text-align: center; vertical-align: middle; cursor: pointer; background: #fff; height: 2.5em;
 			&.trail	{
 				color: $neutralLight;
 			}
@@ -71,10 +61,6 @@
 			&.disabled	{
 				color: $neutralMedium; cursor: default;
 			}
-		}
-
-		th	{
-			padding: 0.125em 0.25em; text-align: center; color: #fff; vertical-align: middle; width: 1.75em; background: $neutralLight;
 		}
 	}
 }
@@ -92,7 +78,7 @@
 			cursor: pointer; margin: 0; padding: 0.25em 0.5em;
 
 			&.current	{
-				color: $colorBright; background: $neutralLight;
+				color: $colorDark; background: $neutralExtraLight;
 			}
 
 			span	{
@@ -110,5 +96,5 @@
  * overlay
  */
 .vxJS_overlay	{
-	background: $colorDark; opacity: 0.3;
+	background: rgba(255, 255, 255, 0.5);
 }
