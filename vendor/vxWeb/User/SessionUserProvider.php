@@ -18,16 +18,17 @@ use vxPHP\User\UserProviderInterface;
 use vxPHP\User\SessionUser;
 use vxPHP\User\Role;
 use vxPHP\User\UserInterface;
+use vxPHP\User\SimpleSessionUserProvider;
 
 /**
  * represents users within a vxWeb application, which are stored in the
  * session after initialization
  * 
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.3.0, 2017-02-21
+ * @version 0.3.1, 2017-08-18
  *        
  */
-class SessionUserProvider implements UserProviderInterface {
+class SessionUserProvider extends SimpleSessionUserProvider implements UserProviderInterface {
 	
 	/**
 	 * @var DatabaseInterface
@@ -134,50 +135,4 @@ class SessionUserProvider implements UserProviderInterface {
 
 	}
 
-	/**
-	 * remove session user from session
-	 * returns the removed session user
-	 * 
-	 * @param string $sessionKey
-	 * @throws UserException
-	 * @return \vxPHP\User\SessionUser|mixed
-	 */
-	public function unsetSessionUser($sessionKey = NULL) {
-		
-		$sessionKey = $sessionKey ?: SessionUser::DEFAULT_KEY_NAME;
-		
-		$user = Session::getSessionDataBag()->get($sessionKey);
-
-		if($user) {
-
-			if(!$user instanceof SessionUser) {
-				throw new UserException(sprintf("Session key '%s' doesn't hold a SessionUser instance.", $sessionKey));
-			}
-			Session::getSessionDataBag()->remove($sessionKey);
-
-		}
-		
-		return $user;
-
-	}
-
-	/**
-	 * retrieve a stored session user stored under a session key
-	 * returns stored value only, when it is a SessionUser instance
-	 * 
-	 * @param string $sessionKey
-	 * @return \vxPHP\User\SessionUser
-	 */
-	public function getSessionUser($sessionKey = NULL) {
-
-		$sessionKey = $sessionKey ?: SessionUser::DEFAULT_KEY_NAME;
-		
-		$sessionUser = Session::getSessionDataBag()->get($sessionKey);
-
-		if($sessionUser instanceof SessionUser) {
-			return $sessionUser;
-		}
-		
-	}
-	
 }
