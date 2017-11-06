@@ -61,6 +61,7 @@ button, a.buttonLink	{
 
 	&:hover, &:active {
 		background: $colorBright; border-color: $colorDark; cursor: pointer; box-shadow: 0 0 2px $colorBright; text-decoration: none;
+		color: white;
 	}
 
 	&.active	{
