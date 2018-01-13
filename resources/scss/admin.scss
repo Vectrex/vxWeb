@@ -6,18 +6,29 @@ $secondary-color: #FF9400;
 $base-font-family: "verbcond";
 
 @import "spectre/spectre";
+@import "spectre/spectre-exp";
 
-.menu-item {
+.nav-item {
   & > span {
-    border-radius: $border-radius;
-    color: inherit;
-    display: block;
-    margin: 0 (-$unit-2);
     padding: $unit-1 $unit-2;
   }
   &.active > span {
-    background: $secondary-color;
-    color: $primary-color;
+    font-weight: bold;
   }
 }
 
+.vxweb-navbar {
+  @extend .navbar;
+  position: fixed;
+  width: 100%;
+  z-index: 400;
+  background: $gray-color-light;
+}
+
+.vxweb-content.off-canvas-content {
+  padding: 3rem 1rem;
+}
+
+.vxweb-sidebar {
+  padding: 3rem 1rem;
+}
