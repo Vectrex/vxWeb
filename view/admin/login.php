@@ -6,12 +6,10 @@
 	vxJS.event.addDomReadyListener(this.vxWeb.doLogin);
 </script>
 
-<div id="login">
-	<div>
-		<div>realisiert mit <a href="http://vxweb.net">vxWeb</a> &copy;2007- <?php echo date('Y'); ?></div>
-		<?php echo $tpl->form; ?>
-		<div>Zurück zu <a href="/"><?php echo $_SERVER['HTTP_HOST']; ?></a></div>
+<div id="login" class="modal active">
+	<div class="modal-container">
+		<div class="modal-header">realisiert mit <a href="https://vxweb.net">vxWeb</a> &copy;2007- <?php echo date('Y'); ?></div>
+        <div class="modal-body"><?php echo $tpl->form; ?></div>
+		<div class="modal-footer">Zurück zu <a href="/"><?php echo $_SERVER['HTTP_HOST']; ?></a></div>
 	</div>
 </div>
-
-<div id="messageBox">&nbsp;</div>

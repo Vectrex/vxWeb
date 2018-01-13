@@ -1,18 +1,18 @@
 <h1>Administrator Login</h1>
-<div class="formSect">
 
-	<div class="formItem">
-		<div class="inputGroup pct_100">
-			<span class="ssm">Username</span>{input:UID { "maxlength": 128, "class": "pct_100" } }
+{form {"class": "form-horizontal"}}
+
+	<div class="form-group">
+		<label class="form-label col-2">Username</label>{input:UID { "maxlength": 128, "class": "form-input col-10" } }
+	</div>
+
+	<div class="form-group">
+		<label class="form-label col-2">Passwort</label>
+		<div class="input-group input-inline col-10">
+			{input:pwd { "maxlength": 128, "class": "form-input" } }
+			{button:submit_login { "class":"btn btn-primary", "data-throbber-position": "outside-left" } }
 		</div>
 	</div>
-	
-	<div class="formItem">
-		<div class="inputGroup pct_100">
-			<span class="ssm">Passwort</span>{input:pwd { "maxlength": 128, "class": "pct_100" } }<span class="inputGroupBtn">{button:submit_login { "data-throbber-position": "outside-left" } }</span>
-		</div>
-	</div>
-	
-</div>
 
-{error_submit_login:<div class="error_message">Ungültige Email oder ungültiges Passwort!</div>}
+	<div id="messageBox" class="toast toast-error d-none">&nbsp;</div>
+{end_form}

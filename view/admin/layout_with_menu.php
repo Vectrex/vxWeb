@@ -39,15 +39,19 @@
 
 	<body>
 
-		<div id="page">
-			<div id="statusBar">
-					<span class="userInfo">Angemeldet <strong><?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() ?></strong> (<?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getAttribute('email') ?>)</span> &bull;
+		<h id="page">
+			<header class="navbar p-2">
+                <section class="navbar-section">
+					<span class="userInfo">Angemeldet <strong><?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() ?></strong> (<?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getAttribute('email') ?>)</span>
+                </section>
+                <section class="navbar-section">
 					<a class="withIcon" data-icon="&#xe009;" href="<?= vxPHP\Routing\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
 					<a  class="withIcon" data-icon="&#xe021;" href="<?= vxPHP\Routing\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
 					Gehe zu <a href="/" class="withIcon" data-icon="&#xe000;"><?= vxPHP\Http\Request::createFromGlobals()->getHost() ?></a>
-			</div>
+                </section>
+            </header>
 
-			<?= vxPHP\Webpage\MenuGenerator::create('admin', 0)->render() ?>
+            <?= vxPHP\Webpage\MenuGenerator::create('admin', 0, null, null, ['ulClass' => 'menu', 'liClass' => 'menu-item', 'containerTag' => ''])->render() ?>
 
 			<div id="content">
 				<!-- { block: content_block } -->

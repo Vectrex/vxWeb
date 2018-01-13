@@ -28,7 +28,7 @@
 
 	</head>
 
-	<body class="withoutMenu">
+	<body>
 		<div id="page">
 			<!-- { block: content_block } -->
 		</div>
