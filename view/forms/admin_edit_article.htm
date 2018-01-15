@@ -1,3 +1,5 @@
+{form { "class": "form-horizontal" }}
+
 {error_general:<div class="error_message">Ein oder mehrere Eingaben sind fehlerhaft!<br>Der Eintrag in der Datenbank wurde nicht aktualisiert.</div>}
 {error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
 
@@ -5,34 +7,44 @@
 <div class="success_message">Änderungen oder Neuanlage erfolgreich übernommen.</div>
 {end_if}
 
-<div class="formSect">
- 	<div class="formItem">
-		<label class="m{error_article_date: error}">Artikeldatum</label><div class="inputGroup inline">{input:article_date {"maxlength": "10", "class": "m"} }<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
+<div class="form-sect">
+ 	<div class="form-group">
+		<label class="col-1 form-label{error_article_date: error}">Artikeldatum</label>
+		<div class="input-group input-inline col-2">
+			{input:article_date {"maxlength": "10", "class": "form-input"} }<i class="icon icon-plus calendarPopper" data-icon="&#xe00c;"></i>
+		</div>
 	</div>
- 	<div class="formItem">
- 		<label class="m{error_display_from: error}">Anzeige von</label><div class="inputGroup inline">{input:display_from {"maxlength": "10", "class": "m"} }<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
+ 	<div class="form-group">
+ 		<label class="col-1 form-label{error_display_from: error}">Anzeige von</label>
+		<div class="inputGroup inline">{input:display_from {"maxlength": "10", "class": "m"} }<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
 	</div>
- 	<div class="formItem">
-		<label class="m{error_display_until: error}">Anzeige bis</label><div class="inputGroup inline">{input:display_until {"maxlength": "10", "class": "m"} }<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
+ 	<div class="form-group">
+		<label class="col-1 form-label{error_display_until: error}">Anzeige bis</label>
+		<div class="inputGroup inline">{input:display_until {"maxlength": "10", "class": "m"} }<span class="iconOnly calendarPopper" data-icon="&#xe00c;"></span></div>
 	</div>
- 	<div class="formItem">
-		<label class="m{error_customsort: error}">generische Sortierung</label>{input:customsort {"maxlength": "4", "class": "s"} }
+ 	<div class="form-group">
+		<label class="col-1 form-label{error_customsort: error}">generische Sortierung</label>
+		{input:customsort {"maxlength": "4", "class": "form-input col-1"} }
 	</div>
- 	<div class="formItem">
-		<label class="m{error_articlecategoriesid: error}"><strong>*Kategorie</strong></label>{dropdown:articlecategoriesid {"size": "1", "class": "xxl"} }
+ 	<div class="form-group">
+		<label class="col-1 form-label{error_articlecategoriesid: error}"><strong>*Kategorie</strong></label>{dropdown:articlecategoriesid {"size": "1", "class": "form-select"} }
 	</div>
-	<div class="formItem">
-		<label class="m{error_headline: error}"><strong>*Überschrift/Titel</strong></label>{input:headline {"maxlength": "200", "class": "xxl"} }
+	<div class="form-group">
+		<label class="col-1 form-label{error_headline: error}"><strong>*Überschrift/Titel</strong></label>{input:headline {"maxlength": "200", "class": "xxl"} }
 	</div>
-	<div class="formItem">
-		<label class="m{error_teaser: error}" style="vertical-align: top;">Anrisstext</label>{textarea:teaser {"rows": "3", "cols": "40", "class": "xxl"} }
+	<div class="form-group">
+		<label class="col-1 form-label{error_teaser: error}" style="vertical-align: top;">Anrisstext</label>{textarea:teaser {"rows": "3", "cols": "40", "class": "xxl"} }
 	</div>
-	<div class="formItem">
-		<label class="m{error_content: error}" style="vertical-align: top;"><strong>*Seiteninhalt</strong></label>{textarea:content {"rows": "10", "cols": "40", "class": "xxl"} }
+	<div class="form-group">
+		<label class="col-1 form-label{error_content: error}" style="vertical-align: top;"><strong>*Seiteninhalt</strong></label>{textarea:content {"rows": "10", "cols": "40", "class": "xxl"} }
 	</div>
 </div>
-<div class="formBase">
-	<div class="formItem">
-			<label class="m"></label>{button:submit_article {"type": "submit"} }
+
+<div class="divider"></div>
+
+<div class="form-base">
+	<div class="form-group">
+		<label class="col-1 form-label"></label>{ button:submit_article {"type": "submit", "class": "btn btn-success"} }
 	</div>
 </div>
+{end_form}

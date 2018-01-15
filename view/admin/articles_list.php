@@ -200,16 +200,20 @@
 	});
 </script>
 
-<table class="list pct_100">
+<table class="list pct_100 table table-striped">
 	<thead>
 		<tr>
-			<th data-column-name="category"><select class="pct_100" name="filter_category">
-				<option value="">(kein Filter)</option>
-				<?php foreach($this->categories as $cat): ?>
-					<option value="<?= $cat->getId() ?>"><?= $cat->getTitle() ?></option>
-				<?php endforeach; ?>
-			</select></th>
-			<th data-column-name="headline"><input class="pct_100" name="filter_title" placeholder="Titel filtern..."></th>
+			<th data-column-name="category">
+                <select name="filter_category" class="form-select">
+                    <option value="">(kein Filter)</option>
+                    <?php foreach($this->categories as $cat): ?>
+                        <option value="<?= $cat->getId() ?>"><?= $cat->getTitle() ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </th>
+			<th data-column-name="headline">
+                <input class="form-input" name="filter_title" placeholder="Titel filtern...">
+            </th>
 			<th data-column-name="published"></th>
 			<th data-column-name="article_date"></th>
 			<th data-column-name="display_from"></th>
@@ -221,13 +225,13 @@
 		<tr>
 			<th class="m">Kategorie</th>
 			<th>Titel</th>
-			<th class="xss center">Pub</th>
-			<th class="m right">Artikeldatum</th>
-			<th class="m right">Anzeige von</th>
-			<th class="m right">Anzeige bis</th>
-			<th class="sm centered">Sortierziffer</th>
-			<th class="ml right">Angelegt/aktualisiert</th>
-			<th class="ssm">&nbsp;</th>
+			<th class="">Pub</th>
+			<th class="">Artikeldatum</th>
+			<th class="">Anzeige von</th>
+			<th class="">Anzeige bis</th>
+			<th class="">Sortierziffer</th>
+			<th class="">Angelegt/aktualisiert</th>
+			<th class="">&nbsp;</th>
 		</tr>
 	</thead>
 </table>

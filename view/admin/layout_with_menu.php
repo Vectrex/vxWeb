@@ -45,9 +45,9 @@
 					<span class="userInfo">Angemeldet <strong><?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() ?></strong> (<?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getAttribute('email') ?>)</span>
                 </section>
                 <section class="navbar-section">
-					<a class="withIcon" data-icon="&#xe009;" href="<?= vxPHP\Routing\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a> &bull;
-					<a  class="withIcon" data-icon="&#xe021;" href="<?= vxPHP\Routing\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a> &bull;
-					Gehe zu <a href="/" class="withIcon" data-icon="&#xe000;"><?= vxPHP\Http\Request::createFromGlobals()->getHost() ?></a>
+                    <i class="icon icon-people"></i><a class="btn btn-link" href="<?= vxPHP\Routing\Router::getRoute('profile', 'admin.php')->getUrl(); ?>">Meine Einstellungen</a>
+                    <i class="icon icon-shutdown"></i><a  class="btn btn-link" href="<?= vxPHP\Routing\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a>
+                    <i class="icon icon-arrow-right"></i><a href="/" class="btn btn-link">Gehe zu <?= vxPHP\Http\Request::createFromGlobals()->getHost() ?></a>
                 </section>
             </header>
 
