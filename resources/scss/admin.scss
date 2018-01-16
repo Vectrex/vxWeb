@@ -1,17 +1,19 @@
 @CHARSET "UTF-8";
-/*
-@import "../fonts/verb_condensed/webfont.css";
-@import "../fonts/icomoon/webfont.css";
-*/
+
 $primary-color: #0089CC;
 $secondary-color: #FF9400;
 $base-font-family: "verbcond";
 
 @import "spectre/spectre";
-/*
-@import "spectre/spectre-exp";
 @import "spectre/spectre-icons";
-*/
+@import "spectre/spectre-exp";
+
+@import "mixin/webfont";
+@include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
+@include font-face(verbcond, "../fonts/verb_condensed/VerbCondRegular", normal, normal, woff woff2);
+@include font-face(verbcond, "../fonts/verb_condensed/VerbCondRegular-Italic", normal, italic, woff woff2);
+@include font-face(verbcond, "../fonts/verb_condensed/VerbCondBold", bold, normal, woff woff2);
+@include font-face(verbcond, "../fonts/verb_condensed/VerbCondBold-Italic", bold, italic, woff woff2);
 
 .nav-item {
   & > span {

@@ -6,7 +6,8 @@ var rename = require('gulp-rename');
 var autoprefixer = require('gulp-autoprefixer');
 
 var paths = {
-  source: './scss/*.scss'
+    source: "./scss/*.scss",
+    dest: "./dist/css"
 };
 
 gulp.task('watch', function() {
@@ -20,12 +21,12 @@ gulp.task('build', function() {
     )
     .pipe(autoprefixer())
     .pipe(csscomb())
-    .pipe(gulp.dest('./dist'))
+    .pipe(gulp.dest(paths.dest))
     .pipe(cleancss())
     .pipe(rename({
       suffix: '.min'
     }))
-    .pipe(gulp.dest('./dist'));
+    .pipe(gulp.dest(paths.dest));
 });
 
 gulp.task('default', ['build']);
