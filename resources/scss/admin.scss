@@ -1,15 +1,17 @@
 @CHARSET "UTF-8";
-
+/*
 @import "../fonts/verb_condensed/webfont.css";
 @import "../fonts/icomoon/webfont.css";
-
+*/
 $primary-color: #0089CC;
 $secondary-color: #FF9400;
 $base-font-family: "verbcond";
 
 @import "spectre/spectre";
+/*
 @import "spectre/spectre-exp";
 @import "spectre/spectre-icons";
+*/
 
 .nav-item {
   & > span {
