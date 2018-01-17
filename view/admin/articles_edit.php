@@ -73,51 +73,50 @@ vxJS.event.addDomReadyListener(function() {
 });
 </script>
 
-<h1>Artikel &amp; News <em class="smaller"><?= $tpl->title ?></em></h1>
+<h1>Artikel &amp; News <em class="text-smaller"><?= $tpl->title ?></em></h1>
 
 <div class="buttonBar">
-	<a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="$<?= $tpl->backlink ?>">Zurück zur Übersicht</a>
+    <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="$<?= $tpl->backlink ?>">Zurück zur Übersicht</a>
 </div>
 
 <div class="vxJS_tabThis">
 
-	<div class="vxJS_tabSpacer"></div>
+    <div class="section">
+        <h2 id="article_content">Inhalt</h2>
+        <?= $tpl->article_form ?>
+    </div>
 
-	<div class="section">
-		<h2 id="article_content">Inhalt</h2>
-		<?= $tpl->article_form ?>
-	</div>
+    <div class="section">
+        <h2 id="article_files">Dateien</h2>
 
-	<div class="section">
-		<h2 id="article_files">Dateien</h2>
+        <div class="buttonBar"><span class="buttonGroup" id="directoryBar"></span></div>
 
-	<div class="buttonBar"><span class="buttonGroup" id="directoryBar"></span></div>
+        <div id="filesList">
+            <table class="list pct_100">
+                <thead>
+                    <tr>
+                        <th class="sortableHeader">Dateiname</th>
+                        <th class="sm right sortableHeader">Größe</th>
+                        <th class="sm center sortableHeader">Typ/Vorschau</th>
+                        <th class="sm right sortableHeader">Erstellt</th>
+                        <th class="xs center">Link</th>
+                        <th class="sm"></th>
+                    </tr>
+                </thead>
 
-		<div id="filesList">
-			<table class="list pct_100">
-				<thead>
-					<tr>
-						<th class="sortableHeader">Dateiname</th>
-						<th class="sm right sortableHeader">Größe</th>
-						<th class="sm center sortableHeader">Typ/Vorschau</th>
-						<th class="sm right sortableHeader">Erstellt</th>
-						<th class="xs center">Link</th>
-						<th class="sm"></th>
-					</tr>
-				</thead>
-	
-				<tbody>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		
-	</div>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 </div>
+

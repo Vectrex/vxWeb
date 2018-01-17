@@ -2,7 +2,7 @@
 <h1>Artikel &amp; News</h1>
 
 <div class="buttonBar">
-	<a class="buttonLink withIcon" data-icon="&#xe018;" href="$articles/new">Artikel anlegen</a>
+	<a class="btn with-webfont-icon-right" data-icon="&#xe018;" href="$articles/new">Artikel anlegen</a>
 </div>
 
 <script type="text/javascript">

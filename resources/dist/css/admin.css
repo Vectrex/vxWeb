@@ -872,7 +872,8 @@ textarea.form-input
 }
 
 .has-error .form-input-hint,
-.is-error + .form-input-hint
+.is-error + .form-input-hint,
+.error + .form-input-hint
 {
     color: #e85600;
 }
@@ -1164,46 +1165,59 @@ textarea.form-input
 
 .has-error .form-input,
 .form-input.is-error,
+.form-input.error,
 .has-error .form-select,
-.form-select.is-error
+.form-select.is-error,
+.form-select.error
 {
     border-color: #e85600;
 }
 
 .has-error .form-input:focus,
 .form-input.is-error:focus,
+.form-input.error:focus,
 .has-error .form-select:focus,
-.form-select.is-error:focus
+.form-select.is-error:focus,
+.form-select.error:focus
 {
     -webkit-box-shadow: 0 0 0 .1rem rgba(232, 86, 0, .2);            box-shadow: 0 0 0 .1rem rgba(232, 86, 0, .2);
 }
 
 .has-error .form-checkbox .form-icon,
 .form-checkbox.is-error .form-icon,
+.form-checkbox.error .form-icon,
 .has-error .form-radio .form-icon,
 .form-radio.is-error .form-icon,
+.form-radio.error .form-icon,
 .has-error .form-switch .form-icon,
-.form-switch.is-error .form-icon
+.form-switch.is-error .form-icon,
+.form-switch.error .form-icon
 {
     border-color: #e85600;
 }
 
 .has-error .form-checkbox input:checked + .form-icon,
 .form-checkbox.is-error input:checked + .form-icon,
+.form-checkbox.error input:checked + .form-icon,
 .has-error .form-radio input:checked + .form-icon,
 .form-radio.is-error input:checked + .form-icon,
+.form-radio.error input:checked + .form-icon,
 .has-error .form-switch input:checked + .form-icon,
-.form-switch.is-error input:checked + .form-icon
+.form-switch.is-error input:checked + .form-icon,
+.form-switch.error input:checked + .form-icon
 {border-color: #e85600; 
     background: #e85600;
 }
 
 .has-error .form-checkbox input:focus + .form-icon,
 .form-checkbox.is-error input:focus + .form-icon,
+.form-checkbox.error input:focus + .form-icon,
 .has-error .form-radio input:focus + .form-icon,
 .form-radio.is-error input:focus + .form-icon,
+.form-radio.error input:focus + .form-icon,
 .has-error .form-switch input:focus + .form-icon,
-.form-switch.is-error input:focus + .form-icon
+.form-switch.is-error input:focus + .form-icon,
+.form-switch.error input:focus + .form-icon
 {border-color: #e85600; 
     -webkit-box-shadow: 0 0 0 .1rem rgba(232, 86, 0, .2);            box-shadow: 0 0 0 .1rem rgba(232, 86, 0, .2);
 }
@@ -4902,4 +4916,14 @@ a.text-error:hover
 .webfont-icon-only:after
 {
     font-family: icomoon; content: attr(data-icon);
+}
+
+.text-smaller
+{
+    font-size: 80%;
+}
+
+.form-content
+{
+    max-width: 50rem;
 }

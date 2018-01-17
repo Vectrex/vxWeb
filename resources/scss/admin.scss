@@ -65,3 +65,15 @@ $base-font-family: "verbcond";
     content: attr(data-icon);
   }
 }
+
+.text-smaller {
+  font-size: 80%;
+}
+
+.form-content {
+  max-width: 50rem;
+}
+
+.error {
+  @extend .is-error;
+}
