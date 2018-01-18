@@ -75,7 +75,7 @@ vxJS.event.addDomReadyListener(function() {
 
 <h1>Artikel &amp; News <em class="text-smaller"><?= $tpl->title ?></em></h1>
 
-<div class="buttonBar">
+<div class="vx-button-bar">
     <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="$<?= $tpl->backlink ?>">Zurück zur Übersicht</a>
 </div>
 

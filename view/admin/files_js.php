@@ -20,10 +20,10 @@
 
 <div id="files">
 
-	<div class="buttonBar"><span class="buttonGroup" id="directoryBar"></span></div>
+	<span class="btn-group" id="directoryBar"></span>
 
 	<div id="filesList">
-		<table class="list pct_100">
+		<table class="table table-striped">
 			<thead>
 				<tr>
 					<th class="sortableHeader">Dateiname</th>

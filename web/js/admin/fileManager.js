@@ -102,7 +102,7 @@ this.vxWeb.fileManager = function(config) {
 		colNum = filesTable.tHead.rows[0].cells.length,
 
 		addFileButton = (function() {
-			var e = "button".setProp({ type: "button", className: "withIcon" }).create("Datei hinzufügen");
+			var e = "button".setProp({ type: "button", className: "btn with-webfont-icon-right" }).create("Datei hinzufügen");
 
 			e.setAttribute("data-icon", "\ue00e");
 
@@ -120,7 +120,7 @@ this.vxWeb.fileManager = function(config) {
 		}()),
 
 		addFolderInput = (function() {
-			var elem = "input".setProp("class", "ml addFolderInput").create();
+			var elem = "input".setProp("class", "form-input col-3").create();
 			elem.style.display = "none";
 			vxJS.event.addListener(elem, "blur", function() {
 				this.style.display = "none";
@@ -139,7 +139,7 @@ this.vxWeb.fileManager = function(config) {
 		}()),
 
 		addFolderButton = (function() {
-			var e = "button".setProp({ type: "button", className: "withIcon" }).create("Neues Verzeichnis anlegen");
+			var e = "button".setProp({ type: "button", className: "btn with-webfont-icon-right" }).create("Neues Verzeichnis anlegen");
 
 			e.setAttribute("data-icon", "\ue007");
 
@@ -308,7 +308,7 @@ this.vxWeb.fileManager = function(config) {
 		while(i < l) {
 
 			p = pathSegs[i++];
-			elem = "button".create(p.name);
+			elem = "button".setProp("class", "btn").create(p.name);
 
 			add =  {
 				name:		p.name,
