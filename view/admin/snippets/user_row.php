@@ -1,6 +1,6 @@
 <?php $currentUsername = vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername(); ?>
 
-<tr class="row<?= $this->colorNdx ?><?php if ($currentUsername === $this->user['username']): ?> locked<?php endif; ?>">
+<tr class="<?php if ($currentUsername === $this->user['username']): ?>locked<?php endif; ?>">
 
 	<td><?= $this->user['username'] ?></td>
 	<td><?= $this->user['name'] ?></td>

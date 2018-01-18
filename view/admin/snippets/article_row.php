@@ -1,4 +1,4 @@
-<tr class="row<?= $this->colorNdx ?>">
+<tr>
 	<td><?= $this->article->getCategory()->getTitle() ?></td>
 	<td><?= $this->article->getHeadline() ?></td>
 	<td class="">

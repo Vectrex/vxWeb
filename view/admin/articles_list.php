@@ -1,7 +1,7 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
 <h1>Artikel &amp; News</h1>
 
-<div class="buttonBar">
+<div class="vx-button-bar">
 	<a class="btn with-webfont-icon-right" data-icon="&#xe018;" href="$articles/new">Artikel anlegen</a>
 </div>
 
@@ -101,7 +101,7 @@
 	vxJS.event.addDomReadyListener(function() {
 		var lsValue, lsKey = window.location.origin + "/admin/articles__sort__",
 			t = vxJS.widget.sorTable(
-			vxJS.dom.getElementsByClassName("list")[0],	{
+                document.querySelector(".table"),	{
 				columnFormat: [
 					null,
 					null,
@@ -139,7 +139,7 @@
 		);
 
 		var filteredTable = vxWeb.tableFilter(
-			vxJS.dom.getElementsByClassName("list")[0],
+			document.querySelector(".table"),
 			filterXhr
 		);
 
@@ -148,7 +148,6 @@
 			"finishSort",
 			function() {
 				var c = this.getActiveColumn(), columnName = t.element.parentNode.firstElementChild.rows[0].cells[c.ndx].getAttribute("data-column-name");
-				vxJS.widget.shared.shadeTableRows({ element: this.element });
 				window.localStorage.setItem(lsKey, JSON.stringify( { ndx: c.ndx, asc: c.asc, columnName: columnName } ));
 				filterXhr.use(null,  { sortByColumn: columnName });
 			}
@@ -169,7 +168,7 @@
 		});
 
 		vxJS.event.addListener(filteredTable, "filterApplied", function() {
-			var i, l, rows, row, tmpTable;
+			var rows, row, tmpTable;
 
 			t.removeAllRows();
 
@@ -200,7 +199,7 @@
 	});
 </script>
 
-<table class="list pct_100 table table-striped">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th data-column-name="category">

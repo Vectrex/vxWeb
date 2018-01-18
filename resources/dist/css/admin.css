@@ -580,7 +580,7 @@ dl dd
 .btn:focus,
 .btn:hover
 {text-decoration: none; border-color: #007fbd; 
-    background: #ff9400;
+    background: #78ccbe;
 }
 
 .btn:active,
@@ -1290,7 +1290,7 @@ input.disabled + .form-icon
 
 .label.label-secondary
 {color: #0089cc; 
-    background: #ff9400;
+    background: #78ccbe;
 }
 
 .label.label-success
@@ -1934,34 +1934,34 @@ video.video-responsive::before
 }
 
 .navbar,
-.vxweb-navbar
+.vx-navbar
 {display: -webkit-box; display: -ms-flexbox; display: flex; 
 
     -webkit-box-align: stretch; -ms-flex-align: stretch; align-items: stretch; -ms-flex-wrap: wrap;     flex-wrap: wrap; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;
 }
 
 .navbar .navbar-section,
-.vxweb-navbar .navbar-section
+.vx-navbar .navbar-section
 {display: -webkit-box; display: -ms-flexbox; display: flex; 
 
     -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-flex: 1; -ms-flex: 1 0 0;     flex: 1 0 0;
 }
 
 .navbar .navbar-section:not(:first-child):last-child,
-.vxweb-navbar .navbar-section:not(:first-child):last-child
+.vx-navbar .navbar-section:not(:first-child):last-child
 {
     -webkit-box-pack: end; -ms-flex-pack: end; justify-content: flex-end;
 }
 
 .navbar .navbar-center,
-.vxweb-navbar .navbar-center
+.vx-navbar .navbar-center
 {display: -webkit-box; display: -ms-flexbox; display: flex; 
 
     -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-flex: 0; -ms-flex: 0 0 auto;     flex: 0 0 auto;
 }
 
 .navbar .navbar-brand,
-.vxweb-navbar .navbar-brand
+.vx-navbar .navbar-brand
 {
     font-size: .9rem; font-weight: 500; text-decoration: none;
 }
@@ -2335,13 +2335,13 @@ summary.accordion-header::-webkit-details-marker
 .menu .menu-item > a:focus,
 .menu .menu-item > a:hover
 {color: #0089cc; 
-    background: #ff9400;
+    background: #78ccbe;
 }
 
 .menu .menu-item > a:active,
 .menu .menu-item > a.active
 {color: #0089cc; 
-    background: #ff9400;
+    background: #78ccbe;
 }
 
 .menu .menu-item + .menu-item
@@ -2922,13 +2922,13 @@ a.text-primary:hover
 
 .text-secondary
 {
-    color: #f08b00;
+    color: #6dc8b9;
 }
 
 a.text-secondary:focus,
 a.text-secondary:hover
 {
-    color: #d67c00;
+    color: #5ac1b0;
 }
 
 .text-gray
@@ -2992,8 +2992,8 @@ a.text-error:hover
 }
 
 .bg-secondary
-{color: #fff; 
-    background: #ff9400;
+{
+    background: #78ccbe;
 }
 
 .bg-dark
@@ -4032,7 +4032,7 @@ a.text-error:hover
 
 .calendar .calendar-date .date-item.date-today
 {color: #0089cc; 
-    border-color: #f08b00;
+    border-color: #6dc8b9;
 }
 
 .calendar .calendar-date .date-item:focus
@@ -4042,8 +4042,8 @@ a.text-error:hover
 
 .calendar .calendar-date .date-item:focus,
 .calendar .calendar-date .date-item:hover
-{text-decoration: none; color: #0089cc; border-color: #f08b00; 
-    background: #ff9a0f;
+{text-decoration: none; color: #0089cc; border-color: #6dc8b9; 
+    background: #83d0c3;
 }
 
 .calendar .calendar-date .date-item:active,
@@ -4073,7 +4073,7 @@ a.text-error:hover
 .calendar .calendar-range::before
 {position: absolute; top: 50%; right: 0; left: 0; height: 1.4rem; content: ''; -webkit-transform: translateY(-50%);         transform: translateY(-50%); 
 
-    background: #ff9400;
+    background: #78ccbe;
 }
 
 .calendar .calendar-range.range-start::before
@@ -4883,21 +4883,6 @@ a.text-error:hover
     font-weight: bold;
 }
 
-.vxweb-navbar
-{
-    position: fixed; z-index: 400; width: 100%; background: #e7e9ed;
-}
-
-.vxweb-content.off-canvas-content
-{
-    padding: 3rem 1rem;
-}
-
-.vxweb-sidebar
-{
-    padding: 3rem 1rem;
-}
-
 .with-webfont-icon-left:before
 {
     font-family: icomoon; display: inline-block; padding-right: .5rem; content: attr(data-icon);
@@ -4926,4 +4911,25 @@ a.text-error:hover
 .form-content
 {
     max-width: 50rem;
+}
+
+.vx-navbar
+{
+    position: fixed; z-index: 400; width: 100%; background: #e7e9ed;
+}
+
+.vx-content.off-canvas-content
+{
+    padding: 3rem 1rem;
+}
+
+.vx-sidebar
+{
+    padding: 3rem 1rem;
+}
+
+.vx-button-bar
+{padding: .6rem .4rem; 
+
+    background: #018acc;
 }

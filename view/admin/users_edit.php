@@ -22,8 +22,8 @@
 
 <h1>User <em class="smaller"><?= $tpl->user ? $tpl->user['name'] : 'neuer User' ?></em></h1>
 
-<div class="buttonBar">
-	<a class="buttonLink withIcon" data-icon="&#xe025;" href="$users">Zurück zur Übersicht</a>
+<div class="vx-button-bar">
+    <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="$users">Zurück zur Übersicht</a>
 </div>
 
 <?= $this->form ?>

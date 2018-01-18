@@ -1,19 +1,23 @@
 @CHARSET "UTF-8";
 
 $primary-color: #0089CC;
-$secondary-color: #FF9400;
+$secondary-color: #78ccbe;
 $base-font-family: "verbcond";
 
 @import "spectre/spectre";
 @import "spectre/spectre-icons";
 @import "spectre/spectre-exp";
 
+@import "mixin/color";
 @import "mixin/webfont";
+
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
 @include font-face(verbcond, "../fonts/verb_condensed/VerbCondRegular", normal, normal, woff woff2);
 @include font-face(verbcond, "../fonts/verb_condensed/VerbCondRegular-Italic", normal, italic, woff woff2);
 @include font-face(verbcond, "../fonts/verb_condensed/VerbCondBold", bold, normal, woff woff2);
 @include font-face(verbcond, "../fonts/verb_condensed/VerbCondBold-Italic", bold, italic, woff woff2);
+
+// some additions to spectre.css
 
 .nav-item {
   & > span {
@@ -22,22 +26,6 @@ $base-font-family: "verbcond";
   &.active > span {
     font-weight: bold;
   }
-}
-
-.vxweb-navbar {
-  @extend .navbar;
-  position: fixed;
-  width: 100%;
-  z-index: 400;
-  background: $gray-color-light;
-}
-
-.vxweb-content.off-canvas-content {
-  padding: 3rem 1rem;
-}
-
-.vxweb-sidebar {
-  padding: 3rem 1rem;
 }
 
 .with-webfont-icon-left {
@@ -76,4 +64,27 @@ $base-font-family: "verbcond";
 
 .error {
   @extend .is-error;
+}
+
+// custom classes
+
+.vx-navbar {
+  @extend .navbar;
+  position: fixed;
+  width: 100%;
+  z-index: 400;
+  background: $gray-color-light;
+}
+
+.vx-content.off-canvas-content {
+  padding: 3rem 1rem;
+}
+
+.vx-sidebar {
+  padding: 3rem 1rem;
+}
+
+.vx-button-bar {
+  background: tint($primary-color, 0.5);
+  padding: 0.6rem 0.4rem;
 }
