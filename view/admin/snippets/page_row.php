@@ -5,7 +5,7 @@
 	<td class=""><?php echo $this->page->getActiveRevision()->getFirstCreated()->format('Y-m-d H:i:s'); ?></td>
 	<td class=""><?php echo count($this->page->getRevisions()); ?></td>
 	<td>
-		<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$pages?id=<?php echo $this->page->getId(); ?>"></a>
+		<a class="btn btn-primary webfont-icon-only" data-icon="&#xe002;" href="$pages?id=<?php echo $this->page->getId(); ?>"></a>
 	</td>
 </tr>
 

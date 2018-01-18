@@ -16,7 +16,7 @@
 	<td class=""><?= $this->article->getCustomSort() ?></td>
 	<td class=""><?= is_null($this->article->getLastUpdated()) ? '' : $this->article->getLastUpdated()->format('Y-m-d H:i:s') ?></td>
 	<td>
-		<a class="buttonLink iconOnly" data-icon="&#xe002;" href="$articles?id=<?= $this->article->getId() ?>" title="Bearbeiten"></a>
-		<a class="buttonLink iconOnly" data-icon="&#xe011;" href="$articles/del?id=<?= $this->article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+		<a class="btn btn-primary webfont-icon-only" data-icon="&#xe002;" href="$articles?id=<?= $this->article->getId() ?>" title="Bearbeiten"></a>
+		<a class="btn btn-primary webfont-icon-only" data-icon="&#xe011;" href="$articles/del?id=<?= $this->article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
 	</td>
 </tr>
