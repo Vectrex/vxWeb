@@ -47,10 +47,9 @@ class ProfileController extends Controller {
 			$form->initVar('has_notifications', 1);
 
 			$e = new CheckboxElement($n->alias, 1, $n->notifies($admin));
-			$e->setLabel('&nbsp;' . $n->description);
 			$form->addElement($e);
 
-			$checkBoxHtml .= '<div class="formItem">' . $e->render() . '</div>';
+			$checkBoxHtml .= '<div class="form-group"><label class="form-switch">' . $e->render() . '<i class="form-icon"></i>' . $n->description . '</label></div>';
 		}
 		
 		$form->addMiscHtml('notifications', $checkBoxHtml);

@@ -89,19 +89,18 @@ vxJS.event.addDomReadyListener(function() {
     <div class="section">
         <h2 id="article_files">Dateien</h2>
 
-        <div class="buttonBar"><span class="buttonGroup" id="directoryBar"></span></div>
+        <span class="btn-group" id="directoryBar"></span>
 
         <div id="filesList">
-            <table class="list pct_100">
+            <table class="table table-striped">
                 <thead>
-                    <tr>
-                        <th class="sortableHeader">Dateiname</th>
-                        <th class="sm right sortableHeader">Größe</th>
-                        <th class="sm center sortableHeader">Typ/Vorschau</th>
-                        <th class="sm right sortableHeader">Erstellt</th>
-                        <th class="xs center">Link</th>
-                        <th class="sm"></th>
-                    </tr>
+                <tr>
+                    <th class="sortableHeader">Dateiname</th>
+                    <th class="sm right sortableHeader">Größe</th>
+                    <th class="sm center sortableHeader">Typ/Vorschau</th>
+                    <th class="mml right sortableHeader">Erstellt</th>
+                    <th class="m"></th>
+                </tr>
                 </thead>
 
                 <tbody>

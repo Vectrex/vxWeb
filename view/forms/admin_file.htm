@@ -5,10 +5,10 @@
 
 <div class="formSect">
 	{if($add == 1)}
-	<div class="formItem">
+	<div class="form-group">
 		<label class="m label{error_File: error}">Datei*</label>{input:File}
 	</div>
-	<div class="formItem">
+	<div class="form-group">
 		<label class="m label">Archivdatei entpacken?</label>{checkbox:unpack_archives} <span class="smaller">(die Informationen der folgenden Felder werden dann ignoriert)</span>
 	</div>
 	{else}
@@ -18,13 +18,13 @@
 	<div class="separator"></div>
 	{end_if}
 
-	<div class="formItem">
+	<div class="form-group">
 		<label class="m label{error_Title: error}">Titel</label>{input:title {"maxlength": 64, "class": "xl"}}
 	</div>
-	<div class="formItem">
+	<div class="form-group">
 		<label class="m label">Untertitel</label>{input:subtitle {"maxlength": 64, "class": "xl"}}
 	</div>
-	<div class="formItem">
+	<div class="form-group">
 		<label class="m label">Beschreibung</label>{textarea:description {"rows": 5, "cols": 40, "class": "xl"}}
 	</div>
 </div>
@@ -32,13 +32,13 @@
 <div class="separator">erweiterte Einstellungen</div>
 
 <div class="formSect extras">
-	<div class="formItem">
+	<div class="form-group">
 		<label class="m label{error_customSort: error}">Sortierwert</label>{input:customsort {"maxlength": 4, "class": "s"}}
 	</div>
 </div>
 
 <div class="formBase">
-	<div class="formItem">
+	<div class="form-group">
 		<label class="m"></label>
 		{button:submit_cancel {"type": "submit"}}{button:submit_add {"type": "submit"}}{button:submit_edit {"type": "submit"}}
 	</div>

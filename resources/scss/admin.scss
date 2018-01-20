@@ -66,6 +66,39 @@ $base-font-family: "verbcond";
   @extend .is-error;
 }
 
+// custom layout
+
+html, body {
+  height: 100%;
+}
+
+.single-column {
+  width: 100%;
+  max-width: 640px;
+  padding: $unit-10 $unit-5;
+  margin: 0 auto;
+}
+
+#page {
+  height: 100%;
+
+  & > .columns {
+    height: 100%;
+    align-items: stretch;
+  }
+}
+
+#sidebar {
+  padding: 4rem 1rem 1rem 1rem;
+  border-right: solid $unit-o $gray-color-light;
+  width: 20%;
+  max-width: 10rem;
+}
+
+#content {
+  padding: 4rem 1rem 1rem 1rem;
+}
+
 // custom classes
 
 .vx-navbar {
@@ -74,14 +107,6 @@ $base-font-family: "verbcond";
   width: 100%;
   z-index: 400;
   background: $gray-color-light;
-}
-
-.vx-content.off-canvas-content {
-  padding: 3rem 1rem;
-}
-
-.vx-sidebar {
-  padding: 3rem 1rem;
 }
 
 .vx-button-bar {

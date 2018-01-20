@@ -2,25 +2,25 @@
 
 <div class="multiColumnContainer">
 	<div class="formSect column" style="width: 70%;">
-		<div class="formItem">
+		<div class="form-group">
 			<label>Eindeutiger Name (automatisch generiert)</label>{input:alias {"maxlength": "64", "class": "pct_100", "disabled": "disabled"} }
 		</div>
-		<div class="formItem">
+		<div class="form-group">
 			<label>Titel</label>{input:title {"maxlength": "128", "class": "pct_100"} }
 		</div>
-		<div class="formItem">
+		<div class="form-group">
 			<label>Inhalt</label>{textarea:markup {"rows": "20", "cols": "40", "class": "pct_100"} }
 		</div>
 	</div>
 	
 	<div class="formSect column" style="width: 30%; padding-left: 1em;">
-		<div class="formItem">
+		<div class="form-group">
 			<label>Schlüsselwörter</label>{textarea:keywords {"rows": "4", "cols": "30", "class": "pct_100"} }
 		</div>
-		<div class="formItem">
+		<div class="form-group">
 			<label>Beschreibung</label>{textarea:description {"rows": "4", "cols": "30", "class": "pct_100"} }
 		</div>
-		<div class="formItem">
+		<div class="form-group">
 			<label>Revisions</label>
 			<div style="max-height: 30em; overflow-y: auto;">
 				<table id="revisions" style="width: 100%;">
@@ -40,7 +40,7 @@
 </div>	 
 
 <div class="formBase">
-	<div class="formItem">
+	<div class="form-group">
 	{input:submit_page {"type": "submit"} }
 	</div>
 </div>

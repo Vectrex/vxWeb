@@ -39,7 +39,7 @@
 
 	<body>
 
-		<div id="page" class="off-canvas off-canvas-sidebar-show">
+		<div id="page">
 			<header class="vx-navbar p-2">
                 <section class="navbar-section">
 					<span class="userInfo">Angemeldet <strong><?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() ?></strong> (<?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getAttribute('email') ?>)</span>
@@ -51,15 +51,16 @@
                 </section>
             </header>
 
-            <div id="sidebar" class="off-canvas-sidebar vx-sidebar">
-                <?= vxPHP\Webpage\MenuGenerator::create('admin', 0, null, null, ['ulClass' => 'nav', 'liClass' => 'nav-item', 'containerTag' => ''])->render() ?>
-            </div>
+            <div class="columns">
+                <div id="sidebar" class="column">
+                    <?= vxPHP\Webpage\MenuGenerator::create('admin', 0, null, null, ['ulClass' => 'nav', 'liClass' => 'nav-item', 'containerTag' => ''])->render() ?>
+                </div>
 
-			<div id="content" class="off-canvas-content vx-content">
-				<!-- { block: content_block } -->
-                <div id="messageBox">&nbsp;</div>
+                <div id="content" class="column">
+                    <div id="messageBox" class="toast toast-error d-none text-center">&nbsp;</div>
+                    <!-- { block: content_block } -->
+                </div>
             </div>
-
 		</div>
 
 	</body>

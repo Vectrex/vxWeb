@@ -29,7 +29,7 @@
 	</head>
 
 	<body>
-		<div id="page">
+		<div id="page" class="single-column">
 			<!-- { block: content_block } -->
 		</div>
 	</body>

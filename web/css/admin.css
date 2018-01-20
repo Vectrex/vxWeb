@@ -4885,12 +4885,12 @@ a.text-error:hover
 
 .with-webfont-icon-left:before
 {
-    font-family: icomoon; display: inline-block; padding-right: .5rem; content: attr(data-icon);
+    font-family: icomoon; display: inline-block; padding-right: .4rem; content: attr(data-icon);
 }
 
 .with-webfont-icon-right:after
 {
-    font-family: icomoon; display: inline-block; padding-left: .5rem; content: attr(data-icon);
+    font-family: icomoon; display: inline-block; padding-left: .4rem; content: attr(data-icon);
 }
 
 .webfont-icon-only
@@ -4913,19 +4913,40 @@ a.text-error:hover
     max-width: 50rem;
 }
 
+html,
+body
+{
+    height: 100%;
+}
+
+.single-column
+{
+    width: 100%; max-width: 640px; margin: 0 auto; padding: 2rem 1rem;
+}
+
+#page
+{
+    height: 100%;
+}
+
+#page > .columns
+{
+    height: 100%; -webkit-box-align: stretch; -ms-flex-align: stretch; align-items: stretch;
+}
+
+#sidebar
+{width: 20%; max-width: 10rem; 
+    padding: 4rem 1rem 1rem 1rem; border-right: solid .05rem #e7e9ed;
+}
+
+#content
+{
+    padding: 4rem 1rem 1rem 1rem;
+}
+
 .vx-navbar
 {
     position: fixed; z-index: 400; width: 100%; background: #e7e9ed;
-}
-
-.vx-content.off-canvas-content
-{
-    padding: 3rem 1rem;
-}
-
-.vx-sidebar
-{
-    padding: 3rem 1rem;
 }
 
 .vx-button-bar

@@ -24,7 +24,7 @@ this.vxWeb.doArticles = function() {
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
 		mBox = document.getElementById("messageBox"), timeoutId,
 		sortButton = function() {
-			var b = "button".setProp({ type: "button", className: "withIcon" }).create("Verlinkte Dateien sortieren");
+			var b = "button".setProp({ type: "button", className: "btn with-webfont-icon-right" }).create("Verlinkte Dateien sortieren");
 
 			b.setAttribute("data-icon", "\ue035");
 
