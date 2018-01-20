@@ -1,43 +1,72 @@
 <div class="form-content">
 	{form { "class": "form-horizontal" }}
 
-		{error_general:<div class="error_message">Ein oder mehrere Eingaben sind fehlerhaft!<br>Der Eintrag in der Datenbank wurde nicht aktualisiert.</div>}
-		{error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
-
-		{if($success == 1)}
-		<div class="success_message">Änderungen oder Neuanlage erfolgreich übernommen.</div>
-		{end_if}
-
 		<div class="form-sect">
 			<div class="form-group">
 				<label class="col-3 form-label{error_article_date: text-error}">Artikeldatum</label>
-				<div class="input-group input-inline col-4">
-					{input:article_date {"maxlength": "10", "class": "form-input"} }<button type="button" class="btn btn-primary webfont-icon-only calendarPopper" data-icon="&#xe00c;"></button>
+
+				<div class="col-4">
+					<div class="col-12 input-group input-inline">
+						{input:article_date {"maxlength": "10", "class": "form-input"} }<button type="button" class="btn btn-primary webfont-icon-only calendarPopper" data-icon="&#xe00c;"></button>
+					</div>
+					<p id="error_article_date" class="form-input-hint vx-error-box"></p>
 				</div>
+
 			</div>
 			<div class="form-group">
 				<label class="col-3 form-label{error_display_from:  text-error}">Anzeige von</label>
-				<div class="input-group input-inline col-4">{input:display_from {"maxlength": "10", "class": "form-input col-2"} }<button type="button" class="btn btn-primary webfont-icon-only calendarPopper" data-icon="&#xe00c;"></button></div>
+
+				<div class="col-4">
+					<div class="col-12 input-group input-inline">
+						{input:display_from {"maxlength": "10", "class": "form-input"} }<button type="button" class="btn btn-primary webfont-icon-only calendarPopper" data-icon="&#xe00c;"></button>
+					</div>
+					<p id="error_display_from" class="form-input-hint vx-error-box"></p>
+				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-3 form-label{error_display_until:  text-error}">Anzeige bis</label>
-				<div class="input-group input-inline col-4">{input:display_until {"maxlength": "10", "class": "form-input"} }<button type="button" class="btn btn-primary webfont-icon-only calendarPopper" data-icon="&#xe00c;"></button></div>
+
+				<div class="col-4">
+					<div class="col-12 input-group input-inline">
+						{input:display_until {"maxlength": "10", "class": "form-input"} }<button type="button" class="btn btn-primary webfont-icon-only calendarPopper" data-icon="&#xe00c;"></button>
+					</div>
+					<p id="error_display_until" class="form-input-hint vx-error-box"></p>
+				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-3 form-label{error_customsort:  text-error}">generische Sortierung</label>
-				{input:customsort {"maxlength": "4", "class": "form-input col-1"} }
+				<div class="col-9">
+					{input:customsort {"maxlength": "4", "class": "form-input col-2"} }
+					<p id="error_customsort" class="form-input-hint vx-error-box"></p>
+				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_articlecategoriesid:  text-error}"><strong>*Kategorie</strong></label>{dropdown:articlecategoriesid {"class": "form-select col-9"} }
+				<label class="col-3 form-label{error_articlecategoriesid:  text-error}"><strong>*Kategorie</strong></label>
+				<div class="col-9">
+					{dropdown:articlecategoriesid {"class": "form-select"} }
+					<p id="error_articlecategoriesid" class="form-input-hint vx-error-box"></p>
+				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_headline:  text-error}"><strong>*Überschrift/Titel</strong></label>{input:headline {"maxlength": "200", "class": "form-input col-9"} }
+				<label class="col-3 form-label{error_headline:  text-error}"><strong>*Überschrift/Titel</strong></label>
+				<div class="col-9">
+					{input:headline {"maxlength": "200", "class": "form-input"} }
+					<p id="error_headline" class="form-input-hint vx-error-box"></p>
+				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_teaser:  text-error}">Anrisstext</label>{textarea:teaser {"rows": "3", "class": "form-input col-9"} }
+				<label class="col-3 form-label{error_teaser:  text-error}">Anrisstext</label>
+				<div class="col-9">
+					{textarea:teaser {"rows": "3", "class": "form-input"} }
+					<p id="error_teaser" class="form-input-hint vx-error-box"></p>
+				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_content:  text-error}"><strong>*Seiteninhalt</strong></label>{textarea:content {"rows": "10", "class": "form-input col-9"} }
+				<label class="col-3 form-label"><strong>*Seiteninhalt</strong></label>
+				<div class="col-9">
+					{textarea:content {"rows": "10", "class": "form-input col-9"} }
+					<p id="error_content" class="form-input-hint vx-error-box"></p>
+				</div>
 			</div>
 		</div>
 
@@ -48,5 +77,6 @@
 				<label class="col-3 form-label"></label>{ button:submit_article {"type": "submit", "class": "btn btn-success"} }
 			</div>
 		</div>
+
 	{end_form}
 </div>

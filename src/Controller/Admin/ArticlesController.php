@@ -305,12 +305,10 @@ class ArticlesController extends Controller {
 				$errors	= $form->getFormErrors();
 
 				if(!empty($errors)) {
-					$texts	= $form->getErrorTexts();
-
 					$response = [];
-					foreach(array_keys($errors) as $err) {
-						$response[] = ['name' => $err, 'error' => 1, 'errorText' => isset($texts[$err]) ? $texts[$err] : NULL];
-					}
+                    foreach($errors as $element => $error) {
+                        $response[] = ['name' => $element, 'error' => 1, 'errorText' => $error->getErrorMessage()];
+                    }
 					return new JsonResponse(['elements' => $response]);
 				}
 
@@ -415,14 +413,14 @@ class ArticlesController extends Controller {
 
 		return HtmlForm::create('admin_edit_article.htm')
 			->setAttribute('class', 'editArticleForm')
-			->addElement(FormElementFactory::create('select', 'articlecategoriesid', NULL, [], $categories, TRUE, [], [new RegularExpression(Rex::INT_EXCL_NULL)]))
-			->addElement(FormElementFactory::create('input', 'headline', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+			->addElement(FormElementFactory::create('select', 'articlecategoriesid', NULL, [], $categories, TRUE, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Es muss eine Artikelkategorie gewählt werden.'))
+			->addElement(FormElementFactory::create('input', 'headline', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt eine Überschrift.'))
 			->addElement(FormElementFactory::create('textarea', 'teaser', NULL, [], [], FALSE, ['trim', 'strip_tags']))
-			->addElement(FormElementFactory::create('textarea', 'content', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-			->addElement(FormElementFactory::create('input', 'article_date', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
-			->addElement(FormElementFactory::create('input', 'display_from', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
-			->addElement(FormElementFactory::create('input', 'display_until', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])]))
-			->addElement(FormElementFactory::create('input', 'customsort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)]));
+			->addElement(FormElementFactory::create('textarea', 'content', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt einen Inhalt.'))
+			->addElement(FormElementFactory::create('input', 'article_date', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
+			->addElement(FormElementFactory::create('input', 'display_from', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
+			->addElement(FormElementFactory::create('input', 'display_until', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
+			->addElement(FormElementFactory::create('input', 'customsort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)], 'Ungültiger Wert'));
 
 	}
 
