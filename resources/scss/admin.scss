@@ -54,6 +54,10 @@ $base-font-family: "verbcond";
   }
 }
 
+a.webfont-icon-only {
+  text-decoration: none;
+}
+
 .text-smaller {
   font-size: 80%;
 }
@@ -112,4 +116,12 @@ html, body {
 .vx-button-bar {
   background: tint($primary-color, 0.5);
   padding: 0.6rem 0.4rem;
+}
+
+.vx-error-box {
+  display: none;
+
+  &.error {
+    display: block;
+  }
 }

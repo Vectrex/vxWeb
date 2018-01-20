@@ -9,25 +9,39 @@
 
 	<div class="form-sect">
 		<div class="form-group">
-			<label class="form-label col-3{error_username: text-error}" for="username_input">Username*</label>{input:username {"autocomplete": "off", "maxlength": 128, "class": "col-9 form-input", "id": "username_input"} }
-			<span id="error_username"></span>{error_Email:<span class="text-error">Ungültiger Username!</span>}
-			<span id="error_duplicate_username"></span>{error_duplicate_username:<span class="text-error">Username wird bereits verwendet!</span>}
+			<label class="form-label col-3" for="username_input"><strong>Username*</strong></label>
+			<div class="col-9">
+				{input:username {"autocomplete": "off", "maxlength": 128, "class": "form-input", "id": "username_input"} }
+				<p id="error_username" class="form-input-hint vx-error-box"></p>
+			</div>
 		</div>
 		<div class="form-group">
-			<label class="form-label col-3{error_email: text-error}" for="email_input">Email*</label>{input:email {"autocomplete": "off", "maxlength": 128, "class": "col-9 form-input", "id": "email_input"} }
-			<span id="error_email"></span>{error_email:<span class="text-error">Ungültige Email!</span>}
-			<span id="error_duplicate_email"></span>{error_duplicate_email:<span class="text-error">Email wird bereits verwendet!</span>}
+			<label class="form-label col-3" for="email_input"><strong>Email*</strong></label>
+			<div class="col-9">
+				{input:email {"autocomplete": "off", "maxlength": 128, "class": "form-input", "id": "email_input"} }
+				<p id="error_email" class="form-input-hint vx-error-box"></p>
+			</div>
 		</div>
 		<div class="form-group">
-			<label class="form-label col-3{error_name: text-error}" for="name_input">Name*</label>{input:name {"autocomplete": "off", "maxlength": 128, "class": "col-9 form-input", "id": "name_input"} }
+			<label class="form-label col-3" for="name_input"><strong>Name*</strong></label>
+			<div class="col-9">
+				{input:name {"autocomplete": "off", "maxlength": 128, "class": "form-input", "id": "name_input"} }
+				<p id="error_name" class="form-input-hint vx-error-box"></p>
+			</div>
 		</div>
 		<div class="form-group">
-			<label class="form-label col-3" for="pwd_input">Neues Passwort</label>{input:new_PWD {"autocomplete": "off", "maxlength": 128, "class": "col-9 form-input", "id": "pwd_input"} }
-			<span id="error_new_PWD"></span>{error_new_PWD:<span class="text-error">Passwort zu kurz!</span>}
+			<label class="form-label col-3" for="pwd_input">Neues Passwort</label>
+			<div class="col-9">
+				{input:new_PWD {"autocomplete": "off", "maxlength": 128, "class": "form-input", "id": "pwd_input"} }
+				<p id="error_new_PWD" class="form-input-hint vx-error-box"></p>
+			</div>
 		</div>
 		<div class="form-group">
-			<label class="form-label col-3" for="pwd2_input">Passwort wiederholen</label>{input:new_PWD_verify {"autocomplete": "off", "maxlength": 128, "class": "col-9 form-input", "id": "pwd2_input"} }
-			<span id="error_PWD_mismatch"></span>{error_PWD_mismatch:<span class="text-error">Passwörter stimmen nicht überein!</span>}
+			<label class="form-label col-3" for="pwd2_input">Passwort wiederholen</label>
+			<div class="col-9">
+				{input:new_PWD_verify {"autocomplete": "off", "maxlength": 128, "class": "form-input", "id": "pwd2_input"} }
+				<p id="error_new_PWD_verify" class="form-input-hint vx-error-box"></p>
+			</div>
 		</div>
 	</div>
 

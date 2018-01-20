@@ -4903,6 +4903,11 @@ a.text-error:hover
     font-family: icomoon; content: attr(data-icon);
 }
 
+a.webfont-icon-only
+{
+    text-decoration: none;
+}
+
 .text-smaller
 {
     font-size: 80%;
@@ -4953,4 +4958,14 @@ body
 {padding: .6rem .4rem; 
 
     background: #018acc;
+}
+
+.vx-error-box
+{
+    display: none;
+}
+
+.vx-error-box.error
+{
+    display: block;
 }
