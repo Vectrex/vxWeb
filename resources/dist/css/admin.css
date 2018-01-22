@@ -4873,6 +4873,7 @@ a.text-error:hover
     font-family: 'verbcond'; font-weight: bold; font-style: italic; src: url('../fonts/verb_condensed/VerbCondBold-Italic.woff') format('woff'), url('../fonts/verb_condensed/VerbCondBold-Italic.woff2') format('woff2');
 }
 
+/* additions to spectre.css */
 .nav-item > span
 {
     padding: .2rem .4rem;
@@ -4949,9 +4950,20 @@ body
     padding: 4rem 1rem 1rem 1rem;
 }
 
+#messageBox
+{
+    position: absolute; z-index: 100; top: -2rem; left: 50%; max-width: 30rem; -webkit-transition: top .5s ease-in-out, opacity .5s;         transition: top .5s ease-in-out, opacity .5s; -webkit-transform: translateX(-50%);         transform: translateX(-50%); opacity: 0;
+}
+
+#messageBox.display
+{
+    top: 0; opacity: 1;
+}
+
+/* custom classes */
 .vx-navbar
 {
-    position: fixed; z-index: 400; width: 100%; background: #e7e9ed;
+    position: fixed; z-index: 1; width: 100%; background: #e7e9ed;
 }
 
 .vx-button-bar

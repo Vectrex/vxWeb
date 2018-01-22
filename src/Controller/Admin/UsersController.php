@@ -141,10 +141,10 @@ class UsersController extends Controller {
 		}
 
 		$form = HtmlForm::create('admin_edit_user.htm')
-			->addElement(FormElementFactory::create('input',	'username',			NULL,	[],	[],	TRUE, ['trim'], 				[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-			->addElement(FormElementFactory::create('input',	'email',			NULL,	[],	[],	TRUE, ['trim', 'lowercase'],	[new Email()]))
-			->addElement(FormElementFactory::create('input',	'name',				NULL,	[],	[],	TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	[],	[],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')]))
+			->addElement(FormElementFactory::create('input',	'username',			NULL,	[],	[],	TRUE, ['trim'], 				[new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Ein Benutzername ist ein Pflichtfeld.'))
+			->addElement(FormElementFactory::create('input',	'email',			NULL,	[],	[],	TRUE, ['trim', 'lowercase'],	[new Email()], 'Ungültige E-Mail Adresse.'))
+			->addElement(FormElementFactory::create('input',	'name',				NULL,	[],	[],	TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))
+			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	[],	[],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')], 'Das Passwort muss mindestens 4 Zeichen umfassen.'))
 			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL))
 			->addElement(FormElementFactory::create('select',	'admingroupsid',	NULL,	[],	[],	TRUE, [],						[new RegularExpression(Rex::INT_EXCL_NULL)]))
 		;
@@ -161,8 +161,8 @@ class UsersController extends Controller {
 		if(!isset($errors['new_PWD'])) {
 
 			if(!empty($v['new_PWD'])) {
-				if($v['new_PWD'] != $v['new_PWD_verify']) {
-					$form->setError('PWD_mismatch');
+				if($v['new_PWD'] !== $v['new_PWD_verify']) {
+                    $form->setError('new_PWD_verify', null, 'Passwörter stimmen nicht überein.');
 				}
 				else {
 					$v['pwd'] = (new PasswordEncrypter())->hashPassword($v['new_PWD']);
@@ -171,10 +171,10 @@ class UsersController extends Controller {
 		}
 
 		if(!isset($errors['email']) && (!$id || $v['email'] != strtolower($userRow['email'])) && !Util::isAvailableEmail($v['email'])) {
-			$form->setError('duplicate_email');
+            $form->setError('email', null, 'Email wird bereits verwendet.');
 		}
-		if(!isset($errors['username']) && (!$id || $v['username'] != $userRow['username']) && !Util::isAvailableUsername($v['username'])) {
-			$form->setError('duplicate_username');
+		if(!isset($errors['username']) && (!$id || $v['username'] !== $userRow['username']) && !Util::isAvailableUsername($v['username'])) {
+            $form->setError('username', null, 'Username wird bereits verwendet.');
 		}
 			
 		if(!$form->getFormErrors()) {
@@ -202,20 +202,15 @@ class UsersController extends Controller {
 				]);
 			}
 		}
-		
-		$errors	= $form->getFormErrors();
-		$texts	= $form->getErrorTexts();
 
-		$response = [];
-		
-		foreach(array_keys($errors) as $err) {
-			$response[] = [
-				'name' => $err,
-				'error' => 1,
-				'errorText' => isset($texts[$err]) ? $texts[$err] : NULL
-			];
-		}
-		
+        $errors	= $form->getFormErrors();
+
+        $response = [];
+
+        foreach($errors as $element => $error) {
+            $response[] = ['name' => $element, 'error' => 1, 'errorText' => $error->getErrorMessage()];
+        }
+
 		return new JsonResponse(['elements' => $response]);
 		
 	}

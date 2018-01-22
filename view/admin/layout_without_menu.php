@@ -31,6 +31,8 @@
 	<body>
 		<div id="page" class="single-column">
 			<!-- { block: content_block } -->
+            <div id="messageBox" class="toast">&nbsp;<button class="btn btn-clear float-right" onclick="this.parentNode.classList.remove('display')"></button></div>
 		</div>
-	</body>
+
+    </body>
 </html>

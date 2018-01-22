@@ -13,6 +13,7 @@ $base-font-family: "verbcond";
 @import "spectre/spectre-icons";
 @import "spectre/spectre-exp";
 
+@import "include/icon_variables";
 @import "mixin/color";
 @import "mixin/webfont";
 
@@ -22,8 +23,9 @@ $base-font-family: "verbcond";
 @include font-face(verbcond, "../fonts/verb_condensed/VerbCondBold", bold, normal, woff woff2);
 @include font-face(verbcond, "../fonts/verb_condensed/VerbCondBold-Italic", bold, italic, woff woff2);
 
-// some additions to spectre.css
-
+/*
+  additions to spectre.css
+*/
 .nav-item {
   & > span {
     padding: $unit-1 $unit-2;
@@ -111,13 +113,30 @@ html, body {
   padding: 4rem 1rem 1rem 1rem;
 }
 
-// custom classes
+#messageBox {
+  position: absolute;
+  z-index: $zindex-1;
+  max-width: 30rem;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -2rem;
+  opacity: 0;
+  transition: top 0.5s ease-in-out, opacity 0.5s;
 
+  &.display {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+/*
+  custom classes
+ */
 .vx-navbar {
   @extend .navbar;
   position: fixed;
   width: 100%;
-  z-index: 400;
+  z-index: $zindex-0;
   background: $gray-color-light;
 }
 
@@ -137,7 +156,10 @@ html, body {
 
 th.vx-sortable-header {
   &:before {
-    font-family: icomoon; font-weight: normal; vertical-align: middle; font-size: 150%;
+    font-family: icomoon;
+    font-weight: normal;
+    vertical-align: middle;
+    font-size: 150%;
   }
 
   &.desc {
@@ -159,4 +181,3 @@ table.table-striped tbody td.active {
 table.table-striped tbody tr:nth-of-type(2n+1) td.active {
   background: lighten($alternative-secondary-color, 10%);
 }
-

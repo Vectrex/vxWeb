@@ -57,10 +57,11 @@
                 </div>
 
                 <div id="content" class="column">
-                    <div id="messageBox" class="toast toast-error d-none text-center">&nbsp;</div>
                     <!-- { block: content_block } -->
                 </div>
             </div>
+
+            <div id="messageBox" class="toast">&nbsp;<button class="btn btn-clear float-right" onclick="this.parentNode.classList.remove('display')"></button></div>
 		</div>
 
 	</body>
