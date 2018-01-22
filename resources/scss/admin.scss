@@ -1,10 +1,13 @@
 @CHARSET "UTF-8";
 
-//$primary-color: #0089CC;
-//$secondary-color: #78ccbe;
-$primary-color: #336b87;
-$secondary-color: #90afc5;
+$primary-color: #07889b;
+$secondary-color: #66b9bf;
+
+$alternative-primary-color: #e37222;
+$alternative-secondary-color: #efaa7b;
+
 $base-font-family: "verbcond";
+
 
 @import "spectre/spectre";
 @import "spectre/spectre-icons";
@@ -151,9 +154,9 @@ th.vx-sortable-header {
 }
 
 table.table-striped tbody td.active {
-  background: lighten($primary-color, 60%);
+  background: lighten($alternative-secondary-color, 20%);
 }
 table.table-striped tbody tr:nth-of-type(2n+1) td.active {
-  background: lighten($primary-color, 40%);
+  background: lighten($alternative-secondary-color, 10%);
 }
 
