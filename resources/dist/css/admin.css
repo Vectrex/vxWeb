@@ -5085,12 +5085,14 @@ th.vx-sortable-header.asc:before
     content: '\e031';
 }
 
-table.table-striped tbody td.active
+table.table-striped tbody td.active,
+table.table-striped tbody tr.active
 {
     background: #fae5d6;
 }
 
-table.table-striped tbody tr:nth-of-type(2n+1) td.active
+table.table-striped tbody tr:nth-of-type(2n+1) td.active,
+table.table-striped tbody tr:nth-of-type(2n+1).active
 {
     background: #f5c7a8;
 }

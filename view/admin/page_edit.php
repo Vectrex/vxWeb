@@ -53,7 +53,7 @@
 <h1>Seiten</h1>
 
 <div class="vx-button-bar">
-	<a class="buttonLink withIcon" data-icon="&#xe025;" href="$pages">Zurück zur Übersicht</a>
+    <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="$pages">Zurück zur Übersicht</a>
 </div>
 
 <?php echo $tpl->form; ?>

@@ -2,12 +2,11 @@ this.vxWeb.doPages = function() {
 
 	"use strict";
 
-	var	mBox = document.getElementById("messageBox"), timeoutId,
-		form = document.forms[0],
+	var	form = document.forms[0],
 		xhrForm = vxJS.widget.xhrForm(form, { uri: vxWeb.routes.page }),
 		revisionsContainer = document.getElementById("revisions").tBodies[0],
 		delElem = (function() {
-			var e = "button".setProp( { type: "button", title: "Löschen", className: "iconOnly del" }).create();
+			var e = "button".setProp( { type: "button", title: "Löschen", className: "btn btn-primary webfont-icon-only" }).create();
 			e.setAttribute("data-icon", "\ue011");
 			return e;
 		}()),
@@ -63,7 +62,10 @@ this.vxWeb.doPages = function() {
 							"a".setProp("href", "#rev" + rev.id).create((new Date(rev.firstCreated)).format("%Y-%M-%D %H:%I:%S"))
 						),
 						"td".create(
-							"input".setProp( { value: "rev" + rev.id, type: "checkbox", checked: rev.active, disabled: rev.active } ).create()
+							"label".setProp( { className: "form-switch" } ).create([
+								"input".setProp( { value: "rev" + rev.id, type: "checkbox", checked: rev.active, disabled: rev.active } ).create(),
+								"i".setProp( { className: "form-icon" } ).create()
+                            ])
 						),
 						"td".create()
 						
@@ -206,31 +208,34 @@ this.vxWeb.doPages = function() {
 	};
 
 	var parseServerCheck = function(r) {
-		
+
+		var mBox = document.getElementById("messageBox"), timeoutId, txt;
+
 		if(r.success) {
-			vxJS.dom.removeClassName(mBox, "error");
-			vxJS.dom.addClassName(mBox, "success");
-			//@todo set "purified" revision data
-			revisionsXhr.submit();
+			txt = r.message || "Daten erfolgreich übernommen!";
+
+			vxJS.dom.removeClassName(mBox, "toast-error");
+			vxJS.dom.addClassName(mBox, "toast-success");
+
 		}
-		
+
 		else {
-			vxJS.dom.removeClassName(mBox, "success");
-			vxJS.dom.addClassName(mBox, "error");
+			txt = r.message || "Fehler bei Übernahme der Daten!";
+
+			vxJS.dom.removeClassName(mBox, "toast-success");
+			vxJS.dom.addClassName(mBox, "toast-error");
 		}
 
-		mBox.firstChild.nodeValue = r.message;
+		mBox.firstChild.nodeValue = txt;
 
-		vxJS.dom.removeClassName(mBox, "fadeOutUp");
-		vxJS.dom.addClassName(mBox, "fadeInDown");
+		vxJS.dom.addClassName(mBox, "display");
 
 		if(timeoutId) {
 			window.clearTimeout(timeoutId);
 		}
 		timeoutId = window.setTimeout(function() {
-			vxJS.dom.removeClassName(mBox, "fadeInDown");
-			vxJS.dom.addClassName(mBox, "fadeOutUp");
-		}, 2000);
+			vxJS.dom.removeClassName(mBox, "display");
+		}, 5000);
 
 	};
 

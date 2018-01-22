@@ -1,35 +1,36 @@
-{error_system:<div class="error_message">Ein Fehler ist beim Aktualisieren der Datenbank oder beim Dateiupload aufgetreten!<br>Bitte wiederholen Sie Ihren Versuch in ein paar Minuten. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Webseitenbetreiber.</div>}
+{form { "class": "form" }}
 
-<div class="multiColumnContainer">
-	<div class="formSect column" style="width: 70%;">
+<div class="columns">
+	<div class="column col-8">
 		<div class="form-group">
-			<label>Eindeutiger Name (automatisch generiert)</label>{input:alias {"maxlength": "64", "class": "pct_100", "disabled": "disabled"} }
+			<label class="form-label">Eindeutiger Name (automatisch generiert)</label>
+			{input:alias {"maxlength": "64", "class": "form-input", "disabled": "disabled"} }
 		</div>
 		<div class="form-group">
-			<label>Titel</label>{input:title {"maxlength": "128", "class": "pct_100"} }
+			<label class="form-label">Titel</label>
+			{input:title {"maxlength": "128", "class": "form-input"} }
 		</div>
 		<div class="form-group">
-			<label>Inhalt</label>{textarea:markup {"rows": "20", "cols": "40", "class": "pct_100"} }
+			<label class="form-label">Inhalt</label>{textarea:markup {"rows": "20", "class": "form-input"} }
 		</div>
 	</div>
-	
-	<div class="formSect column" style="width: 30%; padding-left: 1em;">
+	<div class="column col-4">
 		<div class="form-group">
-			<label>Schlüsselwörter</label>{textarea:keywords {"rows": "4", "cols": "30", "class": "pct_100"} }
+			<label class="form-label">Schlüsselwörter</label>{textarea:keywords {"rows": "4", "class": "form-input"} }
 		</div>
 		<div class="form-group">
-			<label>Beschreibung</label>{textarea:description {"rows": "4", "cols": "30", "class": "pct_100"} }
+			<label>Beschreibung</label>{textarea:description {"rows": "4", "cols": "30", "class": "form-input"} }
 		</div>
 		<div class="form-group">
-			<label>Revisions</label>
+			<label form-label>Revisions</label>
 			<div style="max-height: 30em; overflow-y: auto;">
-				<table id="revisions" style="width: 100%;">
+				<table id="revisions" class="table table-striped">
 					<thead>
 						<tr>
-							<th class="s">Loc</th>
+							<th class="col-2">Loc</th>
 							<th>Angelegt um</th>
-							<th class="s">aktiv</th>
-							<th class="xs"></th>
+							<th class="col-2">aktiv</th>
+							<th class="col-2"></th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -38,9 +39,11 @@
 		</div>
 	</div>
 </div>	 
-
-<div class="formBase">
+<div class="divider"></div>
+<div class="form-base">
 	<div class="form-group">
-	{input:submit_page {"type": "submit"} }
+		{input:submit_page {"class": "btn btn-success", "type": "submit"} }
 	</div>
 </div>
+
+{ end_form }

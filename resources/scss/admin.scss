@@ -180,9 +180,11 @@ th.vx-sortable-header {
   }
 }
 
-table.table-striped tbody td.active {
+table.table-striped tbody td.active,
+table.table-striped tbody tr.active {
   background: lighten($alternative-secondary-color, 20%);
 }
-table.table-striped tbody tr:nth-of-type(2n+1) td.active {
+table.table-striped tbody tr:nth-of-type(2n+1) td.active,
+table.table-striped tbody tr:nth-of-type(2n+1).active {
   background: lighten($alternative-secondary-color, 10%);
 }
