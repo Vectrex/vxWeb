@@ -2,11 +2,10 @@ this.vxWeb.doUsers = function() {
 
 	"use strict";
 
-	var	mBox = document.getElementById("messageBox"), timeoutId,
-		f = vxJS.widget.xhrForm(document.forms[0], { uri: vxWeb.routes.users });
+	var	f = vxJS.widget.xhrForm(document.forms[0], { uri: vxWeb.routes.users });
 
 	var parseServerCheck = function(r) {
-		var txt;
+		var mBox = document.getElementById("messageBox"), timeoutId, txt;
 
 		if(r.success) {
 			txt = r.message || "Daten erfolgreich übernommen!";

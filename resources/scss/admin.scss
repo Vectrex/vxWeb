@@ -114,7 +114,7 @@ html, body {
 }
 
 #messageBox {
-  position: absolute;
+  position: fixed;
   z-index: $zindex-1;
   max-width: 30rem;
   left: 50%;

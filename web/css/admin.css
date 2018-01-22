@@ -4952,7 +4952,7 @@ body
 
 #messageBox
 {
-    position: absolute; z-index: 100; top: -2rem; left: 50%; max-width: 30rem; -webkit-transition: top .5s ease-in-out, opacity .5s;         transition: top .5s ease-in-out, opacity .5s; -webkit-transform: translateX(-50%);         transform: translateX(-50%); opacity: 0;
+    position: fixed; z-index: 100; top: -2rem; left: 50%; max-width: 30rem; -webkit-transition: top .5s ease-in-out, opacity .5s;         transition: top .5s ease-in-out, opacity .5s; -webkit-transform: translateX(-50%);         transform: translateX(-50%); opacity: 0;
 }
 
 #messageBox.display

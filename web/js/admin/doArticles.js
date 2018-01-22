@@ -22,7 +22,6 @@ this.vxWeb.doArticles = function() {
 		sorTable,
 		confirm,
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
-		mBox = document.getElementById("messageBox"), timeoutId,
 		sortButton = function() {
 			var b = "button".setProp({ type: "button", className: "btn with-webfont-icon-right" }).create("Verlinkte Dateien sortieren");
 
@@ -92,13 +91,13 @@ this.vxWeb.doArticles = function() {
 	};
 
 	var parseServerCheck = function(r) {
-		var txt;
+		var mBox = document.getElementById("messageBox"), timeoutId, txt;
 
-		if(r.success) {
+        if(r.success) {
 			txt = r.message || "Daten erfolgreich übernommen!";
 
-			vxJS.dom.removeClassName(mBox, "error");
-			vxJS.dom.addClassName(mBox, "success");
+            vxJS.dom.removeClassName(mBox, "toast-error");
+            vxJS.dom.addClassName(mBox, "toast-success");
 
 			if(r.id) {
 				id = r.id;
@@ -113,22 +112,20 @@ this.vxWeb.doArticles = function() {
 		else {
 			txt = r.message || "Fehler bei Übernahme der Daten!";
 
-			vxJS.dom.removeClassName(mBox, "success");
-			vxJS.dom.addClassName(mBox, "error");
+            vxJS.dom.removeClassName(mBox, "toast-success");
+            vxJS.dom.addClassName(mBox, "toast-error");
 		}
 
-		mBox.firstChild.nodeValue = txt;
+        mBox.firstChild.nodeValue = txt;
 
-		vxJS.dom.removeClassName(mBox, "fadeOutUp");
-		vxJS.dom.addClassName(mBox, "fadeInDown");
+        vxJS.dom.addClassName(mBox, "display");
 
-		if(timeoutId) {
-			window.clearTimeout(timeoutId);
-		}
-		timeoutId = window.setTimeout(function() {
-			vxJS.dom.removeClassName(mBox, "fadeInDown");
-			vxJS.dom.addClassName(mBox, "fadeOutUp");
-		}, 3000);
+        if(timeoutId) {
+            window.clearTimeout(timeoutId);
+        }
+        timeoutId = window.setTimeout(function() {
+            vxJS.dom.removeClassName(mBox, "display");
+        }, 5000);
 	};
 	
 	var handleSortResponse = function() {
