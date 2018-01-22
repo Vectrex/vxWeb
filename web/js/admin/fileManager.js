@@ -41,7 +41,7 @@ this.vxWeb.fileManager = function(config) {
 			decoration: [{ html: '<div class="vxJS_dragBar"></div><div class="vxJS_confirm_content"></div><div class="vxJS_confirm_buttons"></div>' }]
 		}),
 		lsValue, lsKey = window.location.origin + "/admin/files" + "__sort__",
-		folderRex = /(^| )folderRow( |$)/,
+		folderRex = /(^| )folder-row( |$)/,
 
 		icons = (function() {
 			var elements = {};
@@ -50,11 +50,11 @@ this.vxWeb.fileManager = function(config) {
 			 	{ key: "move",		title: "Verschieben",	icon: "\ue004" },
 			 	{ key: "del",		title: "Löschen",		icon: "\ue011" },
 			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue02a" },
-			 	{ key: "rename",	title: "Umbenennen",	icon: "\ue001", className: "displayOnlyWhenHover" },
+			 	{ key: "rename",	title: "Umbenennen",	icon: "\ue001", className: "display-only-on-hover ml-2" },
 			 	{ key: "delFolder",	title: "Ordner leeren und löschen", icon: "\ue008" },
 			 	{ key: "locked",	title: "Gesperrt", icon: "\ue00f", element: "span" }
 			].forEach(function(props) {
-				var cN = "iconOnly " + props.key + (props.className ? (" " + props.className) : ""),
+				var cN = "btn btn-primary webfont-icon-only mr-1 " + props.key + (props.className ? (" " + props.className) : ""),
 				e = (props.element || "button").setProp( { title: props.title, className: cN }).create();
 				e.setAttribute("data-icon", props.icon);
 				elements[props.key] = e;
@@ -102,7 +102,7 @@ this.vxWeb.fileManager = function(config) {
 		colNum = filesTable.tHead.rows[0].cells.length,
 
 		addFileButton = (function() {
-			var e = "button".setProp({ type: "button", className: "btn with-webfont-icon-right" }).create("Datei hinzufügen");
+			var e = "button".setProp({ type: "button", className: "btn with-webfont-icon-right mx-2" }).create("Datei hinzufügen");
 
 			e.setAttribute("data-icon", "\ue00e");
 
@@ -346,7 +346,7 @@ this.vxWeb.fileManager = function(config) {
 		}
 		cells.push(td);
 
-		t.insertRow("tr".setProp("class", "folderRow").create(cells));
+		t.insertRow("tr".setProp("class", "folder-row").create(cells));
 
 		filesTableListeners.push(vxJS.event.addListener(a, "click", function(e) {
 			getFiles(folderData.id);
@@ -678,7 +678,6 @@ this.vxWeb.fileManager = function(config) {
 		"finishSort",
 		function() {
 			var c = this.getActiveColumn();
-			vxJS.widget.shared.shadeTableRows({ element: this.element });
 			if(window.localStorage) {
 				window.localStorage.setItem(lsKey, JSON.stringify( { ndx: c.ndx, asc: c.asc } ));
 			}

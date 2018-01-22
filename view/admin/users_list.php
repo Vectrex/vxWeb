@@ -40,10 +40,10 @@
 
 <table class="table table-striped">
 	<tr>
-		<th class="">Username</th>
-		<th class="">Name</th>
+		<th class="vx-sortable-header">Username</th>
+		<th class="vx-sortable-header">Name</th>
 		<th>Email</th>
-		<th class="">Gruppe</th>
+		<th class="vx-sortable-header">Gruppe</th>
 		<th class="">&nbsp;</th>
 	</tr>
 

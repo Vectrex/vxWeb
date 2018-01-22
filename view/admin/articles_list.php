@@ -222,14 +222,14 @@
 			<th></th>
 		</tr>
 		<tr>
-			<th class="m">Kategorie</th>
-			<th>Titel</th>
-			<th class="">Pub</th>
-			<th class="">Artikeldatum</th>
-			<th class="">Anzeige von</th>
-			<th class="">Anzeige bis</th>
-			<th class="">Sortierziffer</th>
-			<th class="">Angelegt/aktualisiert</th>
+			<th class="vx-sortable-header">Kategorie</th>
+			<th class="vx-sortable-header">Titel</th>
+			<th class="vx-sortable-header">Pub</th>
+			<th class="vx-sortable-header">Artikeldatum</th>
+			<th class="vx-sortable-header">Anzeige von</th>
+			<th class="vx-sortable-header">Anzeige bis</th>
+			<th class="vx-sortable-header">Sortierziffer</th>
+			<th class="vx-sortable-header">Angelegt/aktualisiert</th>
 			<th class="">&nbsp;</th>
 		</tr>
 	</thead>

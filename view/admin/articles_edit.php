@@ -94,13 +94,14 @@ vxJS.event.addDomReadyListener(function() {
         <div id="filesList">
             <table class="table table-striped">
                 <thead>
-                <tr>
-                    <th class="sortableHeader">Dateiname</th>
-                    <th class="sm right sortableHeader">Größe</th>
-                    <th class="sm center sortableHeader">Typ/Vorschau</th>
-                    <th class="mml right sortableHeader">Erstellt</th>
-                    <th class="m"></th>
-                </tr>
+                    <tr>
+                        <th class="vx-sortable-header">Dateiname</th>
+                        <th class="vx-sortable-header">Größe</th>
+                        <th class="vx-sortable-header">Typ/Vorschau</th>
+                        <th class="vx-sortable-header">Erstellt</th>
+                        <th class="">Link</th>
+                        <th class=""></th>
+                    </tr>
                 </thead>
 
                 <tbody>

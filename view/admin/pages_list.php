@@ -38,11 +38,11 @@
 
 <table class="table table-striped">
 	<tr>
-		<th class="">Alias/Titel</th>
-		<th class="">Template</th>
+		<th class="vx-sortable-header">Alias/Titel</th>
+		<th class="vx-sortable-header">Template</th>
 		<th>Inhalt</th>
-		<th class="">letzte Änderung</th>
-		<th class="">#Rev</th>
+		<th class="vx-sortable-header">letzte Änderung</th>
+		<th class="vx-sortable-header">#Rev</th>
 		<th class="">&nbsp;</th>
 	</tr>
 
