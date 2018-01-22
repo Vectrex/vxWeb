@@ -50,7 +50,7 @@ class DefaultController extends Controller {
 
 			if(is_null($include->getParentTemplateFilename())) {
 			
-				// replace content block with include for snippet in response
+				// replace content block with vx for snippet in response
 
 				return new Response(SimpleTemplate::create('layout.php')
 					->assign('route', $page)

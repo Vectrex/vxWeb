@@ -45,7 +45,6 @@ vxJS.event.addDomReadyListener(function() {
 		document.getElementsByName("article_date")[0],
 		{	trigger: vxJS.dom.getElementsByClassName("calendarPopper")[0],
 			noYearInput: true,
-			skinClass: 'calendarSkin',
 			inputLocale: "date_de",
 			outputFormat: "%D.%M.%Y"
 		}
@@ -55,7 +54,6 @@ vxJS.event.addDomReadyListener(function() {
 		{	trigger: vxJS.dom.getElementsByClassName("calendarPopper")[1],
 			noYearInput: true,
 			noPast: true,
-			skinClass: 'calendarSkin',
 			inputLocale: "date_de",
 			outputFormat: "%D.%M.%Y"
 		}
@@ -65,7 +63,6 @@ vxJS.event.addDomReadyListener(function() {
 		{	trigger: vxJS.dom.getElementsByClassName("calendarPopper")[2],
 			noYearInput: true,
 			noPast: true,
-			skinClass: 'calendarSkin',
 			inputLocale: "date_de",
 			outputFormat: "%D.%M.%Y"
 		}

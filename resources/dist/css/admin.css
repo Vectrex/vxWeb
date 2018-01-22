@@ -4848,6 +4848,88 @@ a.text-error:hover
     content: none;
 }
 
+/* calendar widget */
+.vx-calendar
+{color: #07889b; border: solid .05rem #e7e9ed; background: white; 
+    -webkit-box-shadow: 0 .05rem .2rem rgba(69, 77, 93, .3);            box-shadow: 0 .05rem .2rem rgba(69, 77, 93, .3);
+}
+
+.vx-calendar .navbar,
+.vx-calendar .vx-navbar
+{
+    display: -webkit-box;    display: -ms-flexbox;    display: flex; padding: .5rem; background: #e7e9ed; -ms-flex-wrap: nowrap;     flex-wrap: nowrap; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;
+}
+
+.vx-calendar .navbar .previous-month,
+.vx-calendar .vx-navbar .previous-month,
+.vx-calendar .navbar .next-month,
+.vx-calendar .vx-navbar .next-month
+{display: block; 
+
+    cursor: pointer;
+}
+
+.vx-calendar .navbar .previous-month:before,
+.vx-calendar .vx-navbar .previous-month:before,
+.vx-calendar .navbar .next-month:before,
+.vx-calendar .vx-navbar .next-month:before
+{
+    font-family: icomoon;
+}
+
+.vx-calendar .navbar .previous-month:before,
+.vx-calendar .vx-navbar .previous-month:before
+{
+    content: '\e025';
+}
+
+.vx-calendar .navbar .next-month:before,
+.vx-calendar .vx-navbar .next-month:before
+{
+    content: '\e023';
+}
+
+.vx-calendar table
+{
+    border-collapse: collapse;
+}
+
+.vx-calendar table th
+{
+    padding: .5rem; text-align: center; vertical-align: middle; color: #667189; background: #e7e9ed;
+}
+
+.vx-calendar table td
+{
+    padding: .5rem; cursor: pointer; text-align: center; vertical-align: middle; background: #fff;
+}
+
+.vx-calendar table td.trail
+{
+    color: #e7e9ed;
+}
+
+.vx-calendar table td.week
+{
+    cursor: pointer; background: #66b9bf;
+}
+
+.vx-calendar table td.today
+{color: #fff; border-radius: .125em; 
+    background: #07889b;
+}
+
+.vx-calendar table td.marked
+{color: #fff; border-radius: .125em; 
+    background: #e37222;
+}
+
+.vx-calendar table td.disabled
+{cursor: default; 
+
+    color: #acb3c2;
+}
+
 @font-face
 {
     font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2');

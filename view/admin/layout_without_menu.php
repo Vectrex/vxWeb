@@ -12,7 +12,7 @@
 		<meta name='author' content='Gregor Kofler - Mediendesign und Webapplikationen, http://gregorkofler.com'>
 
 		<link rel='icon' type='image/x-icon'	href='/favicon.ico'>
-		<link type='text/css' rel='stylesheet'	href='/css/admin.css'>
+		<link type='text/css' rel='stylesheet'	href='/css/admin.min.css'>
 
 		<script type='text/javascript' src='/js/vendor/vxJS/core.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widget.js'></script>

@@ -1,0 +1,61 @@
+/*
+ * calendar widget
+ */
+
+.vx-calendar {
+  @include shadow-variant(.05rem);
+  background: white;
+  color: $primary-color;
+  border: solid $border-width $gray-color-light;
+
+  .navbar {
+    display: flex;
+    padding: 0.5rem;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    background: $gray-color-light;
+
+    .previous-month, .next-month	{
+      cursor: pointer;
+      display: block;
+
+      &:before {
+        font-family: icomoon;
+      }
+    }
+
+    .previous-month:before {
+      content: "\e025";
+    }
+    .next-month:before {
+      content: "\e023";
+    }
+  }
+
+  table	{
+    border-collapse: collapse;
+
+    th	{
+      padding: 0.5rem; text-align: center; color: $gray-color-dark; vertical-align: middle; background: $gray-color-light;
+    }
+
+    td	{
+      padding: 0.5rem; text-align: center; vertical-align: middle; cursor: pointer; background: #fff;
+      &.trail	{
+        color: $gray-color-light;
+      }
+      &.week	{
+        cursor: pointer; background: $secondary-color;
+      }
+      &.today		{
+        background: $primary-color; color: #fff; border-radius: 0.125em;
+      }
+      &.marked	{
+        background: $alternative-primary-color; color: #fff; border-radius: 0.125em;
+      }
+      &.disabled	{
+        color: $gray-color; cursor: default;
+      }
+    }
+  }
+}

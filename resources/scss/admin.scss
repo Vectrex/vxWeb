@@ -8,14 +8,15 @@ $alternative-secondary-color: #efaa7b;
 
 $base-font-family: "verbcond";
 
+@import "mixin/color";
+@import "mixin/webfont";
 
 @import "spectre/spectre";
 @import "spectre/spectre-icons";
 @import "spectre/spectre-exp";
 
-@import "include/icon_variables";
-@import "mixin/color";
-@import "mixin/webfont";
+@import "vx/icon_variables";
+@import "vx/calendar";
 
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
 @include font-face(verbcond, "../fonts/verb_condensed/VerbCondRegular", normal, normal, woff woff2);
