@@ -168,16 +168,17 @@ this.vxWeb.fileManager = function(config) {
 		}()),
 
 		activityIndicator = (function() {
-			var e = "div".setProp("class", "vxJS_xhrThrobber fileOperation").create(), queueLength = 0;
+			var e = "span".setProp("class", "vx-activity-indicator loading").create(), queueLength = 0;
+
 			var incQL = function() {
 				++queueLength;
-				vxJS.dom.addClassName(e, "active");
+                vxJS.dom.addClassName(e, "loading");
 			};
 			var decQL = function() {
 				if(queueLength) {
 					--queueLength;
 					if(!queueLength) {
-						vxJS.dom.removeClassName(e, "active");
+						vxJS.dom.removeClassName(e, "loading");
 					}
 				}
 			};
@@ -692,7 +693,7 @@ this.vxWeb.fileManager = function(config) {
 		t.sortBy(0, "asc");
 	}
 
-	filesTable.tHead.appendChild("tr".setProp("className", "fileFunctions").create("td".setProp("colSpan", filesTable.rows[0].cells.length).create("div".setProp("className", "buttonBar").create([addFolderButton, addFolderInput, addFileButton, activityIndicator.element]))));
+	filesTable.tHead.appendChild("tr".setProp("className", "file-functions").create("td".setProp("colSpan", filesTable.rows[0].cells.length).create("div".setProp("className", "vx-button-bar").create([addFolderButton, addFolderInput, addFileButton, activityIndicator.element]))));
 
 	if(vxJS.dnd) {
 		dnd = vxJS.dnd.create();
@@ -712,8 +713,8 @@ this.vxWeb.fileManager = function(config) {
 				progressBar = (function() {
 					var progress	= "div".create(),
 						label		= "span".create("uploading"),
-						bar			= "div".setProp("class", "progressBar ml").create([progress, label]);
-					filesTable.querySelector("div.buttonBar").appendChild(bar);
+						bar			= "div".setProp("class", "progress-bar col-4").create([progress, label]);
+					filesTable.querySelector("div.vx-button-bar").appendChild(bar);
 					return {
 						element:		bar,
 						setLabel:		function(text)	{ label.firstChild.nodeValue = text; },

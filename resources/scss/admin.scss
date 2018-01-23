@@ -188,3 +188,45 @@ table.table-striped tbody tr:nth-of-type(2n+1) td.active,
 table.table-striped tbody tr:nth-of-type(2n+1).active {
   background: lighten($alternative-secondary-color, 10%);
 }
+
+.vx-activity-indicator {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.progress-bar {
+  position: relative;
+  display: inline-block;
+  height: 2rem;
+  border: solid $border-width $primary-color;
+  vertical-align: middle;
+  border-radius: $border-radius;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.5s ease 0s;
+
+  &.shown {
+    opacity: 1;
+    transition: opacity 0.5s ease 0s;
+  }
+
+  > div	{
+    position: absolute;
+    height: 100%;
+    background: $primary-color;
+    width: 0%;
+    border-radius: $border-radius;
+  }
+
+  > span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    padding: 0.25rem 1rem;
+    display: block;
+    text-align: center;
+    color: $secondary-color;
+  }
+}
