@@ -711,16 +711,17 @@ this.vxWeb.fileManager = function(config) {
 		(function() {
 			var uploadXhr = vxJS.xhr( { upload: true, timeout: config.maxUploadTime } ), uploadQuery, uploadActive, filesQueue = [],
 				progressBar = (function() {
-					var progress	= "div".create(),
-						label		= "span".create("uploading"),
-						bar			= "div".setProp("class", "progress-bar col-4").create([progress, label]);
+					var progress = "div".create(),
+						bar = "div".setProp("class", "progress-bar col-4").create(progress);
+
 					filesTable.querySelector("div.vx-button-bar").appendChild(bar);
+
 					return {
 						element:		bar,
-						setLabel:		function(text)	{ label.firstChild.nodeValue = text; },
-						setPercentage:	function(p)		{ progress.style.width = p + "%"; },
-						show:			function()		{ vxJS.dom.addClassName(bar, "shown"); },
-						hide:			function()		{ vxJS.dom.removeClassName(bar, "shown"); this.setLabel(""); }
+						setLabel:		function(label)	{ bar.setAttribute("data-label", label); },
+						setPercentage:	function(p) { progress.style.width = p + "%"; },
+						show:			function() { vxJS.dom.addClassName(bar, "shown"); },
+						hide:			function() { vxJS.dom.removeClassName(bar, "shown"); bar.removeAttribute("data-label"); }
 					};
 				}());
 
