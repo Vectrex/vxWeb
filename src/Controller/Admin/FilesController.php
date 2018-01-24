@@ -803,11 +803,11 @@ class FilesController extends Controller {
 
 					case 'linked':
 						if(isset($linkedFiles) && in_array($f, $linkedFiles, TRUE)) {
-							$file['columns'][] = ['html' => '<input class="link" type="checkbox" checked="checked">'];
+							$file['columns'][] = ['html' => '<label class="form-switch"><input type="checkbox" class="link" checked="checked"><i class="form-icon"></i></label>'];
 							$file['linked'] = TRUE;
 						}
 						else {
-							$file['columns'][] = ['html' => '<input class="link" type="checkbox">'];
+							$file['columns'][] = ['html' => '<label class="form-switch"><input type="checkbox" class="link"><i class="form-icon"></i></label>'];
 							$file['linked'] = FALSE;
 						}
 						break;
