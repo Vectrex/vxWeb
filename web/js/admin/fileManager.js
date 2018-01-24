@@ -711,17 +711,30 @@ this.vxWeb.fileManager = function(config) {
 		(function() {
 			var uploadXhr = vxJS.xhr( { upload: true, timeout: config.maxUploadTime } ), uploadQuery, uploadActive, filesQueue = [],
 				progressBar = (function() {
-					var progress = "div".create(),
-						bar = "div".setProp("class", "progress-bar col-4").create(progress);
+					var progress = "div".setProp("class", "bar-item").create(),
+						bar = "div".setProp("class", "col-3 vx-progress-bar tooltip").create("div".setProp("class", "bar").create(progress))
+					;
 
 					filesTable.querySelector("div.vx-button-bar").appendChild(bar);
 
 					return {
-						element:		bar,
-						setLabel:		function(label)	{ bar.setAttribute("data-label", label); },
-						setPercentage:	function(p) { progress.style.width = p + "%"; },
-						show:			function() { vxJS.dom.addClassName(bar, "shown"); },
-						hide:			function() { vxJS.dom.removeClassName(bar, "shown"); bar.removeAttribute("data-label"); }
+						element: bar,
+						label: null,
+						setPercentage: function(p) {
+							progress.style.width = p + "%";
+                            bar.setAttribute("data-tooltip", this.label + " - " + p + "%");
+							return this;
+						},
+						show: function() {
+							vxJS.dom.addClassName(bar, "shown");
+							return this;
+						},
+						hide: function() {
+							vxJS.dom.removeClassName(bar, "shown");
+							bar.removeAttribute("data-tooltip");
+							bar.removeAttribute("data-label");
+							return this;
+						}
 					};
 				}());
 
@@ -765,8 +778,8 @@ this.vxWeb.fileManager = function(config) {
 				if(!uploadActive) {
 					if(f = filesQueue.shift()) {
 						startUpload();
-						progressBar.setLabel(f.name);
-						
+						progressBar.label = f.name;
+
 						uploadQuery = ['unpack=' + (unpackZips ? 1 : 0)];
 						if(vxWeb.parameters.folder) {
 							uploadQuery.push("folder=" + vxWeb.parameters.folder);
@@ -802,7 +815,7 @@ this.vxWeb.fileManager = function(config) {
 
 				else {
 					if(f = filesQueue.shift()) {
-						progressBar.setLabel(f.name);
+						progressBar.label = f.name;
 						this.use(null, { filename: f.name, file: f }).submit();
 					}
 					else {

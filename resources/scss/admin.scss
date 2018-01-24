@@ -146,7 +146,9 @@ html, body {
 }
 
 .vx-button-bar {
-  background: tint($primary-color, 50%);
+  display: flex;
+  align-items: center;
+  background: tint($primary-color, 70%);
   padding: 0.6rem 0.4rem;
 }
 
@@ -194,14 +196,8 @@ table.table-striped tbody tr:nth-of-type(2n+1).active {
   padding-right: 1rem;
 }
 
-.progress-bar {
-  position: relative;
+.vx-progress-bar {
   display: inline-block;
-  height: 2rem;
-  border: solid $border-width $primary-color;
-  vertical-align: middle;
-  border-radius: $border-radius;
-  background: white;
   opacity: 0;
   transition: opacity 0.5s ease 0s;
 
@@ -210,17 +206,4 @@ table.table-striped tbody tr:nth-of-type(2n+1).active {
     transition: opacity 0.5s ease 0s;
   }
 
-  &:before {
-    position: absolute;
-    left: 0;
-    right: 0;
-    text-align: center;
-    content: attr(data-label);
-    color: $secondary-color;
-  }
-
-  > div {
-    height: 100%;
-    background: $primary-color;
-  }
 }

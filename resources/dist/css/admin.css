@@ -5054,9 +5054,8 @@ body
 }
 
 .vx-button-bar
-{padding: .6rem .4rem; 
-
-    background: #83c4cd;
+{
+    display: -webkit-box;    display: -ms-flexbox;    display: flex; padding: .6rem .4rem; background: #b5dbe1; -webkit-box-align: center; -ms-flex-align: center; align-items: center;
 }
 
 .vx-error-box
@@ -5102,23 +5101,13 @@ table.table-striped tbody tr:nth-of-type(2n+1).active
     padding-left: 1rem;
 }
 
-.progress-bar
+.vx-progress-bar
 {
-    position: relative; display: inline-block; height: 2rem; -webkit-transition: opacity .5s ease 0s;         transition: opacity .5s ease 0s; vertical-align: middle; opacity: 0; border: solid .05rem #07889b; border-radius: .1rem; background: white;
+    display: inline-block; -webkit-transition: opacity .5s ease 0s;         transition: opacity .5s ease 0s; opacity: 0;
 }
 
-.progress-bar.shown
+.vx-progress-bar.shown
 {-webkit-transition: opacity .5s ease 0s;        transition: opacity .5s ease 0s; 
 
     opacity: 1;
-}
-
-.progress-bar:before
-{
-    position: absolute; right: 0; left: 0; content: attr(data-label); text-align: center; color: #66b9bf;
-}
-
-.progress-bar > div
-{
-    height: 100%; background: #07889b;
 }
