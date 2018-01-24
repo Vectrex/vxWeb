@@ -4955,7 +4955,26 @@ a.text-error:hover
     font-family: 'verbcond'; font-weight: bold; font-style: italic; src: url('../fonts/verb_condensed/VerbCondBold-Italic.woff') format('woff'), url('../fonts/verb_condensed/VerbCondBold-Italic.woff2') format('woff2');
 }
 
-/* additions to spectre.css */
+/* additions and extensions to spectre.css */
+.navbar,
+.vx-navbar
+{padding: .4rem; 
+
+    background: #e7e9ed;
+}
+
+.navbar .navbar-section:first-child > .btn,
+.vx-navbar .navbar-section:first-child > .btn
+{
+    margin-right: .4rem;
+}
+
+.navbar .navbar-section:last-child > .btn,
+.vx-navbar .navbar-section:last-child > .btn
+{
+    margin-left: .4rem;
+}
+
 .nav-item > span
 {
     padding: .2rem .4rem;
@@ -4977,13 +4996,14 @@ a.text-error:hover
 }
 
 .webfont-icon-only
-{
-    display: inline-block;
+{font-family: icomoon; 
+
+    display: inline-block; content: attr(data-icon);
 }
 
-.webfont-icon-only:after
+.webfont-icon-only.tooltip:after
 {
-    font-family: icomoon; content: attr(data-icon);
+    font-family: 'verbcond';
 }
 
 a.webfont-icon-only
@@ -5110,4 +5130,14 @@ table.table-striped tbody tr:nth-of-type(2n+1).active
 {-webkit-transition: opacity .5s ease 0s;        transition: opacity .5s ease 0s; 
 
     opacity: 1;
+}
+
+.display-only-on-hover
+{
+    visibility: hidden; -webkit-transition: opacity .25s;         transition: opacity .25s; opacity: 0;
+}
+
+td:hover .display-only-on-hover
+{
+    visibility: visible; opacity: 1;
 }

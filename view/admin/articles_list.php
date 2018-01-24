@@ -222,15 +222,15 @@
 			<th></th>
 		</tr>
 		<tr>
-			<th class="vx-sortable-header">Kategorie</th>
+			<th class="col-2 vx-sortable-header">Kategorie</th>
 			<th class="vx-sortable-header">Titel</th>
 			<th class="vx-sortable-header">Pub</th>
-			<th class="vx-sortable-header">Artikeldatum</th>
-			<th class="vx-sortable-header">Anzeige von</th>
-			<th class="vx-sortable-header">Anzeige bis</th>
+			<th class="col-1 vx-sortable-header">Artikeldatum</th>
+			<th class="col-1 vx-sortable-header">Anzeige von</th>
+			<th class="col-1 vx-sortable-header">Anzeige bis</th>
 			<th class="vx-sortable-header">Sortierziffer</th>
-			<th class="vx-sortable-header">Angelegt/aktualisiert</th>
-			<th class="">&nbsp;</th>
+			<th class="col-2 vx-sortable-header">Angelegt/aktualisiert</th>
+			<th></th>
 		</tr>
 	</thead>
 </table>

@@ -10,13 +10,13 @@
             <i class="form-icon"></i>
         </label>
 	</td>
-	<td class=""><?= is_null($this->article->getDate()) ? '' : $this->article->getDate()->format('Y-m-d') ?></td>
-	<td class=""><?= is_null($this->article->getDisplayFrom()) ? '' : $this->article->getDisplayFrom()->format('Y-m-d') ?></td>
-	<td class=""><?= is_null($this->article->getDisplayUntil()) ? '' : $this->article->getDisplayUntil()->format('Y-m-d') ?></td>
-	<td class=""><?= $this->article->getCustomSort() ?></td>
-	<td class=""><?= is_null($this->article->getLastUpdated()) ? '' : $this->article->getLastUpdated()->format('Y-m-d H:i:s') ?></td>
+	<td><?= is_null($this->article->getDate()) ? '' : $this->article->getDate()->format('Y-m-d') ?></td>
+	<td><?= is_null($this->article->getDisplayFrom()) ? '' : $this->article->getDisplayFrom()->format('Y-m-d') ?></td>
+	<td><?= is_null($this->article->getDisplayUntil()) ? '' : $this->article->getDisplayUntil()->format('Y-m-d') ?></td>
+	<td><?= $this->article->getCustomSort() ?></td>
+	<td><?= is_null($this->article->getLastUpdated()) ? '' : $this->article->getLastUpdated()->format('Y-m-d H:i:s') ?></td>
 	<td>
-		<a class="btn btn-primary webfont-icon-only" data-icon="&#xe002;" href="$articles?id=<?= $this->article->getId() ?>" title="Bearbeiten"></a>
-		<a class="btn btn-primary webfont-icon-only" data-icon="&#xe011;" href="$articles/del?id=<?= $this->article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');" title="Löschen"></a>
+		<a class="btn btn-primary webfont-icon-only tooltip" data-tooltip="Bearbeiten" href="$articles?id=<?= $this->article->getId() ?>">&#xe002;</a>
+		<a class="btn btn-primary webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" href="$articles/del?id=<?= $this->article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');">&#xe011;</a>
 	</td>
 </tr>

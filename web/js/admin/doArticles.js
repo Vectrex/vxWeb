@@ -22,18 +22,7 @@ this.vxWeb.doArticles = function() {
 		sorTable,
 		confirm,
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
-		sortButton = function() {
-			var b = "button".setProp({ type: "button", className: "btn with-webfont-icon-right" }).create("Verlinkte Dateien sortieren");
-
-			b.setAttribute("data-icon", "\ue035");
-
-			vxJS.event.addListener(b, "click", function() {
-				if(vxWeb.parameters && vxWeb.parameters.articlesId) {
-					sortXhr.use( { command: "getFiles" }, { articlesId: vxWeb.parameters.articlesId } ).submit();
-				}
-			});
-			return b;
-		}(), lastButton;
+		sortButton = document.getElementById("sortFiles");
 
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
@@ -146,6 +135,12 @@ this.vxWeb.doArticles = function() {
 		}
 	};
 
+	vxJS.event.addListener(sortButton, "click", function(e) {
+        if(vxWeb.parameters && vxWeb.parameters.articlesId) {
+            sortXhr.use( { command: "getFiles" }, { articlesId: vxWeb.parameters.articlesId } ).submit();
+        }
+	});
+
 	vxJS.event.addListener(articleXhrForm, "beforeSubmit", function() {
 		if(id) {
 			this.setPayload( { id: id });
@@ -162,7 +157,4 @@ this.vxWeb.doArticles = function() {
 		tabs.getTabByNdx(1).disable();
 	}
 	initSorTable();
-
-	lastButton = vxJS.collectionToArray(document.querySelectorAll("tr.fileFunctions button")).pop();
-	lastButton.parentNode.insertBefore(sortButton, lastButton.nextSibling);
 };

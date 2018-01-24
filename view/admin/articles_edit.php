@@ -86,18 +86,35 @@ vxJS.event.addDomReadyListener(function() {
     <div class="section">
         <h2 id="article_files">Dateien</h2>
 
-        <span class="btn-group" id="directoryBar"></span>
+        <div class="navbar">
+            <div class="navbar-section">
+                <span class="btn-group" id="directoryBar"></span>
+            </div>
+
+            <div class="navbar-section">
+                <div id="uploadProgress" class="col-3 vx-progress-bar tooltip">
+                    <div class="bar">
+                        <div class="bar-item"></div>
+                    </div>
+                </div>
+                <span id="activityIndicator" class="vx-activity-indicator"></span>
+                <input id="addFolderInput" class="form-input col-3" style="display: none;">
+                <button id="addFolder" class="btn webfont-icon-only tooltip" data-tooltip="Verzeichnis anlegen" type="button">&#xe007;</button>
+                <button id="addFile" class="btn webfont-icon-only tooltip" type="button" data-tooltip="Datei hinzufügen">&#xe00e;</button>
+                <button id="sortFiles" class="btn webfont-icon-only tooltip tooltip-left" type="button" data-tooltip="Verlinkte Dateien sortieren">&#xe035;</button>
+            </div>
+        </div>
 
         <div id="filesList">
             <table class="table table-striped">
                 <thead>
                     <tr>
                         <th class="vx-sortable-header">Dateiname</th>
-                        <th class="vx-sortable-header">Größe</th>
-                        <th class="vx-sortable-header">Typ/Vorschau</th>
-                        <th class="vx-sortable-header">Erstellt</th>
-                        <th class="">Link</th>
-                        <th class=""></th>
+                        <th class="col-1 vx-sortable-header">Größe</th>
+                        <th class="col-2 vx-sortable-header">Typ/Vorschau</th>
+                        <th class="col-2 vx-sortable-header">Erstellt</th>
+                        <th class="col-1">Link</th>
+                        <th class="col-2"></th>
                     </tr>
                 </thead>
 

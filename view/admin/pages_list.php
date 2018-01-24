@@ -38,12 +38,12 @@
 
 <table class="table table-striped">
 	<tr>
-		<th class="vx-sortable-header">Alias/Titel</th>
+		<th class="col-2 vx-sortable-header">Alias/Titel</th>
 		<th class="vx-sortable-header">Template</th>
 		<th>Inhalt</th>
-		<th class="vx-sortable-header">letzte Änderung</th>
-		<th class="vx-sortable-header">#Rev</th>
-		<th class="">&nbsp;</th>
+		<th class="col-2 vx-sortable-header">letzte Änderung</th>
+		<th class="col-1 vx-sortable-header">#Rev</th>
+		<th class="col-1">&nbsp;</th>
 	</tr>
 
 	<?php foreach($this->pages as $this->page): ?>

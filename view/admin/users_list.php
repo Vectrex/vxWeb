@@ -40,11 +40,11 @@
 
 <table class="table table-striped">
 	<tr>
-		<th class="vx-sortable-header">Username</th>
-		<th class="vx-sortable-header">Name</th>
+		<th class="col-3 vx-sortable-header">Username</th>
+		<th class="col-2 vx-sortable-header">Name</th>
 		<th>Email</th>
-		<th class="vx-sortable-header">Gruppe</th>
-		<th class="">&nbsp;</th>
+		<th class="col-2 vx-sortable-header">Gruppe</th>
+		<th class="col-1">&nbsp;</th>
 	</tr>
 
 	<?php foreach($this->users as $this->user): ?>

@@ -25,8 +25,25 @@ $base-font-family: "verbcond";
 @include font-face(verbcond, "../fonts/verb_condensed/VerbCondBold-Italic", bold, italic, woff woff2);
 
 /*
-  additions to spectre.css
+  additions and extensions to spectre.css
 */
+.navbar {
+  background: $gray-color-light;
+  padding: $unit-2;
+
+  .navbar-section:first-child {
+    & > .btn {
+      margin-right: $unit-2;
+    }
+  }
+
+  .navbar-section:last-child {
+    & > .btn {
+      margin-left: $unit-2;
+    }
+  }
+}
+
 .nav-item {
   & > span {
     padding: $unit-1 $unit-2;
@@ -56,17 +73,16 @@ $base-font-family: "verbcond";
 
 .webfont-icon-only {
   display: inline-block;
-  &:after {
-    font-family: icomoon;
-    content: attr(data-icon);
+  font-family: icomoon;
+  content: attr(data-icon);
+
+  &.tooltip:after {
+    font-family: $base-font-family;
   }
 }
 
 a.webfont-icon-only {
   text-decoration: none;
-}
-
-.display-only-on-hover {
 }
 
 .text-smaller {
@@ -206,4 +222,15 @@ table.table-striped tbody tr:nth-of-type(2n+1).active {
     transition: opacity 0.5s ease 0s;
   }
 
+}
+
+.display-only-on-hover {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+td:hover .display-only-on-hover {
+  visibility: visible;
+  opacity: 1;
 }

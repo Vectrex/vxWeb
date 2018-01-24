@@ -46,17 +46,17 @@ this.vxWeb.fileManager = function(config) {
 		icons = (function() {
 			var elements = {};
 			[
-			 	{ key: "edit",		title: "Bearbeiten",	icon: "\ue002" },
-			 	{ key: "move",		title: "Verschieben",	icon: "\ue004" },
-			 	{ key: "del",		title: "Löschen",		icon: "\ue011" },
-			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue02a" },
+			 	{ key: "edit",		title: "Bearbeiten",	icon: "\ue002", className: "btn-primary" },
+			 	{ key: "move",		title: "Verschieben",	icon: "\ue004", className: "btn-primary" },
+			 	{ key: "del",		title: "Löschen",		icon: "\ue011", className: "btn-primary tooltip-left" },
+			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue02a", className: "btn-primary tooltip-left" },
 			 	{ key: "rename",	title: "Umbenennen",	icon: "\ue001", className: "display-only-on-hover ml-2" },
-			 	{ key: "delFolder",	title: "Ordner leeren und löschen", icon: "\ue008" },
+			 	{ key: "delFolder",	title: "Ordner leeren und löschen", icon: "\ue008", className: "btn-primary" },
 			 	{ key: "locked",	title: "Gesperrt", icon: "\ue00f", element: "span" }
 			].forEach(function(props) {
-				var cN = "btn btn-primary webfont-icon-only mr-1 " + props.key + (props.className ? (" " + props.className) : ""),
-				e = (props.element || "button").setProp( { title: props.title, className: cN }).create();
-				e.setAttribute("data-icon", props.icon);
+				var cN = "btn webfont-icon-only tooltip mr-1 " + props.key + (props.className ? (" " + props.className) : ""),
+				e = (props.element || "button").setProp("class", cN).create(props.icon);
+				e.setAttribute("data-tooltip", props.title);
 				elements[props.key] = e;
 			});
 
@@ -101,57 +101,9 @@ this.vxWeb.fileManager = function(config) {
 
 		colNum = filesTable.tHead.rows[0].cells.length,
 
-		addFileButton = (function() {
-			var e = "button".setProp({ type: "button", className: "btn with-webfont-icon-right mx-2" }).create("Datei hinzufügen");
-
-			e.setAttribute("data-icon", "\ue00e");
-
-			vxJS.event.addListener(e, "click", function(e) {
-				if(!form) {
-					xhr.use({ command: "requestAddForm" }).submit();
-				}
-				else {
-					vxJS.widget.confirm({ content: [{ fragment: form }], buttons: [], className: "confirmForm" });
-					confirm.show();
-				}
-				vxJS.event.cancelBubbling(e);
-			});
-			return e;
-		}()),
-
-		addFolderInput = (function() {
-			var elem = "input".setProp("class", "form-input col-3").create();
-			elem.style.display = "none";
-			vxJS.event.addListener(elem, "blur", function() {
-				this.style.display = "none";
-				addFolderButton.style.display = "";
-			});
-			vxJS.event.addListener(elem, "keydown", function(e) {
-				if(e.keyCode === 27 || e.keyCode === 13) {
-					this.style.display = "none";
-					addFolderButton.style.display = "";
-				}
-				if(e.keyCode === 13 && this.value.trim()) {
-					xhr.use({ command: "addFolder" }, vxJS.merge(vxWeb.parameters, { folderName: this.value })).submit();
-				}
-			});
-			return elem;
-		}()),
-
-		addFolderButton = (function() {
-			var e = "button".setProp({ type: "button", className: "btn with-webfont-icon-right" }).create("Neues Verzeichnis anlegen");
-
-			e.setAttribute("data-icon", "\ue007");
-
-			vxJS.event.addListener(e, "click", function(e) {
-				this.style.display = "none";
-				addFolderInput.style.display = "";
-				addFolderInput.value = "";
-				addFolderInput.focus();
-				vxJS.event.cancelBubbling(e);
-			});
-			return e;
-		}()),
+		addFileButton = document.getElementById("addFile"),
+		addFolderButton = document.getElementById("addFolder"),
+		addFolderInput = document.getElementById("addFolderInput"),
 
 		//@todo: xhr request assumes that file id is still in request parameters from previous request
 
@@ -168,7 +120,7 @@ this.vxWeb.fileManager = function(config) {
 		}()),
 
 		activityIndicator = (function() {
-			var e = "span".setProp("class", "vx-activity-indicator loading").create(), queueLength = 0;
+			var e = document.getElementById("activityIndicator"), queueLength = 0;
 
 			var incQL = function() {
 				++queueLength;
@@ -443,7 +395,7 @@ this.vxWeb.fileManager = function(config) {
 						}
 						cell.appendChild(
 							function() {
-								var elem = "input".setProp({ className: "renameInput ml", value: fileData.filename }).create(), keydownListenerId, blurListenerId;
+								var elem = "input".setProp({ className: "form-input", value: fileData.filename }).create(), keydownListenerId, blurListenerId;
 
 								// remove input element
 
@@ -671,9 +623,43 @@ this.vxWeb.fileManager = function(config) {
 
 	// everything prepared, get things going
 
-	vxJS.event.addListener(xhr,		"timeout", function() { window.alert('Dateioperation dauert zu lange. Bitte erneut versuchen.'); });
-	vxJS.event.addListener(xhr,		"complete", function() { activityIndicator.setActivity(); handleXhrResponse(this.response); });
-	vxJS.event.addListener(confirm,	"focusLost", focusForm);
+    vxJS.event.addListener(addFileButton, "click", function(e) {
+        if (!form) {
+            xhr.use({command: "requestAddForm"}).submit();
+        }
+        else {
+            vxJS.widget.confirm({content: [{fragment: form}], buttons: [], className: "confirmForm"});
+            confirm.show();
+        }
+        vxJS.event.cancelBubbling(e);
+    });
+
+    vxJS.event.addListener(addFolderButton, "click", function(e) {
+        this.style.display = "none";
+        addFolderInput.style.display = "";
+        addFolderInput.value = "";
+        addFolderInput.focus();
+        vxJS.event.cancelBubbling(e);
+    });
+
+    vxJS.event.addListener(addFolderInput, "blur", function() {
+        this.style.display = "none";
+        addFolderButton.style.display = "";
+    });
+
+    vxJS.event.addListener(addFolderInput, "keydown", function(e) {
+        if(e.keyCode === 27 || e.keyCode === 13) {
+            this.style.display = "none";
+            addFolderButton.style.display = "";
+        }
+        if(e.keyCode === 13 && this.value.trim()) {
+            xhr.use({ command: "addFolder" }, vxJS.merge(vxWeb.parameters, { folderName: this.value })).submit();
+        }
+    });
+
+    vxJS.event.addListener(xhr, "timeout", function() { window.alert('Dateioperation dauert zu lange. Bitte erneut versuchen.'); });
+	vxJS.event.addListener(xhr, "complete", function() { activityIndicator.setActivity(); handleXhrResponse(this.response); });
+	vxJS.event.addListener(confirm, "focusLost", focusForm);
 	vxJS.event.addListener(
 		t,
 		"finishSort",
@@ -693,8 +679,6 @@ this.vxWeb.fileManager = function(config) {
 		t.sortBy(0, "asc");
 	}
 
-	filesTable.tHead.appendChild("tr".setProp("className", "file-functions").create("td".setProp("colSpan", filesTable.rows[0].cells.length).create("div".setProp("className", "vx-button-bar").create([addFolderButton, addFolderInput, addFileButton, activityIndicator.element]))));
-
 	if(vxJS.dnd) {
 		dnd = vxJS.dnd.create();
 		dnd.addDraggable(confirm.element);
@@ -711,18 +695,14 @@ this.vxWeb.fileManager = function(config) {
 		(function() {
 			var uploadXhr = vxJS.xhr( { upload: true, timeout: config.maxUploadTime } ), uploadQuery, uploadActive, filesQueue = [],
 				progressBar = (function() {
-					var progress = "div".setProp("class", "bar-item").create(),
-						bar = "div".setProp("class", "col-3 vx-progress-bar tooltip").create("div".setProp("class", "bar").create(progress))
-					;
-
-					filesTable.querySelector("div.vx-button-bar").appendChild(bar);
+					var bar = document.getElementById("uploadProgress"),
+                        progress = bar.querySelector(".bar-item");
 
 					return {
 						element: bar,
-						label: null,
 						setPercentage: function(p) {
 							progress.style.width = p + "%";
-                            bar.setAttribute("data-tooltip", this.label + " - " + p + "%");
+                            this.element.setAttribute("data-tooltip", this.label + " - " + p + "%");
 							return this;
 						},
 						show: function() {
@@ -731,8 +711,7 @@ this.vxWeb.fileManager = function(config) {
 						},
 						hide: function() {
 							vxJS.dom.removeClassName(bar, "shown");
-							bar.removeAttribute("data-tooltip");
-							bar.removeAttribute("data-label");
+							this.element.removeAttribute("data-tooltip");
 							return this;
 						}
 					};
