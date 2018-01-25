@@ -1,0 +1,64 @@
+.vx-tree {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    padding: 0;
+    margin: 0 0 0 32px;
+    background: inline-svg("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='100%'><line x1='50%' y1='0' x2='50%' y2='100%' stroke='#f44'/></svg>") no-repeat 0% 0%;
+
+    &:last-child {
+      background: none;
+    }
+
+    img, span {
+      vertical-align: middle;
+    }
+
+    .subtree-collapsed {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      background: inline-svg('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 4.233 4.233"><path d="M.265 0h3.704c.146 0 .264.118.264.265v3.704a.264.264 0 0 1-.264.264H.265A.264.264 0 0 1 0 3.97V.265C0 .118.118 0 .265 0z"/><path fill="#fff" fill-rule="evenodd" d="M1.587.53h1.059v1.057h1.058v1.059H2.646v1.058H1.588V2.646H.528V1.587h1.058V.53"/></svg>') no-repeat;
+      background-size: contain;
+    }
+
+    .subtree-expanded {
+      &:after {
+        display: inline-block;
+        font-family: icomoon;
+        padding: $unit-1;
+        content: $icon-minus-circle2;
+      }
+    }
+
+    .leaf-node {
+      width: 1rem;
+      height: 1rem;
+      display: inline-block;
+      background: inline-svg("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='100%'><line x1='50%' y1='0' x2='50%' y2='50%' stroke='#f44'/><line x1='50%' y1='50%' x2='100%' y2='50%' stroke='#f44'/></svg>") no-repeat 0% 0%;
+    }
+
+    .__label__	{
+      display: inline; cursor: pointer;
+    }
+
+    .current {
+      font-weight: bold; cursor: default;
+    }
+
+    .unchecked {
+
+    }
+
+    .checked {
+
+    }
+
+    .part-checked {
+
+    }
+  }
+}
+

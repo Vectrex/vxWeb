@@ -38,7 +38,6 @@
 	</head>
 
 	<body>
-
 		<div id="page">
 			<header class="vx-navbar p-2">
                 <section class="navbar-section">
