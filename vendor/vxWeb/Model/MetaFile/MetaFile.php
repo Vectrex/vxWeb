@@ -243,15 +243,15 @@ class MetaFile implements PublisherInterface {
 
 	}
 
-	/**
-	 * return all metafile instances within a certain metafolder
-	 * faster than Metafolder::getMetafiles()
-	 *
-	 * @param MetaFolder $folder
-	 * @param callback $callBackSort
-	 *
-	 * @return array metafiles
-	 */
+    /**
+     * return all metafile instances within a certain metafolder
+     * faster than Metafolder::getMetafiles()
+     *
+     * @param MetaFolder $folder
+     * @param callback $callBackSort
+     * @return MetaFile[]
+     * @throws MetaFileException
+     */
 	public static function getMetaFilesInFolder(MetaFolder $folder, $callBackSort = NULL) {
 
 		// instance all filesystem files in folder, to speed up things
@@ -774,14 +774,15 @@ class MetaFile implements PublisherInterface {
 
 	}
 
-	/**
-	 * deletes both filesystem file and metafile and removes instance from lookup array
-	 * filesystem file will be kept when $keepFilesystemFile is TRUE
-	 *
-	 * @param boolean $keepFilesystemFile
-	 *
-	 * @throws Exception
-	 */
+    /**
+     * deletes both filesystem file and metafile and removes instance from lookup array
+     * filesystem file will be kept when $keepFilesystemFile is TRUE
+     *
+     * @param boolean $keepFilesystemFile
+     *
+     * @throws Exception
+     * @throws MetaFileException
+     */
 	public function delete($keepFilesystemFile = FALSE) {
 		
 		MetaFileEvent::create(MetaFileEvent::BEFORE_METAFILE_DELETE, $this)->trigger();
@@ -819,10 +820,12 @@ class MetaFile implements PublisherInterface {
 		$this->isObscured = TRUE;
 	}
 
-	/**
-	 * updates meta data of metafile
-	 * @param array $data new data
-	 */
+    /**
+     * updates meta data of metafile
+     *
+     * @param array $data new data
+     * @throws MetaFileException
+     */
 	public function setMetaData($data) {
 
 		$data = array_change_key_case($data, CASE_LOWER);
@@ -855,13 +858,14 @@ class MetaFile implements PublisherInterface {
 		}
 	}
 
-	/**
-	 * creates a meta file based on filesystem file
-	 * 
-	 * @param FilesystemFile $file
-	 * @throws FilesystemFileException
-	 * @return \vxPHP\File\MetaFile
-	 */
+    /**
+     * creates a meta file based on filesystem file
+     *
+     * @param FilesystemFile $file
+     * @return MetaFile
+     * @throws FilesystemFileException
+     * @throws MetaFileException
+     */
 	public static function createMetaFile(FilesystemFile $file) {
 	
 		$db = Application::getInstance()->getDb();
