@@ -107,16 +107,42 @@ this.vxWeb.fileManager = function(config) {
 
 		//@todo: xhr request assumes that file id is still in request parameters from previous request
 
-		folderTree = (function() {
-			var t = vxJS.widget.tree();
-			vxJS.event.addListener(t, "labelClick", function(b) {
-				if(!b.branch.current) {
-					if(window.confirm("Datei nach " + b.branch.path + " verschieben?")) {
-						xhr.use({ command: "moveFile" }, vxJS.merge(vxWeb.parameters, { destination: b.branch.key })).submit();
+		treeContainer = (function() {
+			var  d = "div".create();
+
+			vxJS.event.addListener(d, "click", function(e) {
+				var matches, parent = this, path = [];
+
+				if(this.nodeName.toLowerCase() === "span" && (matches = this.id.match(/^folder_([0-9]+)$/i))) {
+
+					vxJS.event.cancelBubbling(e);
+
+					while((parent = parent.parentNode) !== d) {
+						if(parent.nodeName.toLowerCase() === "li") {
+							path.unshift(parent.getElementsByTagName("span").item(0).innerText);
+						}
 					}
-				}
+
+                    if(window.confirm("Datei nach '" + path.join("/") + "' verschieben?")) {
+                        xhr.use({ command: "moveFile" }, vxJS.merge(vxWeb.parameters, { destination: matches[1] })).submit();
+                    }
+
+                }
+
 			});
-			return t;
+
+			return {
+				expandToCurrent: function() {
+					var c = d.querySelector(".current");
+
+                    while((c = c.parentNode) !== d) {
+                        if(c.nodeName.toLowerCase() === "li") {
+                        	c.getElementsByTagName("input").item(0).checked = true;
+                        }
+                    }
+				},
+				element: d
+			};
 		}()),
 
 		activityIndicator = (function() {
@@ -609,11 +635,9 @@ this.vxWeb.fileManager = function(config) {
 					break;
 
 				case "getFolderTree":
-					tree = folderTree.getRootTree();
-					tree.truncate();
-					tree.addBranches(r.response.branches);
-
-					vxJS.widget.confirm({ content: [ { fragment: "div".setProp("className", "padded").create(folderTree.element) } ], buttons: [ { label: "Abbrechen", key: "close"} ], className: "confirmForm" });
+					treeContainer.element.innerHTML = r.response;
+					treeContainer.expandToCurrent();
+					vxJS.widget.confirm({ content: [ { fragment: treeContainer.element } ], buttons: [ { label: "Abbrechen", key: "close"} ], className: "confirmForm" });
 
 					confirm.show();
 					break;

@@ -23,7 +23,6 @@
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/confirm.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/calendar.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/sortable.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/widgets/tree.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/simpletabs.js'></script>
 
 	</head>

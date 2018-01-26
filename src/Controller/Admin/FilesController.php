@@ -61,8 +61,8 @@ class FilesController extends Controller {
 
 		return new Response(
 			SimpleTemplate::create($tpl)
-				->assign('upload_max_filesize',		$uploadMaxFilesize)
-				->assign('max_execution_time_ms',	$maxExecutionTime * 900) // 10pct "safety margin"
+				->assign('upload_max_filesize', $uploadMaxFilesize)
+				->assign('max_execution_time_ms', $maxExecutionTime * 900) // 10pct "safety margin"
 				->display());
 	}
 
@@ -70,6 +70,7 @@ class FilesController extends Controller {
 	 * simple helper function to convert ini values like 10M or 256K to integer
 	 *
 	 * @param string $val
+     * @return string
 	 */
 	private function toBytes($val) {
 
@@ -316,11 +317,8 @@ class FilesController extends Controller {
 			// get complete folder tree
 
 			case 'getFolderTree':
-				$response = [
-					'branches' => [
-						$this->getFolderTree(($id = $this->request->request->getInt('file')) ? MetaFile::getInstance(NULL, $id)->getMetafolder() : NULL)
-					]
-				];
+			    $trees = $this->getFolderTree(($id = $this->request->request->getInt('file')) ? MetaFile::getInstance(null, $id)->getMetafolder() : null);
+				$response = $this->renderFolderTree($trees[0]);
 				break;
 
 			// return form for editing file
@@ -829,7 +827,7 @@ class FilesController extends Controller {
 		return $files;
 	}
 
-	private function getFolderTree(MetaFolder $currentFolder = NULL) {
+	private function getFolderTree(MetaFolder $currentFolder = null) {
 
 		$parseFolder = function(MetaFolder $f, $currentFolder) use (&$parseFolder) {
 
@@ -843,18 +841,14 @@ class FilesController extends Controller {
 				}
 			}
 
-			$segments = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
+			$pathSegs = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
+
 			return [
-				'key'			=>	$f->getId(),
-				'elements'		=>	[
-										'node' => 'span',
-										'properties' => ['className' => $f === $currentFolder ? 'current' : ''],
-										'childnodes' => [['text' => array_pop($segments)]]
-									],
-				'terminates'	=>	!count($branches),
-				'branches'		=>	$branches,
-				'current'		=>	$f === $currentFolder,
-				'path'			=>	$f->getRelativePath()
+				'key' => $f->getId(),
+				'label' => end($pathSegs),
+				'branches' => $branches,
+				'current' => $f === $currentFolder,
+				'path' => $f->getRelativePath()
 			];
 		};
 
@@ -864,6 +858,45 @@ class FilesController extends Controller {
 			$trees[] = $parseFolder($f, $currentFolder);
 		}
 
-		return $trees[0];
+		return $trees;
+
 	}
+
+	private function renderFolderTree($tree) {
+
+        $markup = '';
+
+        $renderTree = function($treeData) use (&$markup, &$renderTree) {
+
+            $className = $treeData['current'] ? 'current' : '';
+            $className .= empty($treeData['branches']) ? ' terminates' : '';
+
+            $markup .= sprintf(
+                '<li class="%s"><input type="checkbox" id="treeBranch_%d"><label for="treeBranch_%d"></label><span id="folder_%d">%s</span>',
+                trim($className),
+                $treeData['key'],
+                $treeData['key'],
+                $treeData['key'],
+                $treeData['label']
+            );
+
+            if(!empty($treeData['branches'])) {
+                $markup .= '<ul>';
+
+                foreach($treeData['branches'] as $branch) {
+                    $markup .= $renderTree($branch);
+                }
+
+                $markup .= '</ul>';
+            }
+
+            $markup .= '</li>';
+
+        };
+
+        $renderTree($tree);
+
+        return '<ul class="vx-tree">' . $markup . '</ul>';
+
+    }
 }
