@@ -1,6 +1,5 @@
-.settings
-.buildpath
-.project
+.*
 vendor
 !vendor/vxWeb
-/.externalToolBuilders/
+resources/js
+resources/node_modules

@@ -4,29 +4,51 @@ var cleancss = require('gulp-clean-css');
 var csscomb = require('gulp-csscomb');
 var rename = require('gulp-rename');
 var autoprefixer = require('gulp-autoprefixer');
+var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
 
-var paths = {
-    source: "./scss/*.scss",
+
+var scssPaths = {
+    src: "./scss/*.scss",
     dest: "./dist/css"
 };
 
-gulp.task('watch', function() {
-  gulp.watch('./scss/*.scss', ['build']);
+gulp.task('scssWatch', function() {
+  gulp.watch('./scss/*.scss', ['scssBuild']);
 });
 
-gulp.task('build', function() {
-  gulp.src(paths.source)
+gulp.task('scssBuild', function() {
+  gulp.src(scssPaths.src)
     .pipe(sass({outputStyle: 'compact', precision: 10})
       .on('error', sass.logError)
     )
     .pipe(autoprefixer())
     .pipe(csscomb())
-    .pipe(gulp.dest(paths.dest))
+    .pipe(gulp.dest(scssPaths.dest))
     .pipe(cleancss())
     .pipe(rename({
       suffix: '.min'
     }))
-    .pipe(gulp.dest(paths.dest));
+    .pipe(gulp.dest(scssPaths.dest));
 });
 
-gulp.task('default', ['build']);
+gulp.task('default', ['scssBuild']);
+
+var jsPaths = {
+    src: "./js/",
+    dest: "./dist/js"
+};
+
+gulp.task('jsBuild', function() {
+    gulp.src([
+        "./js/core.js",
+        "./js/xhr.js",
+        "./js/widgets/xhrform.js",
+        "./js/widgets/calendar.js",
+        "./js/widgets/sortable.js",
+        "./js/widgets/simpletabs.js"
+    ])
+        .pipe(concat("vxjs.js"))
+        .pipe(uglify())
+        .pipe(gulp.dest(jsPaths.dest));
+});
