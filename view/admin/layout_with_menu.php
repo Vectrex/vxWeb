@@ -11,16 +11,9 @@
 		<meta http-equiv='content-type' content='text/html; charset=UTF-8'>
 		<meta name='author' content='Gregor Kofler - Mediendesign und Webapplikationen, http://gregorkofler.com'>
 
-		<link rel='icon' type='image/x-icon'	href='/favicon.ico'>
-		<link type='text/css' rel='stylesheet'	href='/css/admin.min.css'>
-
-		<script type='text/javascript' src='/js/vendor/vxJS/core.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/widget.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/xhr.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/widgets/xhrform.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/widgets/calendar.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/widgets/sortable.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/widgets/simpletabs.js'></script>
+		<link rel='icon' type='image/x-icon' href='/favicon.ico'>
+		<link type='text/css' rel='stylesheet' href='/css/admin.min.css'>
+        <script type="text/javascript" src="/js/admin/vxjs.js"></script>
 
 		<script type="text/javascript">
 			if(!this.vxWeb) {
@@ -37,6 +30,7 @@
 		<div id="page">
 			<header class="vx-navbar p-2">
                 <section class="navbar-section">
+                    <button class="btn btn-link webfont-icon-only" onclick="document.getElementById('sidebar').classList.toggle('hidden');">&#xe054;</button>
 					<a class="btn btn-link with-webfont-icon-right" data-icon="&#xe010;" href="<?= vxPHP\Routing\Router::getRoute('profile', 'admin.php')->getUrl(); ?>"><strong><?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() ?></strong> (<?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getAttribute('email') ?>)</a>
                 </section>
                 <section class="navbar-section">

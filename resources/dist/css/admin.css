@@ -4612,8 +4612,13 @@ body
 }
 
 #sidebar
-{width: 20%; max-width: 10rem; 
-    padding: 4rem 1rem 1rem 1rem; border-right: solid .05rem #e7e9ed;
+{max-width: 10rem; 
+    padding: 4rem 1rem 1rem 1rem; -webkit-transition: margin-left .2s ease-in-out;         transition: margin-left .2s ease-in-out; border-right: solid .05rem #e7e9ed;
+}
+
+#sidebar.hidden
+{
+    margin-left: -10rem;
 }
 
 #sidebar > .nav
