@@ -18,7 +18,6 @@
 		<script type='text/javascript' src='/js/vendor/vxJS/widget.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/xhr.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/extra/fx.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/extra/dnd.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/xhrform.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/confirm.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/calendar.js'></script>
