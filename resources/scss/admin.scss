@@ -98,6 +98,10 @@ a.webfont-icon-only {
   @extend .is-error;
 }
 
+.modal-container .modal-body {
+  max-height: 75vh;
+}
+
 // custom layout
 
 html, body {

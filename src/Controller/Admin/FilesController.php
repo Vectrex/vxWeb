@@ -311,7 +311,7 @@ class FilesController extends Controller {
 			// return form for adding new file(delivered only once)
 
 			case 'requestAddForm':
-				$response = ['html' => $this->getAddForm()->render()];
+				$response = $this->getAddForm()->render();
 				break;
 
 			// get complete folder tree
@@ -330,7 +330,7 @@ class FilesController extends Controller {
 					ImageCache::create()->apply($markup);
 					AssetsPath::create()->apply($markup);
 
-					$response = ['html' => $markup];
+					$response = $markup;
 				}
 				else {
 					$response = ['error' => TRUE];
@@ -665,8 +665,7 @@ class FilesController extends Controller {
 			->addElement(FormElementFactory::create('input', 'File', '', ['type' => 'file']))
 			->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1))
 			->addElement(FormElementFactory::create('textarea', 'description'))
-			->addElement(FormElementFactory::create('button', 'submit_add')->setInnerHTML('Speichern'))
-			->addElement(FormElementFactory::create('button', 'submit_cancel')->setInnerHTML('Abbrechen'));
+			->addElement(FormElementFactory::create('button', 'submit_add')->setInnerHTML('Speichern'));
 	}
 
 	private function getEditForm(MetaFile $file) {
@@ -713,7 +712,6 @@ class FilesController extends Controller {
 			->addElement(FormElementFactory::create('input', 'customsort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
 			->addElement(FormElementFactory::create('textarea', 'description'))
 			->addElement(FormElementFactory::create('button', 'submit_edit')->setInnerHTML('Speichern'))
-			->addElement(FormElementFactory::create('button', 'submit_cancel')->setInnerHTML('Abbrechen'))
 			->addMiscHtml('Fileinfo', $infoHtml)
 			->setInitFormValues($data);
 	}

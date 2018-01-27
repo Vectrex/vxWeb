@@ -5072,6 +5072,11 @@ a.webfont-icon-only
     max-width: 50rem;
 }
 
+.modal-container .modal-body
+{
+    max-height: 75vh;
+}
+
 html,
 body
 {

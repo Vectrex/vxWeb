@@ -35,11 +35,85 @@ this.vxWeb.fileManager = function(config) {
 		xhr = vxJS.xhr( { uri: uri, echo: true, timeout: 10000 }),
 		form, xhrForm,
 		formInitValues = {}, filesTableListeners = [],
-		dnd,
-		confirm = vxJS.widget.confirm( {
-			overlay: true,
-			decoration: [{ html: '<div class="vxJS_dragBar"></div><div class="vxJS_confirm_content"></div><div class="vxJS_confirm_buttons"></div>' }]
-		}),
+
+		fileModal = (function() {
+
+			//  onclick="this.parentNode.classList.remove('active'); event.preventDefault();"
+
+			var d = "div".create(), elem, header, content;
+
+			d.innerHTML = `
+				<div class="modal modal-sm" id="modal">
+					<a href="#" class="modal-overlay" aria-label="Close"></a>
+                	<div class="modal-container">
+                		<div class="modal-header"><strong></strong><button class="btn btn-clear float-right" aria-label="Close"></button></div>
+            			<div class="modal-body"><div class="content"></div></div>
+            		</div>
+            	</div>`;
+
+            elem = d.firstElementChild;
+            header = elem.querySelector(".modal-header");
+            content = elem.querySelector(".content");
+
+			var hide = function() {
+				elem.classList.remove("active");
+			};
+
+			var show = function() {
+				elem.classList.add("active");
+			};
+
+			header = elem.querySelector(".modal-header > strong");
+
+			vxJS.event.addListener(elem.querySelector(".modal-header button.btn-clear"), "click", function(e) { hide(); vxJS.event.cancelBubbling(e); });
+			vxJS.event.addListener(elem.querySelector("a"), "click", function() { hide(); vxJS.event.preventDefault(); } );
+			document.body.appendChild(elem);
+
+			return {
+                element: elem,
+
+				setHeader: function(markup) {
+					header.innerHTML = markup;
+					return this;
+				},
+
+				setContent: function(markup) {
+					if(markup instanceof Node) {
+						content.innerHTML = "";
+						content.appendChild(markup);
+					}
+					else {
+						content.innerHTML = markup;
+					}
+					return this;
+				},
+
+				setSize: function(size) {
+
+                	var l = elem.classList;
+
+                	switch(size) {
+						case "sm":
+							l.remove("modal-lg");
+							l.add("modal-sm");
+							break;
+                        case "lg":
+                            l.remove("modal-sm");
+                            l.add("modal-lg");
+                            break;
+						default:
+                            l.remove("modal-lg");
+                            l.remove("modal-sm");
+					}
+
+					return this;
+				},
+
+				show: function() { show(); return this; },
+				hide: function() { hide(); return this; }
+			};
+
+		}()),
 		lsValue, lsKey = window.location.origin + "/admin/files" + "__sort__",
 		folderRex = /(^| )folder-row( |$)/,
 
@@ -230,22 +304,13 @@ this.vxWeb.fileManager = function(config) {
 		);
 
 		vxJS.event.addListener(
-			form.elements["submit_cancel"],
-			"click",
-			function(e) {
-				confirm.hide();
-				vxJS.event.preventDefault(e);
-			}
-		);
-
-		vxJS.event.addListener(
 			xhrForm,
 			"ifuResponse",
 			function(response) {
 				var p;
 
 				if(response.success) {
-					confirm.hide();
+					fileModal.hide();
 					for(p in formInitValues) {
 						if(formInitValues.hasOwnProperty(p)) {
 							form.elements[p].value = formInitValues[p];
@@ -255,13 +320,6 @@ this.vxWeb.fileManager = function(config) {
 				}
 			}
 		);
-	};
-
-	var focusForm = function() {
-		var forms = this.element.getElementsByTagName("form");
-		if(forms[0] && forms[0].elements[0]) {
-			forms[0].elements[0].focus();
-		}
 	};
 
 	var buildDirectoryBar = function(pathSegs) {
@@ -567,7 +625,7 @@ this.vxWeb.fileManager = function(config) {
 					break;
 
 				case "moveFile":
-					confirm.hide();
+					fileModal.hide();
 
 				case "getFiles":
 				case "addFolder":
@@ -581,21 +639,16 @@ this.vxWeb.fileManager = function(config) {
 					break;
 
 				case "requestAddForm":
-					vxJS.widget.confirm({ content: r.response, buttons: [], className: "confirmForm" });
-					form = confirm.element.getElementsByTagName("form")[0];
-
+					fileModal.setHeader("Neue Datei übertragen/anlegen").setContent(r.response).setSize();
+					form = fileModal.element.getElementsByTagName("form")[0];
 					prepareAddForm();
-
-					confirm.show();
+					fileModal.show();
 					form.elements[0].focus();
 					break;
 
 				case "requestEditForm":
-					vxJS.widget.confirm({ content: r.response, buttons: [], className: "confirmForm" });
-
-					// prepare edit form
-
-					f = confirm.element.getElementsByTagName("form")[0];
+                    fileModal.setHeader("Datei bearbeiten").setContent(r.response).setSize();
+					f = fileModal.element.getElementsByTagName("form")[0];
 
 					xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
 					xForm.	addSubmit(f.elements["submit_edit"]).
@@ -613,33 +666,19 @@ this.vxWeb.fileManager = function(config) {
 							}
 							else {
 								buildFilesTable(r);
-								f = null;
 								xForm = null;
-								confirm.hide();
+								fileModal.hide();
 							}
 						}
 					);
 
-					vxJS.event.addListener(
-						f.elements["submit_cancel"],
-						"click",
-						function(e) {
-							f = null;
-							xForm = null;
-							confirm.hide();
-							vxJS.event.preventDefault(e);
-						}
-					);
-
-					confirm.show();
+					fileModal.show();
 					break;
 
 				case "getFolderTree":
 					treeContainer.element.innerHTML = r.response;
 					treeContainer.expandToCurrent();
-					vxJS.widget.confirm({ content: [ { fragment: treeContainer.element } ], buttons: [ { label: "Abbrechen", key: "close"} ], className: "confirmForm" });
-
-					confirm.show();
+					fileModal.setHeader("Zielordner wählen").setContent(treeContainer.element).setSize("sm").show();
 					break;
 			}
 		}
@@ -647,15 +686,13 @@ this.vxWeb.fileManager = function(config) {
 
 	// everything prepared, get things going
 
-    vxJS.event.addListener(addFileButton, "click", function(e) {
+    vxJS.event.addListener(addFileButton, "click", function() {
         if (!form) {
             xhr.use({command: "requestAddForm"}).submit();
         }
         else {
-            vxJS.widget.confirm({content: [{fragment: form}], buttons: [], className: "confirmForm"});
-            confirm.show();
+        	fileModal.setHeader("Neue Datei übertragen/anlegen").setContent(form).show();
         }
-        vxJS.event.cancelBubbling(e);
     });
 
     vxJS.event.addListener(addFolderButton, "click", function(e) {
@@ -663,7 +700,6 @@ this.vxWeb.fileManager = function(config) {
         addFolderInput.style.display = "";
         addFolderInput.value = "";
         addFolderInput.focus();
-        vxJS.event.cancelBubbling(e);
     });
 
     vxJS.event.addListener(addFolderInput, "blur", function() {
@@ -683,7 +719,6 @@ this.vxWeb.fileManager = function(config) {
 
     vxJS.event.addListener(xhr, "timeout", function() { window.alert('Dateioperation dauert zu lange. Bitte erneut versuchen.'); });
 	vxJS.event.addListener(xhr, "complete", function() { activityIndicator.setActivity(); handleXhrResponse(this.response); });
-	vxJS.event.addListener(confirm, "focusLost", focusForm);
 	vxJS.event.addListener(
 		t,
 		"finishSort",
@@ -701,11 +736,6 @@ this.vxWeb.fileManager = function(config) {
 	}
 	else {
 		t.sortBy(0, "asc");
-	}
-
-	if(vxJS.dnd) {
-		dnd = vxJS.dnd.create();
-		dnd.addDraggable(confirm.element);
 	}
 
 	getFiles();
