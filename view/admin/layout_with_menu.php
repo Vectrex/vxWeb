@@ -17,9 +17,7 @@
 		<script type='text/javascript' src='/js/vendor/vxJS/core.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widget.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/xhr.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/extra/fx.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/xhrform.js'></script>
-		<script type='text/javascript' src='/js/vendor/vxJS/widgets/confirm.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/calendar.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/sortable.js'></script>
 		<script type='text/javascript' src='/js/vendor/vxJS/widgets/simpletabs.js'></script>
@@ -42,8 +40,8 @@
 					<a class="btn btn-link with-webfont-icon-right" data-icon="&#xe010;" href="<?= vxPHP\Routing\Router::getRoute('profile', 'admin.php')->getUrl(); ?>"><strong><?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername() ?></strong> (<?= vxPHP\Application\Application::getInstance()->getCurrentUser()->getAttribute('email') ?>)</a>
                 </section>
                 <section class="navbar-section">
-                    <a  class="btn btn-link" href="<?= vxPHP\Routing\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden <i class="icon icon-shutdown"></i></a>
-                    <a href="/" class="btn btn-link">Gehe zu <?= vxPHP\Http\Request::createFromGlobals()->getHost() ?> <i class="icon icon-arrow-right"></i></a>
+                    <a  class="btn btn-link with-webfont-icon-right" data-icon="&#xe012;" href="<?= vxPHP\Routing\Router::getRoute('logout', 'admin.php')->getUrl(); ?>">Abmelden</a>
+                    <a href="/" target="_blank" class="btn btn-link with-webfont-icon-right" data-icon="&#xe023;">Gehe zu <?= vxPHP\Http\Request::createFromGlobals()->getHost() ?></a>
                 </section>
             </header>
 

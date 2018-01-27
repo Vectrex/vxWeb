@@ -36,86 +36,7 @@ this.vxWeb.fileManager = function(config) {
 		form, xhrForm,
 		formInitValues = {}, filesTableListeners = [],
 
-		fileModal = (function() {
-
-			//  onclick="this.parentNode.classList.remove('active'); event.preventDefault();"
-
-			var d = "div".create(), elem, header, content;
-
-			d.innerHTML = `
-				<div class="modal modal-sm" id="modal">
-					<a href="#" class="modal-overlay" aria-label="Close"></a>
-                	<div class="modal-container">
-                		<div class="modal-header"><strong></strong><button class="btn btn-clear float-right" aria-label="Close"></button></div>
-            			<div class="modal-body"><div class="content"></div></div>
-            		</div>
-            	</div>`;
-
-            elem = d.firstElementChild;
-            header = elem.querySelector(".modal-header");
-            content = elem.querySelector(".content");
-
-			var hide = function() {
-				elem.classList.remove("active");
-			};
-
-			var show = function() {
-				elem.classList.add("active");
-			};
-
-			header = elem.querySelector(".modal-header > strong");
-
-			vxJS.event.addListener(elem.querySelector(".modal-header button.btn-clear"), "click", function(e) { hide(); vxJS.event.cancelBubbling(e); });
-			vxJS.event.addListener(elem.querySelector("a"), "click", function() { hide(); vxJS.event.preventDefault(); } );
-			document.body.appendChild(elem);
-
-			return {
-                element: elem,
-
-				setHeader: function(markup) {
-					header.innerHTML = markup;
-					return this;
-				},
-
-				setContent: function(markup) {
-					if(markup instanceof Node) {
-						content.innerHTML = "";
-						content.appendChild(markup);
-					}
-					else {
-						content.innerHTML = markup;
-					}
-					return this;
-				},
-
-				setSize: function(size) {
-
-                	var l = elem.classList;
-
-                	switch(size) {
-						case "sm":
-							l.remove("modal-lg");
-							l.add("modal-sm");
-							break;
-                        case "lg":
-                            l.remove("modal-sm");
-                            l.add("modal-lg");
-                            break;
-						default:
-                            l.remove("modal-lg");
-                            l.remove("modal-sm");
-					}
-
-					return this;
-				},
-
-				show: function() { show(); return this; },
-				hide: function() { hide(); return this; }
-			};
-
-		}()),
 		lsValue, lsKey = window.location.origin + "/admin/files" + "__sort__",
-		folderRex = /(^| )folder-row( |$)/,
 
 		icons = (function() {
 			var elements = {};
@@ -153,6 +74,7 @@ this.vxWeb.fileManager = function(config) {
 		},
 
 		fancyFileRowSort = function(a, b) {
+            var folderRex = /(^| )folder-row( |$)/;
 			var s = this.asc ? 1 : -1, fra = folderRex.test(a.element.className), frb = folderRex.test(b.element.className);
 			if((fra && frb) || (!fra && !frb)) {
 				if(a.value === b.value) { return 0; }
@@ -177,71 +99,179 @@ this.vxWeb.fileManager = function(config) {
 
 		addFileButton = document.getElementById("addFile"),
 		addFolderButton = document.getElementById("addFolder"),
-		addFolderInput = document.getElementById("addFolderInput"),
+		addFolderInput = document.getElementById("addFolderInput");
 
 		//@todo: xhr request assumes that file id is still in request parameters from previous request
+    /**
+     * wrapped modal used for file operation dialogs
+     * @type {{element, setHeader, setContent, setSize, show, hide}}
+     */
+    var fileModal = (function() {
 
-		treeContainer = (function() {
-			var  d = "div".create();
+        var d = "div".create(), elem, header, content;
 
-			vxJS.event.addListener(d, "click", function(e) {
-				var matches, parent = this, path = [];
+        d.innerHTML = '<div class="modal modal-sm" id="modal"><a href="#" class="modal-overlay" aria-label="Close"></a><div class="modal-container"><div class="modal-header"><strong></strong><button class="btn btn-clear float-right" aria-label="Close"></button></div><div class="modal-body"><div class="content"></div></div></div></div>';
 
-				if(this.nodeName.toLowerCase() === "span" && (matches = this.id.match(/^folder_([0-9]+)$/i))) {
+        elem = d.firstElementChild;
+        header = elem.querySelector(".modal-header");
+        content = elem.querySelector(".content");
 
-					vxJS.event.cancelBubbling(e);
+        var hide = function() {
+            elem.classList.remove("active");
+        };
 
-					while((parent = parent.parentNode) !== d) {
-						if(parent.nodeName.toLowerCase() === "li") {
-							path.unshift(parent.getElementsByTagName("span").item(0).innerText);
-						}
-					}
+        var show = function() {
+            elem.classList.add("active");
+        };
 
-                    if(window.confirm("Datei nach '" + path.join("/") + "' verschieben?")) {
-                        xhr.use({ command: "moveFile" }, vxJS.merge(vxWeb.parameters, { destination: matches[1] })).submit();
-                    }
+        header = elem.querySelector(".modal-header > strong");
+        document.body.appendChild(elem);
 
+        vxJS.event.addListener(elem.querySelector(".modal-header button.btn-clear"), "click", function(e) { hide(); vxJS.event.cancelBubbling(e); });
+        vxJS.event.addListener(elem.querySelector("a"), "click", function(e) { hide(); vxJS.event.preventDefault(e); } );
+
+        return {
+            element: elem,
+
+            setHeader: function(markup) {
+                header.innerHTML = markup;
+                return this;
+            },
+
+            setContent: function(markup) {
+                if(markup instanceof Node) {
+                    content.innerHTML = "";
+                    content.appendChild(markup);
+                }
+                else {
+                    content.innerHTML = markup;
+                }
+                return this;
+            },
+
+            setSize: function(size) {
+
+                var l = elem.classList;
+
+                switch(size) {
+                    case "sm":
+                        l.remove("modal-lg");
+                        l.add("modal-sm");
+                        break;
+                    case "lg":
+                        l.remove("modal-sm");
+                        l.add("modal-lg");
+                        break;
+                    default:
+                        l.remove("modal-lg");
+                        l.remove("modal-sm");
                 }
 
-			});
+                return this;
+            },
 
-			return {
-				expandToCurrent: function() {
-					var c = d.querySelector(".current");
+            show: function() { show(); return this; },
+            hide: function() { hide(); return this; }
+        };
 
-                    while((c = c.parentNode) !== d) {
-                        if(c.nodeName.toLowerCase() === "li") {
-                        	c.getElementsByTagName("input").item(0).checked = true;
-                        }
-                    }
-				},
-				element: d
-			};
-		}()),
+    }());
 
-		activityIndicator = (function() {
-			var e = document.getElementById("activityIndicator"), queueLength = 0;
+	/**
+	 * container for a simple CSS based tree widget
+	 * @type {{expandToCurrent, element}}
+	 */
+	var	treeContainer = (function() {
+		var  d = "div".create();
 
-			var incQL = function() {
-				++queueLength;
-                vxJS.dom.addClassName(e, "loading");
-			};
-			var decQL = function() {
-				if(queueLength) {
-					--queueLength;
-					if(!queueLength) {
-						vxJS.dom.removeClassName(e, "loading");
+		vxJS.event.addListener(d, "click", function(e) {
+			var matches, parent = this, path = [];
+
+			if(this.nodeName.toLowerCase() === "span" && (matches = this.id.match(/^folder_([0-9]+)$/i))) {
+
+				vxJS.event.cancelBubbling(e);
+
+				while((parent = parent.parentNode) !== d) {
+					if(parent.nodeName.toLowerCase() === "li") {
+						path.unshift(parent.getElementsByTagName("span").item(0).innerText);
 					}
 				}
-			};
-			return {
-				element: e,
-				setActivity: incQL,
-				unsetActivity: decQL
-			};
-		}());
-	
-	var getFiles = function(folderId) {
+
+				if(window.confirm("Datei nach '" + path.join("/") + "' verschieben?")) {
+					xhr.use({ command: "moveFile" }, vxJS.merge(vxWeb.parameters, { destination: matches[1] })).submit();
+				}
+
+			}
+
+		});
+
+		return {
+			expandToCurrent: function() {
+				var c = d.querySelector(".current");
+
+				while((c = c.parentNode) !== d) {
+					if(c.nodeName.toLowerCase() === "li") {
+						c.getElementsByTagName("input").item(0).checked = true;
+					}
+				}
+			},
+			element: d
+		};
+	}());
+
+	/**
+	 * the activity indicator shown when file operations are in progress
+	 * @type {{element, setActivity, unsetActivity}}
+	 */
+	var activityIndicator = (function() {
+		var e = document.getElementById("activityIndicator"), queueLength = 0;
+
+		var incQL = function() {
+			++queueLength;
+			vxJS.dom.addClassName(e, "loading");
+		};
+		var decQL = function() {
+			if(queueLength) {
+				--queueLength;
+				if(!queueLength) {
+					vxJS.dom.removeClassName(e, "loading");
+				}
+			}
+		};
+		return {
+			element: e,
+			setActivity: incQL,
+			unsetActivity: decQL
+		};
+	}());
+
+    /**
+	 * the progress bar to indicate file upload progress
+     * @type {{element, setPercentage, show, hide}}
+     */
+    var progressBar = (function() {
+        var bar = document.getElementById("uploadProgress"),
+            progress = bar.querySelector(".bar-item");
+
+        return {
+            element: bar,
+            setPercentage: function(p) {
+                progress.style.width = p + "%";
+                this.element.setAttribute("data-tooltip", this.label + " - " + p + "%");
+                return this;
+            },
+            show: function() {
+                vxJS.dom.addClassName(bar, "shown");
+                return this;
+            },
+            hide: function() {
+                vxJS.dom.removeClassName(bar, "shown");
+                this.element.removeAttribute("data-tooltip");
+                return this;
+            }
+        };
+    }());
+
+    var getFiles = function(folderId) {
 		if(folderId) {
 			vxWeb.parameters.folder = folderId;
 		}
@@ -747,29 +777,7 @@ this.vxWeb.fileManager = function(config) {
 		// outer scope variables: filesTable, buildFilesTable()
 
 		(function() {
-			var uploadXhr = vxJS.xhr( { upload: true, timeout: config.maxUploadTime } ), uploadQuery, uploadActive, filesQueue = [],
-				progressBar = (function() {
-					var bar = document.getElementById("uploadProgress"),
-                        progress = bar.querySelector(".bar-item");
-
-					return {
-						element: bar,
-						setPercentage: function(p) {
-							progress.style.width = p + "%";
-                            this.element.setAttribute("data-tooltip", this.label + " - " + p + "%");
-							return this;
-						},
-						show: function() {
-							vxJS.dom.addClassName(bar, "shown");
-							return this;
-						},
-						hide: function() {
-							vxJS.dom.removeClassName(bar, "shown");
-							this.element.removeAttribute("data-tooltip");
-							return this;
-						}
-					};
-				}());
+			var uploadXhr = vxJS.xhr( { upload: true, timeout: config.maxUploadTime } ), uploadQuery, uploadActive, filesQueue = [];
 
 			var finishUpload = function() {
 				uploadActive = false;
@@ -784,12 +792,12 @@ this.vxWeb.fileManager = function(config) {
 			};
 
 			vxJS.event.addListener(config.filesList, "dragover", function(e) {
-				vxJS.dom.addClassName(config.filesList, "draggedOver");
+				vxJS.dom.addClassName(config.filesList, "dragged-over");
 				vxJS.event.preventDefault(e);
 			});
 
 			vxJS.event.addListener(config.filesList, "dragleave", function(e) {
-				vxJS.dom.removeClassName(config.filesList, "draggedOver");
+				vxJS.dom.removeClassName(config.filesList, "dragged-over");
 				vxJS.event.preventDefault(e);
 			});
 
@@ -826,7 +834,7 @@ this.vxWeb.fileManager = function(config) {
 					}
 				}
 
-				vxJS.dom.removeClassName(config.filesList, "draggedOver");
+				vxJS.dom.removeClassName(config.filesList, "dragged-over");
 
 				vxJS.event.preventDefault(e);
 				vxJS.event.cancelBubbling(e);

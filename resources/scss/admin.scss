@@ -12,7 +12,6 @@ $base-font-family: "verbcond";
 @import "mixin/webfont";
 
 @import "spectre/spectre";
-@import "spectre/spectre-icons";
 @import "spectre/spectre-exp";
 
 @import "vx/icon_variables";
@@ -238,4 +237,9 @@ table.table-striped tbody tr:nth-of-type(2n+1).active {
 td:hover .display-only-on-hover {
   visibility: visible;
   opacity: 1;
+}
+
+.dragged-over {
+  border: solid $unit-1 $alternative-primary-color;
+  margin: -$unit-1;
 }
