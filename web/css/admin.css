@@ -4562,7 +4562,7 @@ a.text-error:hover
 .webfont-icon-only
 {font-family: icomoon; 
 
-    display: inline-block; content: attr(data-icon);
+    display: inline-block;
 }
 
 .webfont-icon-only.tooltip:after

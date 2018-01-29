@@ -76,7 +76,6 @@ $sidebar-width: 10rem;
 .webfont-icon-only {
   display: inline-block;
   font-family: icomoon;
-  content: attr(data-icon);
 
   &.tooltip:after {
     font-family: $base-font-family;

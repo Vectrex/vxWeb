@@ -6,8 +6,8 @@ this.vxWeb.doPages = function() {
 		xhrForm = vxJS.widget.xhrForm(form, { uri: vxWeb.routes.page }),
 		revisionsContainer = document.getElementById("revisions").tBodies[0],
 		delElem = (function() {
-			var e = "button".setProp( { type: "button", title: "Löschen", className: "btn btn-primary webfont-icon-only" }).create();
-			e.setAttribute("data-icon", "\ue011");
+			var e = "button".setProp( { type: "button", className: "btn btn-primary webfont-icon-only tooltip tooltip-left" }).create("\ue011");
+            e.setAttribute("data-tooltip", "Löschen");
 			return e;
 		}()),
 		needsFormData = true, revisionId, timeoutId;
@@ -217,6 +217,9 @@ this.vxWeb.doPages = function() {
 			vxJS.dom.removeClassName(mBox, "toast-error");
 			vxJS.dom.addClassName(mBox, "toast-success");
 
+			// retrieve updated revisions list
+
+            revisionsXhr.submit();
 		}
 
 		else {
