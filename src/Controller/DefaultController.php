@@ -7,6 +7,8 @@ use vxPHP\Http\Response;
 use vxPHP\Http\Exception\HttpException;
 use vxPHP\Template\Exception\SimpleTemplateException;
 use vxPHP\Template\SimpleTemplate;
+use vxWeb\Model\Page\Page;
+use vxWeb\Model\Page\PageException;
 
 class DefaultController extends Controller {
 
@@ -28,18 +30,24 @@ class DefaultController extends Controller {
 					// pick page from the end of the segments sequence
 		
 				if(count($this->pathSegments)) {
-					$page = array_pop($this->pathSegments);
+					$pageAlias = array_pop($this->pathSegments);
 				}
-		
 				// alternatively fall back to the route id (for example on splash pages)
 		
 				else {
-					$page = $this->route->getRouteId();
-				}
-	
+                    $pageAlias = $this->route->getRouteId();
+                }
+
+                try {
+                    $page = Page::getInstance($pageAlias);
+                }
+                catch (PageException $e) {
+				    $page = null;
+                }
+
 				// load index template
 
-				$include = new SimpleTemplate('default' . DIRECTORY_SEPARATOR . preg_replace('~[^a-z0-9_-]~i', '', $page) . '.php');
+				$include = new SimpleTemplate('default' . DIRECTORY_SEPARATOR . preg_replace('~[^a-z0-9_-]~i', '', $pageAlias) . '.php');
 			}
 
 			if($include->containsPHP()) {
@@ -53,7 +61,8 @@ class DefaultController extends Controller {
 				// replace content block with vx for snippet in response
 
 				return new Response(SimpleTemplate::create('layout.php')
-					->assign('route', $page)
+					->assign('route', $pageAlias)
+                    ->assign('page', $page)
 					->insertTemplateAt($include, 'content_block')
 					->display()
 				);
@@ -63,7 +72,8 @@ class DefaultController extends Controller {
 			else {
 
 				return new Response($include
-					->assign('route', $page)
+					->assign('route', $pageAlias)
+                    ->assign('page', $page)
 					->display()
 				);
 				
