@@ -22,7 +22,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.2.2 2018-02-02
+ * @version 1.3.0 2018-02-02
  *
  * @todo compatibility checks on windows systems
  */
@@ -88,19 +88,16 @@ class MetaFolder {
 	 */
 	private $metaFiles;
 
-	/**
-	 * @var MetaFolder[]
-	 */
-	private	$metaFolders;
-
     /**
      * retrieve metafolder instance by either primary key of db entry
      * or path - both relative and absolute paths are allowed
      *
+     * @param string $path
+     * @param int $id
      * @return MetaFolder
      * @throws MetaFolderException
      */
-	public static function getInstance($path = NULL, $id = NULL) {
+	public static function getInstance($path = null, $id = null) {
 
 		if(isset($path)) {
 			$path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -108,20 +105,21 @@ class MetaFolder {
 			$lookup = Application::getInstance()->extendToAbsoluteAssetsPath($path);
 
 			if(!isset(self::$instancesByPath[$lookup])) {
-				$mf = new self($path);
-				self::$instancesByPath[$mf->getFullPath()]	= $mf;
-				self::$instancesById[$mf->getId()]			= $mf;
+				new self($path);
 			}
+
 			return self::$instancesByPath[$lookup];
+
 		}
 		else if(isset($id)) {
+
 			if(!isset(self::$instancesById[$id])) {
-				$mf = new self(NULL, $id);
-				self::$instancesById[$id]					= $mf;
-				self::$instancesByPath[$mf->getFullPath()]	= $mf;
+				new self(null, $id);
 			}
+
 			return self::$instancesById[$id];
 		}
+
 		else {
 			throw new MetaFolderException("Either folder id or path required.", MetaFolderException::ID_OR_PATH_REQUIRED);
 		}
@@ -135,9 +133,10 @@ class MetaFolder {
      *
      * @param string $path of metafolder
      * @param integer $id of metafolder
+     * @param array $dbEntry row data of a metafolder
      * @throws MetaFolderException
      */
-	private function __construct($path = NULL, $id = NULL, array $dbEntry = NULL) {
+	private function __construct($path = null, $id = null, array $dbEntry = null) {
 
 		if(isset($path)) {
 			$path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -147,24 +146,27 @@ class MetaFolder {
 
 		else if(isset($id)) {
 			$this->data = $this->getDbEntryById($id);
-			$this->fullPath = substr($this->data['path'], 0, 1) == DIRECTORY_SEPARATOR ? $this->data['path'] : Application::getInstance()->getAbsoluteAssetsPath() . $this->data['path'];
+			$this->fullPath = substr($this->data['path'], 0, 1) === DIRECTORY_SEPARATOR ? $this->data['path'] : Application::getInstance()->getAbsoluteAssetsPath() . $this->data['path'];
 		}
 
 		else if(isset($dbEntry)) {
 			$this->data = $dbEntry;
-			$this->fullPath = substr($this->data['path'], 0, 1) == DIRECTORY_SEPARATOR ? $this->data['path'] : Application::getInstance()->getAbsoluteAssetsPath() . $this->data['path'];
+			$this->fullPath = substr($this->data['path'], 0, 1) === DIRECTORY_SEPARATOR ? $this->data['path'] : Application::getInstance()->getAbsoluteAssetsPath() . $this->data['path'];
 		}
 
 		$this->filesystemFolder = FilesystemFolder::getInstance($this->fullPath);
 
-		$this->id				= $this->data['foldersid'];
-		$this->level			= (int) $this->data['level'];
-		$this->l				= (int) $this->data['l'];
-		$this->r				= (int) $this->data['r'];
-		$this->obscure_files	= (boolean) $this->data['obscure_files'];
-		$this->name				= basename($this->fullPath);
-		
-	}
+		$this->id = $this->data['foldersid'];
+		$this->level = (int) $this->data['level'];
+		$this->l = (int) $this->data['l'];
+		$this->r = (int) $this->data['r'];
+		$this->obscure_files = (boolean) $this->data['obscure_files'];
+		$this->name = basename($this->fullPath);
+
+        self::$instancesByPath[$this->fullPath] = $this;
+        self::$instancesById[$this->id] = $this;
+
+    }
 
 	private function getDbEntryByPath($path) {
 
@@ -321,37 +323,36 @@ class MetaFolder {
     /**
      * return all metafolders within this folder
      *
-     * @param boolean $force forces re-reading of metafolder
-     *
      * @return MetaFolder[]
      * @throws MetaFolderException
      */
-	public function getMetaFolders($force = FALSE) {
+	public function getMetaFolders() {
 
-		if(!isset($this->metaFolders) || $force) {
-			$this->metaFolders = [];
+	    $metaFolders = [];
 
-			foreach(
-				Application::getInstance()->getDb()->doPreparedQuery(
-					'SELECT foldersID from folders WHERE l > ? AND r < ? AND level = ?',
-					[(int) $this->l, (int) $this->r, $this->level + 1]
-				)
-			as $f) {
-				$this->metaFolders[] = self::getInstance(NULL, $f['foldersid']);
-			}
+        foreach(
+            Application::getInstance()->getDb()->doPreparedQuery(
+                'SELECT * from folders WHERE l > ? AND r < ? AND level = ?',
+                [(int) $this->l, (int) $this->r, $this->level + 1]
+            )
+        as $f) {
+            $metaFolders[] = new self(null, null, $f);
 		}
 
-		return $this->metaFolders;
+		return $metaFolders;
 
 	}
 
-	/**
-	 * return parent metafolder or NULL if already top folder
-	 */
+    /**
+     * return parent metafolder or NULL if already top folder
+     *
+     * @return MetaFolder | null
+     * @throws MetaFolderException
+     */
 	public function getParentMetafolder() {
 
 		if(!$this->level) {
-			return NULL;
+			return null;
 		}
 		$pathSegs = explode(DIRECTORY_SEPARATOR, rtrim($this->getFullPath(), DIRECTORY_SEPARATOR));
 		array_pop($pathSegs);
@@ -364,7 +365,7 @@ class MetaFolder {
      * create a new subdirectory
      * returns newly created MetaFolder object
      *
-     * @param string $folderName
+     * @param string $path
      * @return MetaFolder
      * @throws MetaFolderException
      */
@@ -383,7 +384,7 @@ class MetaFolder {
      * @param boolean $keepFilesystemFiles
      * @throws MetaFolderException
      */
-	public function delete($keepFilesystemFiles = FALSE) {
+	public function delete($keepFilesystemFiles = false) {
 
 		foreach($this->getMetaFiles() as $f) {
 			$f->delete($keepFilesystemFiles);
