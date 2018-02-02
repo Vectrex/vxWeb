@@ -626,8 +626,28 @@ this.vxWeb.fileManager = function(config) {
 		}
 	};
 
+	var showErrorToast = function(msg) {
+		var mBox = document.getElementById("messageBox"), timeoutId;
+
+		if(mBox) {
+            vxJS.dom.removeClassName(mBox, "toast-success");
+            vxJS.dom.addClassName(mBox, "toast-error");
+
+            mBox.firstChild.nodeValue = msg;
+
+            vxJS.dom.addClassName(mBox, "display");
+
+            if(timeoutId) {
+                window.clearTimeout(timeoutId);
+            }
+            timeoutId = window.setTimeout(function() {
+                vxJS.dom.removeClassName(mBox, "display");
+            }, 5000);
+		}
+    };
+
 	var handleXhrResponse = function(r) {
-		var e = r.echo, f, xForm, i = 0, b, tree;
+		var e = r.echo, f, xForm, i = 0, b;
 
 		// hide throbber
 
@@ -636,21 +656,20 @@ this.vxWeb.fileManager = function(config) {
 		// response is only evaluated when echo property is set
 
 		if(e) {
+
 			switch(e.httpRequest) {
 
 				case "delFolder":
-					if(!r.response.error) {
-						buildFilesTable(r.response);
-						while((b = breadCrumbs[i])) {
-							if(b.id === e.id) {
-								while((b = breadCrumbs[i])) {
-									vxJS.event.removeListener(b.listener);
-									b.element.parentNode.removeChild(b.element);
-									breadCrumbs.splice(i, 1);
-								}
+					buildFilesTable(r.response);
+					while((b = breadCrumbs[i])) {
+						if(b.id === e.id) {
+							while((b = breadCrumbs[i])) {
+								vxJS.event.removeListener(b.listener);
+								b.element.parentNode.removeChild(b.element);
+								breadCrumbs.splice(i, 1);
 							}
-							++i;
 						}
+						++i;
 					}
 					break;
 
@@ -660,12 +679,15 @@ this.vxWeb.fileManager = function(config) {
 				case "getFiles":
 				case "addFolder":
 				case "delFile":
-					if(!r.response.error) {
-						if(r.response.pathSegments) {
-							buildDirectoryBar(r.response.pathSegments);
-						}
-						buildFilesTable(r.response);
-					}
+					if(r.response.error) {
+						showErrorToast(r.response.error);
+                    }
+					else {
+                        if (r.response.pathSegments) {
+                            buildDirectoryBar(r.response.pathSegments);
+                        }
+                        buildFilesTable(r.response);
+                    }
 					break;
 
 				case "requestAddForm":

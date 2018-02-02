@@ -590,12 +590,22 @@ class FilesController extends Controller {
 
 	private function addFolder(MetaFolder $folder) {
 
+        $folderName = preg_replace('~[^a-z0-9_-]~i', '_', $this->request->request->get('folderName'));
+
+        foreach($folder->getMetaFolders() as $subFolder) {
+
+            if($subFolder->getName() === $folderName) {
+                return ['error' => sprintf("Verzeichnis '%s' existiert bereits.", $folderName)];
+            }
+
+        }
+
 		try {
-			$folder->createFolder(preg_replace('~[^a-z0-9_-]~i', '_', $this->request->request->get('folderName')));
+			$folder->createFolder($folderName);
 			return $this->getFiles($folder);
 		}
 		catch (\Exception $e) {
-			return ['error' => $e->getMessage()];
+            return ['error' => $e->getMessage()];
 		}
 	}
 
