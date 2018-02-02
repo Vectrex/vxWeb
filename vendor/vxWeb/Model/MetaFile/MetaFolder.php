@@ -22,7 +22,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.2.1 2017-03-11
+ * @version 1.2.2 2018-02-02
  *
  * @todo compatibility checks on windows systems
  */
@@ -92,13 +92,14 @@ class MetaFolder {
 	 * @var MetaFolder[]
 	 */
 	private	$metaFolders;
-	
-	/**
-	 * retrieve metafolder instance by either primary key of db entry
-	 * or path - both relative and absolute paths are allowed
-	 *
-	 * @return MetaFolder
-	 */
+
+    /**
+     * retrieve metafolder instance by either primary key of db entry
+     * or path - both relative and absolute paths are allowed
+     *
+     * @return MetaFolder
+     * @throws MetaFolderException
+     */
 	public static function getInstance($path = NULL, $id = NULL) {
 
 		if(isset($path)) {
@@ -126,15 +127,16 @@ class MetaFolder {
 		}
 	}
 
-	/**
-	 * creates a metafolder instance
-	 * requires either id or path stored in db
-	 * when an array is passed to constructor
-	 * it sets MetaFolder::data directly; used internally to avoid extra db queries
-	 *
-	 * @param string $path of metafolder
-	 * @param integer $id of metafolder
-	 */
+    /**
+     * creates a metafolder instance
+     * requires either id or path stored in db
+     * when an array is passed to constructor
+     * it sets MetaFolder::data directly; used internally to avoid extra db queries
+     *
+     * @param string $path of metafolder
+     * @param integer $id of metafolder
+     * @throws MetaFolderException
+     */
 	private function __construct($path = NULL, $id = NULL, array $dbEntry = NULL) {
 
 		if(isset($path)) {
@@ -316,13 +318,14 @@ class MetaFolder {
 
 	}
 
-	/**
-	 * return all metafolders within this folder
-	 *
-	 * @param boolean $force forces re-reading of metafolder
-	 *
-	 * @return MetaFolder[]
-	 */
+    /**
+     * return all metafolders within this folder
+     *
+     * @param boolean $force forces re-reading of metafolder
+     *
+     * @return MetaFolder[]
+     * @throws MetaFolderException
+     */
 	public function getMetaFolders($force = FALSE) {
 
 		if(!isset($this->metaFolders) || $force) {
@@ -357,27 +360,29 @@ class MetaFolder {
 
 	}
 
-	/**
-	 * create a new subdirectory
-	 * returns newly created MetaFolder object
-	 *
-	 * @param string $folderName
-	 * @return MetaFolder
-	 */
+    /**
+     * create a new subdirectory
+     * returns newly created MetaFolder object
+     *
+     * @param string $folderName
+     * @return MetaFolder
+     * @throws MetaFolderException
+     */
 	public function createFolder($path) {
 
 		return self::createMetaFolder($this->filesystemFolder->createFolder($path));
 
 	}
 
-	/**
-	 * deletes metafolder
-	 *
-	 * if $keepFilesystemFiles is TRUE, only metadata entry of folder and contained files and folders is removed from database
-	 * otherwise filesystem files and folders will be deleted
-	 *
-	 * @param boolean $keepFilesystemFiles
-	 */
+    /**
+     * deletes metafolder
+     *
+     * if $keepFilesystemFiles is TRUE, only metadata entry of folder and contained files and folders is removed from database
+     * otherwise filesystem files and folders will be deleted
+     *
+     * @param boolean $keepFilesystemFiles
+     * @throws MetaFolderException
+     */
 	public function delete($keepFilesystemFiles = FALSE) {
 
 		foreach($this->getMetaFiles() as $f) {
@@ -412,17 +417,18 @@ class MetaFolder {
 
 	}
 
-	/**
-	 * retrieves all currently in database stored metafolders
-	 * main purpose is reduction of db queries
-	 *
-	 * @param boolean $force forces re-reading of metafolders
-	 */
+    /**
+     * retrieves all currently in database stored metafolders
+     * main purpose is reduction of db queries
+     *
+     * @param boolean $force forces re-reading of metafolders
+     * @throws MetaFolderException
+     */
 	public static function instantiateAllExistingMetaFolders($force = FALSE) {
 
 		foreach(
 			Application::getInstance()->getDb()->doPreparedQuery(
-				'SELECT * FROM folders'
+				'SELECT * FROM folders', []
 			)
 		as $r) {
 			if($force || !isset(self::$instancesById[$r['foldersid']])) {
@@ -438,8 +444,8 @@ class MetaFolder {
 	/**
 	 * retrieve all folders with level 0
 	 *
-	 * @throws MetaFolderException
 	 * @return MetaFolder[]
+     * @throws MetaFolderException
 	 */
 	public static function getRootFolders() {
 
@@ -461,16 +467,16 @@ class MetaFolder {
 		return $roots;
 	}
 
-	/**
-	 * creates metafolder from supplied filesystem folder if not created previously
-	 * nested set is updated accordingly
-	 * returns either newly or previously created metafolder
-	 *
-	 * @param FilesystemFolder $f
-	 * @param array $metaData optional data for folder
-	 * 
-	 * @throws MetaFolderException
-	 */
+    /**
+     * creates metafolder from supplied filesystem folder if not created previously
+     * nested set is updated accordingly
+     * returns either newly or previously created metafolder
+     *
+     * @param FilesystemFolder $f
+     * @param array $metaData optional data for folder
+     * @return MetaFolder
+     * @throws MetaFolderException
+     */
 	public static function createMetaFolder(FilesystemFolder $f, array $metaData = []) {
 
 		$roots = self::getRootFolders();
@@ -522,7 +528,7 @@ class MetaFolder {
 
 				//no parent
 
-				$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders');
+				$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders', []);
 				$metaData['l'] = !isset($rows[0]['l']) ? 0 : $rows[0]['l'];
 				$metaData['r'] = $rows[0]['l'] + 1;
 				$metaData['level'] = 0;
@@ -551,7 +557,7 @@ class MetaFolder {
 
 					// no parent directory
 
-					$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders');
+					$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders', []);
 					$metaData['l'] = !isset($rows[0]['l']) ? 0 : $rows[0]['l'];
 					$metaData['r'] = $rows[0]['l'] + 1;
 					$metaData['level'] = 0;
