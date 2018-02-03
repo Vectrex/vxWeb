@@ -200,14 +200,7 @@ class FilesController extends Controller {
 		}
 
 		catch(\Exception $e) {
-			return new JsonResponse(
-				[
-					'response' => [
-						'error' => 1,
-						'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())
-					]
-				]
-			);
+			return new JsonResponse(['error' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
 		}
 
 		// @todo better way to handle columns
@@ -242,6 +235,8 @@ class FilesController extends Controller {
 			return new JsonResponse(array ('error' => $e->getMessage()));
 		}
 
+		$response = null;
+
 		switch($this->request->request->get('httpRequest')) {
 
 			// link file to an article
@@ -251,7 +246,6 @@ class FilesController extends Controller {
 					$article = Article::getInstance($this->request->request->getInt('articlesId'));
 					$article->linkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('file')));
 					$article->save();
-					$response = ['error' => FALSE];
 				}
 				catch(\Exception $e) {
 					$response = ['error' => $e->getMessage()];
@@ -265,7 +259,6 @@ class FilesController extends Controller {
 					$article = Article::getInstance($this->request->request->getInt('articlesId'));
 					$article->unlinkMetaFile(MetaFile::getInstance(NULL, $this->request->request->getInt('file')));
 					$article->save();
-					$response = ['error' => FALSE];
 				}
 				catch(\Exception $e) {
 					$response = ['error' => $e->getMessage()];
@@ -333,7 +326,7 @@ class FilesController extends Controller {
 					$response = $markup;
 				}
 				else {
-					$response = ['error' => TRUE];
+					$response = ['error' => 'Datei nicht gefunden.'];
 				}
 				break;
 
@@ -361,13 +354,7 @@ class FilesController extends Controller {
 					}
 
 					$response = [
-						'elements' => $e,
-						'msgBoxes' => [
-							[
-								'id' => 'general',
-								'elements' => [['html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>']]
-							]
-						]
+						'elements' => $e
 					];
 				}
 				break;
@@ -393,13 +380,7 @@ class FilesController extends Controller {
 					}
 
 					$response = [
-						'elements' => $e,
-						'msgBoxes' => [
-							[
-								'id' => 'general',
-								'elements' => [['html' => '<div class="errorBox">Eine oder mehrere Eingaben sind fehlerhaft!</div>']]
-							]
-						]
+						'elements' => $e
 					];
 				}
 				break;
@@ -474,7 +455,7 @@ class FilesController extends Controller {
 
 				$uploadedFiles = File::processFileUpload($folder, $upload, $values->all(), (bool) $values->get('unpack_archives'));
 
-				if(FALSE !== $uploadedFiles) {
+				if(false !== $uploadedFiles) {
 
 					if($articlesId = $this->request->request->get('articlesId')) {
 
@@ -487,11 +468,11 @@ class FilesController extends Controller {
 							}
 						}
 						catch(\Exception $e) {
-							return new JsonResponse(array ('error' => $e->getMessage()));
+							return new JsonResponse(['error' => $e->getMessage()]);
 						}
 					}
 
-					$response = ['success' => TRUE];
+					$response = ['success' => true];
 				}
 
 				else {
@@ -538,8 +519,7 @@ class FilesController extends Controller {
 
 				return [
 					'filename' => $file->getMetaFilename(),
-					'elements' => ['html' => sprintf("<span title='%s'>%s</span>", $metaData['title'], $file->getMetaFilename())],
-					'error' => FALSE
+					'elements' => ['html' => sprintf("<span title='%s'>%s</span>", $metaData['title'], $file->getMetaFilename())]
 				];
 			}
 		}

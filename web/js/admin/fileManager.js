@@ -287,9 +287,7 @@ this.vxWeb.fileManager = function(config) {
 		form.appendChild(articlesIdInput);
 
 		xhrForm = vxJS.widget.xhrForm(form, { command: "checkUpload", uri: uri, echo: false } );
-		xhrForm.	addSubmit(form.elements["submit_add"]).
-					addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", form)[0], "general").
-					enableIframeUpload();
+		xhrForm.addSubmit(form.elements["submit_add"]).enableIframeUpload();
 
 		/*
 		 * add additional data required for server side handling of upload 
@@ -660,17 +658,22 @@ this.vxWeb.fileManager = function(config) {
 			switch(e.httpRequest) {
 
 				case "delFolder":
-					buildFilesTable(r.response);
-					while((b = breadCrumbs[i])) {
-						if(b.id === e.id) {
-							while((b = breadCrumbs[i])) {
-								vxJS.event.removeListener(b.listener);
-								b.element.parentNode.removeChild(b.element);
-								breadCrumbs.splice(i, 1);
-							}
-						}
-						++i;
-					}
+                    if(r.response.error) {
+                        showErrorToast(r.response.error);
+                    }
+                    else {
+                        buildFilesTable(r.response);
+                        while ((b = breadCrumbs[i])) {
+                            if (b.id === e.id) {
+                                while ((b = breadCrumbs[i])) {
+                                    vxJS.event.removeListener(b.listener);
+                                    b.element.parentNode.removeChild(b.element);
+                                    breadCrumbs.splice(i, 1);
+                                }
+                            }
+                            ++i;
+                        }
+                    }
 					break;
 
 				case "moveFile":
@@ -703,9 +706,7 @@ this.vxWeb.fileManager = function(config) {
 					f = fileModal.element.getElementsByTagName("form")[0];
 
 					xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
-					xForm.	addSubmit(f.elements["submit_edit"]).
-							addMessageBox(vxJS.dom.getElementsByClassName("errorContainer", f)[0], "general").
-							setPayload(vxJS.merge(vxWeb.parameters, { file: e.file } ));
+					xForm.	addSubmit(f.elements["submit_edit"]).setPayload(vxJS.merge(vxWeb.parameters, { file: e.file } ));
 
 					vxJS.event.addListener(
 						xForm,
@@ -769,7 +770,7 @@ this.vxWeb.fileManager = function(config) {
         }
     });
 
-    vxJS.event.addListener(xhr, "timeout", function() { window.alert('Dateioperation dauert zu lange. Bitte erneut versuchen.'); });
+    vxJS.event.addListener(xhr, "timeout", function() { showErrorToast('Dateioperation dauert zu lange. Bitte erneut versuchen.'); });
 	vxJS.event.addListener(xhr, "complete", function() { activityIndicator.setActivity(); handleXhrResponse(this.response); });
 	vxJS.event.addListener(
 		t,
@@ -828,7 +829,7 @@ this.vxWeb.fileManager = function(config) {
 
 				for(i = 0, l = files.length; i < l; ++i) {
 					if(files[i].size > config.uploadMaxFilesize) {
-						window.alert("'" + files[i].name + "' übersteigt die maximale Größe eines Uploads (" + bytesToSize(config.uploadMaxFilesize) + ") und wird nicht hochgeladen.");
+						showErrorToast("'" + files[i].name + "' übersteigt die maximale Größe eines Uploads (" + bytesToSize(config.uploadMaxFilesize) + ") und wird nicht hochgeladen.");
 					}
 					else {
 						if(unpackZips === undefined && /application\/.*?zip.*?/.test(files[i].type)) {
@@ -864,7 +865,7 @@ this.vxWeb.fileManager = function(config) {
 
 			vxJS.event.addListener(uploadXhr, "timeout", function() {
 				finishUpload();
-				window.alert("Upload time exceeded 10s.");
+				showErrorToast("Maximale Zeitdauer für Uploads von " + Math.floor(vxWeb.serverConfig.maxUploadTime / 1000) +  "Sekunden überschritten.");
 			});
 
 			vxJS.event.addListener(uploadXhr, "complete", function() {
@@ -873,7 +874,7 @@ this.vxWeb.fileManager = function(config) {
 				if(r.response.error) {
 					filesQueue = [];
 					finishUpload();
-					window.alert(r.response.message || "Upload Error!");
+					showErrorToast(r.response.message || "Upload Error!");
 				}
 
 				else {
