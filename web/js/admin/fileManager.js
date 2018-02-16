@@ -197,7 +197,7 @@ this.vxWeb.fileManager = function(config) {
 				}
 
 				if(window.confirm("Datei nach '" + path.join("/") + "' verschieben?")) {
-					xhr.use({ command: "moveFile" }, vxJS.merge(vxWeb.parameters, { destination: matches[1] })).submit();
+					xhr.use({ command: "moveFile" }, vxJS.merge({ destination: matches[1] }, vxWeb.parameters)).submit();
 				}
 
 			}
@@ -275,7 +275,7 @@ this.vxWeb.fileManager = function(config) {
 		if(folderId) {
 			vxWeb.parameters.folder = folderId;
 		}
-		xhr.use({ command: "getFiles" }, vxWeb.parameters).submit();
+		xhr.use({ command: "getFiles" }, vxJS.merge({}, vxWeb.parameters)).submit();
 	};
 
 	var prepareAddForm = function() {
@@ -287,7 +287,7 @@ this.vxWeb.fileManager = function(config) {
 		form.appendChild(articlesIdInput);
 
 		xhrForm = vxJS.widget.xhrForm(form, { command: "checkUpload", uri: uri, echo: false } );
-		xhrForm.addSubmit(form.elements["submit_add"]).enableIframeUpload();
+		xhrForm.addSubmit(form.elements["submit_add"]);
 
 		/*
 		 * add additional data required for server side handling of upload 
@@ -296,7 +296,7 @@ this.vxWeb.fileManager = function(config) {
 			xhrForm,
 			"beforeSubmit",
 			function() {
-				folderInput.value = vxWeb.parameters.folder || ""; 
+				folderInput.value = vxWeb.parameters.folder || "";
 				articlesIdInput.value = vxWeb.parameters.articlesId || "";
 				this.setPayload(vxWeb.parameters);
 			}
@@ -327,24 +327,6 @@ this.vxWeb.fileManager = function(config) {
 							]
 						}
 					];
-				}
-			}
-		);
-
-		vxJS.event.addListener(
-			xhrForm,
-			"ifuResponse",
-			function(response) {
-				var p;
-
-				if(response.success) {
-					fileModal.hide();
-					for(p in formInitValues) {
-						if(formInitValues.hasOwnProperty(p)) {
-							form.elements[p].value = formInitValues[p];
-						}
-					}
-					getFiles();
 				}
 			}
 		);
@@ -424,7 +406,7 @@ this.vxWeb.fileManager = function(config) {
 					return;
 				}
 				if(window.confirm("Ordner und Inhalt wirklich löschen?")) {
-					xhr.use({ command: "delFolder" }, vxJS.merge(vxWeb.parameters, { del: data.id })).submit();
+					xhr.use({ command: "delFolder" }, vxJS.merge({ del: data.id }, vxWeb.parameters)).submit();
 				}
 			};
 		}(folderData))));
@@ -476,22 +458,22 @@ this.vxWeb.fileManager = function(config) {
 				switch(cmd) {
 					case "link":
 						if(vxWeb.parameters && vxWeb.parameters.articlesId) {
-							xhr.use( { command: this.checked ? "linkToArticle" : "unlinkFromArticle" }, vxJS.merge(vxWeb.parameters, { file: data.id })).submit();
+							xhr.use( { command: this.checked ? "linkToArticle" : "unlinkFromArticle" }, vxJS.merge({ file: data.id }, vxWeb.parameters)).submit();
 						}
 						break;
 
 					case "del":
 						if(window.confirm("Datei wirklich löschen?")) {
-							xhr.use({ command: "delFile" }, vxJS.merge(vxWeb.parameters, { file: data.id })).submit();
+							xhr.use({ command: "delFile" }, vxJS.merge({ file: data.id }, vxWeb.parameters)).submit();
 						}
 						break;
 
 					case "move":
-						xhr.use({ command: "getFolderTree" }, vxJS.merge(vxWeb.parameters, { file: data.id })).submit();
+						xhr.use({ command: "getFolderTree" }, vxJS.merge({ file: data.id }, vxWeb.parameters)).submit();
 						break;
 
 					case "edit":
-						xhr.use({ command: "requestEditForm" }, vxJS.merge(vxWeb.parameters, { file: data.id })).submit();
+						xhr.use({ command: "requestEditForm" }, vxJS.merge({ file: data.id }, vxWeb.parameters)).submit();
 						break;
 
 					case "forward":
@@ -520,7 +502,7 @@ this.vxWeb.fileManager = function(config) {
 								};
 
 								var keydownListener = function(e) {
-									if(e.type == "blur" || e.keyCode == 13) {
+									if(e.type === "blur" || e.keyCode === 13) {
 
 										if(elem.value !== fileData.filename) {
 
@@ -572,7 +554,7 @@ this.vxWeb.fileManager = function(config) {
 										}
 									}
 
-									else if(e.keyCode == 27) {
+									else if(e.keyCode === 27) {
 
 										// restore node(s)
 
@@ -706,7 +688,7 @@ this.vxWeb.fileManager = function(config) {
 					f = fileModal.element.getElementsByTagName("form")[0];
 
 					xForm = vxJS.widget.xhrForm(f, { command: "checkEditForm", uri: uri });
-					xForm.	addSubmit(f.elements["submit_edit"]).setPayload(vxJS.merge(vxWeb.parameters, { file: e.file } ));
+					xForm.	addSubmit(f.elements["submit_edit"]).setPayload(vxJS.merge({ file: e.file }, vxWeb.parameters));
 
 					vxJS.event.addListener(
 						xForm,
@@ -766,7 +748,7 @@ this.vxWeb.fileManager = function(config) {
             addFolderButton.style.display = "";
         }
         if(e.keyCode === 13 && this.value.trim()) {
-            xhr.use({ command: "addFolder" }, vxJS.merge(vxWeb.parameters, { folderName: this.value })).submit();
+            xhr.use({ command: "addFolder" }, vxJS.merge({ folderName: this.value }, vxWeb.parameters)).submit();
         }
     });
 
@@ -795,12 +777,12 @@ this.vxWeb.fileManager = function(config) {
 
 	// add drag and drop file upload, when support sufficient
 
-	if(vxJS.xhrObj().upload && window.File && window.FileList && window.FileReader) {
+	if((new XMLHttpRequest()).upload && window.File && window.FileList && window.FileReader) {
 
 		// outer scope variables: filesTable, buildFilesTable()
 
 		(function() {
-			var uploadXhr = vxJS.xhr( { upload: true, timeout: config.maxUploadTime } ), uploadQuery, uploadActive, filesQueue = [];
+			var uploadXhr = vxJS.xhr( { timeout: config.maxUploadTime, raw: true } ), uploadQuery, uploadActive, filesQueue = [];
 
 			var finishUpload = function() {
 				uploadActive = false;
@@ -853,7 +835,13 @@ this.vxWeb.fileManager = function(config) {
 						}
 						uploadQuery = (vxWeb.routes.upload.indexOf("?") === -1 ? "?" : "&") + uploadQuery.join("&");
 
-						uploadXhr.use({ uri: vxWeb.routes.upload + uploadQuery }, { filename: f.name, file: f }).submit();
+                        uploadXhr.setHeaders({
+                            "X-File-Name": f.name.replace(/[^\x00-\x7F]/g, function (c) { return encodeURIComponent(c); }),
+                            "X-File-Size": f.size,
+                            "X-File-Type": f.type
+                        });
+
+                        uploadXhr.use({ uri: vxWeb.routes.upload + uploadQuery }, f).submit();
 					}
 				}
 
@@ -880,7 +868,13 @@ this.vxWeb.fileManager = function(config) {
 				else {
 					if(f = filesQueue.shift()) {
 						progressBar.label = f.name;
-						this.use(null, { filename: f.name, file: f }).submit();
+                        uploadXhr.setHeaders({
+                            "X-File-Name": f.name.replace(/[^\x00-\x7F]/g, function (c) { return encodeURIComponent(c); }),
+                            "X-File-Size": f.size,
+                            "X-File-Type": f.type
+                        });
+
+                        uploadXhr.use(null, f).submit();
 					}
 					else {
 						finishUpload();

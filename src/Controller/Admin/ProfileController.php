@@ -23,11 +23,9 @@ use vxWeb\User\Notification\Notification;
 class ProfileController extends Controller {
 
 	public function execute() {
-		
+
 		$admin = Application::getInstance()->getCurrentUser();
 		$availableNotifications	= Notification::getAvailableNotifications($admin->getRoles()[0]->getRoleName());
-
-		$checkBoxHtml = '';
 
 		$form =
 			HtmlForm::create('admin_profile.htm')
@@ -37,22 +35,30 @@ class ProfileController extends Controller {
 				->addElement(FormElementFactory::create('password',	'new_PWD', '', [], [],	FALSE, [], [new RegularExpression('/^(|[^\s].{4,}[^\s])$/')], 'Das Passwort muss mindestens 4 Zeichen umfassen.'))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify', ''))
 				->addElement(FormElementFactory::create('button', 'submit_profile', '')->setInnerHTML('Änderungen speichern'))
-				->initVar('has_notifications', (int) !empty($checkBoxHtml));
+				->initVar('has_notifications', 0);
+
+        $checkbox = [];
+        $labels = [];
 
 		foreach($availableNotifications as $n) {
-			if($n->not_displayed == 1) {
-				continue;
-			}
+            if ($n->not_displayed != 1) {
+                $labels[] = $n->description;
+                $checkbox[] = new CheckboxElement('notification', $n->alias, $n->notifies($admin));
+            }
+        }
 
-			$form->initVar('has_notifications', 1);
+        if(count($checkbox)) {
+            $checkBoxHtml = '';
+            $form->initVar('has_notifications', 1);
+            $form->addElementArray($checkbox);
 
-			$e = new CheckboxElement($n->alias, 1, $n->notifies($admin));
-			$form->addElement($e);
+            foreach($checkbox as $ndx => $e) {
+                $checkBoxHtml .= '<div class="form-group"><label class="form-switch">' . $e->render() . '<i class="form-icon"></i>' . $labels[$ndx] . '</label></div>';
+            }
 
-			$checkBoxHtml .= '<div class="form-group"><label class="form-switch">' . $e->render() . '<i class="form-icon"></i>' . $n->description . '</label></div>';
-		}
-		
-		$form->addMiscHtml('notifications', $checkBoxHtml);
+            $form->addMiscHtml('notifications', $checkBoxHtml);
+
+        }
 
 		if($this->request->getMethod() === 'POST') {
 
@@ -84,16 +90,16 @@ class ProfileController extends Controller {
 					try {
 						Application::getInstance()->getDb()->updateRecord('admin', ['username' => $admin->getUsername()], $v->all());
 
+						$notifications = $v->get('notification', '');
+
 						foreach($availableNotifications as $n) {
-							if(!empty($v[$n->alias])) {
+							if(in_array($n->alias, $notifications)) {
 								$n->subscribe($admin);
 							}
 							else {
 								$n->unsubscribe($admin);
 							}
 						}
-
-						//$admin->setNotifications($add);
 
 						$userProvider = new SessionUserProvider();
 

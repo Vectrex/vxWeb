@@ -365,13 +365,71 @@ class FilesController extends Controller {
 
 				$form = $this->getAddForm();
 
-				if(!($errors = $this->getAddForm()
+				if(!($errors = $form
 					->bindRequestParameters($this->request->request)
 					->disableCsrfToken()
 					->validate()
 					->getFormErrors()
 				)) {
-					$response = ['command' => 'submit'];
+
+                    $upload = $this->request->files->get('File');
+
+                    // was a file uploaded at all?
+
+                    if($upload === null) {
+                        $response = ['error' => 'Es wurde keine Datei zum Upload angegeben!'];
+                        break;
+                    }
+
+                    // try to move uploaded file to its final destination
+
+                    try {
+                        $upload->move($folder->getFilesystemFolder());
+                    }
+
+                    catch(FilesystemFileException $e) {
+                        $response = ['error' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'];
+                        break;
+                    }
+
+                    /*
+                     * @todo
+                     * Kludge: HtmlForm calls Request::createFromGlobals() which in turn parses $_FILES and throws an exception
+                     * since the uploaded file was already moved
+                     */
+                    unset($_FILES['File']);
+
+                    $values = $form->bindRequestParameters($this->request->request)->getValidFormValues();
+
+                    // turn uploaded file into metafile, extract archive if neccessary
+
+                    $uploadedFiles = File::processFileUpload($folder, $upload, $values->all(), (bool) $values->get('unpack_archives'));
+
+                    if(false !== $uploadedFiles) {
+
+                        if($articlesId = $this->request->request->get('articlesId')) {
+
+                            try {
+                                $article = Article::getInstance($articlesId);
+
+                                foreach($uploadedFiles as $mf) {
+                                    $article->linkMetaFile($mf);
+                                    $article->save();
+                                }
+                            }
+                            catch(\Exception $e) {
+                                $response = ['error' => $e->getMessage()];
+                                break;
+                            }
+                        }
+
+                        $response = ['success' => true];
+                    }
+
+                    else {
+                        $response = ['error' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'];
+                    }
+
 				}
 				else {
 					$e = [];
@@ -386,117 +444,6 @@ class FilesController extends Controller {
 				break;
 
 			// do upload
-
-			case 'ifuSubmit':
-
-				$upload = $this->request->files->get('File');
-
-				// was a file uploaded at all?
-
-				if($upload === NULL) {
-					$response = [
-						'msgBoxes' => [
-							[
-								'id' => 'general',
-								'elements' => [
-									[
-										'node' => 'div',
-										'properties' => ['className' => 'errorBox'],
-										'childnodes' => [['text' => 'Es wurde keine Datei zum Upload angegeben!']]
-									]
-								]
-							]
-						]
-					];
-					break;
-				}
-
-				// try to move uploaded file to its final destination
-
-				try {
-					$upload->move($folder->getFilesystemFolder());
-				}
-
-				catch(FilesystemFileException $e) {
-					$response = [
-						'msgBoxes' => [
-							[
-								'id' => 'general',
-								'elements' => [
-									[
-										'node' => 'div',
-										'properties' => ['className' => 'errorBox'],
-										'childnodes' => [['text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!']]
-									]
-								]
-							]
-						]
-					];
-					break;
-				}
-
-				/*
-				 * @todo
-				 * Kludge: HtmlForm calls Request::createFromGlobals() which in turn parses $_FILES and throws an exception
-				 * since the uploaded file was already moved
-				 */
-				unset($_FILES['File']);
-
-				$form = HtmlForm::create()
-					->addElement(FormElementFactory::create('input', 'title', '', [], [], FALSE, ['trim']))
-					->addElement(FormElementFactory::create('input', 'subtitle', '', [], [], FALSE, ['trim']))
-					->addElement(FormElementFactory::create('input', 'customsort', '', [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
-					->addElement(FormElementFactory::create('textarea', 'description', ''))
-					->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1));
-
-				$values = $form->bindRequestParameters($this->request->request)->getValidFormValues();
-
-				// turn uploaded file into metafile, extract archive if neccessary
-
-				$uploadedFiles = File::processFileUpload($folder, $upload, $values->all(), (bool) $values->get('unpack_archives'));
-
-				if(false !== $uploadedFiles) {
-
-					if($articlesId = $this->request->request->get('articlesId')) {
-
-						try {
-							$article = Article::getInstance($articlesId);
-
-							foreach($uploadedFiles as $mf) {
-								$article->linkMetaFile($mf);
-								$article->save();
-							}
-						}
-						catch(\Exception $e) {
-							return new JsonResponse(['error' => $e->getMessage()]);
-						}
-					}
-
-					$response = ['success' => true];
-				}
-
-				else {
-					$response = [
-						'msgBoxes' => [
-							[
-								'id' => 'general',
-								'elements' => [
-									[
-										'node' => 'div',
-										'properties' => ['className' => 'errorBox'],
-										'childnodes' => [['text' => 'Beim Upload der Datei ist ein Fehler aufgetreten!']]
-									]
-								]
-							]
-						]
-					];
-				}
-
-				// avoid browser-side decoration of response with <pre> tags, since this response will end up in an IFrame
-
-				return new Response(json_encode($response));
-
-				break;
 
 			default:
 				$response = null;

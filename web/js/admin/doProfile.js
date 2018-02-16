@@ -6,7 +6,7 @@ this.vxWeb.doProfile = function() {
 
 	"use strict";
 
-	var	f = vxJS.widget.xhrForm(document.forms[0], { command: "checkForm" });
+	var	f = vxJS.widget.xhrForm(document.forms[0], { command: "checkForm" }, {namesToHashes: true });
 
 	var parseServerCheck = function(r) {
         var mBox = document.getElementById("messageBox"), timeoutId, txt;
