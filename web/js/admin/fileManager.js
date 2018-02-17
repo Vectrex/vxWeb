@@ -286,7 +286,7 @@ this.vxWeb.fileManager = function(config) {
 		form.appendChild(folderInput);
 		form.appendChild(articlesIdInput);
 
-		xhrForm = vxJS.widget.xhrForm(form, { command: "checkUpload", uri: uri, echo: false } );
+		xhrForm = vxJS.widget.xhrForm(form, { command: "checkUpload", uri: uri, echo: true } );
 		xhrForm.addSubmit(form.elements["submit_add"]);
 
 		/*
@@ -302,10 +302,53 @@ this.vxWeb.fileManager = function(config) {
 			}
 		);
 
-		/*
-		 * check whether filesize exceeds server limits
-		 * after preliminary server check
-		 */
+        vxJS.event.addListener(xhrForm, "check", function(response) {
+
+            var mBox = document.getElementById("messageBox"), timeoutId, txt, r = response.response;
+
+            if (r.success) {
+                txt = r.message || "Daten erfolgreich übernommen!";
+
+                vxJS.dom.removeClassName(mBox, "toast-error");
+                vxJS.dom.addClassName(mBox, "toast-success");
+
+                // hide modal
+
+                fileModal.hide();
+
+                // reload file list
+
+                getFiles(vxWeb.parameters.folder);
+
+                // @todo empty form
+
+                // @todo scoping of timeoutId
+            }
+
+            else {
+                txt = r.message || "Fehler bei Übernahme der Daten!";
+
+                vxJS.dom.removeClassName(mBox, "toast-success");
+                vxJS.dom.addClassName(mBox, "toast-error");
+            }
+
+            mBox.firstChild.nodeValue = txt;
+
+            vxJS.dom.addClassName(mBox, "display");
+
+            if (timeoutId) {
+                window.clearTimeout(timeoutId);
+            }
+            timeoutId = window.setTimeout(function () {
+                vxJS.dom.removeClassName(mBox, "display");
+            }, 5000);
+
+        });
+
+        /*
+         * check whether filesize exceeds server limits
+         * after preliminary server check
+         */
 		vxJS.event.addListener(
 			xhrForm,
 			"beforeResponseCheck",
@@ -893,8 +936,7 @@ this.vxWeb.fileManager = function(config) {
 			// vxJS.event.addListener won't detect XHR.upload as host object
 
 			uploadXhr.xhrObj.upload.addEventListener("progress", function(e) {
-				var percentage = parseInt(e.loaded / e.total * 100, 10);
-				progressBar.setPercentage(percentage);
+				progressBar.setPercentage(Math.round(e.loaded / e.total * 100));
 			}, false);
 		}());
 	}

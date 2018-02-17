@@ -377,7 +377,7 @@ class FilesController extends Controller {
                     // was a file uploaded at all?
 
                     if($upload === null) {
-                        $response = ['error' => 'Es wurde keine Datei zum Upload angegeben!'];
+                        $response = ['error' => 1, 'message' => 'Es wurde keine Datei zum Upload angegeben!'];
                         break;
                     }
 
@@ -388,7 +388,7 @@ class FilesController extends Controller {
                     }
 
                     catch(FilesystemFileException $e) {
-                        $response = ['error' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'];
+                        $response = ['error' => 1, 'message' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'];
                         break;
                     }
 
@@ -418,16 +418,16 @@ class FilesController extends Controller {
                                 }
                             }
                             catch(\Exception $e) {
-                                $response = ['error' => $e->getMessage()];
+                                $response = ['error' => 1, 'message' => $e->getMessage()];
                                 break;
                             }
                         }
 
-                        $response = ['success' => true];
+                        $response = ['success' => 1, 'message' => 'Datei erfolgreich übernommen.'];
                     }
 
                     else {
-                        $response = ['error' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'];
+                        $response = ['error' => 1, 'message' => 'Beim Upload der Datei ist ein Fehler aufgetreten!'];
                     }
 
 				}
