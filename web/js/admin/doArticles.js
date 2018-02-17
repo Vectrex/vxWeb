@@ -1,8 +1,4 @@
-/*jslint browser: true, eqeq: true, plusplus: true, sloppy: true, vars: true, white: true */
-
-if(!this.vxWeb) {
-	this.vxWeb = {};
-}
+//@todo replace vxJS.widget.confirm() used for file sorting
 
 this.vxWeb.doArticles = function() {
 
@@ -22,7 +18,8 @@ this.vxWeb.doArticles = function() {
 		sorTable,
 		confirm,
 		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
-		sortButton = document.getElementById("sortFiles");
+		sortButton = document.getElementById("sortFiles"),
+        mBox = vxWeb.messageToast();
 
 	articleXhrForm = vxJS.widget.xhrForm(document.forms[0], { uri: route, command: "checkForm" });
 	articleXhrForm.addSubmit(articleXhrForm.element.elements["submit_article"]);
@@ -80,41 +77,22 @@ this.vxWeb.doArticles = function() {
 	};
 
 	var parseServerCheck = function(r) {
-		var mBox = document.getElementById("messageBox"), timeoutId, txt;
 
         if(r.success) {
-			txt = r.message || "Daten erfolgreich übernommen!";
-
-            vxJS.dom.removeClassName(mBox, "toast-error");
-            vxJS.dom.addClassName(mBox, "toast-success");
-
-			if(r.id) {
-				id = r.id;
-				if(vxWeb.parameters) {
-					vxWeb.parameters.articlesId = id;
-				}
-				tabs.getTabByNdx(1).enable();
-				articleXhrForm.element.elements["submit_article"].firstChild.nodeValue = "Änderungen übernehmen";
-			}
-		}
-
-		else {
-			txt = r.message || "Fehler bei Übernahme der Daten!";
-
-            vxJS.dom.removeClassName(mBox, "toast-success");
-            vxJS.dom.addClassName(mBox, "toast-error");
-		}
-
-        mBox.firstChild.nodeValue = txt;
-
-        vxJS.dom.addClassName(mBox, "display");
-
-        if(timeoutId) {
-            window.clearTimeout(timeoutId);
+            mBox.show(r.message || "Daten erfolgreich übernommen!", "toast-success");
+            if(r.id) {
+                id = r.id;
+                if(vxWeb.parameters) {
+                    vxWeb.parameters.articlesId = id;
+                }
+                tabs.getTabByNdx(1).enable();
+                articleXhrForm.element.elements["submit_article"].firstChild.nodeValue = "Änderungen übernehmen";
+            }
         }
-        timeoutId = window.setTimeout(function() {
-            vxJS.dom.removeClassName(mBox, "display");
-        }, 5000);
+        else {
+            mBox.show(r.message || "Fehler bei Übernahme der Daten!", "toast-error");
+        }
+
 	};
 	
 	var handleSortResponse = function() {
@@ -146,7 +124,7 @@ this.vxWeb.doArticles = function() {
 			this.setPayload( { id: id });
 		}
 		if(CKEDITOR && CKEDITOR.instances.content) {
-			this.element.elements['content'].value = CKEDITOR.instances.content.getData();
+			this.element.elements["content"].value = CKEDITOR.instances.content.getData();
 		}
 	});
 

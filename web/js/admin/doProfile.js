@@ -1,41 +1,17 @@
-if(!this.vxWeb) {
-	this.vxWeb = {};
-}
-
 this.vxWeb.doProfile = function() {
 
 	"use strict";
 
-	var	f = vxJS.widget.xhrForm(document.forms[0], { command: "checkForm" }, {namesToHashes: true });
+    var mBox = vxWeb.messageToast(), f = vxJS.widget.xhrForm(document.forms[0], { command: "checkForm" }, { namesToHashes: true });
 
 	var parseServerCheck = function(r) {
-        var mBox = document.getElementById("messageBox"), timeoutId, txt;
 
         if(r.success) {
-            txt = r.message || "Daten erfolgreich übernommen!";
-
-            vxJS.dom.removeClassName(mBox, "toast-error");
-            vxJS.dom.addClassName(mBox, "toast-success");
-
+            mBox.show(r.message || "Daten erfolgreich übernommen!", "toast-success");
         }
-
         else {
-            txt = r.message || "Fehler bei Übernahme der Daten!";
-
-            vxJS.dom.removeClassName(mBox, "toast-success");
-            vxJS.dom.addClassName(mBox, "toast-error");
+            mBox.show(r.message || "Fehler bei Übernahme der Daten!", "toast-error");
         }
-
-        mBox.firstChild.nodeValue = txt;
-
-        vxJS.dom.addClassName(mBox, "display");
-
-        if(timeoutId) {
-            window.clearTimeout(timeoutId);
-        }
-        timeoutId = window.setTimeout(function() {
-            vxJS.dom.removeClassName(mBox, "display");
-        }, 5000);
 
     };
 

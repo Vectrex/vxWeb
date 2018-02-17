@@ -10,7 +10,8 @@ this.vxWeb.doPages = function() {
             e.setAttribute("data-tooltip", "Löschen");
 			return e;
 		}()),
-		needsFormData = true, revisionId, timeoutId;
+		needsFormData = true, revisionId,
+    	mBox = vxWeb.messageToast();
 
 	var markRevisionRow = function(id) {
 
@@ -209,36 +210,16 @@ this.vxWeb.doPages = function() {
 
 	var parseServerCheck = function(r) {
 
-		var mBox = document.getElementById("messageBox"), timeoutId, txt;
+        if(r.success) {
+            mBox.show(r.message || "Daten erfolgreich übernommen!", "toast-success");
 
-		if(r.success) {
-			txt = r.message || "Daten erfolgreich übernommen!";
-
-			vxJS.dom.removeClassName(mBox, "toast-error");
-			vxJS.dom.addClassName(mBox, "toast-success");
-
-			// retrieve updated revisions list
+            // retrieve updated revisions list
 
             revisionsXhr.submit();
-		}
-
-		else {
-			txt = r.message || "Fehler bei Übernahme der Daten!";
-
-			vxJS.dom.removeClassName(mBox, "toast-success");
-			vxJS.dom.addClassName(mBox, "toast-error");
-		}
-
-		mBox.firstChild.nodeValue = txt;
-
-		vxJS.dom.addClassName(mBox, "display");
-
-		if(timeoutId) {
-			window.clearTimeout(timeoutId);
-		}
-		timeoutId = window.setTimeout(function() {
-			vxJS.dom.removeClassName(mBox, "display");
-		}, 5000);
+        }
+        else {
+            mBox.show(r.message || "Fehler bei Übernahme der Daten!", "toast-error");
+        }
 
 	};
 

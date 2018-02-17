@@ -99,7 +99,8 @@ this.vxWeb.fileManager = function(config) {
 
 		addFileButton = document.getElementById("addFile"),
 		addFolderButton = document.getElementById("addFolder"),
-		addFolderInput = document.getElementById("addFolderInput");
+		addFolderInput = document.getElementById("addFolderInput"),
+        mBox = vxWeb.messageToast();
 
 		//@todo: xhr request assumes that file id is still in request parameters from previous request
     /**
@@ -300,19 +301,15 @@ this.vxWeb.fileManager = function(config) {
 				articlesIdInput.value = vxWeb.parameters.articlesId || "";
 				this.setPayload(vxWeb.parameters);
 			}
+
+			// todo check max upload filesize
 		);
 
         vxJS.event.addListener(xhrForm, "check", function(response) {
 
-            var mBox = document.getElementById("messageBox"), timeoutId, txt, r = response.response;
+            var r = response.response;
 
-            if (r.success) {
-                txt = r.message || "Daten erfolgreich übernommen!";
-
-                vxJS.dom.removeClassName(mBox, "toast-error");
-                vxJS.dom.addClassName(mBox, "toast-success");
-
-                // hide modal
+            if(r.success) {
 
                 fileModal.hide();
 
@@ -323,56 +320,15 @@ this.vxWeb.fileManager = function(config) {
                 // @todo empty form
 
                 // @todo scoping of timeoutId
-            }
 
+                mBox.show(r.message || "Daten erfolgreich übernommen!", "toast-success");
+            }
             else {
-                txt = r.message || "Fehler bei Übernahme der Daten!";
-
-                vxJS.dom.removeClassName(mBox, "toast-success");
-                vxJS.dom.addClassName(mBox, "toast-error");
+                mBox.show(r.message || "Fehler bei Übernahme der Daten!", "toast-error");
             }
-
-            mBox.firstChild.nodeValue = txt;
-
-            vxJS.dom.addClassName(mBox, "display");
-
-            if (timeoutId) {
-                window.clearTimeout(timeoutId);
-            }
-            timeoutId = window.setTimeout(function () {
-                vxJS.dom.removeClassName(mBox, "display");
-            }, 5000);
 
         });
 
-        /*
-         * check whether filesize exceeds server limits
-         * after preliminary server check
-         */
-		vxJS.event.addListener(
-			xhrForm,
-			"beforeResponseCheck",
-			function(r) {
-				var input = this.element.elements["File"];
-				if(input.files && input.files[0] && input.files[0].size > config.uploadMaxFilesize) {
-					if(!r.elements) {
-						r.elements = [];
-					}
-					r.response = null;
-					r.elements.push( { name: "File", error: 1 });
-					r.msgBoxes = [
-						{
-							id: "general",
-							elements: [
-								{
-									html: "<div class='errorBox'>File übersteigt die maximale Größe eines Uploads (" + bytesToSize(config.uploadMaxFilesize) + ")!</div>"
-								}
-							]
-						}
-					];
-				}
-			}
-		);
 	};
 
 	var buildDirectoryBar = function(pathSegs) {
@@ -649,26 +605,6 @@ this.vxWeb.fileManager = function(config) {
 		}
 	};
 
-	var showErrorToast = function(msg) {
-		var mBox = document.getElementById("messageBox"), timeoutId;
-
-		if(mBox) {
-            vxJS.dom.removeClassName(mBox, "toast-success");
-            vxJS.dom.addClassName(mBox, "toast-error");
-
-            mBox.firstChild.nodeValue = msg;
-
-            vxJS.dom.addClassName(mBox, "display");
-
-            if(timeoutId) {
-                window.clearTimeout(timeoutId);
-            }
-            timeoutId = window.setTimeout(function() {
-                vxJS.dom.removeClassName(mBox, "display");
-            }, 5000);
-		}
-    };
-
 	var handleXhrResponse = function(r) {
 		var e = r.echo, f, xForm, i = 0, b;
 
@@ -684,7 +620,7 @@ this.vxWeb.fileManager = function(config) {
 
 				case "delFolder":
                     if(r.response.error) {
-                        showErrorToast(r.response.error);
+                        mBox.show(r.response.error, "toast-error");
                     }
                     else {
                         buildFilesTable(r.response);
@@ -708,7 +644,7 @@ this.vxWeb.fileManager = function(config) {
 				case "addFolder":
 				case "delFile":
 					if(r.response.error) {
-						showErrorToast(r.response.error);
+                        mBox.show(r.response.error, "toast-error");
                     }
 					else {
                         if (r.response.pathSegments) {
@@ -795,7 +731,7 @@ this.vxWeb.fileManager = function(config) {
         }
     });
 
-    vxJS.event.addListener(xhr, "timeout", function() { showErrorToast('Dateioperation dauert zu lange. Bitte erneut versuchen.'); });
+    vxJS.event.addListener(xhr, "timeout", function() { mBox.show("Dateioperation dauert zu lange. Bitte erneut versuchen.", "toast-error"); });
 	vxJS.event.addListener(xhr, "complete", function() { activityIndicator.setActivity(); handleXhrResponse(this.response); });
 	vxJS.event.addListener(
 		t,
@@ -854,7 +790,7 @@ this.vxWeb.fileManager = function(config) {
 
 				for(i = 0, l = files.length; i < l; ++i) {
 					if(files[i].size > config.uploadMaxFilesize) {
-						showErrorToast("'" + files[i].name + "' übersteigt die maximale Größe eines Uploads (" + bytesToSize(config.uploadMaxFilesize) + ") und wird nicht hochgeladen.");
+						mBox.show("'" + files[i].name + "' übersteigt die maximale Größe eines Uploads (" + bytesToSize(config.uploadMaxFilesize) + ") und wird nicht hochgeladen.", "toast-error");
 					}
 					else {
 						if(unpackZips === undefined && /application\/.*?zip.*?/.test(files[i].type)) {
@@ -896,7 +832,7 @@ this.vxWeb.fileManager = function(config) {
 
 			vxJS.event.addListener(uploadXhr, "timeout", function() {
 				finishUpload();
-				showErrorToast("Maximale Zeitdauer für Uploads von " + Math.floor(vxWeb.serverConfig.maxUploadTime / 1000) +  "Sekunden überschritten.");
+				mBox.show("Maximale Zeitdauer für Uploads von " + Math.floor(vxWeb.serverConfig.maxUploadTime / 1000) +  "Sekunden überschritten.", "toast-error");
 			});
 
 			vxJS.event.addListener(uploadXhr, "complete", function() {
@@ -905,7 +841,7 @@ this.vxWeb.fileManager = function(config) {
 				if(r.response.error) {
 					filesQueue = [];
 					finishUpload();
-					showErrorToast(r.response.message || "Upload Error!");
+					mBox.show(r.response.message || "Upload Error!", "toast-error");
 				}
 
 				else {
