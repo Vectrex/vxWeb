@@ -27,11 +27,11 @@ this.vxWeb.doArticles = function() {
 	var handleFolderClick = function(e) {
 		var matches;
 		
-		if(this.href && (matches = this.href.match(/@folder=(\d+)$/))) {
+		if(this.href && (matches = this.href.match(/#(.*?)@folder=(\d+)$/))) {
 			vxJS.event.preventDefault(e);
-			confirm.hide();
-			if(matches[1]) {
-				fileManager.gotoFolder(matches[1]);
+			if(matches[2]) {
+			    tabs.gotoTab(tabs.getTabById(matches[1], true));
+				fileManager.gotoFolder(matches[2]);
 			}
 		}
 	};
@@ -97,7 +97,7 @@ this.vxWeb.doArticles = function() {
 						"td".setProp("id", "__id__" + row.id).create(),
 						"td".create(row.isThumb ? "img".setProp( { src: row.type, className: "thumb" } ).create() : row.type),
 						"td".create(row.filename),
-						"td".create("a".setProp("href", window.location + "@folder=" + row.folderId).create(row.path))
+						"td".create("a".setProp("href", window.location.href.replace(/#.*/, "#article_files") + "@folder=" + row.folderid).create(row.path))
 					])
 				);
 			});

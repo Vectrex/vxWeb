@@ -4747,3 +4747,39 @@ td:hover .display-only-on-hover
 
     border: solid .2rem #e37222;
 }
+
+#linkedFilesTable tr td:first-child
+{cursor: move; text-align: center; 
+    vertical-align: middle;
+}
+
+#linkedFilesTable tr td:first-child:before
+{font-family: icomoon; font-size: 200%; 
+
+    visibility: hidden; content: '\e03a'; color: #005865;
+}
+
+#linkedFilesTable tr:hover td:first-child:before
+{
+    visibility: visible;
+}
+
+#linkedFilesTable tr.dragged
+{
+    background: #e37222;
+}
+
+#linkedFilesTable tr.dragged td:first-child
+{
+    visibility: visible;
+}
+
+#linkedFilesTable tr.insertAbove
+{
+    border-top: solid .2rem #e37222;
+}
+
+#linkedFilesTable tr.insertBelow
+{
+    border-bottom: solid .2rem #e37222;
+}

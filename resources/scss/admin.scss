@@ -249,3 +249,43 @@ td:hover .display-only-on-hover {
   border: solid $unit-1 $alternative-primary-color;
   margin: -$unit-1;
 }
+
+#linkedFilesTable {
+
+  tr {
+    td:first-child {
+      vertical-align: middle;
+      text-align: center;
+      cursor: move;
+
+      &:before {
+        visibility: hidden;
+        font-family: icomoon;
+        content: "\e03a";
+        font-size: 200%;
+        color: $primary-color-dark;
+      }
+    }
+
+    &:hover {
+      td:first-child:before {
+        visibility: visible;
+      }
+    }
+
+    &.dragged {
+      background: $alternative-primary-color;
+      td:first-child {
+        visibility: visible;
+      }
+    }
+
+    &.insertAbove {
+      border-top: solid $unit-1 $alternative-primary-color;
+    }
+
+    &.insertBelow {
+      border-bottom: solid $unit-1 $alternative-primary-color;
+    }
+  }
+}
