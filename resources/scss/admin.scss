@@ -145,7 +145,7 @@ html, body {
 
 #messageBox {
   position: fixed;
-  z-index: $zindex-3;
+  z-index: $zindex-4 + 1;
   max-width: 30rem;
   left: 50%;
   transform: translateX(-50%);

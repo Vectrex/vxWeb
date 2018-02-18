@@ -297,12 +297,26 @@ this.vxWeb.fileManager = function(config) {
 			xhrForm,
 			"beforeSubmit",
 			function() {
-				folderInput.value = vxWeb.parameters.folder || "";
+
+                // check max upload filesize
+
+				if(config.uploadMaxFilesize) {
+                    for (var u = this.getUploads(), i = u.length; i--;) {
+                        for (var f = u[i].getFiles(), j = f.length; j--;) {
+                            if (f[j].file.size > config.uploadMaxFilesize) {
+                            	mBox.show("Datei '" + f[j].file.name + "' zu groß für Upload (maximal " + bytesToSize(config.uploadMaxFilesize) + ").", "toast-error");
+                                this.cancelSubmission();
+								return;
+                            }
+                        }
+                    }
+                }
+
+                folderInput.value = vxWeb.parameters.folder || "";
 				articlesIdInput.value = vxWeb.parameters.articlesId || "";
 				this.setPayload(vxWeb.parameters);
 			}
 
-			// todo check max upload filesize
 		);
 
         vxJS.event.addListener(xhrForm, "check", function(response) {
@@ -318,8 +332,6 @@ this.vxWeb.fileManager = function(config) {
                 getFiles(vxWeb.parameters.folder);
 
                 // @todo empty form
-
-                // @todo scoping of timeoutId
 
                 mBox.show(r.message || "Daten erfolgreich übernommen!", "toast-success");
             }
@@ -709,7 +721,7 @@ this.vxWeb.fileManager = function(config) {
         }
     });
 
-    vxJS.event.addListener(addFolderButton, "click", function(e) {
+    vxJS.event.addListener(addFolderButton, "click", function() {
         this.style.display = "none";
         addFolderInput.style.display = "";
         addFolderInput.value = "";

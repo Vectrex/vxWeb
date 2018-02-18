@@ -1,5 +1,5 @@
 @CHARSET 'UTF-8';
-/*! Spectre.css v0.5.0 | MIT License | github.com/picturepan2/spectre */
+/*! Spectre.css v0.5.1 | MIT License | github.com/picturepan2/spectre */
 /* Manually forked from Normalize.css */
 /* normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 /** 1. Change the default font family in all browsers (opinionated). 2. Correct the line height in all browsers. 3. Prevent adjustments of font size after orientation changes in IE on Windows Phone and in iOS. */
@@ -619,9 +619,7 @@ dl dd
     background: #056a79;
 }
 
-.btn.btn-primary.loading::after,
-.btn.btn-success.loading::after,
-.btn.btn-error.loading::after
+.btn.btn-primary.loading::after
 {
     border-bottom-color: #fff; border-left-color: #fff;
 }
@@ -648,6 +646,11 @@ dl dd
     background: #2a9a39;
 }
 
+.btn.btn-success.loading::after
+{
+    border-bottom-color: #fff; border-left-color: #fff;
+}
+
 .btn.btn-error
 {color: #fff; border-color: #d95000; 
     background: #e85600;
@@ -668,6 +671,11 @@ dl dd
 .btn.btn-error.active
 {color: #fff; border-color: #b54300; 
     background: #c44900;
+}
+
+.btn.btn-error.loading::after
+{
+    border-bottom-color: #fff; border-left-color: #fff;
 }
 
 .btn.btn-link
@@ -930,7 +938,7 @@ textarea.form-input
 
 .has-icon-left .form-icon,
 .has-icon-right .form-icon
-{position: absolute; top: 50%; width: .8rem; 
+{position: absolute; z-index: 2; top: 50%; width: .8rem; 
     height: .8rem; margin: 0 .35rem; -webkit-transform: translateY(-50%);         transform: translateY(-50%);
 }
 
@@ -1269,7 +1277,7 @@ input.disabled + .form-icon
 
 .form-horizontal .form-group
 {
-    display: -webkit-box;    display: -ms-flexbox;    display: flex;
+    display: -webkit-box;    display: -ms-flexbox;    display: flex; -ms-flex-wrap: wrap;     flex-wrap: wrap;
 }
 
 .label
@@ -1998,33 +2006,6 @@ summary.accordion-header::-webkit-details-marker
     display: none;
 }
 
-.form-autocomplete
-{
-    position: relative;
-}
-
-.form-autocomplete .form-autocomplete-input
-{display: -webkit-box; display: -ms-flexbox; display: flex; height: auto; min-height: 1.6rem; padding: .1rem; 
-
-    -ms-flex-line-pack: start; align-content: flex-start; -ms-flex-wrap: wrap;     flex-wrap: wrap;
-}
-
-.form-autocomplete .form-autocomplete-input.is-focused
-{border-color: #07889b; 
-    -webkit-box-shadow: 0 0 0 .1rem rgba(7, 136, 155, .2);            box-shadow: 0 0 0 .1rem rgba(7, 136, 155, .2);
-}
-
-.form-autocomplete .form-autocomplete-input .form-input
-{line-height: .8rem; display: inline-block; width: auto; height: 1.2rem; margin: .1rem; 
-
-    border-color: transparent; -webkit-box-shadow: none;         box-shadow: none; -webkit-box-flex: 1; -ms-flex: 1 0 auto;     flex: 1 0 auto;
-}
-
-.form-autocomplete .menu
-{position: absolute; top: 100%; 
-    left: 0; width: 100%;
-}
-
 .avatar
 {
     font-size: .8rem; font-weight: 300; line-height: 1.25; position: relative; display: inline-block; width: 1.6rem; height: 1.6rem; margin: 0; vertical-align: middle; color: rgba(255, 255, 255, .85); border-radius: 50%; background: #07889b;
@@ -2313,7 +2294,7 @@ summary.accordion-header::-webkit-details-marker
 }
 
 .menu
-{z-index: 100; min-width: 180px; margin: 0; padding: .4rem; list-style: none; -webkit-transform: translateY(.2rem);         transform: translateY(.2rem); border-radius: .1rem; background: #fff; 
+{z-index: 300; min-width: 180px; margin: 0; padding: .4rem; list-style: none; -webkit-transform: translateY(.2rem);         transform: translateY(.2rem); border-radius: .1rem; background: #fff; 
     -webkit-box-shadow: 0 .05rem .2rem rgba(69, 77, 93, .3);            box-shadow: 0 .05rem .2rem rgba(69, 77, 93, .3);
 }
 
@@ -2342,6 +2323,13 @@ summary.accordion-header::-webkit-details-marker
 .menu .menu-item > a.active
 {color: #07889b; 
     background: #66b9bf;
+}
+
+.menu .menu-item .form-checkbox,
+.menu .menu-item .form-radio,
+.menu .menu-item .form-switch
+{
+    margin: .1rem 0;
 }
 
 .menu .menu-item + .menu-item
@@ -2403,7 +2391,7 @@ summary.accordion-header::-webkit-details-marker
 }
 
 .modal-container
-{display: block; padding: 0 .8rem; text-align: left; border-radius: .1rem; background: #fff; 
+{display: block; padding: 0 .8rem; border-radius: .1rem; background: #fff; 
     -webkit-box-shadow: 0 .2rem .5rem rgba(69, 77, 93, .3);            box-shadow: 0 .2rem .5rem rgba(69, 77, 93, .3);
 }
 
@@ -2545,7 +2533,7 @@ summary.accordion-header::-webkit-details-marker
 }
 
 .popover .popover-container
-{position: absolute; z-index: 400; top: 0; 
+{position: absolute; z-index: 300; top: 0; 
     left: 50%; width: 320px; padding: .4rem; -webkit-transition: -webkit-transform .2s ease;         transition: -webkit-transform .2s ease;         transition:         transform .2s ease;         transition:         transform .2s ease, -webkit-transform .2s ease; -webkit-transform: translate(-50%, -50%) scale(0);         transform: translate(-50%, -50%) scale(0); opacity: 0;
 }
 
@@ -3496,9 +3484,47 @@ a.text-error:hover
     -webkit-hyphens: auto;            hyphens: auto;        -ms-hyphens: auto;
 }
 
-/*! Spectre.css Experimentals v0.5.0 | MIT License | github.com/picturepan2/spectre */
+/*! Spectre.css Experimentals v0.5.1 | MIT License | github.com/picturepan2/spectre */
+.form-autocomplete
+{
+    position: relative;
+}
+
+.form-autocomplete .form-autocomplete-input
+{display: -webkit-box; display: -ms-flexbox; display: flex; height: auto; min-height: 1.6rem; padding: .1rem; 
+
+    -ms-flex-line-pack: start; align-content: flex-start; -ms-flex-wrap: wrap;     flex-wrap: wrap;
+}
+
+.form-autocomplete .form-autocomplete-input.is-focused
+{border-color: #07889b; 
+    -webkit-box-shadow: 0 0 0 .1rem rgba(7, 136, 155, .2);            box-shadow: 0 0 0 .1rem rgba(7, 136, 155, .2);
+}
+
+.form-autocomplete .form-autocomplete-input .form-input
+{line-height: .8rem; display: inline-block; width: auto; height: 1.2rem; margin: .1rem; 
+
+    border-color: transparent; -webkit-box-shadow: none;         box-shadow: none; -webkit-box-flex: 1; -ms-flex: 1 0 auto;     flex: 1 0 auto;
+}
+
+.form-autocomplete .menu
+{position: absolute; top: 100%; 
+    left: 0; width: 100%;
+}
+
+.form-autocomplete.autocomplete-oneline .form-autocomplete-input
+{overflow-x: auto; 
+
+    -ms-flex-wrap: nowrap;        flex-wrap: nowrap;
+}
+
+.form-autocomplete.autocomplete-oneline .chip
+{
+    -webkit-box-flex: 1; -ms-flex: 1 0 auto;     flex: 1 0 auto;
+}
+
 .calendar
-{display: block; min-width: 280px; text-align: center; 
+{display: block; min-width: 280px; 
 
     border: .05rem solid #e7e9ed; border-radius: .1rem;
 }
@@ -3523,7 +3549,7 @@ a.text-error:hover
 }
 
 .calendar .calendar-header
-{font-size: .7rem; color: #acb3c2; border-bottom: .05rem solid #e7e9ed; 
+{font-size: .7rem; text-align: center; color: #acb3c2; border-bottom: .05rem solid #e7e9ed; 
     background: #f8f9fa;
 }
 
@@ -3652,13 +3678,13 @@ a.text-error:hover
 }
 
 .calendar.calendar-lg .calendar-event
-{font-size: .7rem; display: block; overflow: hidden; margin: .1rem auto; padding: 3px 4px; text-align: left; white-space: nowrap; text-overflow: ellipsis; 
+{font-size: .7rem; display: block; overflow: hidden; margin: .1rem auto; padding: 3px 4px; white-space: nowrap; text-overflow: ellipsis; 
 
     border-radius: .1rem;
 }
 
 .carousel
-{position: relative; display: block; overflow: hidden; width: 100%; 
+{position: relative; z-index: 1; display: block; overflow: hidden; width: 100%; 
 
     background: #f8f9fa; -webkit-overflow-scrolling: touch;
 }
@@ -3689,7 +3715,7 @@ a.text-error:hover
 
 .carousel .carousel-container .item-prev,
 .carousel .carousel-container .item-next
-{position: absolute; z-index: 200; top: 50%; -webkit-transition: all .4s ease;         transition: all .4s ease; -webkit-transform: translateY(-50%);         transform: translateY(-50%); opacity: 0; color: #e7e9ed; border-color: rgba(231, 233, 237, .5); 
+{position: absolute; z-index: 100; top: 50%; -webkit-transition: all .4s ease;         transition: all .4s ease; -webkit-transform: translateY(-50%);         transform: translateY(-50%); opacity: 0; color: #e7e9ed; border-color: rgba(231, 233, 237, .5); 
     background: rgba(231, 233, 237, .25);
 }
 
@@ -3721,7 +3747,7 @@ a.text-error:hover
 }
 
 .carousel .carousel-nav
-{position: absolute; z-index: 200; 
+{position: absolute; z-index: 100; 
     bottom: .4rem; left: 50%; display: -webkit-box; display: -ms-flexbox; display: flex; width: 10rem; -webkit-transform: translateX(-50%);         transform: translateX(-50%); -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center;
 }
 
@@ -4015,7 +4041,7 @@ a.text-error:hover
 }
 
 .off-canvas .off-canvas-sidebar
-{position: fixed; z-index: 300; top: 0; bottom: 0; left: 0; overflow-y: auto; min-width: 10rem; -webkit-transition: -webkit-transform .25s ease;         transition: -webkit-transform .25s ease;         transition:         transform .25s ease;         transition:         transform .25s ease, -webkit-transform .25s ease; -webkit-transform: translateX(-100%);         transform: translateX(-100%); 
+{position: fixed; z-index: 200; top: 0; bottom: 0; left: 0; overflow-y: auto; min-width: 10rem; -webkit-transition: -webkit-transform .25s ease;         transition: -webkit-transform .25s ease;         transition:         transform .25s ease;         transition:         transform .25s ease, -webkit-transform .25s ease; -webkit-transform: translateX(-100%);         transform: translateX(-100%); 
 
     background: #f8f9fa;
 }
@@ -4039,7 +4065,7 @@ a.text-error:hover
 
 .off-canvas .off-canvas-sidebar:target ~ .off-canvas-overlay,
 .off-canvas .off-canvas-sidebar.active ~ .off-canvas-overlay
-{z-index: 200; 
+{z-index: 100; 
 
     display: block;
 }
@@ -4633,7 +4659,7 @@ body
 
 #messageBox
 {
-    position: fixed; z-index: 300; top: -2rem; left: 50%; max-width: 30rem; -webkit-transition: top .5s ease-in-out, opacity .5s;         transition: top .5s ease-in-out, opacity .5s; -webkit-transform: translateX(-50%);         transform: translateX(-50%); opacity: 0;
+    position: fixed; z-index: 401; top: -2rem; left: 50%; max-width: 30rem; -webkit-transition: top .5s ease-in-out, opacity .5s;         transition: top .5s ease-in-out, opacity .5s; -webkit-transform: translateX(-50%);         transform: translateX(-50%); opacity: 0;
 }
 
 #messageBox.display
