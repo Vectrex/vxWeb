@@ -37,15 +37,7 @@ this.vxWeb.doArticles = function() {
 	};
 
 	var initSorTable = function() {
-		var st = "table".setProp("class", "linkedFilesTable").create([
-				"thead".create(
-					"tr".create(["", "Typ", "Dateiname", "Ordner"].domWrapWithTag("th")
-				)),
-				"tbody".create(
-					"tr".create(["", "", "", ""].domWrapWithTag("td")
-				))
-			]),
-			dragFrom;
+		var st = document.getElementById("linkedFilesTable"), dragFrom;
 
 		sorTable = vxJS.widget.sorTable(st, { columnFormat: ["manual", "no_sort", "no_sort", "no_sort"] });
 		
@@ -109,16 +101,14 @@ this.vxWeb.doArticles = function() {
 					])
 				);
 			});
-			confirm = vxJS.widget.confirm( { className: "confirmForm", content: [ { fragment: sorTable.element.parentNode }], buttons: [{label: "Schließen", key: "close"}]}); 
-			confirm.show();
 		}
 	};
 
-	vxJS.event.addListener(sortButton, "click", function(e) {
-        if(vxWeb.parameters && vxWeb.parameters.articlesId) {
-            sortXhr.use( { command: "getFiles" }, { articlesId: vxWeb.parameters.articlesId } ).submit();
-        }
-	});
+	vxJS.event.addListener(tabs, "afterTabClick", function() {
+	   if(this.getLast() && this.getLast().id === "sort_article_files" && vxWeb.parameters.articlesId) {
+           sortXhr.use( { command: "getFiles" }, { articlesId: vxWeb.parameters.articlesId } ).submit();
+       }
+    });
 
 	vxJS.event.addListener(articleXhrForm, "beforeSubmit", function() {
 		if(id) {

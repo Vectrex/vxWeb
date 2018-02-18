@@ -101,7 +101,7 @@ vxJS.event.addDomReadyListener(function() {
                 <input id="addFolderInput" class="form-input col-3" style="display: none;">
                 <button id="addFolder" class="btn webfont-icon-only tooltip" data-tooltip="Verzeichnis anlegen" type="button">&#xe007;</button>
                 <button id="addFile" class="btn webfont-icon-only tooltip" type="button" data-tooltip="Datei hinzufügen">&#xe00e;</button>
-                <button id="sortFiles" class="btn webfont-icon-only tooltip tooltip-left" type="button" data-tooltip="Verlinkte Dateien sortieren">&#xe035;</button>
+                <!-- <button id="sortFiles" class="btn webfont-icon-only tooltip tooltip-left" type="button" data-tooltip="Verlinkte Dateien sortieren">&#xe035;</button> -->
             </div>
         </div>
 
@@ -135,6 +135,25 @@ vxJS.event.addDomReadyListener(function() {
 
     <div class="section">
         <h2 id="sort_article_files">Sortierung verlinkter Dateien</h2>
+
+        <table class="table table-striped" id="linkedFilesTable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Typ</th>
+                    <th>Dateiname</th>
+                    <th>Ordner</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
