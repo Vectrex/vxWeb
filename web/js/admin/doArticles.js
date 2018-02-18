@@ -17,7 +17,7 @@ this.vxWeb.doArticles = function() {
 		sortXhr = vxJS.xhr( { uri: route, command: "sortFiles" }),
 		sorTable,
 		confirm,
-		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 24 })[0],
+		tabs = vxJS.widget.simpleTabs(null, { setHash: true, shortenLabelsTo: 32 })[0],
 		sortButton = document.getElementById("sortFiles"),
         mBox = vxWeb.messageToast();
 
@@ -86,6 +86,7 @@ this.vxWeb.doArticles = function() {
                     vxWeb.parameters.articlesId = id;
                 }
                 tabs.getTabByNdx(1).enable();
+                tabs.getTabByNdx(2).enable();
                 articleXhrForm.element.elements["submit_article"].firstChild.nodeValue = "Änderungen übernehmen";
             }
         }
@@ -133,6 +134,7 @@ this.vxWeb.doArticles = function() {
 	
 	if(!vxWeb.parameters.articlesId) {
 		tabs.getTabByNdx(1).disable();
+        tabs.getTabByNdx(2).disable();
 	}
 	initSorTable();
 };

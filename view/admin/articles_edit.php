@@ -132,5 +132,9 @@ vxJS.event.addDomReadyListener(function() {
         </div>
 
     </div>
+
+    <div class="section">
+        <h2 id="sort_article_files">Sortierung verlinkter Dateien</h2>
+    </div>
 </div>
 
