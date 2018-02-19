@@ -25,6 +25,10 @@
 		<page id="uploadXhr" controller="admin/files" method="xhrUpload" auth="privileged" />
 	</pages>
 
+	<pages script="installer.php">
+		<page id="installer" controller="installer/installer"/>
+	</pages>
+
 	<menus>
 		<menu id="admin" script="admin.php" auth="privileged">
 			<menuentry page="articles" text="Artikel"/>
