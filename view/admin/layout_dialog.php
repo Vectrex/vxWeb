@@ -11,13 +11,14 @@
 		<meta name='author' content='Gregor Kofler - Mediendesign und Webapplikationen, http://gregorkofler.com'>
 
 		<link type='text/css' rel='stylesheet' href='/css/admin.css'>
-        <!-- <script type="text/javascript" src="/js/admin/vxjs.js"></script> -->
+        <script type="text/javascript" src="/js/admin/vxjs.js"></script>
+        <!--
         <script type="text/javascript" src="/js/vendor/vxJS/core.js"></script>
         <script type="text/javascript" src="/js/vendor/vxJS/xhr.js"></script>
         <script type="text/javascript" src="/js/vendor/vxJS/widget.js"></script>
         <script type="text/javascript" src="/js/vendor/vxJS/widgets/xhrform.js"></script>
         <script type="text/javascript" src="/js/vendor/vxJS/widgets/sortable.js"></script>
-
+        -->
         <script type="text/javascript">
             if(!this.vxWeb) {
                 this.vxWeb = {};
