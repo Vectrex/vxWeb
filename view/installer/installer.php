@@ -17,22 +17,25 @@
     </head>
 
 	<body>
+
 		<div id="page" class="single-column">
             <h1>Konfiguration</h1>
-            <table class="table">
+            <div class="divider text-center" data-content="Verzeichnisse"></div>
+            <table class="table table-striped">
                 <tr>
-                    <th>Dateien in <?= $this->default_view_path ?> beschreibbar</th><td><?= $this->default_files_are_writable  ? 'ja' : 'nein' ?></td>
+                    <td>Dateien in <?= $this->default_view_path ?> beschreibbar</td><td><?= $this->default_files_are_writable  ? 'ja' : 'nein' ?></td>
                 </tr>
                 <tr>
-                    <th>Ordner <?= $this->default_view_path ?> beschreibbar</th><td><?= $this->default_is_writable  ? 'ja' : 'nein' ?></td>
+                    <td>Ordner <?= $this->default_view_path ?> beschreibbar</td><td><?= $this->default_is_writable  ? 'ja' : 'nein' ?></td>
                 </tr>
                 <tr>
-                    <th>Dateien in <?= $this->ini_path ?> beschreibbar</th><td><?= $this->ini_files_are_writable  ? 'ja' : 'nein' ?></td>
+                    <td>Dateien in <?= $this->ini_path ?> beschreibbar</td><td><?= $this->ini_files_are_writable  ? 'ja' : 'nein' ?></td>
                 </tr>
 
             </table>
-		</div>
+            <div class="divider text-center" data-content="Datenbank Einstellungen"></div>
+            <?= $this->db_settings_form ?>
+        </div>
 
-        <?= $this->db_settings_form ?>
     </body>
 </html>
