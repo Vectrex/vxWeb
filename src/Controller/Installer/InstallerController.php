@@ -4,6 +4,7 @@ namespace App\Controller\Installer;
 
 use vxPHP\Application\Application;
 use vxPHP\Constraint\Validator\RegularExpression;
+use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
