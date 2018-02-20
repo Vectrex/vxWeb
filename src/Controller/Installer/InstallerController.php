@@ -42,8 +42,34 @@ class InstallerController extends Controller {
             ->addElement(FormElementFactory::create('input', 'user', '', [], [], true, ['trim']))
             ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim']))
             ->addElement(FormElementFactory::create('input', 'port', '', [], [], false, ['trim'], [new RegularExpression('/^\d{2,5}$/')]))
-            ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'postgresql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'))
+            ->addElement(FormElementFactory::create('input', 'dbname', '', [], [], true, ['trim']))
+            ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'pgsql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'))
         ;
+
+        if($this->request->getMethod() === 'POST') {
+            $form->bindRequestParameters($this->request->request)->validate();
+
+            if(!$form->getFormErrors()) {
+                $values = $form->getValidFormValues();
+
+                try {
+                    switch($values['db_type']) {
+                        case 'mysql':
+                            $dsn = sprintf('mysql:host=%s%s;dbname=%s', $values['host'], $values['port'] ? (';port=' . $values['port']) : '', $values['dbname']);
+                            $connection = new \PDO($dsn, $values['user'], $values['password']);
+                            break;
+                        case 'pgsql':
+                            $dsn = sprintf('pgsql:host=%s%s;dbname=%s', $values['host'], $values['port'] ? (';port=' . $values['port']) : '' , $values['dbname']);
+                            $connection = new \PDO($dsn, $values['user'], $values['password']);
+                        default:
+                            $connectionError = 'Kein gültiger Datenbanktreiber angegeben.';
+                    }
+                }
+                catch(\PDOException $e) {
+                    $connectionError = $e->getMessage();
+                }
+            }
+            }
 
         return new Response(
             SimpleTemplate::create('installer/installer.php')
@@ -51,6 +77,7 @@ class InstallerController extends Controller {
                 ->assign('ini_path', $iniPath)
                 ->assign('checks', $checks)
                 ->assign('db_settings_form', $form->render())
+                ->assign('connection_error', $connectionError ?? '')
                 ->display()
         );
 

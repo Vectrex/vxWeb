@@ -9,6 +9,10 @@
     {input:port {"maxlength": "5", "class": "form-input"} }
 </div>
 <div class="form-group">
+    <label class="form-label{error_dbname: text-error}">Name der Datenbank</label>
+    {input:dbname {"maxlength": "128", "class": "form-input"} }
+</div>
+<div class="form-group">
     <label class="form-label{error_user: text-error}">User</label>
     {input:user {"maxlength": "128", "class": "form-input"} }
 </div>
@@ -21,7 +25,7 @@
     {dropdown:db_type {"class": "form-select"} }
 </div>
 <div class="form-group">
-    <button class="btn btn-success">Übernehmen</button>
+    <button class="btn btn-success" onclick="this.disabled = true;">Übernehmen</button>
 </div>
 
 {end_form}

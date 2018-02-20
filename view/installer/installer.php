@@ -34,6 +34,11 @@
 
             </table>
             <div class="divider text-center" data-content="Datenbank Einstellungen"></div>
+
+            <?php if($this->connection_error): ?>
+                <div class="toast toast-error"><?= $this->connection_error ?></div>
+            <?php endif; ?>
+
             <?= $this->db_settings_form ?>
         </div>
 
