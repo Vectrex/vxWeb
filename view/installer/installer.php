@@ -39,7 +39,14 @@
                 <div class="toast toast-error"><?= $this->connection_error ?></div>
             <?php endif; ?>
 
-            <?= $this->db_settings_form ?>
+            <?php if($this->misc_error): ?>
+                <div class="toast toast-error"><?= $this->misc_error ?></div>
+            <?php endif; ?>
+
+            <?php if($this->db_settings_form): ?>
+                <?= $this->db_settings_form ?>
+            <?php endif; ?>
+
         </div>
 
     </body>

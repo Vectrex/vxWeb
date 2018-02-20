@@ -2,13 +2,17 @@
 
 namespace App\Controller\Installer;
 
+use Resque\Socket\Exception;
 use vxPHP\Application\Application;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\HtmlForm;
+use vxPHP\Security\Password\PasswordEncrypter;
+use vxPHP\Security\Password\PasswordGenerator;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
+use vxPHP\Util\Rex;
 
 class InstallerController extends Controller {
 
@@ -38,11 +42,11 @@ class InstallerController extends Controller {
         // database credentials form
 
         $form = HtmlForm::create('installer/db_settings.htm')
-            ->addElement(FormElementFactory::create('input', 'host', '',	[],	[],	true, ['trim']))
-            ->addElement(FormElementFactory::create('input', 'user', '', [], [], true, ['trim']))
-            ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim']))
+            ->addElement(FormElementFactory::create('input', 'host', '',	[],	[],	true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+            ->addElement(FormElementFactory::create('input', 'user', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+            ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
             ->addElement(FormElementFactory::create('input', 'port', '', [], [], false, ['trim'], [new RegularExpression('/^\d{2,5}$/')]))
-            ->addElement(FormElementFactory::create('input', 'dbname', '', [], [], true, ['trim']))
+            ->addElement(FormElementFactory::create('input', 'dbname', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
             ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'pgsql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'))
         ;
 
@@ -61,23 +65,40 @@ class InstallerController extends Controller {
                         case 'pgsql':
                             $dsn = sprintf('pgsql:host=%s%s;dbname=%s', $values['host'], $values['port'] ? (';port=' . $values['port']) : '' , $values['dbname']);
                             $connection = new \PDO($dsn, $values['user'], $values['password']);
+                            break;
                         default:
                             $connectionError = 'Kein gültiger Datenbanktreiber angegeben.';
                     }
+
+                    if(isset($connection)) {
+                        $this->writeDbStructure($connection);
+                        $adminPassword = PasswordGenerator::create();
+                        $this->writeDbData($connection, $adminPassword);
+                        $this->writeDbConfiguration([]);
+
+                        $success = true;
+                    }
+
                 }
                 catch(\PDOException $e) {
                     $connectionError = $e->getMessage();
                 }
+                catch(\Exception $e) {
+                    $miscError = $e->getMessage();
+                }
+
+
             }
-            }
+        }
 
         return new Response(
             SimpleTemplate::create('installer/installer.php')
                 ->assign('default_view_path', $defaultViewPath)
                 ->assign('ini_path', $iniPath)
                 ->assign('checks', $checks)
-                ->assign('db_settings_form', $form->render())
+                ->assign('db_settings_form', $success ? '' : $form->render())
                 ->assign('connection_error', $connectionError ?? '')
+                ->assign('misc_error', $miscError ?? '')
                 ->display()
         );
 
@@ -108,5 +129,37 @@ class InstallerController extends Controller {
         else if(file_exists($dir)) {
             return (is_writable($dir));
         }
+    }
+
+    private function writeDbStructure(\PDO $connection) {
+
+	    $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
+        $dump = @file_get_contents( __DIR__ . DIRECTORY_SEPARATOR . $drivername . '_structure.sql');
+        if(false === $dump) {
+            throw new \Exception($drivername . '_structure.sql not found.');
+        }
+        $connection->beginTransaction();
+        $connection->exec($dump);
+        $connection->commit();
+
+    }
+
+    private function writeDbData(\PDO $connection, $adminPassword) {
+
+        $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
+        $dump = @file_get_contents( __DIR__ . DIRECTORY_SEPARATOR . $drivername . '_data.sql');
+        if(false === $dump) {
+            throw new \Exception($drivername . '_data.sql not found.');
+        }
+        $connection->beginTransaction();
+        $connection->exec($dump);
+        $stmt = $connection->prepare('UPDATE admin SET pwd = ? WHERE username = ?');
+        $stmt->execute([(new PasswordEncrypter())->hashPassword($adminPassword), 'admin']);
+        $connection->commit();
+
+    }
+
+    private function writeDbConfiguration(array $config) {
+
     }
 }
