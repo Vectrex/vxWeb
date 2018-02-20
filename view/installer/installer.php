@@ -33,5 +33,6 @@
             </table>
 		</div>
 
+        <?= $this->db_settings_form ?>
     </body>
 </html>

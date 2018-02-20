@@ -1,0 +1,27 @@
+{form { "class": "form" }}
+
+<div class="form-group">
+    <label class="form-label{error_host: text-error}">Host</label>
+    {input:host {"maxlength": "128", "class": "form-input"} }
+</div>
+<div class="form-group">
+    <label class="form-label{error_port: text-error}">Port</label>
+    {input:port {"maxlength": "5", "class": "form-input"} }
+</div>
+<div class="form-group">
+    <label class="form-label{error_user: text-error}">User</label>
+    {input:user {"maxlength": "128", "class": "form-input"} }
+</div>
+<div class="form-group">
+    <label class="form-label{error_password: text-error}">Passwort</label>
+    {input:password {"maxlength": "128", "class": "form-input"} }
+</div>
+<div class="form-group">
+    <label class="form-label{error_password: text-error}">Typ</label>
+    {dropdown:db_type {"class": "form-select"} }
+</div>
+<div class="form-group">
+    <button class="btn btn-success">Übernehmen</button>
+</div>
+
+{end_form}

@@ -3,6 +3,8 @@
 namespace App\Controller\Installer;
 
 use vxPHP\Application\Application;
+use vxPHP\Constraint\Validator\RegularExpression;
+use vxPHP\Form\HtmlForm;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
@@ -31,6 +33,16 @@ class InstallerController extends Controller {
         $iniPath = realpath(Application::getInstance()->getRootPath() . 'ini');
         $iniFilesAreWritable = $this->checkWritable($iniPath);
 
+        // database credentials form
+
+        $form = HtmlForm::create('installer/db_settings.htm')
+            ->addElement(FormElementFactory::create('input', 'host', '',	[],	[],	true, ['trim']))
+            ->addElement(FormElementFactory::create('input', 'user', '', [], [], true, ['trim']))
+            ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim']))
+            ->addElement(FormElementFactory::create('input', 'port', '', [], [], false, ['trim'], [new RegularExpression('/^\d{2,5}$/')]))
+            ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'postgresql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'))
+        ;
+
         return new Response(
             SimpleTemplate::create('installer/installer.php')
                 ->assign('default_view_path', $defaultViewPath)
@@ -38,6 +50,7 @@ class InstallerController extends Controller {
                 ->assign('default_is_writable', $defaultIsWritable)
                 ->assign('default_files_are_writable', $defaultFilesAreWritable)
                 ->assign('ini_files_are_writable', $iniFilesAreWritable)
+                ->assign('db_settings_form', $form->render())
                 ->display()
         );
 
