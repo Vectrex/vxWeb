@@ -17,6 +17,7 @@
     </head>
 
 	<body>
+
 		<div id="page" class="single-column">
             <h1>Konfiguration</h1>
             <table class="table">
@@ -31,8 +32,9 @@
                 </tr>
 
             </table>
-		</div>
+            <div class="divider text-center" data-content="Datenbank Einstellungen"></div>
+            <?= $this->db_settings_form ?>
+        </div>
 
-        <?= $this->db_settings_form ?>
     </body>
 </html>
