@@ -16,23 +16,24 @@ class InstallerController extends Controller {
 
 	    // check whether view/default/* are writable
 
+        $checks = [];
         $defaultViewPath = realpath(Application::getInstance()->getRootPath() . 'view/default');
-        $defaultFilesAreWritable = $this->checkWritable($defaultViewPath);
+        $checks['default_files_are_writable'] = $this->checkWritable($defaultViewPath);
 
         // check whether files in view/default can be created
 
         if(!($tmpfile = tempnam($defaultViewPath, 'vxweb_'))) {
-            $defaultIsWritable = false;
+            $checks['default_is_writable'] = false;
         }
         else {
-            $defaultIsWritable = true;
+            $checks['default_is_writable'] = true;
             unlink($tmpfile);
         }
 
         // check ini files and path
 
         $iniPath = realpath(Application::getInstance()->getRootPath() . 'ini');
-        $iniFilesAreWritable = $this->checkWritable($iniPath);
+        $checks['ini_files_are_writable'] = $this->checkWritable($iniPath);
 
         // database credentials form
 
@@ -48,9 +49,7 @@ class InstallerController extends Controller {
             SimpleTemplate::create('installer/installer.php')
                 ->assign('default_view_path', $defaultViewPath)
                 ->assign('ini_path', $iniPath)
-                ->assign('default_is_writable', $defaultIsWritable)
-                ->assign('default_files_are_writable', $defaultFilesAreWritable)
-                ->assign('ini_files_are_writable', $iniFilesAreWritable)
+                ->assign('checks', $checks)
                 ->assign('db_settings_form', $form->render())
                 ->display()
         );

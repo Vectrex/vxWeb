@@ -23,13 +23,13 @@
             <div class="divider text-center" data-content="Verzeichnisse"></div>
             <table class="table table-striped">
                 <tr>
-                    <td>Dateien in <?= $this->default_view_path ?> beschreibbar</td><td><?= $this->default_files_are_writable  ? 'ja' : 'nein' ?></td>
+                    <td>Dateien in <?= $this->default_view_path ?> beschreibbar</td><td><?= $this->checks['default_files_are_writable']  ? '<span class="label label-success">ja</span>' : '<span class="label label-error">nein</span>' ?></td>
                 </tr>
                 <tr>
-                    <td>Ordner <?= $this->default_view_path ?> beschreibbar</td><td><?= $this->default_is_writable  ? 'ja' : 'nein' ?></td>
+                    <td>Ordner <?= $this->default_view_path ?> beschreibbar</td><td><?= $this->checks['default_is_writable']  ? '<span class="label label-success">ja</span>' : '<span class="label label-error">nein</span>' ?></td>
                 </tr>
                 <tr>
-                    <td>Dateien in <?= $this->ini_path ?> beschreibbar</td><td><?= $this->ini_files_are_writable  ? 'ja' : 'nein' ?></td>
+                    <td>Dateien in <?= $this->ini_path ?> beschreibbar</td><td><?= $this->checks['ini_files_are_writable']  ? '<span class="label label-success">ja</span>' : '<span class="label label-error">nein</span>' ?></td>
                 </tr>
 
             </table>
