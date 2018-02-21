@@ -74,7 +74,7 @@ class InstallerController extends Controller {
                         $this->writeDbStructure($connection);
                         $adminPassword = PasswordGenerator::create();
                         $this->writeDbData($connection, $adminPassword);
-                        $this->writeDbConfiguration([]);
+                        $this->writeDbConfiguration(array_merge($values->all(), ['dsn' => $dsn]));
 
                         $success = true;
                     }
@@ -96,7 +96,7 @@ class InstallerController extends Controller {
                 ->assign('default_view_path', $defaultViewPath)
                 ->assign('ini_path', $iniPath)
                 ->assign('checks', $checks)
-                ->assign('db_settings_form', $success ? '' : $form->render())
+                ->assign('db_settings_form', !empty($success) ? '' : $form->render())
                 ->assign('connection_error', $connectionError ?? '')
                 ->assign('misc_error', $miscError ?? '')
                 ->display()
@@ -160,6 +160,17 @@ class InstallerController extends Controller {
     }
 
     private function writeDbConfiguration(array $config) {
+
+	    $xmlDoc = new \DOMDocument();
+	    $vxpdo = $xmlDoc->appendChild($xmlDoc->createElement('vxpdo'));
+	    $datasource = $vxpdo->appendChild($xmlDoc->createElement('datasource'));
+	    $datasource->setAttribute('name', 'default');
+	    $datasource->appendChild($xmlDoc->createElement('driver', $config['db_type']));
+        $datasource->appendChild($xmlDoc->createElement('user', $config['user']));
+        $datasource->appendChild($xmlDoc->createElement('password', $config['password']));
+        $datasource->appendChild($xmlDoc->createElement('dsn', $config['dsn']));
+
+        var_dump($xmlDoc->saveXML());
 
     }
 }
