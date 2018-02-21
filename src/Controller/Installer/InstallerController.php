@@ -2,7 +2,6 @@
 
 namespace App\Controller\Installer;
 
-use Resque\Socket\Exception;
 use vxPHP\Application\Application;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Form\FormElement\FormElementFactory;
@@ -18,92 +17,103 @@ class InstallerController extends Controller {
 
 	protected function execute() {
 
-	    // check whether view/default/* are writable
+	    $installerFile = Application::getInstance()->getRootPath() . 'web/installer.php';
 
-        $checks = [];
-        $defaultViewPath = realpath(Application::getInstance()->getRootPath() . 'view/default');
-        $checks['default_files_are_writable'] = $this->checkWritable($defaultViewPath);
+	    if(!is_null($this->request->query->get('delete'))) {
 
-        // check whether files in view/default can be created
-
-        if(!($tmpfile = tempnam($defaultViewPath, 'vxweb_'))) {
-            $checks['default_is_writable'] = false;
-        }
-        else {
-            $checks['default_is_writable'] = true;
-            unlink($tmpfile);
-        }
-
-        // check ini files and path
-
-        $iniPath = realpath(Application::getInstance()->getRootPath() . 'ini');
-        $checks['ini_files_are_writable'] = $this->checkWritable($iniPath);
-
-        // database credentials form
-
-        $form = HtmlForm::create('installer/db_settings.htm')
-            ->addElement(FormElementFactory::create('input', 'host', '',	[],	[],	true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-            ->addElement(FormElementFactory::create('input', 'user', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-            ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-            ->addElement(FormElementFactory::create('input', 'port', '', [], [], false, ['trim'], [new RegularExpression('/^\d{2,5}$/')]))
-            ->addElement(FormElementFactory::create('input', 'dbname', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-            ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'pgsql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'))
-        ;
-
-        if($this->request->getMethod() === 'POST') {
-            $form->bindRequestParameters($this->request->request)->validate();
-
-            if(!$form->getFormErrors()) {
-                $values = $form->getValidFormValues();
-
-                try {
-                    switch($values['db_type']) {
-                        case 'mysql':
-                            $dsn = sprintf('mysql:host=%s%s;dbname=%s', $values['host'], $values['port'] ? (';port=' . $values['port']) : '', $values['dbname']);
-                            $connection = new \PDO($dsn, $values['user'], $values['password']);
-                            break;
-                        case 'pgsql':
-                            $dsn = sprintf('pgsql:host=%s%s;dbname=%s', $values['host'], $values['port'] ? (';port=' . $values['port']) : '' , $values['dbname']);
-                            $connection = new \PDO($dsn, $values['user'], $values['password']);
-                            break;
-                        default:
-                            $connectionError = 'Kein gültiger Datenbanktreiber angegeben.';
-                    }
-
-                    if(isset($connection)) {
-                        $this->writeDbStructure($connection);
-                        $adminPassword = PasswordGenerator::create();
-                        $this->writeDbData($connection, $adminPassword);
-                        $this->writeDbConfiguration(array_merge($values->all(), ['dsn' => $dsn]));
-
-                        $success = true;
-                    }
-
-                }
-                catch(\PDOException $e) {
-                    $connectionError = $e->getMessage();
-                }
-                catch(\Exception $e) {
-                    $miscError = $e->getMessage();
-                }
-
-
+	        if(!is_writeable($installerFile)) {
+	            die(sprintf("Kann Datei '%s' nicht löschen.", $installerFile));
             }
+
+	        unlink($installerFile);
+	        return $this->redirect($this->request->getSchemeAndHttpHost() . (Application::getInstance()->hasNiceUris() ? '/admin' : 'admin.php'));
+        };
+
+	    // check whether paths are writable
+
+        $pathChecks = [];
+        $paths = ['view/default', 'ini', 'web/files'];
+
+        foreach($paths as $path) {
+            $pathChecks[$path] = [
+                'writable' => $this->checkWritable(realpath(Application::getInstance()->getRootPath() . $path))
+            ];
+        }
+
+        $pathsOk = count(array_filter($pathChecks, function($p) { return $p['writable']; })) === count($paths);
+
+        if($pathsOk) {
+
+            // database credentials form
+
+            $form = HtmlForm::create('installer/db_settings.htm')
+                ->addElement(FormElementFactory::create('input', 'host', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+                ->addElement(FormElementFactory::create('input', 'user', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+                ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+                ->addElement(FormElementFactory::create('input', 'port', '', [], [], false, ['trim'], [new RegularExpression('/^\d{2,5}$/')]))
+                ->addElement(FormElementFactory::create('input', 'dbname', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+                ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'postgresql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'));
+
+            if ($this->request->getMethod() === 'POST') {
+                $form->bindRequestParameters($this->request->request)->validate();
+
+                if (!$form->getFormErrors()) {
+                    $values = $form->getValidFormValues();
+
+                    try {
+                        switch ($values['db_type']) {
+                            case 'mysql':
+                                $dsn = sprintf('mysql:host=%s%s;dbname=%s', $values['host'], $values['port'] ? (';port=' . $values['port']) : '', $values['dbname']);
+                                $connection = new \PDO($dsn, $values['user'], $values['password']);
+                                break;
+                            case 'postgresql':
+                                $dsn = sprintf('pgsql:host=%s%s;dbname=%s', $values['host'], $values['port'] ? (';port=' . $values['port']) : '', $values['dbname']);
+                                $connection = new \PDO($dsn, $values['user'], $values['password']);
+                                break;
+                            default:
+                                $connectionError = 'Kein gültiger Datenbanktreiber angegeben.';
+                        }
+
+                        if (isset($connection)) {
+                            $this->writeDbStructure($connection);
+                            $adminPassword = PasswordGenerator::create();
+                            $this->writeDbData($connection, $adminPassword);
+                            $this->writeDbConfiguration(
+                                $this->createDbConfiguration(array_merge($values->all(), ['dsn' => $dsn])),
+                                Application::getInstance()->getRootPath() . 'ini/pdo_config.xml'
+                            );
+
+                            $success = true;
+                        }
+
+                    } catch (\PDOException $e) {
+                        $connectionError = $e->getMessage();
+                    } catch (\Exception $e) {
+                        $miscError = $e->getMessage();
+                    }
+
+
+                }
+            }
+
         }
 
         return new Response(
             SimpleTemplate::create('installer/installer.php')
-                ->assign('default_view_path', $defaultViewPath)
-                ->assign('ini_path', $iniPath)
-                ->assign('checks', $checks)
-                ->assign('db_settings_form', !empty($success) ? '' : $form->render())
+                ->assign('path_checks', $pathChecks)
+                ->assign('paths_ok', $pathsOk)
+                ->assign('db_settings_form', (!isset($form)) ? '' : $form->render())
                 ->assign('connection_error', $connectionError ?? '')
                 ->assign('misc_error', $miscError ?? '')
+                ->assign('success', $success ?? '')
+                ->assign('password', isset($success) ? $adminPassword : '')
+                ->assign('admin_url', isset($success) ? ($this->request->getSchemeAndHttpHost() . (Application::getInstance()->hasNiceUris() ? '/admin' : 'admin.php')) : '')
+                ->assign('installer_is_deletable', is_writeable($installerFile))
+                ->assign('installer_file', $installerFile)
                 ->display()
         );
 
 	}
-
 
 	private function checkWritable($dir) {
 
@@ -131,6 +141,12 @@ class InstallerController extends Controller {
         }
     }
 
+    /**
+     * execute queries to create database structure
+     *
+     * @param \PDO $connection
+     * @throws \Exception
+     */
     private function writeDbStructure(\PDO $connection) {
 
 	    $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
@@ -144,6 +160,13 @@ class InstallerController extends Controller {
 
     }
 
+    /**
+     * insert some necessary database entries
+     *
+     * @param \PDO $connection
+     * @param $adminPassword
+     * @throws \Exception
+     */
     private function writeDbData(\PDO $connection, $adminPassword) {
 
         $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
@@ -159,7 +182,13 @@ class InstallerController extends Controller {
 
     }
 
-    private function writeDbConfiguration(array $config) {
+    /**
+     * turn config data into XML format
+     *
+     * @param array $config
+     * @return \DOMDocument
+     */
+    private function createDbConfiguration(array $config) {
 
 	    $xmlDoc = new \DOMDocument();
 	    $vxpdo = $xmlDoc->appendChild($xmlDoc->createElement('vxpdo'));
@@ -170,7 +199,19 @@ class InstallerController extends Controller {
         $datasource->appendChild($xmlDoc->createElement('password', $config['password']));
         $datasource->appendChild($xmlDoc->createElement('dsn', $config['dsn']));
 
-        var_dump($xmlDoc->saveXML());
+        return $xmlDoc;
+
+    }
+
+    /**
+     * write XML configuration
+     *
+     * @param \DOMDocument $xml
+     * @param $filename
+     */
+    private function writeDbConfiguration(\DOMDocument $xml, $filename) {
+
+        file_put_contents($filename, $xml->saveXML());
 
     }
 }

@@ -16,35 +16,70 @@
         <script type="text/javascript" src="/js/admin/vxjs.js"></script>
     </head>
 
-	<body>
+	<body style="padding: 2rem 0;">
 
-		<div id="page" class="single-column">
-            <h1>Konfiguration</h1>
-            <div class="divider text-center" data-content="Verzeichnisse"></div>
+		<div id="page" class="container grid-md">
+            <h1>vxWeb Installer</h1>
+            <div class="divider text-center" data-content="Schreibrechte für Verzeichnisse"></div>
             <table class="table table-striped">
+                <?php foreach($this->path_checks as $path => $check): ?>
                 <tr>
-                    <td>Dateien in <?= $this->default_view_path ?> beschreibbar</td><td><?= $this->checks['default_files_are_writable']  ? '<span class="label label-success">ja</span>' : '<span class="label label-error">nein</span>' ?></td>
+                    <td>Ordner <?= $path ?> beschreibbar</td><td><?= $check['writable']  ? '<span class="label label-success">ja</span>' : '<span class="label label-error">nein</span>' ?></td>
                 </tr>
-                <tr>
-                    <td>Ordner <?= $this->default_view_path ?> beschreibbar</td><td><?= $this->checks['default_is_writable']  ? '<span class="label label-success">ja</span>' : '<span class="label label-error">nein</span>' ?></td>
-                </tr>
-                <tr>
-                    <td>Dateien in <?= $this->ini_path ?> beschreibbar</td><td><?= $this->checks['ini_files_are_writable']  ? '<span class="label label-success">ja</span>' : '<span class="label label-error">nein</span>' ?></td>
-                </tr>
-
+                <?php endforeach; ?>
             </table>
-            <div class="divider text-center" data-content="Datenbank Einstellungen"></div>
 
-            <?php if($this->connection_error): ?>
-                <div class="toast toast-error"><?= $this->connection_error ?></div>
-            <?php endif; ?>
+            <?php if(!$this->paths_ok): ?>
 
-            <?php if($this->misc_error): ?>
-                <div class="toast toast-error"><?= $this->misc_error ?></div>
-            <?php endif; ?>
+                <div class="toast toast-error">
+                    Erlaube Schreibzugriff auf die derzeit nicht beschreibbaren Ordner und die darin enthaltenen Dateien.<br>
+                    Im darauf folgenden Schritt wird dann die Datenbank eingerichtet.
+                </div>
 
-            <?php if($this->db_settings_form): ?>
-                <?= $this->db_settings_form ?>
+            <?php elseif($this->success): ?>
+
+                <div class="toast toast-primary my-2">
+                    <h2>Installation abgeschlossen</h2>
+                    <p>Für den Login wurde als Username <span class="label">admin</span> und das Passwort <span class="label"><?= $this->password ?></span> eingerichtet.<br>
+                    Es empfiehlt sich, dies nach dem erstmaligen Login zu ändern.</p>
+                </div>
+
+                <?php if($this->installer_is_deletable): ?>
+                <p class="my-2">
+                    <a class="btn btn-success" href="installer.php?delete">Lösche Installer und gehe zum Admin Login</a>
+                    <a class="btn" href="<?= $this->admin_url?>" target="_blank">Gehe zum Admin Login ohne den Installer zu löschen</a>
+                </p>
+
+                <?php else: ?>
+
+                <div class="toast toast-error my-2">
+                    <p>
+                       Das Installer Skript kann nicht gelöscht werden. Entferne die Datei<br><strong><?= $this->installer_file ?></strong><br>manuell.
+                    </p>
+                </div>
+                <p class="my-2">
+                    <a class="btn" href="<?= $this->admin_url?>" target="_blank">Gehe zum Admin Login</a>
+                </p>
+
+                <?php endif; ?>
+
+
+            <?php else: ?>
+
+                <div class="divider text-center" data-content="Datenbank Einstellungen"></div>
+
+                <?php if($this->connection_error): ?>
+                    <div class="toast toast-error"><?= $this->connection_error ?></div>
+                <?php endif; ?>
+
+                <?php if($this->misc_error): ?>
+                    <div class="toast toast-error"><?= $this->misc_error ?></div>
+                <?php endif; ?>
+
+                <?php if($this->db_settings_form): ?>
+                    <?= $this->db_settings_form ?>
+                <?php endif; ?>
+
             <?php endif; ?>
 
         </div>
