@@ -173,9 +173,11 @@ class InstallerController extends Controller {
         }
         $connection->beginTransaction();
         $connection->exec($dump);
-        $stmt = $connection->prepare('UPDATE admin SET pwd = ? WHERE username = ?');
-        $stmt->execute([(new PasswordEncrypter())->hashPassword($adminPassword), 'admin']);
         $connection->commit();
+
+        $hashedPassword = (new PasswordEncrypter())->hashPassword($adminPassword);
+        $stmt = $connection->prepare('UPDATE admin SET pwd = ? WHERE username = ?');
+        $stmt->execute([$hashedPassword, 'admin']);
 
     }
 

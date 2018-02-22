@@ -18,7 +18,7 @@
 
 	<!-- db setting(s) are deprecated and will be replaced by vxpdo settings -->
 
-	<include>db_config.xml</include>
+	<!-- <include>db_config.xml</include> -->
 
 	<!-- configuration of vxPDO datasources -->
 

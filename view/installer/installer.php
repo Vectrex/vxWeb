@@ -32,16 +32,16 @@
             <?php if(!$this->paths_ok): ?>
 
                 <div class="toast toast-error">
-                    Erlaube Schreibzugriff auf die derzeit nicht beschreibbaren Ordner und die darin enthaltenen Dateien.<br>
+                    Erlaube zunächst Schreibzugriff auf die derzeit nicht beschreibbaren Ordner und die darin enthaltenen Dateien.<br>
                     Im darauf folgenden Schritt wird dann die Datenbank eingerichtet.
                 </div>
 
             <?php elseif($this->success): ?>
 
-                <div class="toast toast-primary my-2">
+                <div class="toast toast-success my-2">
                     <h2>Installation abgeschlossen</h2>
-                    <p>Für den Login wurde als Username <span class="label">admin</span> und das Passwort <span class="label"><?= $this->password ?></span> eingerichtet.<br>
-                    Es empfiehlt sich, dies nach dem erstmaligen Login zu ändern.</p>
+                    <div>Für den Login wurde als Username <span class="label">admin</span> und das Passwort <span class="label"><?= $this->password ?></span> eingerichtet.<br>
+                    Es empfiehlt sich, dies nach dem erstmaligen Login zu ändern.</div>
                 </div>
 
                 <?php if($this->installer_is_deletable): ?>
@@ -53,9 +53,7 @@
                 <?php else: ?>
 
                 <div class="toast toast-error my-2">
-                    <p>
                        Das Installer Skript kann nicht gelöscht werden. Entferne die Datei<br><strong><?= $this->installer_file ?></strong><br>manuell.
-                    </p>
                 </div>
                 <p class="my-2">
                     <a class="btn" href="<?= $this->admin_url?>" target="_blank">Gehe zum Admin Login</a>

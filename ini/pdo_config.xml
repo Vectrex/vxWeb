@@ -2,8 +2,8 @@
 
 <vxpdo>
 	<datasource name="vxweb">
-		<!-- currently postgresql or mysql -->
-		<driver>postgresql</driver>
+		<!-- currently pgsql or mysql -->
+		<driver>pgsql</driver>
 		<host>host</host>
 		<user>user</user>
 		<password>password</password>
