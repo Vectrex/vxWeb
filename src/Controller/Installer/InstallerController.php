@@ -52,7 +52,7 @@ class InstallerController extends Controller {
                 ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
                 ->addElement(FormElementFactory::create('input', 'port', '', [], [], false, ['trim'], [new RegularExpression('/^\d{2,5}$/')]))
                 ->addElement(FormElementFactory::create('input', 'dbname', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-                ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'postgresql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'));
+                ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'pgsql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'));
 
             if ($this->request->getMethod() === 'POST') {
                 $form->bindRequestParameters($this->request->request)->validate();
@@ -63,11 +63,8 @@ class InstallerController extends Controller {
                     try {
                         switch ($values['db_type']) {
                             case 'mysql':
-                                $dsn = sprintf('mysql:host=%s%s;dbname=%s', $values['host'], $values['port'] ? (';port=' . $values['port']) : '', $values['dbname']);
-                                $connection = new \PDO($dsn, $values['user'], $values['password']);
-                                break;
-                            case 'postgresql':
-                                $dsn = sprintf('pgsql:host=%s%s;dbname=%s', $values['host'], $values['port'] ? (';port=' . $values['port']) : '', $values['dbname']);
+                            case 'pgsql':
+                                $dsn = sprintf('%s:host=%s%s;dbname=%s', $values['db_type'], $values['host'], $values['port'] ? (';port=' . $values['port']) : '', $values['dbname']);
                                 $connection = new \PDO($dsn, $values['user'], $values['password']);
                                 break;
                             default:
