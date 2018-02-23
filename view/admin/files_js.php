@@ -31,8 +31,8 @@
         </div>
         <span id="activityIndicator" class="vx-activity-indicator"></span>
         <input id="addFolderInput" class="form-input col-3" style="display: none;">
-        <button id="addFolder" class="btn with-webfont-icon-right" type="button" data-icon="&#xe007;">Verzeichnis anlegen</button>
-        <button id="addFile" class="btn with-webfont-icon-right" type="button" data-icon="&#xe00e;">Datei hinzufügen</button>
+        <button id="addFolder" class="btn with-webfont-icon-right btn-primary" type="button" data-icon="&#xe007;">Verzeichnis anlegen</button>
+        <button id="addFile" class="btn with-webfont-icon-right btn-primary" type="button" data-icon="&#xe00e;">Datei hinzufügen</button>
     </div>
 </div>
 

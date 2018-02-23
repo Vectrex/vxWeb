@@ -201,13 +201,11 @@ class ArticlesController extends Controller {
 		$tpl = SimpleTemplate::create('admin/snippets/article_row.php');
 		$markup = [];
 		$canPublish = $admin->hasRole('superadmin');
-		$colorNdx = 0;
 
 		foreach($query->select() as $article) {
 			$markup[] = $tpl
 				->assign('article', $article)
 				->assign('can_publish', $canPublish)
-				->assign('colorNdx', $colorNdx++ % 2)
 				->display();
 		}
 		

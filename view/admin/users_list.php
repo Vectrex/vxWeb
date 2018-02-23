@@ -35,7 +35,7 @@
 </script>
 
 <div class="vx-button-bar">
-    <a class="btn with-webfont-icon-right" data-icon="&#xe018;" href="$users/new">User anlegen</a>
+    <a class="btn with-webfont-icon-right btn-primary" data-icon="&#xe018;" href="$users/new">User anlegen</a>
 </div>
 
 <table class="table table-striped">
