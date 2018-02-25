@@ -10,17 +10,15 @@
 
 namespace vxWeb\Util;
 
-use vxPHP\Model\Article\Article;
-use vxPHP\File\Exception\FilesystemFileException;
 use vxPHP\File\FilesystemFolder;
+use vxPHP\File\Util;
+use vxPHP\File\Exception\FilesystemFileException;
 use vxPHP\File\FilesystemFile;
 use vxPHP\File\UploadedFile;
-use vxPHP\Http\Request;
 use vxPHP\Application\Application;
 
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\MetaFile\MetaFolder;
-use vxWeb\Model\MetaFile\Exception\MetaFolderException;
 
 /**
  * this class contains some static methods used in various controllers
@@ -101,7 +99,7 @@ class File {
 
 		// add new filesystem files
 
-		$fsFiles = \vxPHP\File\Util::getDir($metaFolder->getFullPath());
+		$fsFiles = Util::getDir($metaFolder->getFullPath());
 		$missing = array_diff($fsFiles, $existing);
 
 		foreach($missing as $m) {
@@ -110,17 +108,17 @@ class File {
 
 	}
 
-	/**
-	 * turns uploaded file into metafile, avoiding filename collisions
-	 *
-	 * @param MetaFolder $metaFolder
-	 * @param UploadedFile $upload
-	 * @param array metadata
-	 * @param boolean $unpackArchives unpack zip|gzip files when true
-	 * @throws FilesystemFileException
-	 *
-	 * @return array metafiles | FALSE when failure
-	 */
+    /**
+     * turns uploaded file into metafile, avoiding filename collisions
+     *
+     * @param MetaFolder $metaFolder
+     * @param UploadedFile $upload
+     * @param array metadata
+     * @param boolean $unpackArchives unpack zip|gzip files when true
+     * @return MetaFile[] | boolean false when failure
+     * @throws FilesystemFileException
+     * @throws \Exception
+     */
 	public static function processFileUpload(MetaFolder $metaFolder, UploadedFile $upload, array $metaData = [], $unpackArchives = FALSE) {
 
 		$metafiles = [];
@@ -129,11 +127,11 @@ class File {
 
 		if(preg_match('~^application/.*?(gz|zip|compressed)~', $upload->getMimeType()) && $unpackArchives) {
 			try {
-				$uploads = self::handleArchive($upload);
+				$uploads = self::extractZip($upload->getPath(), $metaFolder->getFilesystemFolder());
 				$upload->delete();
 			}
-			catch(Exception $e) {
-				return FALSE;
+			catch(\Exception $e) {
+				return false;
 			}
 		}
 
@@ -187,8 +185,8 @@ class File {
 
 			// other upload problem
 
-			catch(Exception $e) {
-				return FALSE;
+			catch(\Exception $e) {
+				return false;
 			}
 
 			$metafiles[] = $metaFile;
@@ -199,51 +197,52 @@ class File {
 
 	}
 
-	/**
-	 * extracts an archive and flattens it
-	 * all extracted files are turned into FilesystemFile instances
-	 *
-	 * @param UploadedFile $f
-	 * @throws Exception
-	 * @returns array [vxPHP\File\FilesystemFile]
-	 */
-	private static function handleArchive(UploadedFile $f) {
+    /**
+     * extract a zip archive and return the extracted
+     * FilesystemFiles
+     *
+     * @param string $zipFilename
+     * @param FilesystemFolder $folder
+     * @return FilesystemFile[]
+     * @throws \Exception
+     */
+    public static function extractZip($zipFilename, FilesystemFolder $folder)
+    {
 
-		$zip = new \ZipArchive();
-		$tmpName = $f->getPath();
-		$status = $zip->open($tmpName);
+        $zip = new \ZipArchive();
+        $files = [];
 
-		if($status !== TRUE) {
-			throw new \Exception("Archive file reports error: $status");
-		}
+        if (true !== ($status = $zip->open($zipFilename))) {
+            throw new \Exception(sprintf("Archive file reports error: '%s'.", $status));
+        }
 
-		$folder	= $f->getFolder();
-		$path	= $folder->getPath();
-		$files = [];
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
 
-		for($i = 0; $i < $zip->numFiles; ++ $i) {
+            $name = $zip->getNameIndex($i);
 
-			$name = $zip->getNameIndex($i);
+            if (substr($name, -1) === '/') {
+                continue;
+            }
 
-			if(substr($name, - 1) == '/') {
-				continue;
-			}
+            $dirname = dirname($name);
 
-			if(dirname($name)) {
-				$dir = MetaFolder::createMetaFolder(dirname($name));
-			}
-			else {
-				$dir = $folder;
-			}
+            if ($dirname && $dirname !== '.') {
+                $dir = $folder->createFolder($dirname);
+            } else {
+                $dir = $folder;
+            }
 
-			$dest = FilesystemFile::sanitizeFilename(basename($name), $dir);
+            $dest = FilesystemFile::sanitizeFilename(basename($name), $dir);
 
-			copy('zip://' . $tmpName . '#' . $name, $dir->getPath() . $dest);
+            copy('zip://' . $zipFilename . '#' . $name, $dir->getPath() . $dest);
 
-			$files[] = FilesystemFile::getInstance($dir->getPath() . $dest);
-		}
+            $files[] = FilesystemFile::getInstance($dir->getPath() . $dest);
 
-		return $files;
-	}
+        }
+
+        $zip->close();
+
+        return $files;
+    }
 
 }
