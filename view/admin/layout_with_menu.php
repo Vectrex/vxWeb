@@ -13,8 +13,10 @@
 
 		<link rel='icon' type='image/x-icon' href='/favicon.ico'>
 		<link type='text/css' rel='stylesheet' href='/css/admin.min.css'>
-        <script type="text/javascript" src="/js/admin/vxjs.js"></script>
         <!--
+        <script type="text/javascript" src="/js/admin/vxjs.js"></script>
+        -->
+
         <script type="text/javascript" src="/js/vendor/vxJS/core.js"></script>
         <script type="text/javascript" src="/js/vendor/vxJS/xhr.js"></script>
         <script type="text/javascript" src="/js/vendor/vxJS/widget.js"></script>
@@ -22,7 +24,6 @@
         <script type="text/javascript" src="/js/vendor/vxJS/widgets/sortable.js"></script>
         <script type="text/javascript" src="/js/vendor/vxJS/widgets/simpletabs.js"></script>
         <script type="text/javascript" src="/js/vendor/vxJS/widgets/calendar.js"></script>
-        -->
 
         <script type="text/javascript">
 			if(!this.vxWeb) {

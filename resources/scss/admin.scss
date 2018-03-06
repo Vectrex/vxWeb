@@ -16,9 +16,9 @@ $sidebar-width: 10rem;
 
 @import "spectre/spectre";
 @import "spectre/spectre-exp";
+@import "spectre/_calendars";
 
 @import "vx/icon_variables";
-@import "vx/calendar";
 @import "vx/tree";
 
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
@@ -101,6 +101,42 @@ a.webfont-icon-only {
 
 .modal-container .modal-body {
   max-height: 75vh;
+}
+
+.calendar {
+  @include shadow-variant(.05rem);
+  background: white;
+  max-width: 10%;
+
+  &.cw {
+    .calendar-body,
+    .calendar-header {
+      .calendar-date {
+        max-width: percentage(1 / 8);
+      }
+
+      .cw {
+        background: $gray-color-light;
+      }
+    }
+  }
+
+  .prvMon,
+  .prvYeat {
+    &:before {
+      font-family: icomoon;
+      content: "\e025";
+    }
+  }
+
+  .nxtMon,
+  .nxtYeat {
+    &:before {
+      font-family: icomoon;
+      content: "\e023";
+    }
+  }
+
 }
 
 // custom layout
