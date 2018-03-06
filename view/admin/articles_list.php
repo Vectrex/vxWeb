@@ -2,7 +2,7 @@
 <h1>Artikel &amp; News</h1>
 
 <div class="vx-button-bar">
-	<a class="btn with-webfont-icon-right" data-icon="&#xe018;" href="$articles/new">Artikel anlegen</a>
+	<a class="btn with-webfont-icon-right btn-primary" data-icon="&#xe018;" href="$articles/new">Artikel anlegen</a>
 </div>
 
 <script type="text/javascript">

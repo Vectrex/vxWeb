@@ -16,7 +16,7 @@
 	<td><?= $this->article->getCustomSort() ?></td>
 	<td><?= is_null($this->article->getLastUpdated()) ? '' : $this->article->getLastUpdated()->format('Y-m-d H:i:s') ?></td>
 	<td>
-		<a class="btn btn-primary webfont-icon-only tooltip" data-tooltip="Bearbeiten" href="$articles?id=<?= $this->article->getId() ?>">&#xe002;</a>
-		<a class="btn btn-primary webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" href="$articles/del?id=<?= $this->article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');">&#xe011;</a>
+		<a class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" href="$articles?id=<?= $this->article->getId() ?>">&#xe002;</a>
+		<a class="btn webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" href="$articles/del?id=<?= $this->article->getId() ?>" onclick="return window.confirm('Wirklich löschen?');">&#xe011;</a>
 	</td>
 </tr>

@@ -41,12 +41,12 @@ this.vxWeb.fileManager = function(config) {
 		icons = (function() {
 			var elements = {};
 			[
-			 	{ key: "edit",		title: "Bearbeiten",	icon: "\ue002", className: "btn-primary" },
-			 	{ key: "move",		title: "Verschieben",	icon: "\ue004", className: "btn-primary" },
-			 	{ key: "del",		title: "Löschen",		icon: "\ue011", className: "btn-primary tooltip-left" },
-			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue02a", className: "btn-primary tooltip-left" },
+			 	{ key: "edit",		title: "Bearbeiten",	icon: "\ue002" },
+			 	{ key: "move",		title: "Verschieben",	icon: "\ue004" },
+			 	{ key: "del",		title: "Löschen",		icon: "\ue011", className: "tooltip-left" },
+			 	{ key: "forward",	title: "Übernehmen",	icon: "\ue02a", className: "tooltip-left" },
 			 	{ key: "rename",	title: "Umbenennen",	icon: "\ue001", className: "display-only-on-hover ml-2" },
-			 	{ key: "delFolder",	title: "Ordner leeren und löschen", icon: "\ue008", className: "btn-primary" },
+			 	{ key: "delFolder",	title: "Ordner leeren und löschen", icon: "\ue008" },
 			 	{ key: "locked",	title: "Gesperrt", icon: "\ue00f", element: "span" }
 			].forEach(function(props) {
 				var cN = "btn webfont-icon-only tooltip mr-1 " + props.key + (props.className ? (" " + props.className) : ""),

@@ -1,11 +1,12 @@
 @CHARSET "UTF-8";
 
-$primary-color: #006574;
-$secondary-color: #66b9bf;
-// $secondary-color: #ffdca7;
+$primary-color: #0089cc;
+$secondary-color: #A6DBFF;
 
-$alternative-primary-color: #e37222;
-$alternative-secondary-color: #efaa7b;
+$alternative-primary-color: #ffa200;
+$alternative-secondary-color: #ffcf8c;
+
+$dark-color: #454d5d;
 
 $base-font-family: "verbcond";
 
@@ -100,7 +101,13 @@ a.webfont-icon-only {
 }
 
 .modal-container .modal-body {
-  max-height: 75vh;
+  max-height: 100vh;
+}
+
+.tab-item.disabled {
+  a:hover {
+    cursor: not-allowed;
+  }
 }
 
 .calendar {
