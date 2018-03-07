@@ -113,7 +113,7 @@ a.webfont-icon-only {
 .calendar {
   @include shadow-variant(.05rem);
   background: white;
-  max-width: 10%;
+  max-width: 16rem;
 
   &.cw {
     .calendar-body,
@@ -128,19 +128,13 @@ a.webfont-icon-only {
     }
   }
 
-  .calendar-date span.date-item {
+  span.date-item {
     display: block;
     cursor: default;
-
-    &:hover {
-      color: inherit;
-      border-color: transparent;
-      background: none;
-    }
   }
 
   .prvMon,
-  .prvYeat {
+  .prvYear {
     &:before {
       font-family: icomoon;
       content: "\e025";
@@ -148,7 +142,7 @@ a.webfont-icon-only {
   }
 
   .nxtMon,
-  .nxtYeat {
+  .nxtYear {
     &:before {
       font-family: icomoon;
       content: "\e023";

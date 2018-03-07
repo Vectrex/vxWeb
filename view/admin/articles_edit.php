@@ -43,17 +43,16 @@ vxJS.event.addDomReadyListener(function() {
 
 	vxJS.widget.calendar(
 		document.getElementsByName("article_date")[0],
-		{	trigger: vxJS.dom.getElementsByClassName("calendarPopper")[0],
-			noYearInput: true,
+		{
+		    trigger: vxJS.dom.getElementsByClassName("calendarPopper")[0],
 			inputLocale: "date_de",
-			outputFormat: "%D.%M.%Y",
-            showCw: true
+			outputFormat: "%D.%M.%Y"
 		}
 	);
 	vxJS.widget.calendar(
 		document.getElementsByName("display_from")[0],
-		{	trigger: vxJS.dom.getElementsByClassName("calendarPopper")[1],
-			noYearInput: true,
+		{
+		    trigger: vxJS.dom.getElementsByClassName("calendarPopper")[1],
 			noPast: true,
 			inputLocale: "date_de",
 			outputFormat: "%D.%M.%Y"
@@ -61,8 +60,8 @@ vxJS.event.addDomReadyListener(function() {
 	);
 	vxJS.widget.calendar(
 		document.getElementsByName("display_until")[0],
-		{	trigger: vxJS.dom.getElementsByClassName("calendarPopper")[2],
-			noYearInput: true,
+		{
+		    trigger: vxJS.dom.getElementsByClassName("calendarPopper")[2],
 			noPast: true,
 			inputLocale: "date_de",
 			outputFormat: "%D.%M.%Y"

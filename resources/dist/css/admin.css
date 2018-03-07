@@ -4700,7 +4700,7 @@ a.webfont-icon-only
 }
 
 .calendar
-{max-width: 10%; background: white; 
+{max-width: 16rem; background: white; 
     -webkit-box-shadow: 0 .05rem .2rem rgba(69, 77, 93, .3);            box-shadow: 0 .05rem .2rem rgba(69, 77, 93, .3);
 }
 
@@ -4716,24 +4716,19 @@ a.webfont-icon-only
     border-right: solid .05rem #e7e9ed;
 }
 
-.calendar .calendar-date span.date-item
+.calendar span.date-item
 {
     display: block; cursor: default;
 }
 
-.calendar .calendar-date span.date-item:hover
-{
-    color: inherit; border-color: transparent; background: none;
-}
-
 .calendar .prvMon:before,
-.calendar .prvYeat:before
+.calendar .prvYear:before
 {
     font-family: icomoon; content: '\e025';
 }
 
 .calendar .nxtMon:before,
-.calendar .nxtYeat:before
+.calendar .nxtYear:before
 {
     font-family: icomoon; content: '\e023';
 }
