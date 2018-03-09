@@ -31,7 +31,7 @@
 					    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript', '-', 'TextColor','BGColor'],
 					    ['NumberedList','BulletedList','-','Blockquote', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock']
 					],
-					height: "450px", contentsCss: ['/css/site.css', '/css/site_edit.css'],
+					height: "24rem", contentsCss: ['/css/site.css', '/css/site_edit.css'],
 					filebrowserBrowseUrl: vxWeb.routes.filePicker,
 					filebrowserImageBrowseUrl: vxWeb.routes.filePicker + "?filter=image"
 				}
