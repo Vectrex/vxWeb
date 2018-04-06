@@ -8,7 +8,7 @@ $alternative-secondary-color: #ffcf8c;
 
 $dark-color: #454d5d;
 
-$base-font-family: "verbcond";
+$base-font-family: "IBMPlexSans";
 
 $sidebar-width: 10rem;
 
@@ -23,10 +23,16 @@ $sidebar-width: 10rem;
 @import "vx/tree";
 
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
-@include font-face(verbcond, "../fonts/verb_condensed/VerbCondRegular", normal, normal, woff woff2);
-@include font-face(verbcond, "../fonts/verb_condensed/VerbCondRegular-Italic", normal, italic, woff woff2);
-@include font-face(verbcond, "../fonts/verb_condensed/VerbCondBold", bold, normal, woff woff2);
-@include font-face(verbcond, "../fonts/verb_condensed/VerbCondBold-Italic", bold, italic, woff woff2);
+
+@include font-face(IBMPlexSansCondensed, "../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Regular", normal, normal, woff woff2);
+@include font-face(IBMPlexSansCondensed, "../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Ialic", normal, italic, woff woff2);
+@include font-face(IBMPlexSansCondensed, "../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Bold", bold, normal, woff woff2);
+@include font-face(IBMPlexSansCondensed, "../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-BoldItalic", bold, italic, woff woff2);
+
+@include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-Regular", normal, normal, woff woff2);
+@include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-Ialic", normal, italic, woff woff2);
+@include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-Bold", bold, normal, woff woff2);
+@include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic", bold, italic, woff woff2);
 
 /*
   additions and extensions to spectre.css
