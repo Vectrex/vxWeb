@@ -1,9 +1,13 @@
 <?php
 
-use vxPHP\Application\Application;
 use vxWeb\User\vxWebRoleHierarchy;
 use vxWeb\User\SessionUserProvider;
+use vxPHP\Application\Application;
 use vxPHP\Controller\Controller;
+use vxPHP\Http\Response;
+use vxPHP\Http\Exception\HttpException;
+use vxPHP\Template\SimpleTemplate;
+use vxPHP\Template\Exception\SimpleTemplateException;
 
 // $loader is initialized in bootstrap.php
 // place additional libraries here
@@ -39,7 +43,7 @@ if($currentUser = (new SessionUserProvider())->getSessionUser()) {
 // ensure the presence of a valid assets path
 
 if(!is_dir($application->getAbsoluteAssetsPath())) {
-	throw new \Exception("Assets path '" . $application->getRelativeAssetsPath() . "' not found.");
+	throw new \Exception(sprintf("Assets path '%s' not found.", $application->getRelativeAssetsPath()));
 }
 
 // parse path and determine route
@@ -49,5 +53,19 @@ $application->setCurrentRoute($route);
 
 // render output
 
-Controller::createControllerFromRoute($route)->renderResponse();
+try {
+    Controller::createControllerFromRoute($route)->renderResponse();
+}
+catch(HttpException $e) {
+
+    try {
+        $tpl = SimpleTemplate::create('errordocs/' . $e->getStatusCode() . '.php');
+    }
+    catch(SimpleTemplateException $ste) {
+        $tpl = SimpleTemplate::create()->setRawContents('<h1>' . $e->getStatusCode() . '</h1>');
+    }
+
+    (new Response($tpl->display(), Response::HTTP_NOT_FOUND))->send();
+
+}
 
