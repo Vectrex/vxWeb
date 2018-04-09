@@ -50,4 +50,8 @@
 		<path id="files_path" subdir="files" />
 	</paths>
 
+	<services>
+		<service id="bruteforce_throttler" class="App/Service/vxWeb/BruteforceThrottler"/>
+	</services>
+
 </config>
