@@ -105,6 +105,18 @@ CREATE SEQUENCE "revisions_revisionsid_seq"
 SELECT setval('"public"."revisions_revisionsid_seq"', 4, true);
 
 -- ----------------------------
+-- Sequence structure for bruteforce_attempts_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "bruteforce_attempts_id_seq";
+CREATE SEQUENCE "bruteforce_attempts_id_seq"
+INCREMENT 1
+MINVALUE 1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1;
+SELECT setval('"public"."bruteforce_attempts_id_seq"', 4, true);
+
+-- ----------------------------
 -- Table structure for admin
 -- ----------------------------
 DROP TABLE IF EXISTS "admin";
@@ -328,6 +340,21 @@ WITH (OIDS=FALSE)
 ;
 
 -- ----------------------------
+-- Table structure for bruteforce_attempts
+-- ----------------------------
+DROP TABLE IF EXISTS "bruteforce_attempts";
+CREATE TABLE "bruteforce_attempts" (
+ "id" int4 NOT NULL DEFAULT nextval('bruteforce_attempts_id_seq'::regclass) NOT NULL,
+ "ip" varchar(32) COLLATE "default",
+ "action" varchar(32) COLLATE "default",
+ "when" int4,
+ "data" varchar(512) COLLATE "default"
+)
+WITH (OIDS=FALSE)
+
+;
+
+-- ----------------------------
 -- Alter Sequences Owned By 
 -- ----------------------------
 ALTER SEQUENCE "admin_adminid_seq" OWNED BY "admin"."adminid";
@@ -405,6 +432,11 @@ ALTER TABLE "articles" ADD PRIMARY KEY ("articlesid");
 -- Primary Key structure for table articles_files
 -- ----------------------------
 ALTER TABLE "articles_files" ADD PRIMARY KEY ("filesid", "articlesid");
+
+-- ----------------------------
+-- Primary Key structure for table bruteforce_attempts
+-- ----------------------------
+ALTER TABLE "bruteforce_attempts" ADD PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Indexes structure for table files

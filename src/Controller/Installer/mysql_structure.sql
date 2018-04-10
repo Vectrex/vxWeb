@@ -243,4 +243,17 @@ CREATE TABLE `revisions` (
   UNIQUE KEY `pagesID` (`pagesID`,`active`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+-- ----------------------------
+-- Table structure for bruteforce_attempts
+-- ----------------------------
+DROP TABLE IF EXISTS `bruteforce_attempts`;
+CREATE TABLE `bruteforce_attempts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(32) DEFAULT NULL,
+  `action` varchar(32) DEFAULT NULL,
+  `when` int(11) DEFAULT NULL,
+  `data` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 SET FOREIGN_KEY_CHECKS=1;

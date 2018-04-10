@@ -55,7 +55,7 @@ class LoginController extends Controller {
 			}
 			catch(UserException $e) {}
 
-			Application::getInstance()->getService('bruteforce_throttler')->throttle($this->request->getClientIp());
+			Application::getInstance()->getService('bruteforce_throttler')->throttle($this->request->getClientIp(), $values->all());
 
 			return new JsonResponse(['message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);
 
