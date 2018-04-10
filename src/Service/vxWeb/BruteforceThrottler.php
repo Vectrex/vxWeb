@@ -3,6 +3,7 @@
 namespace App\Service\vxWeb;
 
 
+use vxPHP\Application\Application;
 use vxPHP\Constraint\Validator\Ip;
 use vxPHP\Service\ServiceInterface;
 
@@ -33,6 +34,45 @@ class BruteforceThrottler implements ServiceInterface
 
     }
 
-    public function throttle($ip) {
+    public function throttle($ip, $data = null) {
+
+        if($this->checkIpWhiteListing($ip)) {
+            return;
+        }
+
+        $this->registerAttempt($ip, $data);
+
     }
+
+    private function checkIpWhiteListing($ip) {
+
+        return in_array($ip, $this->whiteListedIps);
+
+    }
+
+    private function registerAttempt($ip, $data) {
+
+        Application::getInstance()->getDb()->insertRecord('bruteforce_attempts', [
+            'ip' => $ip,
+            'action' => 'admin_login',
+            'when' => time(),
+            'data' => $data ? json_encode($data): null,
+        ]);
+
+    }
+
+    private function getAttempts($ip, $action = 'admin_login') {
+
+        return Application::getInstance()->getDb()->doPreparedQuery("
+          SELECT
+            COUNT(*) AS cnt
+          FROM
+            bruteforce_attempts
+          WHERE
+            ip = ?
+            AND action = ?
+        ", [$ip, $action])[0]['cnt'];
+
+    }
+
 }
