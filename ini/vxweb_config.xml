@@ -51,7 +51,9 @@
 	</paths>
 
 	<services>
-		<service id="bruteforce_throttler" class="App/Service/vxWeb/BruteforceThrottler"/>
+		<service id="bruteforce_throttler" class="App/Service/vxWeb/BruteforceThrottler">
+			<parameter name="whitelisted_ips" value="127.0.0.1"/>
+		</service>
 	</services>
 
 </config>
