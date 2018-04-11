@@ -61,7 +61,7 @@ class BruteforceThrottler implements ServiceInterface
 
     }
 
-    private function getAttempts($ip, $action = 'admin_login') {
+    public function getAttempts($ip, $action = 'admin_login') {
 
         return Application::getInstance()->getDb()->doPreparedQuery("
           SELECT

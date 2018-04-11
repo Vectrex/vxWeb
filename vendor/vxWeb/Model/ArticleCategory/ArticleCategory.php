@@ -19,7 +19,7 @@ use vxPHP\Database\Util;
  * Mapper class for articlecategories, stored in table `articlecategories`
  *
  * @author Gregor Kofler
- * @version 0.4.0 2017-04-26
+ * @version 0.5.0 2018-04-11
  */
 
 class ArticleCategory {
@@ -99,8 +99,8 @@ class ArticleCategory {
 	 */
 	public function __construct($title, ArticleCategory $parentCategory = NULL) {
 
-		$this->parentCategory	= $parentCategory;
-		$this->title			= $title;
+		$this->parentCategory = $parentCategory;
+		$this->title = $title;
 
 	}
 
@@ -120,7 +120,6 @@ class ArticleCategory {
 	 * save category
 	 *
 	 * @todo only INSERTs are supported, UPDATE has to be implemented
-	 * @throws ArticleCategoryException
 	 */
 	public function save() {
 
@@ -130,7 +129,7 @@ class ArticleCategory {
 
 			// prepare to insert top level category
 
-			$rows			= $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM articlecategories');
+			$rows			= $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM articlecategories', []);
 			$this->l		= !isset($rows[0]['l']) ? 0 : $rows[0]['l'];
 			$this->r		= $rows[0]['l'] + 1;
 			$this->level	= 0;
@@ -146,12 +145,7 @@ class ArticleCategory {
 				$this->parentCategory->save();
 			}
 
-			try {
-				$nsData = $this->parentCategory->getNsData();
-			}
-			catch(ArticleCategoryException $e) {
-				throw $e;
-			}
+			$nsData = $this->parentCategory->getNsData();
 
 			$this->l		= $nsData['r'];
 			$this->r		= $nsData['r'] + 1;
@@ -257,13 +251,13 @@ class ArticleCategory {
 		return array('r' => $this->r, 'l' => $this->l, 'level' => $this->level);
 	}
 
-	/**
-	 * returns articlecategory instance identified by numeric id or alias
-	 *
-	 * @param mixed $id
-	 * @throws ArticleCategoryException
-	 * @return \vxPHP\Orm\Custom\ArticleCategory
-	 */
+    /**
+     * returns articlecategory instance identified by numeric id or alias
+     *
+     * @param mixed $id
+     * @return ArticleCategory
+     * @throws ArticleCategoryException
+     */
 	public static function getInstance($id) {
 
 		$db = Application::getInstance()->getDb();
@@ -284,7 +278,7 @@ class ArticleCategory {
 			$col = 'alias';
 		}
 
-		$rows = $db->doPreparedQuery("
+		$row = current($db->doPreparedQuery("
 			SELECT
 				c.*,
 				p.articlecategoriesid AS parentid
@@ -292,13 +286,12 @@ class ArticleCategory {
 				articlecategories c
 				LEFT JOIN articlecategories p ON p.l < c.l AND p.r > c.r AND p.level = c.level - 1
 			WHERE
-				c.$col = ?", [$id]);
+				c.$col = ?", [$id]
+        ));
 
-		if(empty($rows)) {
+		if(!$row) {
 			throw new ArticleCategoryException(sprintf("Category with %s '%s' does not exist.", $col, $id), ArticleCategoryException::ARTICLECATEGORY_DOES_NOT_EXIST);
 		}
-
-		$row  = $rows[0];
 
 		if(!empty($row['level'])) {
 			if(empty($row['parentid'])) {
@@ -427,9 +420,7 @@ class ArticleCategory {
 		$cat = [];
 
 		foreach(
-			Application::getInstance()->getDb()->doPreparedQuery(
-				'SELECT articlecategoriesID FROM articlecategories'
-			)
+			Application::getInstance()->getDb()->doPreparedQuery('SELECT articlecategoriesID FROM articlecategories', [])
 		as $r) {
 			$cat[] = self::getInstance($r['articlecategoriesid']);
 		}
@@ -451,15 +442,19 @@ class ArticleCategory {
 		throw new ArticleCategoryException(sprintf("'%s' is not callable.", $sortCallback), ArticleCategoryException::ARTICLECATEGORY_SORT_CALLBACK_NOT_CALLABLE);
 	}
 
-	/**
-	 * various callback functions for sorting categories
-	 */
+    /**
+     * various callback functions for sorting categories
+     *
+     * @param Article $a
+     * @param Article $b
+     * @return int
+     */
 	private static function sortByCustomSort($a, $b) {
 		$csa = $a->getCustomSort();
 		$csb = $b->getCustomSort();
 
 		if($csa === $csb) {
-			return $a->getTitle() < $b->getTitle() ? -1 : 1;
+			return $a->getHeadline() < $b->getHeadline() ? -1 : 1;
 		}
 		if(is_null($csa)) {
 			return 1;
