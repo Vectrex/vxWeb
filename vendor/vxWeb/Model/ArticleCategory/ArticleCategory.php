@@ -445,16 +445,17 @@ class ArticleCategory {
     /**
      * various callback functions for sorting categories
      *
-     * @param Article $a
-     * @param Article $b
+     * @param ArticleCategory $a
+     * @param ArticleCategory $b
      * @return int
      */
-	private static function sortByCustomSort($a, $b) {
+	private static function sortByCustomSort(ArticleCategory $a, ArticleCategory $b) {
+
 		$csa = $a->getCustomSort();
 		$csb = $b->getCustomSort();
 
 		if($csa === $csb) {
-			return $a->getHeadline() < $b->getHeadline() ? -1 : 1;
+			return $a->getTitle() < $b->getTitle() ? -1 : 1;
 		}
 		if(is_null($csa)) {
 			return 1;
