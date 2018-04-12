@@ -23,6 +23,11 @@ class BruteforceThrottler implements ServiceInterface
 
             foreach(explode(',', $parameters['whitelisted_ips']) as $ip) {
 
+                $parts = explode('/', $ip);
+
+                $ip = $parts[0];
+                $mask = $parts[1] ?? null;
+
                 if(!$validator->validate(trim($ip))) {
                     throw new \InvalidArgumentException(sprintf("Invalid ip '%s'", $ip));
                 }
