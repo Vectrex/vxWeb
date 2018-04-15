@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Service\vxWeb\BruteforceThrottler;
+use vxPHP\Routing\Route;
 use vxPHP\User\Exception\UserException;
 use vxPHP\Application\Application;
 use vxPHP\Form\HtmlForm;
@@ -14,13 +16,18 @@ use vxWeb\User\SessionUserProvider;
 
 class LoginController extends Controller {
 
-	protected function execute() {
+    /**
+     * @return JsonResponse|\vxPHP\Http\RedirectResponse|Response
+     */
+    protected function execute() {
 
 		$admin = Application::getInstance()->getCurrentUser();
 
 		if($admin && $admin->isAuthenticated()) {
 
 			foreach(Application::getInstance()->getConfig()->routes['admin.php'] as $route) {
+
+			    /* @var $route Route */
 
 				if(in_array($route->getRouteId(), ['login', 'logout'])) {
 					continue;
@@ -41,7 +48,11 @@ class LoginController extends Controller {
 
 		if($this->request->getMethod() === 'POST') {
 
-			$userProvider = new SessionUserProvider();
+             /** @var $throttler BruteforceThrottler */
+
+            $throttler = Application::getInstance()->getService('bruteforce_throttler');
+
+            $userProvider = new SessionUserProvider();
 			$userProvider->unsetSessionUser();
 
 			$values = $form->bindRequestParameters($this->request->request)->getValidFormValues();
@@ -50,12 +61,16 @@ class LoginController extends Controller {
 				$admin = $userProvider->instanceUserByUsername($values['UID']);
 
 				if($admin && $admin->authenticate($values['pwd'])->isAuthenticated()) {
+
+				    $throttler->clearAttempts($this->request->getClientIp(), 'admin_login');
 					return new JsonResponse(['command' => 'submit']);
+
 				}
 			}
 			catch(UserException $e) {}
 
-			Application::getInstance()->getService('bruteforce_throttler')->throttle($this->request->getClientIp(), $values->all());
+			$throttler->registerAttempt($this->request->getClientIp(), $values->all())->throttle($this->request->getClientIp(), 'admin_login');
+
 
 			return new JsonResponse(['message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);
 
