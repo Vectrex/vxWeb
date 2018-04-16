@@ -65,7 +65,14 @@ catch(HttpException $e) {
         $tpl = SimpleTemplate::create()->setRawContents('<h1>' . $e->getStatusCode() . '</h1>');
     }
 
-    (new Response($tpl->display(), Response::HTTP_NOT_FOUND))->send();
+    (new Response($tpl->display(), $e->getStatusCode()))->send();
 
 }
-
+catch(\Exception $e) {
+    (new Response(
+        SimpleTemplate::create()
+            ->setRawContents('<h1>' . $e->getMessage() . '</h1>')
+            ->display()
+        , Response::HTTP_INTERNAL_SERVER_ERROR
+    ))->send();
+}

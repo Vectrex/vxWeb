@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Service\vxWeb\BruteforceThrottler;
+use vxPHP\Http\Exception\HttpException;
 use vxPHP\Routing\Route;
 use vxPHP\User\Exception\UserException;
 use vxPHP\Application\Application;
@@ -70,7 +71,6 @@ class LoginController extends Controller {
 			catch(UserException $e) {}
 
 			$throttler->registerAttempt($this->request->getClientIp(), $values->all())->throttle($this->request->getClientIp(), 'admin_login');
-
 
 			return new JsonResponse(['message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);
 
