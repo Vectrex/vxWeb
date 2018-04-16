@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Service\vxWeb\BruteforceThrottler;
-use vxPHP\Http\Exception\HttpException;
 use vxPHP\Routing\Route;
 use vxPHP\User\Exception\UserException;
 use vxPHP\Application\Application;
@@ -22,11 +21,12 @@ class LoginController extends Controller {
      */
     protected function execute() {
 
-		$admin = Application::getInstance()->getCurrentUser();
+        $app = Application::getInstance();
+		$admin = $app->getCurrentUser();
 
 		if($admin && $admin->isAuthenticated()) {
 
-			foreach(Application::getInstance()->getConfig()->routes['admin.php'] as $route) {
+			foreach($app->getConfig()->routes['admin.php'] as $route) {
 
 			    /* @var $route Route */
 
@@ -51,7 +51,12 @@ class LoginController extends Controller {
 
              /** @var $throttler BruteforceThrottler */
 
-            $throttler = Application::getInstance()->getService('bruteforce_throttler');
+             if($app->hasService('bruteforce_throttler')) {
+                 $throttler = $app->getService('bruteforce_throttler');
+             }
+             else {
+                 $throttler = null;
+             }
 
             $userProvider = new SessionUserProvider();
 			$userProvider->unsetSessionUser();
@@ -63,14 +68,19 @@ class LoginController extends Controller {
 
 				if($admin && $admin->authenticate($values['pwd'])->isAuthenticated()) {
 
-				    $throttler->clearAttempts($this->request->getClientIp(), 'admin_login');
+				    if($throttler) {
+                        $throttler->clearAttempts($this->request->getClientIp(), 'admin_login');
+                    }
+
 					return new JsonResponse(['command' => 'submit']);
 
 				}
 			}
 			catch(UserException $e) {}
 
-			$throttler->registerAttempt($this->request->getClientIp(), $values->all())->throttle($this->request->getClientIp(), 'admin_login');
+			if($throttler) {
+                $throttler->registerAttempt($this->request->getClientIp(), $values->all())->throttle($this->request->getClientIp(), 'admin_login');
+            }
 
 			return new JsonResponse(['message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);
 
