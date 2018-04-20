@@ -22,7 +22,7 @@ use vxWeb\Model\Page\Revision;
  * helper class to sync and update templates both in filesystem and database
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.5.0 2017-03-10
+ * @version 0.5.1 2018-04-20
  *
  */
 
@@ -66,11 +66,13 @@ class Template {
 		
 		// update templates based on db info
 
-		$pages = Page::getInstances();
+		$pages = Page::getInstances() ?? [];
 
-		$pagesToExport = array();
+		$pagesToExport = [];
 
 		foreach($pages as $page) {
+
+		    /* @var Page $page */
 
 			$filename		= $page->getTemplate();
 			$activeRevision	= $page->getActiveRevision();

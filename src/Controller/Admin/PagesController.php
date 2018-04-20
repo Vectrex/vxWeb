@@ -54,7 +54,7 @@ class PagesController extends Controller {
 
 		Template::syncTemplates();
 
-		$pages = Page::getInstances();
+		$pages = Page::getInstances() ?? [];
 		
 		usort($pages, function(Page $a, Page $b) { return $a->getAlias() < $b->getAlias() ? -1 : 1; });
 		

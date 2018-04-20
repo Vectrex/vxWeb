@@ -20,14 +20,14 @@ class Page implements PublisherInterface {
 	/**
 	 * map of page instances indexed by their primary key
 	 * 
-	 * @var array[Page]
+	 * @var Page[]
 	 */
 	private static $instancesById;
 
 	/**
 	 * map of page instances indexed by their alias
 	 * 
-	 * @var array[Page]
+	 * @var Page[]
 	 */
 	private static $instancesByAlias;
 
