@@ -29,7 +29,7 @@ class PagesController extends Controller {
 
 		if(($id = $this->request->query->getInt('id'))) {
 
-			MenuGenerator::setForceActiveMenu(TRUE);
+			MenuGenerator::setForceActiveMenu(true);
 
 			try {
 				$page		= Page::getInstance($id);
@@ -39,7 +39,7 @@ class PagesController extends Controller {
 				}
 			}
 			catch (PageException $e) {
-				return $this->redirect(Router::getRoute('pages', 'admin.php')->getUrl());
+				return $this->redirect(Application::getInstance()->getRouter()->getRoute('pages')->getUrl());
 			}
 
 			$form = $this->buildEditForm();

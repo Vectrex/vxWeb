@@ -29,8 +29,13 @@ if(isset($loader)) {
     );
 }
 
-$route = vxPHP\Routing\Router::getRoute('installer', 'installer.php');
-$application->setCurrentRoute($route);
+// set up routing
+
+$router = new \vxPHP\Routing\Router($app->getConfig()->routes[trim($_SERVER['PHP_SELF'], '/')]);
+$app->setRouter($router);
+
+$route = $router->getRoute('installer');
+$app->setCurrentRoute($route);
 
 // render output
 

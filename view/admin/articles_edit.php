@@ -13,9 +13,9 @@
 	}
 	
 	
-	this.vxWeb.routes.articles	= "<?= vxPHP\Routing\Router::getRoute('articlesXhr', 'admin.php')->getUrl() ?>?<?= vxPHP\Http\Request::createFromGlobals()->getQueryString() ?>";
-	this.vxWeb.routes.files		= "<?= vxPHP\Routing\Router::getRoute('fileincludeXhr', 'admin.php')->getUrl() ?>";
-	this.vxWeb.routes.upload	= "<?= vxPHP\Routing\Router::getRoute('uploadXhr', 'admin.php')->getUrl() ?>";
+	this.vxWeb.routes.articles	= "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articlesXhr')->getUrl() ?>?<?= vxPHP\Http\Request::createFromGlobals()->getQueryString() ?>";
+	this.vxWeb.routes.files		= "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('fileincludeXhr')->getUrl() ?>";
+	this.vxWeb.routes.upload	= "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('uploadXhr')->getUrl() ?>";
 
 	this.vxWeb.parameters.fileColumns = ["name", "size", "mime", "mTime", "linked"];
 	this.vxWeb.parameters.articlesId = <?= vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null') ?>;

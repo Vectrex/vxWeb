@@ -8,6 +8,7 @@ use vxPHP\Http\Response;
 use vxPHP\Http\Exception\HttpException;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Template\Exception\SimpleTemplateException;
+use vxPHP\Routing\Router;
 
 // $loader is initialized in bootstrap.php
 // place additional libraries here
@@ -46,9 +47,13 @@ if(!is_dir($application->getAbsoluteAssetsPath())) {
 	throw new \Exception(sprintf("Assets path '%s' not found.", $application->getRelativeAssetsPath()));
 }
 
-// parse path and determine route
+// set up routing
 
-$route = vxPHP\Routing\Router::getRouteFromPathInfo();
+$scriptName = trim($_SERVER['PHP_SELF'], '/');
+$router = new Router(Application::getInstance()->getConfig()->routes[$scriptName]);
+Application::getInstance()->setRouter($router);
+
+$route = $router->getRouteFromPathInfo(vxPHP\Http\Request::createFromGlobals());
 $application->setCurrentRoute($route);
 
 // render output

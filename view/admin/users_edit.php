@@ -11,7 +11,7 @@
 	}
 	
 	
-	this.vxWeb.routes.users			= "<?= vxPHP\Routing\Router::getRoute('usersXhr', 'admin.php')->getUrl() ?>?<?= vxPHP\Http\Request::createFromGlobals()->getQueryString() ?>";
+	this.vxWeb.routes.users			= "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('usersXhr')->getUrl() ?>?<?= vxPHP\Http\Request::createFromGlobals()->getQueryString() ?>";
 	this.vxWeb.parameters.usersId	= "<?= vxPHP\Http\Request::createFromGlobals()->query->get('id') ?: '' ?>";
 
 	vxJS.event.addDomReadyListener(function() {

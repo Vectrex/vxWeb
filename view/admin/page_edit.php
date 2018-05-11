@@ -5,8 +5,8 @@
 
 <script type="text/javascript">
 	
-	this.vxWeb.routes.page			= "<?php echo vxPHP\Routing\Router::getRoute('pagesXhr', 'admin.php')->getUrl(); ?>?<?php echo vxPHP\Http\Request::createFromGlobals()->getQueryString(); ?>";
-	this.vxWeb.routes.filePicker	= "<?php echo vxPHP\Routing\Router::getRoute('filepicker', 'admin.php')->getUrl(); ?>";
+	this.vxWeb.routes.page			= "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('pagesXhr')->getUrl() ?>?<?= vxPHP\Http\Request::createFromGlobals()->getQueryString() ?>";
+	this.vxWeb.routes.filePicker	= "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('filepicker')->getUrl() ?>";
 
 </script>
 

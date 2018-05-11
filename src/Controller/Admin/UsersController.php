@@ -28,7 +28,7 @@ class UsersController extends Controller {
 		$db = $app->getDb();
 		
 		$connection = $app->getDb()->getConnection();
-		$redirectUrl = Router::getRoute('users', 'admin.php')->getUrl();
+        $redirectUrl = $app->getRouter()->getRoute('users')->getUrl();
 		$action = $this->route->getPathParameter('action');
 
 		// editing or deleting something? Ensure user exists

@@ -9,8 +9,8 @@
 
 	"use strict";
 	
-	this.vxWeb.routes.publish = "<?= vxPHP\Routing\Router::getRoute('publishXhr', 'admin.php')->getUrl() ?>";
-	this.vxWeb.routes.filter = "<?= vxPHP\Routing\Router::getRoute('articles', 'admin.php')->getUrl(['action' => 'list']) ?>";
+	this.vxWeb.routes.publish = "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('publishXhr')->getUrl() ?>";
+	this.vxWeb.routes.filter = "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articles')->getUrl(['action' => 'list']) ?>";
 
 	/**
 	 * executes XHR with filter parameters and returns filtered data

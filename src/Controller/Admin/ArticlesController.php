@@ -34,8 +34,9 @@ class ArticlesController extends Controller {
 
 	protected function execute() {
 
-		$admin = Application::getInstance()->getCurrentUser();
-		$redirectUrl = Router::getRoute('articles', 'admin.php')->getUrl();
+	    $app = Application::getInstance();
+		$admin = $app->getCurrentUser();
+		$redirectUrl = $app->getRouter()->getRoute('articles', 'admin.php')->getUrl();
 		$action = $this->route->getPathParameter('action');
 		
 		if($action === 'list') {
