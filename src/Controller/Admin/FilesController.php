@@ -723,8 +723,7 @@ class FilesController extends Controller
 
     private function getFolderTree(MetaFolder $currentFolder = null)
     {
-
-        $parseFolder = function (MetaFolder $f, $currentFolder) use (&$parseFolder) {
+        $parseFolder = function (MetaFolder $f) use (&$parseFolder, $currentFolder) {
 
             $subTrees = $f->getMetaFolders();
 
@@ -732,7 +731,7 @@ class FilesController extends Controller
 
             if (count($subTrees)) {
                 foreach ($subTrees as $s) {
-                    $branches[] = $parseFolder($s, $currentFolder);
+                    $branches[] = $parseFolder($s);
                 }
             }
 
@@ -750,7 +749,7 @@ class FilesController extends Controller
         $trees = [];
 
         foreach (MetaFolder::getRootFolders() as $f) {
-            $trees[] = $parseFolder($f, $currentFolder);
+            $trees[] = $parseFolder($f);
         }
 
         return $trees;

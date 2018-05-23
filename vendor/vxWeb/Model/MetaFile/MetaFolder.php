@@ -22,7 +22,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.3.0 2018-02-02
+ * @version 1.3.1 2018-05-23
  *
  * @todo compatibility checks on windows systems
  */
@@ -336,7 +336,7 @@ class MetaFolder {
                 [(int) $this->l, (int) $this->r, $this->level + 1]
             )
         as $f) {
-            $metaFolders[] = new self(null, null, $f);
+            $metaFolders[] = self::$instancesById[$f['foldersid']] ?? new self(null, null, $f);
 		}
 
 		return $metaFolders;
