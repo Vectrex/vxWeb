@@ -164,7 +164,7 @@ CREATE TABLE `folders` (
   `r` int(11) DEFAULT NULL,
   `level` int(11) DEFAULT NULL,
   `Static` tinyint(4) DEFAULT NULL,
-  `Alias` varchar(64) DEFAULT NULL,
+  `Alias` varchar(255) DEFAULT NULL,
   `Title` varchar(128) DEFAULT NULL,
   `Description` mediumtext,
   `Path` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,

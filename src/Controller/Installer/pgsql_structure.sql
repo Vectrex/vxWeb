@@ -262,7 +262,7 @@ CREATE TABLE "folders" (
 "r" int4,
 "level" int4,
 "static" int2,
-"alias" varchar(64) COLLATE "default",
+"alias" varchar(255) COLLATE "default",
 "title" varchar(128) COLLATE "default",
 "description" text COLLATE "default",
 "path" varchar(255) COLLATE "C.UTF-8",
