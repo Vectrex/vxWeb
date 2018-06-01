@@ -147,10 +147,13 @@ class InstallerController extends Controller {
     private function writeDbStructure(\PDO $connection) {
 
 	    $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
-        $dump = @file_get_contents( __DIR__ . DIRECTORY_SEPARATOR . $drivername . '_structure.sql');
+	    $path = Application::getInstance()->getRootPath() . 'resources' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR;
+        $dump = @file_get_contents( $path . $drivername . '_structure.sql');
+
         if(false === $dump) {
             throw new \Exception($drivername . '_structure.sql not found.');
         }
+
         $connection->beginTransaction();
         $connection->exec($dump);
         $connection->commit();
@@ -167,10 +170,13 @@ class InstallerController extends Controller {
     private function writeDbData(\PDO $connection, $adminPassword) {
 
         $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
-        $dump = @file_get_contents( __DIR__ . DIRECTORY_SEPARATOR . $drivername . '_data.sql');
+        $path = Application::getInstance()->getRootPath() . 'resources' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR;
+        $dump = @file_get_contents( $path . $drivername . '_data.sql');
+
         if(false === $dump) {
             throw new \Exception($drivername . '_data.sql not found.');
         }
+
         $connection->beginTransaction();
         $connection->exec($dump);
         $connection->commit();
