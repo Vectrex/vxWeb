@@ -280,21 +280,21 @@ class ArticlesController extends Controller {
 					->validate()
 					->getValidFormValues();
 
-				if($v['article_date'] != '') {
+				if($v['article_date'] !== '') {
 					$article->setDate(new \DateTime(Util::unFormatDate($v['article_date'], 'de')));
 				}
 				else {
 					$article->setDate();
 				}
 
-				if($v['display_from'] != '') {
+				if($v['display_from'] !== '') {
 					$article->setDisplayFrom(new \DateTime(Util::unFormatDate($v['display_from'], 'de')));
 				}
 				else {
 					$article->setDisplayFrom();
 				}
 
-				if($v['display_until'] != '') {
+				if($v['display_until'] !== '') {
 					$article->setDisplayUntil(new \DateTime(Util::unFormatDate($v['display_until'], 'de')));
 				}
 				else {

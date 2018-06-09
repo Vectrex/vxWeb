@@ -114,7 +114,7 @@ class Page implements PublisherInterface {
 
 		// generate and store instance
 		
-		$page = self::createInstance($rows[0]);
+		$page = self::createInstance(current($rows));
 
 		self::$instancesByAlias	[$page->alias]	= $page;
 		self::$instancesById	[$page->id]		= $page;
