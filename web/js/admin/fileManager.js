@@ -182,7 +182,7 @@ this.vxWeb.fileManager = function(config) {
 	 * @type {{expandToCurrent, element}}
 	 */
 	var	treeContainer = (function() {
-		var  d = "div".create();
+		var  d = "div".create(), fileId;
 
 		vxJS.event.addListener(d, "click", function(e) {
 			var matches, parent = this, path = [];
@@ -198,7 +198,7 @@ this.vxWeb.fileManager = function(config) {
 				}
 
 				if(window.confirm("Datei nach '" + path.join("/") + "' verschieben?")) {
-					xhr.use({ command: "moveFile" }, vxJS.merge({ destination: matches[1] }, vxWeb.parameters)).submit();
+					xhr.use({ command: "moveFile" }, vxJS.merge({ destination: matches[1], file: fileId }, vxWeb.parameters)).submit();
 				}
 
 			}
@@ -215,6 +215,9 @@ this.vxWeb.fileManager = function(config) {
 					}
 				}
 			},
+            setFileId: function(id) {
+			    fileId = id;
+            },
 			element: d
 		};
 	}());
@@ -703,7 +706,8 @@ this.vxWeb.fileManager = function(config) {
 
 				case "getFolderTree":
 					treeContainer.element.innerHTML = r.response;
-					treeContainer.expandToCurrent();
+                    treeContainer.setFileId(e.file);
+                    treeContainer.expandToCurrent();
 					fileModal.setHeader("Zielordner wählen").setContent(treeContainer.element).setSize("sm").show();
 					break;
 			}

@@ -16,7 +16,6 @@ use vxPHP\Application\Application;
 use vxPHP\Observer\PublisherInterface;
 use vxPHP\File\Exception\FilesystemFileException;
 
-use vxWeb\Model\MetaFile\MetaFolder;
 use vxWeb\Model\MetaFile\Exception\MetaFileException;
 use vxWeb\Model\Article\Article;
 use vxWeb\Model\Article\ArticleQuery;
@@ -28,7 +27,7 @@ use vxWeb\Model\Article\ArticleQuery;
  *
  * @author Gregor Kofler
  *
- * @version 1.3.0 2017-03-10
+ * @version 1.4.0 2018-06-10
  *
  * @todo merge rename() with commit()
  * @todo cleanup getImagesForReference()
@@ -37,14 +36,14 @@ use vxWeb\Model\Article\ArticleQuery;
 class MetaFile implements PublisherInterface {
 
 	/**
-	 * retrieved instances accesible by their id 
+	 * retrieved instances accessible by their id
 	 * 
 	 * @var MetaFile[]
 	 */
 	private static $instancesById = [];
 
 	/**
-	 * retrieved instances accesible by their path
+	 * retrieved instances accessible by their path
 	 *
 	 * @var MetaFile[]
 	 */
@@ -79,16 +78,17 @@ class MetaFile implements PublisherInterface {
 	 * @var Article[]
 	 */
 	private	$linkedArticles;
-	
-	/**
-	 * returns MetaFile instance alternatively identified by its path or its primary key in the database
-	 *
-	 * @param string $path
-	 * @param integer $id
-	 * @throws MetaFileException
-	 *
-	 * @return MetaFile
-	 */
+
+    /**
+     * returns MetaFile instance alternatively identified by its path or its primary key in the database
+     *
+     * @param string $path
+     * @param integer $id
+     * @return MetaFile
+     * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws Exception\MetaFolderException
+     */
 	public static function getInstance($path = NULL, $id = NULL) {
 
 		if(isset($path)) {
@@ -120,13 +120,16 @@ class MetaFile implements PublisherInterface {
 		}
 	}
 
-	/**
-	 * return array of MetaFiles identified by primary keys
-	 *
-	 * @param array $ids
-	 *
-	 * @return array
-	 */
+    /**
+     * return array of MetaFiles identified by primary keys
+     *
+     * @param array $ids
+     *
+     * @return array
+     * @throws Exception\MetaFolderException
+     * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public static function getInstancesByIds(array $ids) {
 
 		$toRetrieveById = [];
@@ -173,13 +176,16 @@ class MetaFile implements PublisherInterface {
 
 	}
 
-	/**
-	 * return MetaFiles identified by paths
-	 *
-	 * @param array $paths
-	 *
-	 * @return array
-	 */
+    /**
+     * return MetaFiles identified by paths
+     *
+     * @param array $paths
+     *
+     * @return array
+     * @throws Exception\MetaFolderException
+     * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public static function getInstancesByPaths(array $paths) {
 
 		$toRetrieveByPath	= [];
@@ -250,7 +256,9 @@ class MetaFile implements PublisherInterface {
      * @param MetaFolder $folder
      * @param callback $callBackSort
      * @return MetaFile[]
+     * @throws Exception\MetaFolderException
      * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
      */
 	public static function getMetaFilesInFolder(MetaFolder $folder, $callBackSort = NULL) {
 
@@ -291,14 +299,16 @@ class MetaFile implements PublisherInterface {
 
 	}
 
-	/**
-	 * return all metafile instances linked to an article
-	 * 
-	 * @param Article $article
-	 * @param callback $callBackSort
-	 * @throws MetaFileException
-	 * @return array:\vxPHP\File\MetaFile
-	 */
+    /**
+     * return all metafile instances linked to an article
+     *
+     * @param Article $article
+     * @param callback $callBackSort
+     * @return array:\vxPHP\File\MetaFile
+     * @throws Exception\MetaFolderException
+     * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public static function getFilesForArticle(Article $article, $callBackSort = NULL) {
 
 		$result = [];
@@ -345,15 +355,17 @@ class MetaFile implements PublisherInterface {
 		}
 		
 	}
-	
-	/**
-	 * return all metafile instances linked to an article with mimetype 'image/jpeg', 'image/png', 'image/gif'
-	 *
-	 * @param Article $article
-	 * @param callback $callBackSort
-	 * @throws MetaFileException
-	 * @return array:\vxPHP\File\MetaFile
-	 */
+
+    /**
+     * return all metafile instances linked to an article with mimetype 'image/jpeg', 'image/png', 'image/gif'
+     *
+     * @param Article $article
+     * @param callback $callBackSort
+     * @return array:\vxPHP\File\MetaFile
+     * @throws Exception\MetaFolderException
+     * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public static function getImagesForArticle(Article $article, $callBackSort = NULL) {
 		
 		$result = [];
@@ -404,13 +416,14 @@ class MetaFile implements PublisherInterface {
 
 	}
 
-	/**
-	 * check whether $filename is already taken by a metafile in folder $f
-	 *
-	 * @param string $filename
-	 * @param MetaFolder $f
-	 * @return boolean is_available
-	 */
+    /**
+     * check whether $filename is already taken by a metafile in folder $f
+     *
+     * @param string $filename
+     * @param MetaFolder $f
+     * @return boolean is_available
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public static function isFilenameAvailable($filename, MetaFolder $f) {
 
 		// $filename is not available, if metafile with $filename is already instantiated
@@ -439,16 +452,19 @@ class MetaFile implements PublisherInterface {
 
 	}
 
-	/**
-	 * creates a metafile instance
-	 * requires either id or path stored in db
-	 * when an array is passed to constructor
-	 * it sets MetaFile::data directly; used internally to avoid extra db queries
-	 *
-	 * @param string $path of metafile
-	 * @param integer $id of metafile
-	 * @param array $data
-	 */
+    /**
+     * creates a metafile instance
+     * requires either id or path stored in db
+     * when an array is passed to constructor
+     * it sets MetaFile::data directly; used internally to avoid extra db queries
+     *
+     * @param string $path of metafile
+     * @param integer $id of metafile
+     * @param array|null $dbEntry
+     * @throws Exception\MetaFolderException
+     * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	private function __construct($path = NULL, $id = NULL, array $dbEntry = NULL) {
 
 		if(isset($path)) {
@@ -477,14 +493,14 @@ class MetaFile implements PublisherInterface {
 
 	}
 
-	/**
-	 * retrieves file metadata stored in database
-	 *
-	 * @param string $path
-	 * @throws MetaFileException
-	 *
-	 * @return array
-	 */
+    /**
+     * retrieves file metadata stored in database
+     *
+     * @param string $path
+     * @return array
+     * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	private function getDbEntryByPath($path) {
 
 		$pathinfo = pathinfo($path);
@@ -498,8 +514,8 @@ class MetaFile implements PublisherInterface {
 			]
 		);
 
-		if(isset($rows[0])) {
-			return array_change_key_case($rows[0], CASE_LOWER);
+		if(count($rows)) {
+			return array_change_key_case(current($rows), CASE_LOWER);
 		}
 		else {
 			throw new MetaFileException(sprintf("MetaFile database entry for '%s' not found.", $path));
@@ -514,8 +530,8 @@ class MetaFile implements PublisherInterface {
 			[(int) $id]
 		);
 
-		if(isset($rows[0])) {
-			return array_change_key_case($rows[0], CASE_LOWER);
+		if(count($rows)) {
+			return array_change_key_case(current($rows), CASE_LOWER);
 		}
 		else {
 			throw new MetaFileException(sprintf("MetaFile database entry for id '%d' not found.", $id));
@@ -570,11 +586,12 @@ class MetaFile implements PublisherInterface {
 	
 	}
 
-	/**
-	 * get all articles linked to a file
-	 * 
-	 * @return Article[]
-	 */
+    /**
+     * get all articles linked to a file
+     *
+     * @return Article[]
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public function getLinkedArticles() {
 
 		if(is_null($this->linkedArticles)) {
@@ -695,15 +712,15 @@ class MetaFile implements PublisherInterface {
 
 	}
 
-	/**
-	 * rename metafile
-	 * both filesystem file and database entry are changed synchronously
-	 *
-	 * doesn't care about race conditions
-	 *
-	 * @param string $to new filename
-	 * @throws Exception
-	 */
+    /**
+     * rename metafile
+     * both filesystem file and database entry are changed synchronously
+     *
+     * doesn't care about race conditions
+     *
+     * @param string $to new filename
+     * @throws MetaFileException
+     */
 	public function rename($to)	{
 
 		// obscured files only need to rename the metadata
@@ -780,8 +797,9 @@ class MetaFile implements PublisherInterface {
      *
      * @param boolean $keepFilesystemFile
      *
-     * @throws Exception
+     * @throws FilesystemFileException
      * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
      */
 	public function delete($keepFilesystemFile = FALSE) {
 		
@@ -801,12 +819,14 @@ class MetaFile implements PublisherInterface {
 
 	}
 
-	/**
-	 * obscure filename
-	 * renames filesystem file, then updates metafile data in db and sets isObscured flag
-	 *
-	 * @param string $obscuredFilename
-	 */
+    /**
+     * obscure filename
+     * renames filesystem file, then updates metafile data in db and sets isObscured flag
+     *
+     * @param string $obscuredFilename
+     * @throws FilesystemFileException
+     * @throws MetaFileException
+     */
 	public function obscureTo($obscuredFilename) {
 
 		// rename filesystem file
@@ -863,8 +883,10 @@ class MetaFile implements PublisherInterface {
      *
      * @param FilesystemFile $file
      * @return MetaFile
+     * @throws Exception\MetaFolderException
      * @throws FilesystemFileException
      * @throws MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
      */
 	public static function createMetaFile(FilesystemFile $file) {
 	

@@ -22,7 +22,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.3.1 2018-05-23
+ * @version 1.4.0 2018-06-10
  *
  * @todo compatibility checks on windows systems
  */
@@ -96,6 +96,7 @@ class MetaFolder {
      * @param int $id
      * @return MetaFolder
      * @throws MetaFolderException
+     * @throws \vxPHP\Application\Exception\ApplicationException
      */
 	public static function getInstance($path = null, $id = null) {
 
@@ -135,6 +136,7 @@ class MetaFolder {
      * @param integer $id of metafolder
      * @param array $dbEntry row data of a metafolder
      * @throws MetaFolderException
+     * @throws \vxPHP\Application\Exception\ApplicationException
      */
 	private function __construct($path = null, $id = null, array $dbEntry = null) {
 
@@ -183,8 +185,8 @@ class MetaFolder {
 			[(string) $path, (string) $altPath]
 		);
 
-		if(isset($rows[0])) {
-			return array_change_key_case($rows[0], CASE_LOWER);
+		if(count($rows)) {
+			return array_change_key_case(current($rows), CASE_LOWER);
 		}
 		else {
 			throw new MetaFolderException(sprintf("MetaFolder database entry for '%s (%s)' not found.", $this->fullPath, $path), MetaFolderException::METAFOLDER_DOES_NOT_EXIST);
@@ -198,8 +200,8 @@ class MetaFolder {
 			[(int) $id]
 		);
 
-		if(isset($rows[0])) {
-			return array_change_key_case($rows[0], CASE_LOWER);
+        if(count($rows)) {
+            return array_change_key_case(current($rows), CASE_LOWER);
 		}
 		else {
 			throw new MetaFolderException(sprintf("MetaFolder database entry for id '%d' not found.", $id), MetaFolderException::METAFOLDER_DOES_NOT_EXIST);
@@ -294,13 +296,15 @@ class MetaFolder {
 
 	}
 
-	/**
-	 * return all metafiles within this folder
-	 *
-	 * @param boolean $force forces re-reading of metafolder
-	 *
-	 * @return MetaFile[]
-	 */
+    /**
+     * return all metafiles within this folder
+     *
+     * @param boolean $force forces re-reading of metafolder
+     *
+     * @return MetaFile[]
+     * @throws Exception\MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public function getMetaFiles($force = FALSE) {
 
 		if(!isset($this->metaFiles) || $force) {
@@ -325,6 +329,7 @@ class MetaFolder {
      *
      * @return MetaFolder[]
      * @throws MetaFolderException
+     * @throws \vxPHP\Application\Exception\ApplicationException
      */
 	public function getMetaFolders() {
 
@@ -368,6 +373,8 @@ class MetaFolder {
      * @param string $path
      * @return MetaFolder
      * @throws MetaFolderException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxPHP\File\Exception\FilesystemFolderException
      */
 	public function createFolder($path) {
 
@@ -382,7 +389,10 @@ class MetaFolder {
      * otherwise filesystem files and folders will be deleted
      *
      * @param boolean $keepFilesystemFiles
+     * @throws Exception\MetaFileException
      * @throws MetaFolderException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxPHP\File\Exception\FilesystemFolderException
      */
 	public function delete($keepFilesystemFiles = false) {
 
@@ -424,6 +434,7 @@ class MetaFolder {
      *
      * @param boolean $force forces re-reading of metafolders
      * @throws MetaFolderException
+     * @throws \vxPHP\Application\Exception\ApplicationException
      */
 	public static function instantiateAllExistingMetaFolders($force = FALSE) {
 
@@ -477,6 +488,7 @@ class MetaFolder {
      * @param array $metaData optional data for folder
      * @return MetaFolder
      * @throws MetaFolderException
+     * @throws \vxPHP\Application\Exception\ApplicationException
      */
 	public static function createMetaFolder(FilesystemFolder $f, array $metaData = []) {
 
@@ -525,13 +537,13 @@ class MetaFolder {
 
 			$tree = explode(DIRECTORY_SEPARATOR, trim($metaData['path'], DIRECTORY_SEPARATOR));
 
-			if(count($tree) == 1) {
+			if(count($tree) === 1) {
 
 				//no parent
 
 				$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders', []);
-				$metaData['l'] = !isset($rows[0]['l']) ? 0 : $rows[0]['l'];
-				$metaData['r'] = $rows[0]['l'] + 1;
+				$metaData['l'] = (!count($rows) || !isset(current($rows)['l'])) ? 0 : current($rows)['l'];
+				$metaData['r'] = current($rows)['l'] + 1;
 				$metaData['level'] = 0;
 			}
 
@@ -546,22 +558,24 @@ class MetaFolder {
 
 					$rows = $db->doPreparedQuery("SELECT r, l, level FROM folders WHERE foldersID = ?", [$parent->getId()]);
 
-					$db->execute('UPDATE folders SET r = r + 2 WHERE r >= ?', [(int) $rows[0]['r']]);
-					$db->execute('UPDATE folders SET l = l + 2 WHERE l > ?', [(int) $rows[0]['r']]);
+					$db->execute('UPDATE folders SET r = r + 2 WHERE r >= ?', [(int) current($rows)['r']]);
+					$db->execute('UPDATE folders SET l = l + 2 WHERE l > ?', [(int) current($rows)['r']]);
 
-					$metaData['l'] = $rows[0]['r'];
-					$metaData['r'] = $rows[0]['r'] + 1;
-					$metaData['level'] = $rows[0]['level'] + 1;
+					$metaData['l'] = current($rows)['r'];
+					$metaData['r'] = current($rows)['r'] + 1;
+					$metaData['level'] = current($rows)['level'] + 1;
 
 				}
+
 				catch(MetaFolderException $e) {
 
 					// no parent directory
 
 					$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders', []);
-					$metaData['l'] = !isset($rows[0]['l']) ? 0 : $rows[0]['l'];
-					$metaData['r'] = $rows[0]['l'] + 1;
+                    $metaData['l'] = (!count($rows) || !isset(current($rows)['l'])) ? 0 : current($rows)['l'];
+                    $metaData['r'] = current($rows)['l'] + 1;
 					$metaData['level'] = 0;
+
 				}
 			}
 
