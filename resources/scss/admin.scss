@@ -106,10 +106,6 @@ a.webfont-icon-only {
   @extend .is-error;
 }
 
-.modal-container .modal-body {
-  max-height: 100vh;
-}
-
 .tab-item.disabled {
   a:hover {
     cursor: not-allowed;
