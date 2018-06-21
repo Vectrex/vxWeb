@@ -9,6 +9,7 @@
 
 		<page id="pages" controller="admin/pages" auth="superadmin" />
 		<page id="pagesXhr" controller="admin/pages" method="xhrExecute" auth="superadmin" />
+        <page id="inlineEditXhr" controller="admin/pages" method="updateInlineEdit" path="pages/inline" auth="superadmin" />
 
 		<page id="users" controller="admin/users" path="users/{action=}" auth="superadmin" />
 		<page id="usersXhr" controller="admin/users" method="xhrExecute" auth="superadmin" />

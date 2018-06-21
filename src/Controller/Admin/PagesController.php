@@ -187,6 +187,13 @@ class PagesController extends Controller {
 
 	}
 
+	protected function updateInlineEdit() {
+
+	    return new JsonResponse("ok!");
+
+    }
+
+
 	/**
 	 * purge old revisions
 	 * currently not used

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use vxPHP\Application\Application;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\Exception\HttpException;
@@ -54,30 +55,48 @@ class DefaultController extends Controller {
 				throw new HttpException(Response::HTTP_FORBIDDEN);
 			}
 
-			// fall back to "layout.php" as parent template, when template has no "extend" directive
+			// superadmin sees inline editor of content block
 
-			if(is_null($include->getParentTemplateFilename())) {
-			
-				// replace content block with vx for snippet in response
+            $currentUser = Application::getInstance()->getCurrentUser();
 
-				return new Response(SimpleTemplate::create('layout.php')
-					->assign('route', $pageAlias)
-                    ->assign('page', $page)
-					->insertTemplateAt($include, 'content_block')
-					->display()
-				);
+            if(!$currentUser || !$currentUser->hasRole('superadmin')) {
 
-			}
+                // fall back to "layout.php" as parent template, when template has no "extend" directive
 
-			else {
+                if(is_null($include->getParentTemplateFilename())) {
 
-				return new Response($include
-					->assign('route', $pageAlias)
-                    ->assign('page', $page)
-					->display()
-				);
-				
-			}
+                    // replace content block with vx for snippet in response
+
+                    return new Response(SimpleTemplate::create('layout.php')
+                        ->assign('route', $pageAlias ?? null)
+                        ->assign('page', $page)
+                        ->insertTemplateAt($include, 'content_block')
+                        ->display()
+                    );
+
+                }
+
+                else {
+
+                    return new Response($include
+                        ->assign('route', $pageAlias ?? null)
+                        ->assign('page', $page)
+                        ->display()
+                    );
+
+                }
+            }
+
+            else {
+
+                return new Response(
+                    $this->insertInlineEditor(
+                        $include,
+                        ['page' => $page, 'pageAlias' => $pageAlias]
+                    )
+                );
+
+            }
 		}
 
 		catch(SimpleTemplateException $e) {
@@ -85,4 +104,100 @@ class DefaultController extends Controller {
 		}
 
 	}
+
+	private function insertInlineEditor(SimpleTemplate $include, array $parameters) {
+
+	    $parentTemplate = SimpleTemplate::create($include->getParentTemplateFilename() ?? 'layout.php');
+
+        $markup = $parentTemplate
+            ->assign('route', $parameters['pageAlias'] ?? null)
+            ->assign('page', $parameters['page'])
+            ->display()
+        ;
+
+        // switch to DOMDocument to find parent node of comment reliably
+
+        $doc = new \DOMDocument();
+        $doc->loadHTML($markup);
+        $xpath = new \DOMXPath($doc);
+
+        foreach($xpath->query('//comment()') as $item) {
+
+            if(preg_match('/\{\s*block:\s*content_block\s*\}/i', trim($item->data))) {
+
+                $node = $item->parentNode;
+                break;
+            }
+
+        }
+
+        if($node) {
+
+            $node->setAttribute('contenteditable', 'true');
+
+        }
+
+        // replace outer template contents
+
+        $parentTemplate->setRawContents($doc->saveHTML());
+
+        // add JS in header
+
+        $parentTemplate->setRawContents(
+            preg_replace(
+                '/<\/head>/i',
+                SimpleTemplate::create('admin/snippets/inline_editor.php')
+                    ->assign('page', $parameters['page'])
+                    ->display()
+                . '</head>',
+                $parentTemplate->getRawContents()
+            )
+        );
+
+        return $parentTemplate
+            ->insertTemplateAt($include, 'content_block')
+            ->display()
+        ;
+
+    }
 }
+
+/*
+
+		<script src="https://cdn.ckeditor.com/4.9.2/standard-all/ckeditor.js"></script>
+		<link href="https://sdk.ckeditor.com/theme/css/sdk-inline.css" rel="stylesheet">
+
+		<script>
+		// The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
+		// Otherwise CKEditor will start in read-only mode.
+
+CKEDITOR.on( 'instanceCreated', function ( event ) {
+		var editor = event.editor,
+				element = editor.element;
+
+		// Customize editors for headers and tag list.
+		// These editors do not need features like smileys, templates, iframes etc.
+		if ( element.is( 'h1', 'h2', 'h3' ) || element.getAttribute( 'id' ) == 'taglist' ) {
+			// Customize the editor configuration on "configLoaded" event,
+			// which is fired after the configuration file loading and
+			// execution. This makes it possible to change the
+			// configuration before the editor initialization takes place.
+			editor.on( 'configLoaded', function () {
+
+				// Remove redundant plugins to make the editor simpler.
+				editor.config.removePlugins = 'colorbutton,find,flash,font,' +
+						'forms,iframe,image,newpage,removeformat,' +
+						'smiley,specialchar,stylescombo,templates';
+
+				// Rearrange the toolbar layout.
+				editor.config.toolbarGroups = [
+					{ name: 'editing', groups: [ 'basicstyles', 'links' ] },
+					{ name: 'undo' },
+					{ name: 'clipboard', groups: [ 'selection', 'clipboard' ] },
+					{ name: 'about' }
+				];
+			} );
+		}
+	} );	</script>
+
+ */
