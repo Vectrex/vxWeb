@@ -72,13 +72,14 @@ class Page implements PublisherInterface {
 	public function __construct() {
 	}
 
-	/**
-	 * retrieve page instance identified by either its id (numeric) or alias (string)
-	 * 
-	 * @param string|int $id
-	 * @throws PageException
-	 * @return Page
-	 */
+    /**
+     * retrieve page instance identified by either its id (numeric) or alias (string)
+     *
+     * @param string|int $id
+     * @return Page
+     * @throws PageException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public static function getInstance($id) {
 		
 		if(is_numeric($id)) {
@@ -113,7 +114,7 @@ class Page implements PublisherInterface {
 		}
 
 		// generate and store instance
-		
+
 		$page = self::createInstance(current($rows));
 
 		self::$instancesByAlias	[$page->alias]	= $page;
@@ -122,12 +123,13 @@ class Page implements PublisherInterface {
 		return $page;
 
 	}
-	
-	/**
-	 * retrieve all currently stored pages
-	 * 
-	 * @return multitype:Page
-	 */
+
+    /**
+     * retrieve all currently stored pages
+     *
+     * @return Page[] :Page
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public static function getInstances() {
 
 		foreach(Application::getInstance()->getDb()->doPreparedQuery("
@@ -155,7 +157,7 @@ class Page implements PublisherInterface {
 	 * create page and set all attributes stored in $data
 	 * 
 	 * @param array $data
-	 * @return vxWeb\Orm\Page\Page
+	 * @return Page
 	 */
 	private static function createInstance(array $data) {
 
@@ -227,7 +229,7 @@ class Page implements PublisherInterface {
 
 	/**
 	 * sort revisions and return revision with latest creation date
-	 * @return \vxWeb\Orm\Page\vxWeb\Orm\Revision
+	 * @return Revision
 	 * 
 	 * @todo do sorting only once 
 	 */
@@ -261,7 +263,7 @@ class Page implements PublisherInterface {
 
 	/**
 	 * sort revisions and return revision with earliest creation date
-	 * @return \vxWeb\Orm\Page\vxWeb\Orm\Revision
+	 * @return Revision
 	 * 
 	 * @todo do sorting only once
 	 */
@@ -296,7 +298,7 @@ class Page implements PublisherInterface {
 	/**
 	 * retrieve a revision identified by a creation timestamp 
 	 * @param \DateTime $dateTime
-	 * @return \vxWeb\Orm\Page\vxWeb\Orm\Revision
+	 * @return Revision
 	 */
 	public function getRevisionByDateTime(\DateTime $dateTime) {
 		
@@ -310,13 +312,14 @@ class Page implements PublisherInterface {
 
 	}
 
-	/**
-	 * exports the active revision of the page to its template file
-	 * path information is retrieved from the config object
-	 * the modification timestamp of the generated file is set to creation timestamp of the active revision
-	 * 
-	 * @throws PageException
-	 */
+    /**
+     * exports the active revision of the page to its template file
+     * path information is retrieved from the config object
+     * the modification timestamp of the generated file is set to creation timestamp of the active revision
+     *
+     * @throws PageException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public function exportActiveRevision() {
 
 		// dispatch 'beforePageRevisionExport' event to inform optional listeners
@@ -397,7 +400,7 @@ class Page implements PublisherInterface {
 	/**
 	 * set title
 	 * @param string $title
-	 * @return vxWeb\Orm\Page\Page
+	 * @return Page
 	 */
 	public function setTitle($title) {
 
@@ -419,7 +422,7 @@ class Page implements PublisherInterface {
 	/**
 	 * set keywords
 	 * @param string $keywords
-	 * @return vxWeb\Orm\Page\Page
+	 * @return Page
 	 */
 	public function setKeywords($keywords) {
 
@@ -441,7 +444,7 @@ class Page implements PublisherInterface {
 	/**
 	 * set template filename
 	 * @param string $template
-	 * @return vxWeb\Orm\Page\Page
+	 * @return Page
 	 */
 	public function setTemplate($template) {
 

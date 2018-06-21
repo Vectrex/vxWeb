@@ -24,10 +24,10 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
             // save
 
             fetch("<?= $router->getRoute('inlineEditXhr')->getUrl() ?>", {
-                body: inlineEditor.getData(),
+                body: JSON.stringify({ data: inlineEditor.getData(), page: page }),
                 credentials: "same-origin",
                 headers: {
-                    "content-type": "text/html; charset=utf-8"
+                    "content-type": "application/json"
                 },
                 method: 'POST'
             })
