@@ -1,1 +1,1 @@
-[contenteditable=true]:hover{cursor:pointer;background:#fff8cc}
+[contenteditable=true]:hover{cursor:pointer;background:#fff8cc}#messageBox{position:fixed;z-index:401;top:-2rem;left:50%;max-width:30rem;transition:top .5s ease-in-out,opacity .5s;-webkit-transform:translateX(-50%);transform:translateX(-50%);opacity:0}#messageBox.display{top:0;opacity:1}

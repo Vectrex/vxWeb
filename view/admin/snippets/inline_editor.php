@@ -16,6 +16,55 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
             inlineEditor = CKEDITOR.inline(element, {}),
             page = "<?= $this->page->getAlias() ?>";
 
+        var messageToast = function(selector) {
+
+            var mBox, lastAddedClass, timeoutId, button;
+
+            var hide = function() {
+                if(mBox) {
+                    mBox.classList.remove("display");
+                }
+            };
+
+            var show = function(msg, className) {
+
+                if(mBox === undefined) {
+                    mBox = document.querySelector(selector || "#messageBox");
+
+                    if(mBox && (button = mBox.querySelector("button"))) {
+                        button.addEventListener("click", hide);
+                    }
+                }
+
+                if(mBox) {
+                    if(lastAddedClass) {
+                        mBox.classList.remove(lastAddedClass);
+                    }
+                    if(className) {
+                        mBox.classList.add(className);
+                    }
+                    lastAddedClass = className;
+                }
+
+                mBox.innerHTML = msg;
+                mBox.appendChild(button);
+                mBox.classList.add("display");
+
+                if(timeoutId) {
+                    window.clearTimeout(timeoutId);
+                }
+                timeoutId = window.setTimeout(hide, 5000);
+
+            };
+
+            return {
+                show: show,
+                hide: hide
+            };
+
+        };
+
+
         inlineEditor.on("focus", function() {
             element.classList.add("editing");
         });
@@ -33,7 +82,26 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
                 },
                 method: 'POST'
             })
-            .then(response => response.json());
+            .then(function(response) {
+
+                var contentType = response.headers.get("content-type");
+
+                if(response.ok) {
+
+                    if (contentType && contentType.includes("application/json")) {
+                        return response.json();
+                    }
+
+                    throw new Error("Response failed (" + response.status + " - " + response.statusText + ").");
+
+                }
+            })
+            .then(function(response) {
+                messageToast().show(response.message, "toast-success");
+            })
+            .catch(function(error) {
+                messageToast().show(error.message || "Server Error.", "toast-error");
+            });
 
         });
     

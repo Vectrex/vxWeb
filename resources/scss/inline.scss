@@ -1,3 +1,5 @@
+@import 'spectre/variables';
+
 *[contenteditable="true"] {
   &:hover {
     background: #fff8cc;
@@ -8,3 +10,20 @@
 
   }
 }
+
+#messageBox {
+  position: fixed;
+  z-index: $zindex-4 + 1;
+  max-width: 30rem;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -2rem;
+  opacity: 0;
+  transition: top 0.5s ease-in-out, opacity 0.5s;
+
+  &.display {
+    top: 0;
+    opacity: 1;
+  }
+}
+

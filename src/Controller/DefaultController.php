@@ -151,7 +151,7 @@ class DefaultController extends Controller {
                 SimpleTemplate::create('admin/snippets/inline_editor.php')
                     ->assign('page', $parameters['page'])
                     ->display()
-                . '</head>',
+                . '</head>' . '<div id="messageBox" class="toast"><button class="btn btn-clear float-right"></button></div>',
                 $parentTemplate->getRawContents()
             )
         );
