@@ -6,11 +6,13 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
 ?>
 
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/inline.min.css">
+
 <script>
     CKEDITOR.disableAutoInline = true;
     document.addEventListener("DOMContentLoaded", function() {
 
-        var element = document.querySelector('*[contenteditable="true"'),
+        var element = document.querySelector('*[contenteditable="true"]'),
             inlineEditor = CKEDITOR.inline(element, {}),
             page = "<?= $this->page->getAlias() ?>";
 

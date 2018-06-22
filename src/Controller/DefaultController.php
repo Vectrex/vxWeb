@@ -7,6 +7,8 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\Exception\HttpException;
 use vxPHP\Template\Exception\SimpleTemplateException;
+use vxPHP\Template\Filter\AnchorHref;
+use vxPHP\Template\Filter\AssetsPath;
 use vxPHP\Template\SimpleTemplate;
 use vxWeb\Model\Page\Page;
 use vxWeb\Model\Page\PageException;
@@ -28,7 +30,7 @@ class DefaultController extends Controller {
 
 			else {
 
-					// pick page from the end of the segments sequence
+			    // pick page from the end of the segments sequence
 		
 				if(count($this->pathSegments)) {
 					$pageAlias = array_pop($this->pathSegments);
@@ -156,7 +158,7 @@ class DefaultController extends Controller {
 
         return $parentTemplate
             ->insertTemplateAt($include, 'content_block')
-            ->display()
+            ->display([new AnchorHref(), new AssetsPath()])
         ;
 
     }
