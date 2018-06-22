@@ -3,8 +3,3 @@
 
     background: #fff8cc;
 }
-
-*[contenteditable='true'].editing
-{
-    box-shadow: #3c3f41 inset;
-}
