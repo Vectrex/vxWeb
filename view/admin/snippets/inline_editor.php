@@ -4,17 +4,34 @@
 $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance()->getConfig()->routes['admin.php']);
 
 ?>
-
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/inline.min.css">
 
 <script>
+
+    "use strict";
+
+    if(!this.vxWeb) {
+        this.vxWeb = {};
+    }
+    if(!this.vxWeb.routes) {
+        this.vxWeb.routes = {};
+    }
+
+    this.vxWeb.routes.filePicker = "<?= $router->getRoute('filepicker')->getUrl() ?>";
+    this.vxWeb.routes.inlineUpdate = "<?= $router->getRoute('inlineEditXhr')->getUrl() ?>";
+
     CKEDITOR.disableAutoInline = true;
+
     document.addEventListener("DOMContentLoaded", function() {
 
         var element = document.querySelector('*[contenteditable="true"]'),
-            inlineEditor = CKEDITOR.inline(element, {}),
-            page = "<?= $this->page->getAlias() ?>";
+            page = "<?= $this->page->getAlias() ?>",
+            inlineEditor = CKEDITOR.inline(element, {
+                filebrowserBrowseUrl: vxWeb.routes.filePicker,
+                filebrowserImageBrowseUrl: vxWeb.routes.filePicker + "?filter=image"
+            }),
+            lastData;
 
         var messageToast = function(selector) {
 
@@ -64,17 +81,21 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
 
         };
 
-
         inlineEditor.on("focus", function() {
             element.classList.add("editing");
+            lastData = this.getData();
         });
 
         inlineEditor.on("blur", function() {
             element.classList.remove("editing");
 
+            if(lastData === this.getData()) {
+                return;
+            }
+
             // save
 
-            fetch("<?= $router->getRoute('inlineEditXhr')->getUrl() ?>", {
+            fetch(vxWeb.routes.inlineUpdate, {
                 body: JSON.stringify({ data: inlineEditor.getData(), page: page }),
                 credentials: "same-origin",
                 headers: {
