@@ -29,13 +29,10 @@
 	
 	"scripts": {
 		"post-install-cmd": [
-			"App\\Installer::postInstall"
 		],
 		"post-create-project-cmd": [
-			"App\\Installer::postCreateProject"
 		],
 		"post-update-cmd": [
-			"App\\Installer::postUpdate"
 		]
 	}
 	
