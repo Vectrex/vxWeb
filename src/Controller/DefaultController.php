@@ -12,6 +12,7 @@ use vxPHP\Template\Filter\AssetsPath;
 use vxPHP\Template\SimpleTemplate;
 use vxWeb\Model\Page\Page;
 use vxWeb\Model\Page\PageException;
+use IvoPetkov\HTML5DOMDocument;
 
 class DefaultController extends Controller {
 
@@ -119,7 +120,7 @@ class DefaultController extends Controller {
 
         // switch to DOMDocument to find parent node of comment reliably
 
-        $doc = new \DOMDocument();
+        $doc = new HTML5DOMDocument();
         $doc->loadHTML($markup);
         $xpath = new \DOMXPath($doc);
 
