@@ -11,15 +11,15 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
 
     "use strict";
 
-    if(!this.vxWeb) {
-        this.vxWeb = {};
+    if(!self.vxWeb) {
+        self.vxWeb = {};
     }
-    if(!this.vxWeb.routes) {
-        this.vxWeb.routes = {};
+    if(!self.vxWeb.routes) {
+        self.vxWeb.routes = {};
     }
 
-    this.vxWeb.routes.filePicker = "<?= $router->getRoute('filepicker')->getUrl() ?>";
-    this.vxWeb.routes.inlineUpdate = "<?= $router->getRoute('inlineEditXhr')->getUrl() ?>";
+    self.vxWeb.routes.filePicker = "<?= $router->getRoute('filepicker')->getUrl() ?>";
+    self.vxWeb.routes.inlineUpdate = "<?= $router->getRoute('inlineEditXhr')->getUrl() ?>";
 
     CKEDITOR.disableAutoInline = true;
 
@@ -29,14 +29,14 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
             page = "<?= $this->page->getAlias() ?>",
             inlineEditor = CKEDITOR.inline(element, {
                 toolbar: [
-                    { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+                    { name: 'clipboard', items: ['Undo', 'Redo' , '-', 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord' ] },
                     { name: 'editing', items: [ 'Find', 'Replace'] },
                     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat' ] },
+                    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
                     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Blockquote'] },
                     { name: 'links', items: [ 'Link', 'Unlink'] },
                     { name: 'insert', items: [ 'Image', 'Table', 'SpecialChar'] },
                     { name: 'styles', items: [ 'Styles', 'Format' ] },
-                    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
                     { name: 'tools', items: [ 'ShowBlocks' ] }
                 ],
 
@@ -94,6 +94,21 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
 
         };
 
+        // a request timeout for the fetch API @see https://github.com/github/fetch/issues/175
+
+        var timeout = function(ms, promise) {
+
+            return new Promise(function(resolve, reject) {
+
+                setTimeout(function() {
+                    reject(new Error("Request timed out."))
+                }, ms);
+
+                promise.then(resolve, reject);
+
+            });
+        };
+
         inlineEditor.on("focus", function() {
             element.classList.add("editing");
             lastData = this.getData();
@@ -108,14 +123,14 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
 
             // save
 
-            fetch(vxWeb.routes.inlineUpdate, {
+            timeout(5000, fetch(vxWeb.routes.inlineUpdate, {
                 body: JSON.stringify({ data: inlineEditor.getData(), page: page }),
                 credentials: "same-origin",
                 headers: {
                     "content-type": "application/json"
                 },
                 method: 'POST'
-            })
+            }))
             .then(function(response) {
 
                 var contentType = response.headers.get("content-type");

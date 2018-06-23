@@ -19,17 +19,18 @@
 			CKEDITOR.replace(document.forms[0].elements["markup"], {
 				allowedContent: true,
 				autoParagraph: false,
-				// extraAllowedContent: "div(*)",
+				customConfig: "",
 				toolbar:
 					[
-					    ['Maximize', '-', 'Source', '-', 'Undo', 'Redo'],
-					    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','RemoveFormat'],
-					    ['Link','Unlink','Anchor'],
-					    ['Image','Table','HorizontalRule','SpecialChar'],
-					    '/',
-					    ['Format'],
-					    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript', '-', 'TextColor','BGColor'],
-					    ['NumberedList','BulletedList','-','Blockquote', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock']
+					    ['Maximize', '-', 'Source'],
+					    ['Undo', 'Redo', '-', 'Cut','Copy','Paste','PasteText','PasteFromWord'],
+                        [ 'Find', 'Replace'],
+                        [ 'Bold', 'Italic', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat', '-', 'TextColor', 'BGColor'],
+                        ['NumberedList','BulletedList','-','Blockquote'],
+					    ['Link','Unlink'],
+					    ['Image','Table','SpecialChar'],
+					    ['Styles', 'Format'],
+                        ['ShowBlocks']
 					],
 					height: "24rem", contentsCss: ['/css/site.css', '/css/site_edit.css'],
 					filebrowserBrowseUrl: vxWeb.routes.filePicker,

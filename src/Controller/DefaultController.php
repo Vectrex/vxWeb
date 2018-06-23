@@ -24,7 +24,7 @@ class DefaultController extends Controller {
 			if(isset($this->parameters['markup'])) {
 
 				$include = SimpleTemplate::create()->setRawContents($this->parameters['markup']);
-				$page = NULL;
+				$page = null;
 				
 			}
 

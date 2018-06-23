@@ -33,11 +33,16 @@
 vxJS.event.addDomReadyListener(function() {
 	CKEDITOR.replace(document.forms[0].elements['content'], {
 		extraAllowedContent: "div(*)",
-		toolbar:
+        customConfig: "",
+        toolbar:
 			[
 			    ['Maximize','-','Source', '-', 'Undo','Redo'],
-			    ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord','-','RemoveFormat'],
-			    ['Bold', 'Italic', '-', 'NumberedList','BulletedList', '-', 'Table', '-', 'Link', 'Unlink', 'Anchor']
+			    ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'],
+			    ['Bold', 'Italic', 'Superscript', 'Subscript', '-', 'CopyFormatting', 'RemoveFormat'],
+                ['NumberedList','BulletedList'],
+                ['Link', 'Unlink'],
+                ['Table'],
+                ['ShowBlocks']
 			], height: "20rem", contentsCss: ['/css/site.css', '/css/site_edit.css']
 		} );
 
