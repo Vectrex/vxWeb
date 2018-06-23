@@ -28,6 +28,19 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
         var element = document.querySelector('*[contenteditable="true"]'),
             page = "<?= $this->page->getAlias() ?>",
             inlineEditor = CKEDITOR.inline(element, {
+                toolbar: [
+                    { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+                    { name: 'editing', items: [ 'Find', 'Replace'] },
+                    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat' ] },
+                    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Blockquote'] },
+                    { name: 'links', items: [ 'Link', 'Unlink'] },
+                    { name: 'insert', items: [ 'Image', 'Table', 'SpecialChar'] },
+                    { name: 'styles', items: [ 'Styles', 'Format' ] },
+                    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+                    { name: 'tools', items: [ 'ShowBlocks' ] }
+                ],
+
+                customConfig: "",
                 filebrowserBrowseUrl: vxWeb.routes.filePicker,
                 filebrowserImageBrowseUrl: vxWeb.routes.filePicker + "?filter=image"
             }),
