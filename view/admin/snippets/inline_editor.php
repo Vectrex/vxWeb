@@ -46,7 +46,7 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
             }),
             lastData;
 
-        var messageToast = function(selector) {
+        var messageToast = (function(selector) {
 
             var mBox, lastAddedClass, timeoutId, button;
 
@@ -92,7 +92,7 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
                 hide: hide
             };
 
-        };
+        }());
 
         // a request timeout for the fetch API @see https://github.com/github/fetch/issues/175
 
@@ -123,14 +123,17 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
 
             // save
 
-            timeout(5000, fetch(vxWeb.routes.inlineUpdate, {
-                body: JSON.stringify({ data: inlineEditor.getData(), page: page }),
-                credentials: "same-origin",
-                headers: {
-                    "content-type": "application/json"
-                },
-                method: 'POST'
-            }))
+            timeout(
+                5000,
+                fetch(vxWeb.routes.inlineUpdate, {
+                    body: JSON.stringify({ data: inlineEditor.getData(), page: page }),
+                    credentials: "same-origin",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    method: 'POST'
+                })
+            )
             .then(function(response) {
 
                 var contentType = response.headers.get("content-type");
@@ -146,10 +149,10 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
                 }
             })
             .then(function(response) {
-                messageToast().show(response.message, "toast-success");
+                messageToast.show(response.message, "toast-success");
             })
             .catch(function(error) {
-                messageToast().show(error.message || "Server Error.", "toast-error");
+                messageToast.show(error.message || "Server Error.", "toast-error");
             });
 
         });
