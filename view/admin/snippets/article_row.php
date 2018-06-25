@@ -10,6 +10,16 @@
             <i class="form-icon"></i>
         </label>
 	</td>
+    <td class="">
+        <div class="form-group">
+            <label class="form-checkbox">
+                <input type="checkbox" name="customflags[<?= $this->article->getId(); ?>]" disabled="disabled"
+                    <?php if ($this->article->getCustomFlags()): ?>checked="checked"<?php endif; ?>
+                >
+                <i class="form-icon"></i>
+            </label>
+        </div>
+    </td>
 	<td><?= is_null($this->article->getDate()) ? '' : $this->article->getDate()->format('Y-m-d') ?></td>
 	<td><?= is_null($this->article->getDisplayFrom()) ? '' : $this->article->getDisplayFrom()->format('Y-m-d') ?></td>
 	<td><?= is_null($this->article->getDisplayUntil()) ? '' : $this->article->getDisplayUntil()->format('Y-m-d') ?></td>

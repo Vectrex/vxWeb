@@ -99,30 +99,30 @@
 	};
 
 	vxJS.event.addDomReadyListener(function() {
-		var lsValue, lsKey = window.location.origin + "/admin/articles__sort__",
+	    var checkboxSort = function(a, b) {
+
+            var checked1 = a.element.cells[this.ndx].querySelector("input").checked,
+                checked2 = b.element.cells[this.ndx].querySelector("input").checked;
+
+            if(checked1 === checked2) {
+                return 0;
+            }
+            if(this.asc) {
+                return checked2 ? -1 : 1;
+            }
+            else {
+                return checked1 ? -1 : 1;
+            }
+        };
+
+        var lsValue, lsKey = window.location.origin + "/admin/articles__sort__",
 			t = vxJS.widget.sorTable(
                 document.querySelector(".table"),	{
 				columnFormat: [
 					null,
 					null,
-
-					// checkbox sort
-
-					function(a, b) {
-
-						var checked1 = a.element.cells[this.ndx].getElementsByTagName("input")[0].checked,
-							checked2 = b.element.cells[this.ndx].getElementsByTagName("input")[0].checked;
-
-						if(checked1 === checked2) {
-							return 0;
-						}
-						if(this.asc) {
-							return checked2 ? -1 : 1;
-						}
-						else {
-							return checked1 ? -1 : 1;
-						}
-					},
+					checkboxSort,
+                    checkboxSort,
 					"date_iso",
 					"date_iso",
 					"date_iso",
@@ -214,6 +214,7 @@
                 <input class="form-input" name="filter_title" placeholder="Titel filtern...">
             </th>
 			<th data-column-name="published"></th>
+            <th data-column-name="customflags"></th>
 			<th data-column-name="article_date"></th>
 			<th data-column-name="display_from"></th>
 			<th data-column-name="display_until"></th>
@@ -225,6 +226,7 @@
 			<th class="col-2 vx-sortable-header">Kategorie</th>
 			<th class="vx-sortable-header">Titel</th>
 			<th class="vx-sortable-header">Pub</th>
+            <th class="vx-sortable-header">*</th>
 			<th class="col-1 vx-sortable-header">Artikeldatum</th>
 			<th class="col-1 vx-sortable-header">Anzeige von</th>
 			<th class="col-1 vx-sortable-header">Anzeige bis</th>

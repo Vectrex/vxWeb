@@ -14,7 +14,7 @@
 
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_display_from:  text-error}">Anzeige von</label>
+				<label class="col-3 form-label{error_display_from: text-error}">Anzeige von</label>
 
 				<div class="col-3">
 					<div class="col-12 input-group input-inline">
@@ -24,7 +24,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_display_until:  text-error}">Anzeige bis</label>
+				<label class="col-3 form-label{error_display_until: text-error}">Anzeige bis</label>
 
 				<div class="col-3">
 					<div class="col-12 input-group input-inline">
@@ -34,28 +34,37 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_customsort:  text-error}">generische Sortierung</label>
+				<label class="col-3 form-label{error_customsort: text-error}">generische Sortierung</label>
 				<div class="col-9">
 					{input:customsort {"maxlength": "4", "class": "form-input col-2"} }
 					<p id="error_customsort" class="form-input-hint vx-error-box"></p>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_articlecategoriesid:  text-error}"><strong>*Kategorie</strong></label>
+				<label class="col-3 form-label">Markiert</label>
+				<div class="col-9">
+					<label class="form-switch">
+						{input:customflags }
+						<i class="form-icon"></i>
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-3 form-label{error_articlecategoriesid: text-error}"><strong>*Kategorie</strong></label>
 				<div class="col-9">
 					{dropdown:articlecategoriesid {"class": "form-select"} }
 					<p id="error_articlecategoriesid" class="form-input-hint vx-error-box"></p>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_headline:  text-error}"><strong>*Überschrift/Titel</strong></label>
+				<label class="col-3 form-label{error_headline: text-error}"><strong>*Überschrift/Titel</strong></label>
 				<div class="col-9">
 					{input:headline {"maxlength": "200", "class": "form-input"} }
 					<p id="error_headline" class="form-input-hint vx-error-box"></p>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-3 form-label{error_teaser:  text-error}">Anrisstext</label>
+				<label class="col-3 form-label{error_teaser: text-error}">Anrisstext</label>
 				<div class="col-9">
 					{textarea:teaser {"rows": "3", "class": "form-input"} }
 					<p id="error_teaser" class="form-input-hint vx-error-box"></p>

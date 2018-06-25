@@ -89,6 +89,7 @@ class ArticlesController extends Controller {
 					'articlecategoriesid'	=> $article->getCategory()->getId(),
 					'headline'				=> $article->getHeadline(),
 					'customsort'			=> $article->getCustomSort(),
+					'customflags'           => $article->getCustomFlags(),
 					'teaser'				=> $article->getData('teaser'),
 					'content'				=> htmlspecialchars($article->getData('content'), ENT_NOQUOTES, 'UTF-8'),
 					'article_date'			=> is_null($article->getDate())			? '' : $article->getDate()->format('d.m.Y'),
@@ -133,11 +134,12 @@ class ArticlesController extends Controller {
 
 	}
 
-	/**
-	 * simple helper function to convert ini values like 10M or 256K to integer
-	 *
-	 * @param string $val
-	 */
+    /**
+     * simple helper function to convert ini values like 10M or 256K to integer
+     *
+     * @param string $val
+     * @return int|string
+     */
 	private function toBytes($val) {
 
 		$suffix = strtolower(substr(trim($val),-1));
@@ -278,7 +280,8 @@ class ArticlesController extends Controller {
 					->disableCsrfToken()
 					->bindRequestParameters($this->request->request)
 					->validate()
-					->getValidFormValues();
+					->getValidFormValues()
+                ;
 
 				if($v['article_date'] !== '') {
 					$article->setDate(new \DateTime(Util::unFormatDate($v['article_date'], 'de')));
@@ -315,10 +318,13 @@ class ArticlesController extends Controller {
 
 					// validate submitted category id - replacing default method allows user privilege considerations
 
-					$article->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])));
-					$article->setHeadline($v['headline']);
-					$article->setData(['teaser' => $v['teaser'], 'content' => $v['content']]);
-					$article->setCustomSort($v['customsort']);
+					$article
+                        ->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])))
+					    ->setHeadline($v['headline'])
+					    ->setData(['teaser' => $v['teaser'], 'content' => $v['content']])
+                        ->setCustomSort($v->get('customsort'))
+                        ->setCustomFlags($v->get('customflags'))
+                    ;
 
 					$id = $article->getId();
 					
@@ -333,17 +339,17 @@ class ArticlesController extends Controller {
 						$article->save();
 						if(!$id) {
 							return new JsonResponse([
-								'success' => TRUE,
+								'success' => true,
 								'id' => $article->getId()
 							]);
 						}
 						else {
-							return new JsonResponse(['success' => TRUE]);
+							return new JsonResponse(['success' => true]);
 						}
 					}
 
 					else {
-						return new JsonResponse(['success' => TRUE, 'message' =>'Keine Änderung, nichts gespeichert!']);
+						return new JsonResponse(['success' => true, 'message' =>'Keine Änderung, nichts gespeichert!']);
 					}
 				}
 				catch(ArticleException $e) {
@@ -397,11 +403,15 @@ class ArticlesController extends Controller {
 		return $cat;
 	}
 
-	/**
-	 * build edit form
-	 * 
-	 * @return \vxPHP\Form\HtmlForm
-	 */
+    /**
+     * build edit form
+     *
+     * @return \vxPHP\Form\HtmlForm
+     * @throws ArticleCategoryException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxPHP\Form\Exception\FormElementFactoryException
+     * @throws \vxPHP\Form\Exception\HtmlFormException
+     */
 	private function buildEditForm() {
 
 		$categories = ['-1' => 'Bitte Kategorie wählen...'];
@@ -419,14 +429,16 @@ class ArticlesController extends Controller {
 			->addElement(FormElementFactory::create('input', 'article_date', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
 			->addElement(FormElementFactory::create('input', 'display_from', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
 			->addElement(FormElementFactory::create('input', 'display_until', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'customsort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)], 'Ungültiger Wert'));
+			->addElement(FormElementFactory::create('input', 'customsort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)], 'Ungültiger Wert'))
+            ->addElement(FormElementFactory::create('checkbox', 'customflags', 1));
 
 	}
 
-	/**
-	 * @param MetaFile $f
-	 * @return string
-	 */
+    /**
+     * @param MetaFile $f
+     * @return string
+     * @throws \vxPHP\File\Exception\FilesystemFolderException
+     */
 	private function getThumbPath(MetaFile $f) {
 
 		// check and - if required - generate thumbnail
