@@ -30,7 +30,7 @@ use vxPHP\Database\DatabaseInterface;
  * 				selectFirst(2);
  *
  * @author Gregor Kofler
- * @version 0.5.0 2017-04-26
+ * @version 0.6.0 2018-06-25
  */
 class ArticleQuery extends Query {
 
@@ -54,7 +54,7 @@ class ArticleQuery extends Query {
 	 *
 	 * @param ArticleCategory $category
 	 * 
-	 * @return \vxPHP\Orm\Custom\ArticleQuery
+	 * @return self
 	 */
 	public function filterByCategory(ArticleCategory $category) {
 
@@ -62,13 +62,27 @@ class ArticleQuery extends Query {
 		return $this;
 
 	}
-	
+
+    /**
+     * add WHERE clause which finds articles which are matched by
+     * bit mask
+     *
+     * @param int $mask
+     * @return $this
+     */
+	public function filterByCustomFlags($mask) {
+
+	    $this->addCondition("a.customflags & ?", $mask);
+	    return $this;
+
+    }
+
 	/**
 	 * add WHERE clause that filters for several categories
 	 *
 	 * @param ArticleCategory[] $categories
-	 * @return \vxPHP\Orm\Custom\ArticleQuery
-	 * @throws \InvalidArgumentException::
+	 * @return self
+	 * @throws \InvalidArgumentException
 	 */
 	public function filterByCategories(array $categories) {
 		
@@ -91,7 +105,7 @@ class ArticleQuery extends Query {
 	/**
 	 * add WHERE clause that removes all unpublished articles from resultset
 	 * 
-	 * @return \vxPHP\Orm\Custom\ArticleQuery
+	 * @return self
 	 */
 	public function filterPublished() {
 
@@ -103,7 +117,7 @@ class ArticleQuery extends Query {
 	/**
 	 * add WHERE clause that removes all published articles from resultset
 	 * 
-	 * @return \vxPHP\Orm\Custom\ArticleQuery
+	 * @return self
 	 */
 	public function filterUnPublished() {
 
@@ -117,12 +131,14 @@ class ArticleQuery extends Query {
 	 * 
 	 * @param array $categoryNames
 	 * 
-	 * @return \vxPHP\Orm\Custom\ArticleQuery
+	 * @return self
 	 */
 	public function filterByCategoryNames(array $categoryNames) {
+
 		$this->innerJoin('articlecategories c', 'c.articlecategoriesid = a.articlecategoriesid');
 		$this->addCondition('c.alias', $categoryNames, 'IN');
 		return $this;
+
 	}
 	
 	/**
@@ -131,7 +147,7 @@ class ArticleQuery extends Query {
 	 * 
 	 * @param \DateTime $date
 	 * 
-	 * @return \vxPHP\Orm\Custom\ArticleQuery
+	 * @return self
 	 */
 	public function filterByDisplayFromToUntil(\DateTime $date = NULL) {
 
@@ -143,14 +159,18 @@ class ArticleQuery extends Query {
 		$this->addCondition("a.display_until IS NULL OR a.display_until >= ?", $date->format('Y-m-d'));
 
 		return $this;
+
 	}
 
-	/**
-	 * executes query and returns array of Article instances
-	 *
-	 * @see \vxPHP\Orm\Query::select()
-	 * @return Article[]
-	 */
+    /**
+     * executes query and returns array of Article instances
+     *
+     * @see \vxPHP\Orm\Query::select()
+     * @return Article[]
+     * @throws Exception\ArticleException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
+     */
 	public function select() {
 
 		$this->buildQueryString();
@@ -165,14 +185,16 @@ class ArticleQuery extends Query {
 		return Article::getInstances($ids);
 	}
 
-	/**
-	 * adds LIMIT clause, executes query and returns array of Article instances
-	 *
-	 * @see \vxPHP\Orm\Query::selectFirst()
-	 * @param number $rows
-	 * @return Article[]
-	 * @throws \RangeException
-	 */
+    /**
+     * adds LIMIT clause, executes query and returns array of Article instances
+     *
+     * @see \vxPHP\Orm\Query::selectFirst()
+     * @param int $rows
+     * @return Article[]
+     * @throws Exception\ArticleException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
+     */
 	public function selectFirst($rows = 1) {
 
 		if(empty($this->columnSorts)) {
@@ -182,13 +204,17 @@ class ArticleQuery extends Query {
 		return $this->selectFromTo(0, $rows - 1);
 	}
 
-	/**
-	 * (non-PHPdoc)
-	 * 
-	 * @see \vxPHP\Orm\Query::selectFromTo()
-	 * @return Article[]
-	 * @throws \RangeException
-	 */
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \vxPHP\Orm\Query::selectFromTo()
+     * @param $from
+     * @param $to
+     * @return Article[]
+     * @throws Exception\ArticleException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
+     */
 	public function selectFromTo($from, $to) {
 
 		if(empty($this->columnSorts)) {
