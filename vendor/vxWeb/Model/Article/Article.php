@@ -22,7 +22,7 @@ use vxPHP\Database\Util;
  * Mapper class for articles, stored in table articles
  *
  * @author Gregor Kofler
- * @version 0.2.1 2017-04-26
+ * @version 0.2.2 2018-06-25
  */
 
 class Article implements PublisherInterface {
@@ -88,7 +88,7 @@ class Article implements PublisherInterface {
 	/**
 	 * flags an article as published
 	 * 
-	 * @var boolen
+	 * @var bool
 	 */
 	private	$published;
 	
@@ -110,7 +110,7 @@ class Article implements PublisherInterface {
 	 * stores previously saved attribute values of article
 	 * allows verification whether changes of article have occured
 	 * 
-	 * @var array
+	 * @var \StdClass
 	 */
 	private	$previouslySavedValues;
 
@@ -180,7 +180,7 @@ class Article implements PublisherInterface {
 	/**
 	 * the id of the user which published (or unpublished) the article
 	 *  
-	 * @var User
+	 * @var int
 	 */
 	private	$publishedById;
 
@@ -220,12 +220,12 @@ class Article implements PublisherInterface {
 		// reset certain properties; forces insertion when saving
 		
 		foreach($this->propertiesToReset as $property) {
-			$this->$property = NULL;
+			$this->$property = null;
 		}
 
 		// make sure that linked files are kept and saved
 
-		$this->updateLinkedFiles = TRUE;
+		$this->updateLinkedFiles = true;
 		
 		// create new headline and therefore new alias
 
@@ -250,10 +250,10 @@ class Article implements PublisherInterface {
 	 *
 	 * @return boolean
 	 */
-	public function wasChanged($evaluateAll = FALSE) {
+	public function wasChanged($evaluateAll = false) {
 
 		if(is_null($this->previouslySavedValues)) {
-			return TRUE;
+			return true;
 		}
 		
 		foreach(array_keys(get_object_vars($this->previouslySavedValues)) as $p) {
@@ -266,7 +266,7 @@ class Article implements PublisherInterface {
 
 			if(is_array($this->previouslySavedValues->$p)) {
 				if(count(array_diff_assoc($this->previouslySavedValues->$p, $this->$p)) > 0) {
-					return TRUE;
+					return true;
 				}
 			}
 			else {
@@ -276,26 +276,28 @@ class Article implements PublisherInterface {
 				if($this->previouslySavedValues->$p instanceof \DateTime) {
 
 					if($this->previouslySavedValues->$p != $this->$p) {
-						return TRUE;
+						return true;
 					}
 
 				}
 				else {
 					if($this->previouslySavedValues->$p !== $this->$p) {
-						return TRUE;
+						return true;
 					}
 				}
 			}
 		}
 
-		return FALSE;
+		return false;
 	}
-	/**
-	 * store new article in database or update changes to existing article
-	 *
-	 * @throws ArticleException
-	 * @todo consider transactions
-	 */
+
+    /**
+     * store new article in database or update changes to existing article
+     *
+     * @throws ArticleException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @todo consider transactions
+     */
 	public function save() {
 
 		$db = Application::getInstance()->getDb();
@@ -324,14 +326,14 @@ class Article implements PublisherInterface {
 				'alias'					=> $this->alias,
 				'articlecategoriesid'	=> $this->category->getId(),
 				'headline'				=> $this->headline,
-				'article_date'			=> is_null($this->articleDate) ? NULL : $this->articleDate->format('Y-m-d H:i:s'),
-				'display_from'			=> is_null($this->displayFrom) ? NULL : $this->displayFrom->format('Y-m-d H:i:s'),
-				'display_until'			=> is_null($this->displayUntil) ? NULL : $this->displayUntil->format('Y-m-d H:i:s'),
-				'published'				=> (int) $this->published ?: NULL,
+				'article_date'			=> is_null($this->articleDate) ? null : $this->articleDate->format('Y-m-d H:i:s'),
+				'display_from'			=> is_null($this->displayFrom) ? null : $this->displayFrom->format('Y-m-d H:i:s'),
+				'display_until'			=> is_null($this->displayUntil) ? null : $this->displayUntil->format('Y-m-d H:i:s'),
+				'published'				=> (int) $this->published ?: null,
 				'customflags'			=> $this->customFlags,
 				'customsort'			=> $this->customSort,
-				'publishedby'			=> $this->publishedById ?: NULL,
-				'updatedby'				=> $this->updatedById ?: NULL
+				'publishedby'			=> $this->publishedById ?: null,
+				'updatedby'				=> $this->updatedById ?: null
 			]
 		);
 
@@ -352,7 +354,7 @@ class Article implements PublisherInterface {
 
 			// were attributes changed, which don't indicate an update (e.g. 'published')?
 
-			else if($this->wasChanged(TRUE)) {
+			else if($this->wasChanged(true)) {
 
 				// update, but don't set lastUpdated and updatedBy
 
@@ -380,14 +382,14 @@ class Article implements PublisherInterface {
 					'alias'					=> $this->alias,
 					'articlecategoriesid'	=> $this->category->getId(),
 					'headline'				=> $this->headline,
-					'article_date'			=> is_null($this->articleDate) ? NULL : $this->articleDate->format('Y-m-d H:i:s'),
-					'display_from'			=> is_null($this->displayFrom) ? NULL : $this->displayFrom->format('Y-m-d H:i:s'),
-					'display_until'			=> is_null($this->displayUntil) ? NULL : $this->displayUntil->format('Y-m-d H:i:s'),
+					'article_date'			=> is_null($this->articleDate) ? null : $this->articleDate->format('Y-m-d H:i:s'),
+					'display_from'			=> is_null($this->displayFrom) ? null : $this->displayFrom->format('Y-m-d H:i:s'),
+					'display_until'			=> is_null($this->displayUntil) ? null : $this->displayUntil->format('Y-m-d H:i:s'),
 					'published'				=> $this->published,
 					'customflags'			=> $this->customFlags,
 					'customsort'			=> $this->customSort,
-					'publishedby'			=> $this->publishedById ?: NULL,
-					'createdby'				=> $this->createdById ?: NULL
+					'publishedby'			=> $this->publishedById ?: null,
+					'createdby'				=> $this->createdById ?: null
 				]
 			);
 
@@ -417,7 +419,7 @@ class Article implements PublisherInterface {
 			
 			$db->insertRecords('articles_files', $rows);
 
-			$this->updateLinkedFiles = FALSE;
+			$this->updateLinkedFiles = false;
 		}
 
 		ArticleEvent::create(ArticleEvent::AFTER_ARTICLE_SAVE, $this)->trigger();
@@ -463,15 +465,18 @@ class Article implements PublisherInterface {
 		}
 	}
 
-	/**
-	 * link a metafile to the article; additionally links article to metaFile
-	 * when $sortPosition is set, the file reference is moved to this position within the files array
-	 * 
-	 * @param MetaFile $file
-	 * @param int $sortPosition
-	 * @return \vxWeb\Model\Article\Article
-	 */
-	public function linkMetaFile(MetaFile $file, $sortPosition = NULL) {
+    /**
+     * link a metafile to the article; additionally links article to metaFile
+     * when $sortPosition is set, the file reference is moved to this position within the files array
+     *
+     * @param MetaFile $file
+     * @param int $sortPosition
+     * @return self
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFileException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFolderException
+     */
+	public function linkMetaFile(MetaFile $file, $sortPosition = null) {
 
 		// get all linked files if not done previously
 
@@ -490,24 +495,27 @@ class Article implements PublisherInterface {
 			// otherwise insert reference at given position
 
 			else {
-				array_splice($this->files, $sortPosition, 0, $file);
+				array_splice($this->linkedFiles, $sortPosition, 0, $file);
 			}
 
 			$file->linkArticle($this);
-			$this->updateLinkedFiles = TRUE;
+			$this->updateLinkedFiles = true;
 
 			return $this;
 
 		}
 	}
-	
-	/**
-	 * remove a file reference
-	 * ensures proper re-ordering of files array
-	 * 
-	 * @param MetaFile $file
-	 * @return \vxWeb\Model\Article\Article
-	 */
+
+    /**
+     * remove a file reference
+     * ensures proper re-ordering of files array
+     *
+     * @param MetaFile $file
+     * @return \vxWeb\Model\Article\Article
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFileException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFolderException
+     */
 	public function unlinkMetaFile(MetaFile $file) {
 
 		// get all linked files if not done previously
@@ -518,25 +526,28 @@ class Article implements PublisherInterface {
 
 		// remove file reference if file is linked and ensure continuous numeric indexes
 
-		if(($pos = array_search($file, $this->linkedFiles, TRUE)) !== FALSE) {
+		if(($pos = array_search($file, $this->linkedFiles, true)) !== false) {
 			array_splice($this->linkedFiles, $pos, 1);
 
 			$file->unlinkArticle($this);
-			$this->updateLinkedFiles = TRUE;
+			$this->updateLinkedFiles = true;
 				
 		}
 		
 		return $this;
 
 	}
-	
-	/**
-	 * set custom sort value $file
-	 * 
-	 * @param MetaFile $file
-	 * @param int $sortPosition
-	 * @return \vxWeb\Model\Article\Article
-	 */
+
+    /**
+     * set custom sort value $file
+     *
+     * @param MetaFile $file
+     * @param int $sortPosition
+     * @return \vxWeb\Model\Article\Article
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFileException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFolderException
+     */
 	public function setCustomSortOfMetaFile(MetaFile $file, $sortPosition) {
 
 		// get all linked files if not done previously
@@ -547,7 +558,7 @@ class Article implements PublisherInterface {
 
 		// is $file linked?
 
-		if(($pos = array_search($file, $this->linkedFiles, TRUE)) !== FALSE) {
+		if(($pos = array_search($file, $this->linkedFiles, true)) !== false) {
 		
 			// is $sortPosition valid and different from current position
 
@@ -561,7 +572,7 @@ class Article implements PublisherInterface {
 				
 				array_splice($this->linkedFiles, $sortPosition, 0, array($file));
 
-				$this->updateLinkedFiles = TRUE;
+				$this->updateLinkedFiles = true;
 
 			}
 		}
@@ -597,12 +608,12 @@ class Article implements PublisherInterface {
 	 * will only be effective with first save of article
 	 * 
 	 * @param integer $userId
-	 * @return \vxPHP\Orm\Custom\Article
+	 * @return Article
 	 */
 	public function setCreatedById($userId) {
 
 		if(is_null($this->createdById)) {
-			$this->createdById = (int) $userId ?: NULL;
+			$this->createdById = (int) $userId ?: null;
 		}
 		return $this;
 
@@ -623,11 +634,11 @@ class Article implements PublisherInterface {
 	 * set user id which (last) updated the article
 	 *
 	 * @param integer $userId
-	 * @return \vxPHP\Orm\Custom\Article
+	 * @return Article
 	 */
 	public function setUpdatedById($userId) {
 	
-		$this->updatedById = (int) $userId ?: NULL;
+		$this->updatedById = (int) $userId ?: null;
 		return $this;
 	
 	}
@@ -646,7 +657,7 @@ class Article implements PublisherInterface {
 	/**
 	 * get id of user which (un)published article
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getPublishedById() {
 
@@ -657,7 +668,7 @@ class Article implements PublisherInterface {
 	/**
 	 * get timestamp of article creation
 	 *
-	 *  @return DateTime
+	 *  @return \DateTime
 	 */
 	public function getFirstCreated() {
 
@@ -668,7 +679,7 @@ class Article implements PublisherInterface {
 	/**
 	 * get timestamp of last article update
 	 *
-	 *  @return DateTime
+	 *  @return \DateTime
 	 */
 	public function getLastUpdated() {
 
@@ -691,7 +702,7 @@ class Article implements PublisherInterface {
 	 * set custom sort value
 	 *
 	 * @param mixed $ndx
-	 * @return \vxWeb\Model\Article\Article
+	 * @return self
 	 */
 	public function setCustomSort($ndx) {
 
@@ -699,7 +710,7 @@ class Article implements PublisherInterface {
 			$this->customSort = (int) $ndx;
 		}
 		else {
-			$this->customSort = NULL;
+			$this->customSort = null;
 		}
 		return $this;
 
@@ -708,7 +719,7 @@ class Article implements PublisherInterface {
 	/**
 	 * get article date
 	 *
-	 * @return DateTime
+	 * @return \DateTime
 	 */
 	public function getDate() {
 
@@ -719,10 +730,10 @@ class Article implements PublisherInterface {
 	/**
 	 * set article date, omitting argument deletes date value
 	 *
-	 * @param DateTime $articleDate
+	 * @param \DateTime $articleDate
 	 * @return \vxWeb\Model\Article\Article
 	 */
-	public function setDate(\DateTime $articleDate = NULL) {
+	public function setDate(\DateTime $articleDate = null) {
 
 		$this->articleDate = $articleDate;
 		return $this;
@@ -732,7 +743,7 @@ class Article implements PublisherInterface {
 	/**
 	 * get displayFrom date
 	 *
-	 * @return DateTime
+	 * @return \DateTime
 	 */
 	public function getDisplayFrom() {
 
@@ -743,10 +754,10 @@ class Article implements PublisherInterface {
 	/**
 	 * set displayFrom date, omitting argument deletes date value
 	 *
-	 * @param DateTime $articleDate
+	 * @param \DateTime $displayFrom
 	 * @return \vxWeb\Model\Article\Article
 	 */
-	public function setDisplayFrom(\DateTime $displayFrom = NULL) {
+	public function setDisplayFrom(\DateTime $displayFrom = null) {
 
 		$this->displayFrom = $displayFrom;
 		return $this;
@@ -756,7 +767,7 @@ class Article implements PublisherInterface {
 	/**
 	 * get displayUntil date
 	 *
-	 * @return DateTime
+	 * @return \DateTime
 	 */
 	public function getDisplayUntil() {
 
@@ -767,10 +778,10 @@ class Article implements PublisherInterface {
 	/**
 	 * set displayUntil date, omitting argument deletes date value
 	 *
-	 * @param DateTime $articleDate
+	 * @param \DateTime $displayUntil
 	 * @return \vxWeb\Model\Article\Article
 	 */
-	public function setDisplayUntil(\DateTime $displayUntil = NULL) {
+	public function setDisplayUntil(\DateTime $displayUntil = null) {
 
 		$this->displayUntil = $displayUntil;
 		return $this;
@@ -827,7 +838,7 @@ class Article implements PublisherInterface {
 	 * @param string $ndx
 	 * @return mixed
 	 */
-	public function getData($ndx = NULL) {
+	public function getData($ndx = null) {
 
 		if(is_null($ndx)) {
 			return $this->data;
@@ -844,7 +855,7 @@ class Article implements PublisherInterface {
 	 * sets misc data of article; only keys listet in Article::dataCols are accepted
 	 *
 	 * @param array $data
-	 * @return \vxPHP\Orm\Custom\Article
+	 * @return self
 	 */
 	public function setData(array $data) {
 
@@ -860,11 +871,14 @@ class Article implements PublisherInterface {
 
 	}
 
-	/**
-	 * returns array of MetaFile instances linked to the article
-	 * 
-	 * @return MetaFile[]
-	 */
+    /**
+     * returns array of MetaFile instances linked to the article
+     *
+     * @return MetaFile[]
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFileException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFolderException
+     */
 	public function getLinkedMetaFiles() {
 
 		if(!is_null($this->id) && is_null($this->linkedFiles)) {
@@ -878,12 +892,12 @@ class Article implements PublisherInterface {
 	 * set 'published' attribute and store user id
 	 * 
 	 * @param integer $userId
-	 * @return \vxPHP\Orm\Custom\Article
+	 * @return self
 	 */
-	public function publish($userId = NULL) {
+	public function publish($userId = null) {
 
-		$this->publishedById = (int) $userId ?: NULL;
-		$this->published = TRUE;
+		$this->publishedById = (int) $userId ?: null;
+		$this->published = true;
 
 		return $this;
 
@@ -893,12 +907,12 @@ class Article implements PublisherInterface {
 	 * unset 'published' attribute and store user id
 	 * 
 	 * @param integer $userId
-	 * @return \vxPHP\Orm\Custom\Article
+	 * @return self
 	 */
-	public function unpublish($userId = NULL) {
+	public function unpublish($userId = null) {
 
-		$this->publishedById = (int) $userId ?: NULL;
-		$this->published = FALSE;
+		$this->publishedById = (int) $userId ?: null;
+		$this->published = false;
 
 		return $this;
 
@@ -915,12 +929,13 @@ class Article implements PublisherInterface {
 	
 	}
 
-	/**
-	 * create Article instance from data supplied in $articleData
-	 *
-	 * @param array $articleData
-	 * @return Article
-	 */
+    /**
+     * create Article instance from data supplied in $articleData
+     *
+     * @param array $articleData
+     * @return Article
+     * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
+     */
 	private static function createInstance(array $articleData) {
 
 		$article = new self();
@@ -995,13 +1010,15 @@ class Article implements PublisherInterface {
 
 	}
 
-	/**
-	 * returns article instance identified by numeric id or alias
-	 *
-	 * @param mixed $id
-	 * @throws ArticleException
-	 * @return Article
-	 */
+    /**
+     * returns article instance identified by numeric id or alias
+     *
+     * @param mixed $id
+     * @return self
+     * @throws ArticleException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
+     */
 	public static function getInstance($id) {
 
 		$db = Application::getInstance()->getDb();
@@ -1050,14 +1067,17 @@ class Article implements PublisherInterface {
 
 	}
 
-	/**
-	 * returns array of Article objects identified by numeric id or alias
-	 * when $ids is not set, all available articles are instantiated
-	 *
-	 * @param array $ids contains mixed article ids or alias
-	 * @return array
-	 */
-	public static function getInstances(array $ids = NULL) {
+    /**
+     * returns array of Article objects identified by numeric id or alias
+     * when $ids is not set, all available articles are instantiated
+     *
+     * @param array $ids contains mixed article ids or alias
+     * @return array
+     * @throws ArticleException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
+     */
+	public static function getInstances(array $ids = null) {
 
 		$db = Application::getInstance()->getDb();
 
@@ -1140,12 +1160,14 @@ class Article implements PublisherInterface {
 
 	}
 
-	/**
-	 * get all articles assigned to given $category
-	 *
-	 * @param ArticleCategory $category
-	 * @return Array
-	 */
+    /**
+     * get all articles assigned to given $category
+     *
+     * @param ArticleCategory $category
+     * @return array
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
+     */
 	public static function getArticlesForCategory(ArticleCategory $category) {
 
 		$articles = [];
