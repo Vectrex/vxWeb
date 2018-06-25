@@ -89,13 +89,14 @@ class ArticlesController extends Controller {
 					'articlecategoriesid'	=> $article->getCategory()->getId(),
 					'headline'				=> $article->getHeadline(),
 					'customsort'			=> $article->getCustomSort(),
-					'customflags'           => $article->getCustomFlags(),
 					'teaser'				=> $article->getData('teaser'),
 					'content'				=> htmlspecialchars($article->getData('content'), ENT_NOQUOTES, 'UTF-8'),
 					'article_date'			=> is_null($article->getDate())			? '' : $article->getDate()->format('d.m.Y'),
 					'display_from'			=> is_null($article->getDisplayFrom())	? '' : $article->getDisplayFrom()->format('d.m.Y'),
 					'display_until'			=> is_null($article->getDisplayUntil())	? '' : $article->getDisplayUntil()->format('d.m.Y')
 				]);
+
+                $articleForm->getElementsByName('customflags')->setChecked($article->getCustomFlags());
 
 				$submitLabel = 'Änderungen übernehmen';
 
@@ -110,14 +111,12 @@ class ArticlesController extends Controller {
 
 			$articleForm->addElement(FormElementFactory::create('button', 'submit_article')->setInnerHTML($submitLabel));
 
-			$articleForm->bindRequestParameters();
-
 			$uploadMaxFilesize = min(
-					$this->toBytes(ini_get('upload_max_filesize')),
-					$this->toBytes(ini_get('post_max_size'))
+                $this->toBytes(ini_get('upload_max_filesize')),
+                $this->toBytes(ini_get('post_max_size'))
 			);
 			$maxExecutionTime = ini_get('max_execution_time');
-				
+
 			return new Response(
 				SimpleTemplate::create('admin/articles_edit.php')
 					->assign('title', $article->getHeadline())
