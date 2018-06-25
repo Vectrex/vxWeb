@@ -22,7 +22,7 @@ use vxPHP\Database\Util;
  * Mapper class for articles, stored in table articles
  *
  * @author Gregor Kofler
- * @version 0.2.2 2018-06-25
+ * @version 0.3.0 2018-06-25
  */
 
 class Article implements PublisherInterface {
@@ -716,7 +716,29 @@ class Article implements PublisherInterface {
 
 	}
 
-	/**
+    /**
+     * get custom flags of article
+     *
+     * @return int
+     */
+    public function getCustomFlags()
+    {
+        return $this->customFlags;
+    }
+
+    /**
+     * set custom flags of article
+     *
+     * @param int $customFlags
+     * @return Article
+     */
+    public function setCustomFlags(int $customFlags = null)
+    {
+        $this->customFlags = $customFlags;
+        return $this;
+    }
+
+    /**
 	 * get article date
 	 *
 	 * @return \DateTime
@@ -813,13 +835,17 @@ class Article implements PublisherInterface {
 
 	}
 
-	/**
-	 * set headline of article; this also dertermines the alias
-	 *
-	 * @param string $headline
-	 */
+    /**
+     * set headline of article; this also dertermines the alias
+     *
+     * @param string $headline
+     * @return Article
+     */
 	public function setHeadline($headline) {
+
 		$this->headline = trim($headline);
+		return $this;
+
 	}
 
 	/**
@@ -828,7 +854,9 @@ class Article implements PublisherInterface {
 	 * @return string
 	 */
 	public function getHeadline() {
+
 		return $this->headline;
+
 	}
 
 	/**
@@ -849,6 +877,7 @@ class Article implements PublisherInterface {
 		if(isset($this->data[$ndx])) {
 			return $this->data[$ndx];
 		}
+
 	}
 
 	/**
