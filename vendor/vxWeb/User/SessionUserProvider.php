@@ -126,7 +126,7 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 				LOWER(ag.alias) as group_alias
 		
 			FROM
-				" . $this->db->quoteIdentifier('admin') . "
+				" . $this->db->quoteIdentifier('admin') . " a
 				LEFT JOIN admingroups ag on a.admingroupsID = ag.admingroupsID
 		
 			WHERE
