@@ -25,7 +25,7 @@ use vxPHP\User\SimpleSessionUserProvider;
  * session after initialization
  * 
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.3.1, 2017-08-18
+ * @version 0.4.0, 2018-07-14
  *        
  */
 class SessionUserProvider extends SimpleSessionUserProvider implements UserProviderInterface {
@@ -43,35 +43,22 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 	 */
 	public function refreshUser(UserInterface $user) {
 
-		$rows = $this->db->doPreparedQuery("
-			SELECT
-				a.*,
-				ag.privilege_Level,
-				ag.admingroupsID as groupid,
-				LOWER(ag.alias) as group_alias
-		
-			FROM
-				admin a
-				LEFT JOIN admingroups ag on a.admingroupsID = ag.admingroupsID
-		
-			WHERE
-				username = ?", [$user->getUsername()]
-				);
-		
-		if(count($rows) !== 1) {
+	    $u = $this->getUserRow($user->getUsername());
+
+		if(!$u) {
 			throw new UserException(sprintf("User '%s' no longer exists.", $user->getUsername()));
 		}
 
 		$user
-			->setHashedPassword($rows[0]['pwd'])
-			->setRoles([new Role($rows[0]['group_alias'])])
+			->setHashedPassword($u['pwd'])
+			->setRoles([new Role($u['group_alias'])])
 			->replaceAttributes([
-				'email' => $rows[0]['email'],
-				'name' => $rows[0]['name'],
-				'misc_data' => $rows[0]['misc_data'],
-				'table_access' => $rows[0]['table_access'],
-				'row_access' => $rows[0]['row_access'],
-				'id' => $rows[0]['adminid'],
+				'email' => $u['email'],
+				'name' => $u['name'],
+				'misc_data' => $u['misc_data'],
+				'table_access' => $u['table_access'],
+				'row_access' => $u['row_access'],
+				'id' => $u['adminid'],
 			])
 		;
 
@@ -87,38 +74,25 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 	 */
 	public function instanceUserByUsername($username) {
 
-		$rows = $this->db->doPreparedQuery("
-			SELECT
-				a.*,
-				ag.privilege_Level,
-				ag.admingroupsID as groupid,
-				LOWER(ag.alias) as group_alias
-		
-			FROM
-				admin a
-				LEFT JOIN admingroups ag on a.admingroupsID = ag.admingroupsID
-		
-			WHERE
-				username = ?", [$username]
-		);
-		
-		if(count($rows) !== 1) {
+		$user = $this->getUserRow($username);
+
+		if(!$user) {
 			throw new UserException(sprintf("User '%s' not found or not unique.", $username));
 		}
-		
+
 		$user = new SessionUser(
 			$username,
-			$rows[0]['pwd'],
+			$user['pwd'],
 			[
-				new Role($rows[0]['group_alias'])
+				new Role($user['group_alias'])
 			],
 			[
-				'email' => $rows[0]['email'],
-				'name' => $rows[0]['name'],
-				'misc_data' => $rows[0]['misc_data'],
-				'table_access' => $rows[0]['table_access'],
-				'row_access' => $rows[0]['row_access'],
-				'id' => $rows[0]['adminid'],
+				'email' => $user['email'],
+				'name' => $user['name'],
+				'misc_data' => $user['misc_data'],
+				'table_access' => $user['table_access'],
+				'row_access' => $user['row_access'],
+				'id' => $user['adminid'],
 			]
 		);
 		
@@ -134,5 +108,37 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 		$this->db = Application::getInstance()->getDb();
 
 	}
+
+    /**
+     * returns data row of user identified by $username
+     * false if no user is found
+     *
+     * @param $username
+     * @return array|bool
+     */
+	private function getUserRow($username) {
+
+        $rows = $this->db->doPreparedQuery("
+			SELECT
+				a.*,
+				ag.privilege_Level,
+				ag.admingroupsID as groupid,
+				LOWER(ag.alias) as group_alias
+		
+			FROM
+				" . $this->db->quoteIdentifier('admin') . "
+				LEFT JOIN admingroups ag on a.admingroupsID = ag.admingroupsID
+		
+			WHERE
+				username = ?", [$username]
+        );
+
+        if(count($rows) === 1) {
+            return $rows->current();
+        }
+
+        return false;
+
+    }
 
 }

@@ -40,9 +40,9 @@ class UsersController extends Controller {
 			if($admin->getUsername() == $id) {
 				return $this->redirect($redirectUrl);
 			}
-				
-			$userRows = $db->doPreparedQuery("SELECT a.* FROM admin a WHERE a.username = ?", [$id]);
-				
+
+			$userRows = $db->doPreparedQuery("SELECT * FROM " . $db->quoteIdentifier('admin') . " WHERE username = ?", [$id]);
+
 			if(!count($userRows)) {
 				return $this->redirect($redirectUrl);
 			}
@@ -103,7 +103,7 @@ class UsersController extends Controller {
 			);
 		}
 		
-		$users	= $db->doPreparedQuery("SELECT a.*, ag.alias FROM admin a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
+		$users	= $db->doPreparedQuery("SELECT a.*, ag.alias FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
 
 		return new Response(
 			SimpleTemplate::create('admin/users_list.php')
@@ -130,8 +130,8 @@ class UsersController extends Controller {
 		
 		if($id) {
 
-			$userRows = $db->doPreparedQuery("SELECT a.* FROM admin a WHERE a.username = ?", [$id]);
-			
+			$userRows = $db->doPreparedQuery("SELECT * FROM " . $db->quoteIdentifier('admin') . " WHERE username = ?", [$id]);
+
 			if(!count($userRows)) {
 				return new Response('', Response::HTTP_FORBIDDEN);
 			}
