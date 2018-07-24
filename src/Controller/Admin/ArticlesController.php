@@ -77,7 +77,7 @@ class ArticlesController extends Controller {
 
 		if(isset($article) || $action === 'new') {
 			
-			MenuGenerator::setForceActiveMenu(TRUE);
+			MenuGenerator::setForceActiveMenu(true);
 
 			// fill category related properties - replacing default method allows user privilege considerations
 
@@ -88,6 +88,7 @@ class ArticlesController extends Controller {
 				$articleForm->setInitFormValues([
 					'articlecategoriesid'	=> $article->getCategory()->getId(),
 					'headline'				=> $article->getHeadline(),
+					'subline'               => $article->getData('subline'),
 					'customsort'			=> $article->getCustomSort(),
 					'teaser'				=> $article->getData('teaser'),
 					'content'				=> htmlspecialchars($article->getData('content'), ENT_NOQUOTES, 'UTF-8'),
@@ -157,7 +158,7 @@ class ArticlesController extends Controller {
 		return $val;
 	}
 	
-	private function createArticlesList(array $filter = [], array $sort = NULL) {
+	private function createArticlesList(array $filter = [], array $sort = null) {
 
 		$admin = Application::getInstance()->getCurrentUser();
 		$db = Application::getInstance()->getDb();
@@ -178,7 +179,7 @@ class ArticlesController extends Controller {
 			}
 		}
 		else {
-			$query->sortBy('lastUpdated', FALSE);
+			$query->sortBy('lastUpdated', false);
 		}
 		
 		// apply filter for title
@@ -231,15 +232,15 @@ class ArticlesController extends Controller {
 				}
 				else {
 					
-					// unpublish sets publishedById to NULL
+					// unpublish sets publishedById to null
 
 					$article->unpublish()->save();
 				}
-				return new JsonResponse(['success' => TRUE]);
+				return new JsonResponse(['success' => true]);
 			}
 		}
 		catch(\Exception $e) {
-			return new JsonResponse(['success' => FALSE, 'error' => $e->getMessage()]);
+			return new JsonResponse(['success' => false, 'error' => $e->getMessage()]);
 		}
 	}
 
@@ -320,7 +321,7 @@ class ArticlesController extends Controller {
 					$article
                         ->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])))
 					    ->setHeadline($v['headline'])
-					    ->setData(['teaser' => $v['teaser'], 'content' => $v['content']])
+					    ->setData($v /* content, teaser, subline */)
                         ->setCustomSort($v->get('customsort'))
                         ->setCustomFlags($v->get('customflags'))
                     ;
@@ -361,7 +362,7 @@ class ArticlesController extends Controller {
 			case 'sortFiles':
 				
 				$article->setCustomSortOfMetaFile(
-					MetaFile::getInstance(NULL, $this->request->request->getInt('file')),
+					MetaFile::getInstance(null, $this->request->request->getInt('file')),
 					$this->request->request->getInt('to')
 				);
 				
@@ -421,14 +422,15 @@ class ArticlesController extends Controller {
 
 		return HtmlForm::create('admin_edit_article.htm')
 			->setAttribute('class', 'editArticleForm')
-			->addElement(FormElementFactory::create('select', 'articlecategoriesid', NULL, [], $categories, TRUE, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Es muss eine Artikelkategorie gewählt werden.'))
-			->addElement(FormElementFactory::create('input', 'headline', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt eine Überschrift.'))
-			->addElement(FormElementFactory::create('textarea', 'teaser', NULL, [], [], FALSE, ['trim', 'strip_tags']))
-			->addElement(FormElementFactory::create('textarea', 'content', NULL, [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt einen Inhalt.'))
-			->addElement(FormElementFactory::create('input', 'article_date', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'display_from', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'display_until', NULL, [], [], FALSE, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'customsort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)], 'Ungültiger Wert'))
+			->addElement(FormElementFactory::create('select', 'articlecategoriesid', null, [], $categories, true, [], [new RegularExpression(Rex::INT_EXCL_null)], 'Es muss eine Artikelkategorie gewählt werden.'))
+			->addElement(FormElementFactory::create('input', 'headline', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt eine Überschrift.'))
+            ->addElement(FormElementFactory::create('input', 'subline', null, [], [], true, ['trim'])
+			->addElement(FormElementFactory::create('textarea', 'teaser', null, [], [], false, ['trim', 'strip_tags']))
+			->addElement(FormElementFactory::create('textarea', 'content', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt einen Inhalt.'))
+			->addElement(FormElementFactory::create('input', 'article_date', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
+			->addElement(FormElementFactory::create('input', 'display_from', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
+			->addElement(FormElementFactory::create('input', 'display_until', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
+			->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_null)], 'Ungültiger Wert'))
             ->addElement(FormElementFactory::create('checkbox', 'customflags', 1));
 
 	}

@@ -22,7 +22,7 @@ use vxPHP\Database\Util;
  * Mapper class for articles, stored in table articles
  *
  * @author Gregor Kofler
- * @version 0.3.0 2018-06-25
+ * @version 0.4.0 2018-07-24
  */
 
 class Article implements PublisherInterface {
@@ -119,7 +119,7 @@ class Article implements PublisherInterface {
 	 *  
 	 * @var array
 	 */
-	private	$dataCols = ['teaser', 'content'];
+	private	$dataCols = ['teaser', 'content', 'subline'];
 
 	/**
 	 * the category the article belongs to

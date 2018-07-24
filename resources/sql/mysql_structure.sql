@@ -82,6 +82,7 @@ CREATE TABLE `articles` (
   `Alias` varchar(255) DEFAULT NULL,
   `articlecategoriesID` int(11) DEFAULT NULL,
   `Headline` varchar(255) DEFAULT NULL,
+  `Subline` varchar(255) DEFAULT NULL,
   `Teaser` varchar(500) DEFAULT NULL,
   `Content` text,
   `Article_Date` date DEFAULT NULL,

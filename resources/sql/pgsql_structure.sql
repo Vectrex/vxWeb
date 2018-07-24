@@ -190,9 +190,10 @@ WITH (OIDS=FALSE)
 DROP TABLE IF EXISTS "articles";
 CREATE TABLE "articles" (
 "articlesid" int4 DEFAULT nextval('articles_articlesid_seq'::regclass) NOT NULL,
-"alias" varchar(128) COLLATE "default" DEFAULT NULL::character varying,
+"alias" varchar(255) COLLATE "default" DEFAULT NULL::character varying,
 "articlecategoriesid" int4,
-"headline" varchar(128) COLLATE "default" DEFAULT NULL::character varying,
+"headline" varchar(255) COLLATE "default" DEFAULT NULL::character varying,
+"subline" varchar(255) COLLATE "default" DEFAULT NULL::character varying,
 "teaser" varchar(500) COLLATE "default" DEFAULT NULL::character varying,
 "content" text COLLATE "default",
 "article_date" date,
