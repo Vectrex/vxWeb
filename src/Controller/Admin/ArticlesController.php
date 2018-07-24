@@ -321,7 +321,7 @@ class ArticlesController extends Controller {
 					$article
                         ->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])))
 					    ->setHeadline($v['headline'])
-					    ->setData($v /* content, teaser, subline */)
+					    ->setData($v->all() /* content, teaser, subline */)
                         ->setCustomSort($v->get('customsort'))
                         ->setCustomFlags($v->get('customflags'))
                     ;
@@ -422,17 +422,17 @@ class ArticlesController extends Controller {
 
 		return HtmlForm::create('admin_edit_article.htm')
 			->setAttribute('class', 'editArticleForm')
-			->addElement(FormElementFactory::create('select', 'articlecategoriesid', null, [], $categories, true, [], [new RegularExpression(Rex::INT_EXCL_null)], 'Es muss eine Artikelkategorie gewählt werden.'))
+			->addElement(FormElementFactory::create('select', 'articlecategoriesid', null, [], $categories, true, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Es muss eine Artikelkategorie gewählt werden.'))
 			->addElement(FormElementFactory::create('input', 'headline', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt eine Überschrift.'))
-            ->addElement(FormElementFactory::create('input', 'subline', null, [], [], true, ['trim'])
+            ->addElement(FormElementFactory::create('input', 'subline', null, [], [], true, ['trim']))
 			->addElement(FormElementFactory::create('textarea', 'teaser', null, [], [], false, ['trim', 'strip_tags']))
 			->addElement(FormElementFactory::create('textarea', 'content', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt einen Inhalt.'))
 			->addElement(FormElementFactory::create('input', 'article_date', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
 			->addElement(FormElementFactory::create('input', 'display_from', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
 			->addElement(FormElementFactory::create('input', 'display_until', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_null)], 'Ungültiger Wert'))
-            ->addElement(FormElementFactory::create('checkbox', 'customflags', 1));
-
+			->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)], 'Ungültiger Wert'))
+            ->addElement(FormElementFactory::create('checkbox', 'customflags', 1))
+        ;
 	}
 
     /**
