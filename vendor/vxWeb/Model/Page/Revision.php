@@ -10,7 +10,7 @@ use vxPHP\User\User;
  * Mapper class for page revisions, stored in table `revisions`
  *
  * @author Gregor Kofler
- * @version 0.4.0 2017-02-17
+ * @version 0.4.1 2018-10-03
  * 
  * @todo retrieve and save locale
  * @todo attribute sanitation
@@ -103,14 +103,15 @@ class Revision {
 	 * @var boolean
 	 */
 	private $containsPHP;
-	
-	/**
-	 * get revision by its primary key
-	 * 
-	 * @param integer $id
-	 * @throws PageException
-	 * @return multitype:Revision
-	 */
+
+    /**
+     * get revision by its primary key
+     *
+     * @param integer $id
+     * @return Revision
+     * @throws PageException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public static function getInstance($id) {
 		
 		// return instance when previously instantiated
@@ -148,14 +149,15 @@ class Revision {
 		return $revision;
 
 	}
-	
-	/**
-	 * instantiate all revisions of a page
-	 * 
-	 * @param Page $page
-	 * @param Locale $locale
-	 * @return multitype:Revision
-	 */
+
+    /**
+     * instantiate all revisions of a page
+     *
+     * @param Page $page
+     * @param Locale $locale
+     * @return Revision|Revision[]
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public static function getInstancesForPage(Page $page, Locale $locale = NULL) {
 		
 		$pageId = $page->getId();
@@ -342,14 +344,15 @@ class Revision {
 
 	}
 
-	/**
-	 * make changes persistent
-	 * saving of a revision happens only once
-	 * further updates are done by inserting new revisions
-	 * 
-	 * @throws PageException
-	 * @return Revision
-	 */
+    /**
+     * make changes persistent
+     * saving of a revision happens only once
+     * further updates are done by inserting new revisions
+     *
+     * @return Revision
+     * @throws PageException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	public function save() {
 		
 		if(isset($this->id)) {
@@ -456,7 +459,7 @@ class Revision {
 	 */
 	public function setAuthorId($authorId) {
 
-		$this->author = (int) $authorId;
+		$this->authorId = (int) $authorId;
 		return $this;
 
 	}
@@ -464,7 +467,8 @@ class Revision {
 	/**
 	 * get stored timestamp of last update
 	 * this timestamp is set by DB wrapper or db itself
-	 * @return DateTime
+     *
+	 * @return \DateTime
 	 */
 	public function getLastUpdated() {
 
@@ -475,7 +479,7 @@ class Revision {
 	/**
 	 * get stored timestamp of record creation
 	 * this timestamp is set by DB wrapper upon saving, if not set explicitly
-	 * @return DateTime
+	 * @return \DateTime
 	 */
 	public function getFirstCreated() {
 
@@ -486,6 +490,8 @@ class Revision {
 	/**
 	 * set timestamp of record creation
 	 * required to synchronize timestamps with imported template files
+     *
+     * @param \DateTime $firstCreated
 	 * @return Revision
 	 */
 	public function setFirstCreated(\DateTime $firstCreated) {
@@ -637,7 +643,7 @@ class Revision {
 
 	/**
 	 * set locale
-	 * @param string $markup
+	 * @param Locale $locale
 	 * @return Revision
 	 */
 	public function setLocale(Locale $locale) {

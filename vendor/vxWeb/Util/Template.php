@@ -10,11 +10,11 @@
 
 namespace vxWeb\Util;
 
+use vxPHP\File\FilesystemFile;
 use vxPHP\File\FilesystemFolder;
 use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\Application\Application;
 use vxPHP\Application\Locale\Locale;
-use vxPHP\Http\Request;
 use vxWeb\Model\Page\Page;
 use vxWeb\Model\Page\Revision;
 
@@ -22,14 +22,12 @@ use vxWeb\Model\Page\Revision;
  * helper class to sync and update templates both in filesystem and database
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.5.1 2018-04-20
+ * @version 0.6.0 2018-10-03
  *
  */
 
 class Template {
 
-	private static $maxPageRevisions;
-	
 	/**
 	 * public function for
 	 * syncing file and db based templates
@@ -45,16 +43,14 @@ class Template {
 	 */
 	public static function syncTemplates() {
 
-		$app		= Application::getInstance();
-		$config		= $app->getConfig();
-		$db			= $app->getDb();
-		$locales	= $app->getAvailableLocales();
+		$app = Application::getInstance();
+		$locales = $app->getAvailableLocales();
 
 		// fetch file templates
 
 		// universal templates
 
-		$fileTpl = array();
+		$fileTpl = [];
 		self::getTplFiles($fileTpl);
 
 		// localized templates
@@ -63,7 +59,6 @@ class Template {
 			self::getTplFiles($fileTpl, $locale);
 		}
 
-		
 		// update templates based on db info
 
 		$pages = Page::getInstances() ?? [];
@@ -74,8 +69,8 @@ class Template {
 
 		    /* @var Page $page */
 
-			$filename		= $page->getTemplate();
-			$activeRevision	= $page->getActiveRevision();
+			$filename = $page->getTemplate();
+			$activeRevision = $page->getActiveRevision();
 			$newestRevision = $page->getNewestRevision();
 
 			// file template not found
@@ -93,20 +88,21 @@ class Template {
 				/*
 				 * compare timestamps
 				 * 
-				 * do nothing, when timestamps match
+				 * do nothing, when size then hash match
+				 *
 				 * create initial revision when no revision exists; create page with initial revision when page does not exist 
 				 * create new revision when active or newest revision in db are older than file template
 				 * create new template file when file template is outdated
 				 */
 
 				if(
-					$activeRevision && $activeRevision->getFirstCreated()->getTimestamp() === (int) $fileTpl['universal'][$filename]['fmtime']
-				) {
-					
-					// do nothing
+				    $activeRevision &&
+				    $fileTpl['universal'][$filename]['size'] === strlen($activeRevision->getMarkup()) &&
+                    hash_file('crc32', $fileTpl['universal'][$filename]['template']->getPath()) === hash('crc32', $activeRevision->getMarkup())
+                ) {
+                    // do nothin
+                }
 
-				}
-				
 				// create initial revision
 
 				else if(!$newestRevision && !$activeRevision) {
@@ -172,13 +168,14 @@ class Template {
 
 	}
 
-	/**
-	 * retrieve file templates for a given locale
-	 * 
-	 * @param array $fileTemplates
-	 * @param Locale $locale
-	 * @return array
-	 */
+    /**
+     * retrieve file templates for a given locale
+     *
+     * @param array $fileTemplates
+     * @param Locale $locale
+     * @return void
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
 	private static function getTplFiles(array &$fileTemplates, Locale $locale = NULL) {
 
 		$app = Application::getInstance();
@@ -193,14 +190,18 @@ class Template {
 		$path	= rtrim($app->getRootPath(), DIRECTORY_SEPARATOR) . $config->paths['editable_tpl_path']['subdir'] . $subdir;
 
 		try {
+
+		    /* @var FilesystemFile $f */
+
 			foreach(FilesystemFolder::getInstance($path)->getFiles('php') as $f) {
 
 				$fi = $f->getFileInfo();
 
-				$fileTemplates[$ndx][$f->getFilename()] = array(
+				$fileTemplates[$ndx][$f->getFilename()] = [
 					'template' => $f,
-					'fmtime' => $fi->getMTime()
-				);
+					'fmtime' => $fi->getMTime(),
+                    'size' => $fi->getSize()
+				];
 
 			}
 		}
@@ -208,14 +209,16 @@ class Template {
 		catch(FilesystemFolderException $e) {}
 	}
 
-	/**
-	 * create page and a first revision
-	 * if page already exists, just a revision is added
-	 * 
-	 * @param array $data template data
-	 * @param string $locale of template
-	 * @return boolean
-	 */
+    /**
+     * create page and a first revision
+     * if page already exists, just a revision is added
+     *
+     * @param array $data template data
+     * @param string $locale of template
+     * @return void
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxWeb\Model\Page\PageException
+     */
 	private static function createPage($data, $locale = NULL) {
 
 		$db = Application::getInstance()->getDb();
@@ -232,10 +235,10 @@ class Template {
 
 		else {
 			$newId = $db->insertRecord('pages',
-				array(
+				[
 					'Template'	=> $data['template']->getFilename(),
 					'Alias'		=> $alias
-				)
+				]
 			);
 			$page = Page::getInstance((int) $newId);
 		}
@@ -248,7 +251,8 @@ class Template {
 			->setMarkup(file_get_contents($data['template']->getPath()))
 			->setFirstCreated($creationDate)
 			->activate()
-			->save();
+			->save()
+        ;
 			
 	}
 
@@ -256,7 +260,7 @@ class Template {
 	 * extract raw text data from template
 	 */
 	private static function extractRawtext($text) {
-		return strip_tags(htmlspecialchars_decode(preg_replace(array('~\s+~', '~<br\s*/?>~', '~<\s*script.*?>.*?</\s*script\s*>~', '~<\?(php)?.*?\?>~'), array(' ', ' ', '', '') , $text)));
+		return strip_tags(htmlspecialchars_decode(preg_replace(['~\s+~', '~<br\s*/?>~', '~<\s*script.*?>.*?</\s*script\s*>~', '~<\?(php)?.*?\?>~'], [' ', ' ', '', ''] , $text)));
 	}
 
 	/**
@@ -265,11 +269,11 @@ class Template {
 	private static function sanitizeTemplateData($data) {
 
 		if(!empty($data['Keywords'])) {
-			$data['Keywords']	= preg_replace(array('~\s+~', '~\s*,\s*~', '~[^ \w\däöüß,.-]~i'), array(' ', ', ', ''), trim($data['Keywords']));
+			$data['Keywords']	= preg_replace(['~\s+~', '~\s*,\s*~', '~[^ \w\däöüß,.-]~i'], [' ', ', ', ''], trim($data['Keywords']));
 		}
 
 		if(!empty($data['Description'])) {
-			$data['Description']= preg_replace(array('~\s+~', '~[^ \pL\d,.-]~'), array(' ', ''), trim($data['Description']));
+			$data['Description']= preg_replace(['~\s+~', '~[^ \pL\d,.-]~'], [' ', ''], trim($data['Description']));
 		}
 
 		return $data;
