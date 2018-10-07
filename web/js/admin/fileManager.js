@@ -535,7 +535,7 @@ this.vxWeb.fileManager = function(config) {
 													complete: function() {
 														var r = this.response;
 
-														if(r.error !== false) {
+														if(r.error) {
 															elem.disabled = false;
 															vxJS.dom.addClassName(elem, "error");
 														}
