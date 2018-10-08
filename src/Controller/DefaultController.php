@@ -9,6 +9,7 @@ use vxPHP\Http\Exception\HttpException;
 use vxPHP\Template\Exception\SimpleTemplateException;
 use vxPHP\Template\Filter\AnchorHref;
 use vxPHP\Template\Filter\AssetsPath;
+use vxPHP\Template\Filter\ImageCache;
 use vxPHP\Template\SimpleTemplate;
 use vxWeb\Model\Page\Page;
 use vxWeb\Model\Page\PageException;
@@ -159,7 +160,7 @@ class DefaultController extends Controller {
 
         return $parentTemplate
             ->insertTemplateAt($include, 'content_block')
-            ->display([new AnchorHref(), new AssetsPath()])
+            ->display([new AnchorHref(), new AssetsPath(), new ImageCache()])
         ;
 
     }
