@@ -220,7 +220,7 @@ CREATE TABLE `pages` (
   PRIMARY KEY (`pagesID`),
   UNIQUE KEY `Alias` (`Alias`) USING BTREE,
   UNIQUE KEY `Template` (`Template`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for revisions
@@ -241,8 +241,9 @@ CREATE TABLE `revisions` (
   `lastUpdated` timestamp DEFAULT CURRENT_TIMESTAMP,
   `firstCreated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`revisionsID`),
-  UNIQUE KEY `pagesID` (`pagesID`,`active`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `pagesID` (`pagesID`,`active`),
+  CONSTRAINT `revisions_ibfk_1` FOREIGN KEY (`pagesID`) REFERENCES `pages` (`pagesid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for bruteforce_attempts
