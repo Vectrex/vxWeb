@@ -11,7 +11,7 @@ use vxPHP\Observer\GenericEvent;
  * Mapper class to handle revisioned pages, stored in table `pages`
  *
  * @author Gregor Kofler
- * @version 0.2.5 2016-06-05
+ * @version 0.2.6 2018-11-21
  * 
  * @todo creation of new pages (several setters are superfluous ATM)
  */
@@ -107,9 +107,9 @@ class Page implements PublisherInterface {
 				FROM
 					pages
 				WHERE
-					$col = ?", array($id));
+					$col = ?", [$id]);
 
-		if(empty($rows)) {
+		if(!$rows->valid()) {
 			throw new PageException(sprintf("Page with %s '%s' does not exist.", $col, $id));
 		}
 
