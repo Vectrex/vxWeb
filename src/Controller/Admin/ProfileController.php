@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\FormElement\CheckboxElement;
+use vxPHP\Form\FormElement\LabelElement;
 
 use vxPHP\Util\Rex;
 use vxPHP\Controller\Controller;
@@ -29,31 +30,30 @@ class ProfileController extends Controller {
 
 		$form =
 			HtmlForm::create('admin_profile.htm')
-				->addElement(FormElementFactory::create('input', 'username', $admin->getUsername(),	[],	[], TRUE, ['trim', 'lowercase'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Ein Benutzername ist ein Pflichtfeld.'))
-				->addElement(FormElementFactory::create('input', 'email', $admin->getAttribute('email'), [], [], TRUE, ['trim', 'lowercase'], [new Email()], 'Ungültige E-Mail Adresse.'))
-				->addElement(FormElementFactory::create('input', 'name', $admin->getAttribute('name'), [], [], TRUE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))
-				->addElement(FormElementFactory::create('password',	'new_PWD', '', [], [],	FALSE, [], [new RegularExpression('/^(|[^\s].{4,}[^\s])$/')], 'Das Passwort muss mindestens 4 Zeichen umfassen.'))
+				->addElement(FormElementFactory::create('input', 'username', $admin->getUsername(),	[],	[], true, ['trim', 'lowercase'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Ein Benutzername ist ein Pflichtfeld.'))
+				->addElement(FormElementFactory::create('input', 'email', $admin->getAttribute('email'), [], [], true, ['trim', 'lowercase'], [new Email()], 'Ungültige E-Mail Adresse.'))
+				->addElement(FormElementFactory::create('input', 'name', $admin->getAttribute('name'), [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))
+				->addElement(FormElementFactory::create('password',	'new_PWD', '', [], [],	false, [], [new RegularExpression('/^(|[^\s].{4,}[^\s])$/')], 'Das Passwort muss mindestens 4 Zeichen umfassen.'))
 				->addElement(FormElementFactory::create('password',	'new_PWD_verify', ''))
 				->addElement(FormElementFactory::create('button', 'submit_profile', '')->setInnerHTML('Änderungen speichern'))
 				->initVar('has_notifications', 0);
 
         $checkbox = [];
-        $labels = [];
 
 		foreach($availableNotifications as $n) {
-            if ($n->not_displayed != 1) {
-                $labels[] = $n->description;
-                $checkbox[] = new CheckboxElement('notification', $n->alias, $n->notifies($admin));
+            if ($n->not_displayed !== 1) {
+                $checkbox[] = (new CheckboxElement('notification', $n->alias, $n->notifies($admin)))->setLabel(new LabelElement($n->description));
             }
         }
 
         if(count($checkbox)) {
+
             $checkBoxHtml = '';
             $form->initVar('has_notifications', 1);
             $form->addElementArray($checkbox);
 
             foreach($checkbox as $ndx => $e) {
-                $checkBoxHtml .= '<div class="form-group"><label class="form-switch">' . $e->render() . '<i class="form-icon"></i>' . $labels[$ndx] . '</label></div>';
+                $checkBoxHtml .= '<div class="form-group"><label class="form-switch">' . $e->render() . '<i class="form-icon"></i>' . $e->getLabel()->getLabelText() . '</label></div>';
             }
 
             $form->addMiscHtml('notifications', $checkBoxHtml);
@@ -77,11 +77,11 @@ class ProfileController extends Controller {
 					}
 				}
 
-				if($v['email'] != $admin->getAttribute('email') && !Util::isAvailableEmail($v['email'])) {
+				if($v['email'] !== $admin->getAttribute('email') && !Util::isAvailableEmail($v['email'])) {
 					$form->setError('email', null, 'Email wird bereits verwendet.');
 				}
 
-				if($v['username'] != $admin->getUsername() && !Util::isAvailableUsername($v['username'])) {
+				if($v['username'] !== $admin->getUsername() && !Util::isAvailableUsername($v['username'])) {
 					$form->setError('username', null, 'Username wird bereits verwendet.');
 				}
 
@@ -131,7 +131,7 @@ class ProfileController extends Controller {
 				$response[] = ['name' => $element, 'error' => 1, 'errorText' => $error->getErrorMessage()];
 			}
 
-			return new JsonResponse(['success' => FALSE, 'elements' => $response]);
+			return new JsonResponse(['success' => false, 'elements' => $response]);
 
 		}
 		
