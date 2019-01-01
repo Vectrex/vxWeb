@@ -1,0 +1,17 @@
+@import 'spectre/variables';
+
+#vxwebAdminOverlay {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 999999;
+  width: 100%;
+  padding: 0.25rem 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: lightgrey;
+
+  a {
+    color: white;
+  }
+}
+
