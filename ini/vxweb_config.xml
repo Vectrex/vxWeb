@@ -57,4 +57,9 @@
 		</service>
 	</services>
 
+	<templating>
+		<filters>
+			<filter id="admin_overlay" class="App/Filter/vxWeb/AdminOverlay"/>
+		</filters>
+	</templating>
 </config>
