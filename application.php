@@ -49,7 +49,8 @@ if(!is_dir($application->getAbsoluteAssetsPath())) {
 
 // set up routing
 
-$scriptName = trim($_SERVER['PHP_SELF'], '/');
+$scriptName = basename($_SERVER['PHP_SELF']);
+
 $router = new Router(Application::getInstance()->getConfig()->routes[$scriptName]);
 $application->setRouter($router);
 
