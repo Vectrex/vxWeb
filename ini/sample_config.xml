@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- adds some sample routes for testing -->
+
+<config>
+
+    <pages>
+        <page id="sample_form" controller="sample/form" path="sample_form" />
+    </pages>
+
+</config>

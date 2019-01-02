@@ -30,4 +30,8 @@
 
 	<include>vxweb_config.xml</include>
 
+	<!-- include some sample routes for testing purposes, can be safely deleted -->
+
+	<include>sample_config.xml</include>
+
 </config>
