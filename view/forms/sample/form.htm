@@ -1,8 +1,15 @@
+<h1>Demo Form</h1>
+
 {form {"class": "p-2"}}
 
 <div class="form-item">
     {label:input_element {"class": "form-label"}}
     {element:input_element {"class": "form-input"}}
+</div>
+
+<div class="form-item">
+    {label:textarea_element {"class": "form-label"}}
+    {element:textarea_element {"class": "form-input", "rows": 3, "placeholder": "Tell me something..."}}
 </div>
 
 <div class="form-item">
@@ -16,9 +23,11 @@
 </div>
 
 <div class="form-item">
-    {label:radio_element {"class": "form-label"}}
-    {element:radio_element {"class": "form-radio"}}
+    <label>A group of radio elements</label><br />
+    {element:radio_element}
 </div>
+
+<div class="divider text-center" data-content="Input elements sharing the same name"></div>
 
 <div class="form-item">
     {label:input_array {"class": "form-label"}}
@@ -28,6 +37,8 @@
     {label:input_array {"class": "form-label"}}
     {element:input_array {"class": "form-input"}}
 </div>
+
+<div class="divider"></div>
 
 <div class="form-item">
     {element:submit {"class": "btn btn-success"}}
