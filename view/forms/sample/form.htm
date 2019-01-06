@@ -2,40 +2,55 @@
 
 {form {"class": "p-2"}}
 
-<div class="form-item">
-    {label:input_element {"class": "form-label"}}
-    {element:input_element {"class": "form-input"}}
-</div>
+<div class="columns">
+    <div class="column col-6 col-sm-12">
+        <div class="form-item">
+            {label:input_element {"class": "form-label"}}
+            {element:input_element {"class": "form-input"}}
+        </div>
 
-<div class="form-item">
-    {label:textarea_element {"class": "form-label"}}
-    {element:textarea_element {"class": "form-input", "rows": 3, "placeholder": "Tell me something..."}}
-</div>
+        <div class="form-item">
+            {label:password_element {"class": "form-label"}}
+            {element:password_element {"class": "form-input"}}
+        </div>
 
-<div class="form-item">
-    {label:checkbox_element {"class": "form-label"}}
-    {element:checkbox_element {"class": "form-checkbox"}}
-</div>
+        <div class="form-item">
+            {label:textarea_element {"class": "form-label"}}
+            {element:textarea_element {"class": "form-input", "rows": 3, "placeholder": "Tell us everything..."}}
+        </div>
 
-<div class="form-item">
-    {label:select_element {"class": "form-label"}}
-    {element:select_element {"class": "form-select"}}
-</div>
+        <div class="form-item">
+            {label:multiple_select_element {"class": "form-label"}}
+            {element:multiple_select_element {"class": "form-select"}}
+        </div>
 
-<div class="form-item">
-    <label>A group of radio elements</label><br />
-    {element:radio_element}
-</div>
+        <div class="form-item">
+            {label:select_element {"class": "form-label"}}
+            {element:select_element {"class": "form-select"}}
+        </div>
+    </div>
 
-<div class="divider text-center" data-content="Input elements sharing the same name"></div>
+    <div class="column col-6 col-sm-12">
+        <div class="form-item">
+            <label>Pick your gun</label><br />
+            {element:radio_element}
+        </div>
 
-<div class="form-item">
-    {label:input_array {"class": "form-label"}}
-    {element:input_array {"class": "form-input"}}
-    {label:input_array {"class": "form-label"}}
-    {element:input_array {"class": "form-input"}}
-    {label:input_array {"class": "form-label"}}
-    {element:input_array {"class": "form-input"}}
+        <div class="divider text-center" data-content="Name some henchmen you expect to meet (in input elements sharing the same name)"></div>
+
+        <div class="form-item">
+            {label:input_array {"class": "form-label"}}
+            {element:input_array {"class": "form-input"}}
+            {label:input_array {"class": "form-label"}}
+            {element:input_array {"class": "form-input"}}
+            {label:input_array {"class": "form-label"}}
+            {element:input_array {"class": "form-input"}}
+        </div>
+
+        <div class="form-item">
+            {element:checkbox_element {"class": "form-checkbox"}}
+        </div>
+    </div>
 </div>
 
 <div class="divider"></div>
