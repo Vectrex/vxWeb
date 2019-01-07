@@ -5,6 +5,7 @@
 <config>
 
     <pages>
+        <page id="sample_template" controller="sample/template" path="sample_template" />
         <page id="sample_form" controller="sample/form" path="sample_form" />
     </pages>
 
