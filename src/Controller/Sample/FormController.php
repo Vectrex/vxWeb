@@ -23,6 +23,27 @@ class FormController extends Controller
 
     protected function execute()
     {
+        $form = $this->generateForm();
+
+        $formTpl = (new SimpleTemplate())->setRawContents($form->render());
+        $tpl = new SimpleTemplate('layout.php');
+        $tpl->insertTemplateAt($formTpl, 'content_block');
+
+        return new Response($tpl->display());
+
+    }
+
+    protected function includeForm()
+    {
+        return new Response(
+            (new SimpleTemplate())
+                ->setRawContents($this->generateForm()->render())
+                ->display()
+        );
+    }
+
+    protected function generateForm()
+    {
 
         $checkboxTpl = <<<'EOD'
             <label class="form-checkbox">
@@ -104,12 +125,8 @@ EOD;
 
         $form->bindRequestParameters();
 
-        $formTpl = (new SimpleTemplate())->setRawContents($form->render());
-        $tpl = new SimpleTemplate('layout.php');
-        $tpl->insertTemplateAt($formTpl, 'content_block');
-
-        return new Response($tpl->display());
-
-
+        return $form;
     }
+
+
 }
