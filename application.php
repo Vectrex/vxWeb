@@ -49,9 +49,9 @@ if(!is_dir($application->getAbsoluteAssetsPath())) {
 
 // set up routing
 
-$scriptName = basename($_SERVER['PHP_SELF']);
+$scriptName = basename($_SERVER['SCRIPT_NAME']);
 
-$router = new Router(Application::getInstance()->getConfig()->routes[$scriptName]);
+$router = new Router($app->getConfig()->routes[$scriptName]);
 $application->setRouter($router);
 
 $route = $router->getRouteFromPathInfo(vxPHP\Http\Request::createFromGlobals());
