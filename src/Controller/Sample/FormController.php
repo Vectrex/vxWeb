@@ -37,7 +37,7 @@ class FormController extends Controller
     {
         return new Response(
             (new SimpleTemplate())
-                ->setRawContents($this->generateForm()->render())
+                ->setRawContents('<div class="hero bg-secondary px-2">' . $this->generateForm()->render() . '</div>')
                 ->display()
         );
     }
