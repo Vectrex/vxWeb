@@ -25,12 +25,12 @@ $sidebar-width: 10rem;
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
 
 @include font-face(IBMPlexSansCondensed, "../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Regular", normal, normal, woff woff2);
-@include font-face(IBMPlexSansCondensed, "../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Ialic", normal, italic, woff woff2);
+@include font-face(IBMPlexSansCondensed, "../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Italic", normal, italic, woff woff2);
 @include font-face(IBMPlexSansCondensed, "../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Bold", bold, normal, woff woff2);
 @include font-face(IBMPlexSansCondensed, "../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-BoldItalic", bold, italic, woff woff2);
 
 @include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-Regular", normal, normal, woff woff2);
-@include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-Ialic", normal, italic, woff woff2);
+@include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-Italic", normal, italic, woff woff2);
 @include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-Bold", bold, normal, woff woff2);
 @include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic", bold, italic, woff woff2);
 
