@@ -113,6 +113,7 @@ $application = vxPHP\Application\Application::getInstance($config);
 $application
 	->setRootPath			($rootPath)
 	->setAbsoluteAssetsPath	($assetsPath)
+    ->setRelativeAssetsPath (dirname($_SERVER['SCRIPT_NAME']))
 	->registerPlugins		();
 
 // set debugging and error reporting level depending on environment

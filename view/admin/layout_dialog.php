@@ -10,8 +10,8 @@
 		<meta http-equiv='content-type' content='text/html; charset=UTF-8'>
 		<meta name='author' content='Gregor Kofler - Mediendesign und Webapplikationen, http://gregorkofler.com'>
 
-		<link type='text/css' rel='stylesheet' href='/css/admin.css'>
-        <script type="text/javascript" src="/js/admin/vxjs.js"></script>
+        <link type='text/css' rel='stylesheet' href="<?= \vxPHP\Application\Application::getInstance()->asset('css/admin.min.css') ?>">
+        <script type="text/javascript" src="<?= \vxPHP\Application\Application::getInstance()->asset('js/admin/vxjs.js') ?>"></script>
         <!--
         <script type="text/javascript" src="/js/vendor/vxJS/core.js"></script>
         <script type="text/javascript" src="/js/vendor/vxJS/xhr.js"></script>

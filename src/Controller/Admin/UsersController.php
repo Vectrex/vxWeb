@@ -41,7 +41,7 @@ class UsersController extends Controller {
 				return $this->redirect($redirectUrl);
 			}
 
-			$userRows = $db->doPreparedQuery("SELECT * FROM " . $db->quoteIdentifier('admin') . " WHERE username = ?", [$id]);
+			$userRows = $db->doPreparedQuery(sprintf("SELECT * FROM %s WHERE username = ?", $db->quoteIdentifier('admin')), [$id]);
 
 			if(!count($userRows)) {
 				return $this->redirect($redirectUrl);
