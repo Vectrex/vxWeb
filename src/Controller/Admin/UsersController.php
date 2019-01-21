@@ -214,4 +214,36 @@ class UsersController extends Controller {
 		return new JsonResponse(['elements' => $response]);
 		
 	}
+
+	protected function getUserData()
+    {
+
+        $id = $this->request->query->get('id');
+        $db = Application::getInstance()->getVxPDO();
+
+        if ($id) {
+
+        } else {
+            $formData = null;
+        }
+
+        $formData = $db->doPreparedQuery("SELECT * FROM " . $db->quoteIdentifier('admin') . " WHERE username = ?", ['gregor'])->current();
+
+        $adminGroups = $db->doPreparedQuery("SELECT admingroupsid, name FROM admingroups ORDER BY privilege_level");
+
+        return new JsonResponse([
+            'formData' => $formData,
+            'options' => [
+                'admingroups' => (array)$adminGroups
+            ]
+        ]);
+
+    }
+
+    protected function postUserData()
+    {
+        return new JsonResponse(['success' => true]);
+    }
+
+
 }
