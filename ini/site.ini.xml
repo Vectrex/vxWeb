@@ -12,9 +12,7 @@
 			<locale value="de" default="1"/>
 			<locale value="en"/>
 		</locales>
-
-		<use_nice_uris>1</use_nice_uris>
-	</site>
+ 	</site>
 
 	<!-- db setting(s) are deprecated and will be replaced by vxpdo settings -->
 

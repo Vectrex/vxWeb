@@ -26,7 +26,7 @@ class InstallerController extends Controller {
             }
 
 	        unlink($installerFile);
-	        return $this->redirect($this->request->getSchemeAndHttpHost() . (Application::getInstance()->hasNiceUris() ? '/admin' : 'admin.php'));
+	        return $this->redirect($this->request->getSchemeAndHttpHost() . (Application::getInstance()->getRouter()->getServerSideRewrite() ? '/admin' : 'admin.php'));
         };
 
 	    // check whether paths are writable
@@ -104,7 +104,7 @@ class InstallerController extends Controller {
                 ->assign('misc_error', $miscError ?? '')
                 ->assign('success', $success ?? '')
                 ->assign('password', isset($success) ? $adminPassword : '')
-                ->assign('admin_url', isset($success) ? ($this->request->getSchemeAndHttpHost() . (Application::getInstance()->hasNiceUris() ? '/admin' : 'admin.php')) : '')
+                ->assign('admin_url', isset($success) ? ($this->request->getSchemeAndHttpHost() . (Application::getInstance()->getRouter()->getServerSideRewrite() ? '/admin' : 'admin.php')) : '')
                 ->assign('installer_is_deletable', is_writeable($installerFile))
                 ->assign('installer_file', $installerFile)
                 ->display()

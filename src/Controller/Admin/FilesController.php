@@ -571,8 +571,7 @@ class FilesController extends Controller
     {
 
         $data = array_change_key_case($file->getData(), CASE_LOWER);
-        $app = Application::getInstance();
-        $assetsPath = !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
+        $assetsPath = Application::getInstance()->getRelativeAssetsPath();
 
         if (($cacheInfo = $file->getFilesystemFile()->getCacheInfo())) {
             $cacheText = sprintf(', Cache: %d Files/gesamt %skB', $cacheInfo['count'], number_format($cacheInfo['totalSize'] / 1024, 1, ',', '.'));
@@ -633,8 +632,7 @@ class FilesController extends Controller
     {
 
         $files = [];
-        $app = Application::getInstance();
-        $assetsPath = !$app->hasNiceUris() ? ltrim($app->getRelativeAssetsPath(), '/') : '';
+        $assetsPath = Application::getInstance()->getRelativeAssetsPath();
 
         if ($articlesId = $this->request->query->get('articlesId', $this->request->request->get('articlesId'))) {
             $linkedFiles = Article::getInstance($articlesId)->getLinkedMetaFiles();

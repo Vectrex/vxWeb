@@ -6,7 +6,7 @@ $secondary-color: #A6DBFF;
 $alternative-primary-color: #ffa200;
 $alternative-secondary-color: #ffcf8c;
 
-$dark-color: #454d5d;
+$dark-color: #24282a;
 
 $base-font-family: "IBMPlexSans";
 
@@ -52,6 +52,10 @@ $sidebar-width: 10rem;
       margin-left: $unit-2;
     }
   }
+}
+
+.modal-container {
+  max-height: 90vh;
 }
 
 .nav-item {
