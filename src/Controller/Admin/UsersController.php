@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use vxPHP\Http\ParameterBag;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
@@ -146,7 +147,7 @@ class UsersController extends Controller {
 			->addElement(FormElementFactory::create('input',	'name',				NULL,	[],	[],	TRUE, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))
 			->addElement(FormElementFactory::create('password',	'new_PWD',			NULL,	[],	[],	FALSE, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')], 'Das Passwort muss mindestens 4 Zeichen umfassen.'))
 			->addElement(FormElementFactory::create('password',	'new_PWD_verify',	NULL))
-			->addElement(FormElementFactory::create('select',	'admingroupsid',	NULL,	[],	[],	TRUE, [],						[new RegularExpression(Rex::INT_EXCL_NULL)]))
+			->addElement(FormElementFactory::create('select',	'admingroupsid',	NULL,	[],	[],	TRUE, [],						[new RegularExpression(Rex::INT_EXCL_NULL)], 'Eine Benutzergruppe muss zugewiesen werden.'))
 		;
 
 		$v = $form
@@ -184,7 +185,7 @@ class UsersController extends Controller {
 				if($id) {
 					$db->updateRecord('admin', ['username' => $id], $v->all());
 				}
-				
+
 				else {
 					$id = $db->insertRecord('admin', $v->all());
 				}
@@ -242,7 +243,70 @@ class UsersController extends Controller {
 
     protected function postUserData()
     {
-        return new JsonResponse(['success' => true]);
+
+        $db = Application::getInstance()->getVxPDO();
+
+        $form = HtmlForm::create('admin_edit_user.htm')
+            ->addElement(FormElementFactory::create('input',	'username',			null,	[],	[],	true, ['trim'], 				[new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Benutzername ist ein Pflichtfeld.'))
+            ->addElement(FormElementFactory::create('input',	'email',			null,	[],	[],	true, ['trim', 'lowercase'],	[new Email()], 'Ungültige E-Mail Adresse.'))
+            ->addElement(FormElementFactory::create('input',	'name',				null,	[],	[],	true, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))
+            ->addElement(FormElementFactory::create('password',	'new_PWD',			null,	[],	[],	false, [],						[new RegularExpression('/^(|[^\s].{4,}[^\s])$/')], 'Das Passwort muss mindestens 4 Zeichen umfassen.'))
+            ->addElement(FormElementFactory::create('password',	'new_PWD_verify',	null))
+            ->addElement(FormElementFactory::create('select',	'admingroupsid',	null,	[],	[],	true, [],						[new RegularExpression(Rex::INT_EXCL_NULL)], 'Eine Benutzergruppe muss zugewiesen werden.'))
+        ;
+
+        $request = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        $v = $form
+            ->disableCsrfToken()
+            ->bindRequestParameters($request)
+            ->validate()
+            ->getValidFormValues()
+        ;
+
+        $errors = $form->getFormErrors();
+
+        if(!isset($errors['new_PWD'])) {
+
+            if(!empty($v['new_PWD'])) {
+                if($v['new_PWD'] !== $v['new_PWD_verify']) {
+                    $form->setError('new_PWD_verify', null, 'Passwörter stimmen nicht überein.');
+                }
+                else {
+                    $v['pwd'] = (new PasswordEncrypter())->hashPassword($v['new_PWD']);
+                }
+            }
+        }
+
+        if(!($errors = $form->getFormErrors())) {
+
+            try {
+
+                $id = $db->insertRecord('admin', $v->all());
+
+                return new JsonResponse([
+                    'success' => true,
+                    'user_id' => $id
+                ]);
+
+            } catch (\Exception $e) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
+            }
+
+        }
+
+        $response = [];
+
+        foreach($errors as $element => $error) {
+            $response[$element] = $error->getErrorMessage();
+        }
+
+        return new JsonResponse(['success' => false, 'errors' => $response]);
+
+
     }
 
 
