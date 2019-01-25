@@ -228,7 +228,7 @@ class UsersController extends Controller {
             $formData = null;
         }
 
-        $formData = $db->doPreparedQuery("SELECT * FROM " . $db->quoteIdentifier('admin') . " WHERE username = ?", ['gregor'])->current();
+        $formData = $db->doPreparedQuery("SELECT username, email, name, admingroupsid FROM " . $db->quoteIdentifier('admin') . " WHERE username = ?", ['gregor'])->current();
 
         $adminGroups = $db->doPreparedQuery("SELECT admingroupsid, name FROM admingroups ORDER BY privilege_level");
 
@@ -246,7 +246,7 @@ class UsersController extends Controller {
 
         $db = Application::getInstance()->getVxPDO();
 
-        $form = HtmlForm::create('admin_edit_user.htm')
+        $form = HtmlForm::create()
             ->addElement(FormElementFactory::create('input',	'username',			null,	[],	[],	true, ['trim'], 				[new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Benutzername ist ein Pflichtfeld.'))
             ->addElement(FormElementFactory::create('input',	'email',			null,	[],	[],	true, ['trim', 'lowercase'],	[new Email()], 'Ungültige E-Mail Adresse.'))
             ->addElement(FormElementFactory::create('input',	'name',				null,	[],	[],	true, ['trim'],					[new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))

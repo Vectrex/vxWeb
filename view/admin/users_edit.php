@@ -120,22 +120,21 @@
         };
 
         var app = new Vue({
+
             el: "#page",
+
             data: {
                 form: {
-                    username: "",
-                    email: "",
-                    name: "",
-                    admingroupsid: "",
-                    new_PWD: ""
                 },
                 options: {
                     admingroups: []
                 },
                 errors: {},
                 message: "",
+                showMessage: false,
                 buttonClass: ""
             },
+
             methods: {
                 submit() {
                     this.buttonClass = "loading";
@@ -152,6 +151,12 @@
                             }
                             else {
                                 app.errors = {};
+                            }
+
+                            app.showMessage = !!response.message;
+                            app.message = response.message;
+                            if(app.showMessage) {
+                                window.setTimeout(() => { app.showMessage = false}, 5000);
                             }
 
                         });
