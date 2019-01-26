@@ -2,8 +2,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 
-<script type="text/javascript" src="/js/admin/doUsers.js"></script>
-
 <script type="text/javascript">
 	if(!this.vxWeb.parameters) {
 		this.vxWeb.parameters = {};
@@ -11,16 +9,6 @@
 	if(!this.vxWeb.serverConfig) {
 		this.vxWeb.serverConfig = {};
 	}
-	
-	
-	this.vxWeb.routes.users			= "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('usersXhr')->getUrl() ?>?<?= vxPHP\Http\Request::createFromGlobals()->getQueryString() ?>";
-	this.vxWeb.parameters.usersId	= "<?= vxPHP\Http\Request::createFromGlobals()->query->get('id') ?: '' ?>";
-
-	/*
-	vxJS.event.addDomReadyListener(function() {
-		vxWeb.doUsers();
-	});
-	*/
 </script>
 
 <h1>User <em class="smaller"><?= $tpl->user ? $tpl->user['name'] : 'neuer User' ?></em></h1>
@@ -90,7 +78,7 @@
         <div class="divider"></div>
         <div class="form-base">
             <div class="form-group">
-                <label class="col-3 form-label"></label><button name="submit_user" value="" type='submit' class='btn btn-success' :class=buttonClass>User anlegen</button>
+                <label class="col-3 form-label"></label><button name="submit_user" value="" type='submit' class='btn btn-success' :class=buttonClass>{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</button>
             </div>
         </div>
     </form>
@@ -100,6 +88,9 @@
 
 <script>
     "use strict";
+
+    this.vxWeb.routes.userGet = "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_get')->getUrl() ?>";
+    this.vxWeb.routes.userPost = "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_post')->getUrl() ?>";
 
     document.addEventListener("DOMContentLoaded", function() {
 
@@ -125,6 +116,7 @@
 
             data: {
                 form: {
+                    id: "<?= \vxPHP\Http\Request::createFromGlobals()->query->get('id', '') ?>"
                 },
                 options: {
                     admingroups: []
@@ -133,6 +125,16 @@
                 message: "",
                 showMessage: false,
                 buttonClass: ""
+            },
+
+            computed: {
+                messageBoxClasses: function() {
+                    return {
+                        display : this.showMessage,
+                        'toast-error': Object.keys(this.errors).length,
+                        'toast-success': !Object.keys(this.errors).length
+                    };
+                }
             },
 
             methods: {
@@ -148,15 +150,23 @@
                                 if(response.errors) {
                                     app.errors = response.errors;
                                 }
+                                else {
+                                    app.errors = { 'generic': true };
+                                }
                             }
                             else {
                                 app.errors = {};
+
+                                if(response.id) {
+                                    app.form.id = response.id;
+                                }
                             }
 
                             app.showMessage = !!response.message;
                             app.message = response.message;
+
                             if(app.showMessage) {
-                                window.setTimeout(() => { app.showMessage = false}, 5000);
+                                window.setTimeout(() => { app.showMessage = false }, 5000);
                             }
 
                         });
@@ -167,14 +177,14 @@
 
         });
 
-        fetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_get')->getUrl() ?>")
-                .then(response => response.json())
-                .then(function(data) {
-                    app.options.admingroups = data.options.admingroups;
-                    if(data.formData) {
-                        app.form = data.formData;
-                    }
-                });
+        fetch(vxWeb.routes.userGet + "?id=" + app.form.id)
+            .then(response => response.json())
+            .then(function (data) {
+                app.options.admingroups = data.options.admingroups;
+                if (data.formData) {
+                    app.form = data.formData;
+                }
+            });
 
     });
 

@@ -106,7 +106,7 @@
                 </div>
             </div>
 
-            <div id="messageBox" class="toast" v-bind:class="{ 'display' : showMessage, 'toast-error': errors }">{{ message }}<button class="btn btn-clear float-right" v-on:click="showMessage = false"></button></div>
+            <div id="messageBox" class="toast" v-bind:class="messageBoxClasses">{{ message }}<button class="btn btn-clear float-right" v-on:click="showMessage = false"></button></div>
 		</div>
 
 	</body>
