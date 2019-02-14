@@ -557,13 +557,14 @@ class FilesController extends Controller
             ->initVar('add', 1)
             ->setEncType('multipart/form-data')
             ->setAttribute('class', 'editFileForm')
-            ->addElement(FormElementFactory::create('input', 'title', '', [], [], FALSE, ['trim']))
-            ->addElement(FormElementFactory::create('input', 'subtitle', '', [], [], FALSE, ['trim']))
-            ->addElement(FormElementFactory::create('input', 'customsort', '', [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
-            ->addElement(FormElementFactory::create('input', 'File', '', ['type' => 'file']))
+            ->addElement(FormElementFactory::create('input', 'title', '', [], [], false, ['trim']))
+            ->addElement(FormElementFactory::create('input', 'subtitle', '', [], [], false, ['trim']))
+            ->addElement(FormElementFactory::create('input', 'customsort', '', [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
+            ->addElement(FormElementFactory::create('file', 'File', '', [], [], true))
             ->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1))
             ->addElement(FormElementFactory::create('textarea', 'description'))
-            ->addElement(FormElementFactory::create('button', 'submit_add')->setInnerHTML('Speichern'));
+            ->addElement(FormElementFactory::create('button', 'submit_add')->setInnerHTML('Speichern'))
+        ;
     }
 
     private function getEditForm(MetaFile $file)
