@@ -1,23 +1,22 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var cleancss = require('gulp-clean-css');
-var csscomb = require('gulp-csscomb');
-var rename = require('gulp-rename');
-var autoprefixer = require('gulp-autoprefixer');
-var uglify = require('gulp-uglify');
-var concat = require('gulp-concat');
+let gulp = require('gulp');
+let sass = require('gulp-sass');
+let cleancss = require('gulp-clean-css');
+let csscomb = require('gulp-csscomb');
+let rename = require('gulp-rename');
+let autoprefixer = require('gulp-autoprefixer');
+let uglify = require('gulp-uglify');
+let concat = require('gulp-concat');
 
-
-var scssPaths = {
+let scssPaths = {
     src: "./scss/*.scss",
     dest: "./dist/css"
 };
 
-gulp.task('scssWatch', function() {
+gulp.task('scssWatch', () => {
   gulp.watch('./scss/*.scss', ['scssBuild']);
 });
 
-gulp.task('scssBuild', function() {
+gulp.task('scssBuild', () => {
   gulp.src(scssPaths.src)
     .pipe(sass({outputStyle: 'compact', precision: 10})
       .on('error', sass.logError)
@@ -39,7 +38,7 @@ var jsPaths = {
     dest: "./dist/js"
 };
 
-gulp.task('jsBuild', function() {
+gulp.task('jsBuild', () => {
     gulp.src([
         "./js/core.js",
         "./js/xhr.js",
