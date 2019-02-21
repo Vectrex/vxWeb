@@ -45,15 +45,19 @@ catch(\vxPHP\Application\Exception\ConfigException $e) {
 
 $app = vxPHP\Application\Application::getInstance($config);
 
+// set path information
+
 $app
-	->setRootPath			($rootPath)
-	->setAbsoluteAssetsPath	($assetsPath)
+    ->setRootPath			($rootPath)
+    ->setAbsoluteAssetsPath	($assetsPath)
+    ->setRelativeAssetsPath (dirname($_SERVER['SCRIPT_NAME']))
+    ->registerPlugins		()
 ;
 
 // set debugging and error reporting level depending on environment
 
 if(!$app->runsLocally()) {
-	vxPHP\Debug\Debug::enable(E_ALL, FALSE);
+	vxPHP\Debug\Debug::enable(E_ALL, false);
 }
 
 // without composer install add application namespace for autoloader
@@ -67,7 +71,9 @@ if(isset($loader)) {
 
 // set up routing
 
-$router = new \vxPHP\Routing\Router($app->getConfig()->routes[trim($_SERVER['PHP_SELF'], '/')]);
+$scriptName = basename($_SERVER['SCRIPT_NAME']);
+
+$router = new \vxPHP\Routing\Router($app->getConfig()->routes[$scriptName]);
 $app->setRouter($router);
 
 $route = $router->getRoute('installer');
