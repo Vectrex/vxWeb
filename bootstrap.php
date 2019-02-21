@@ -2,7 +2,7 @@
 
 // register autoloaders
 
-ini_set('display_errors', TRUE);
+ini_set('display_errors', true);
 error_reporting(E_ALL & ~(E_STRICT|E_DEPRECATED));
 
 // package was installed with composer?
@@ -48,7 +48,7 @@ if(file_exists($cachedConfigFilename)) {
 
 	
 	$cachedFileTimestamp = filemtime($cachedConfigFilename);
-	$cachedIsValid = TRUE;
+	$cachedIsValid = true;
 
 	foreach(
 		new \RecursiveIteratorIterator(
@@ -60,7 +60,7 @@ if(file_exists($cachedConfigFilename)) {
 		) as $f) {
 		
 		if(strtolower($f->getExtension()) === 'xml' && $f->getMTime() > $cachedFileTimestamp) {
-			$cachedIsValid = FALSE;
+			$cachedIsValid = false;
 			break;
 		}
 	}
@@ -80,7 +80,7 @@ if(!isset($config)) {
 	if(!isset($cachedFileTimestamp)) {
 
 		if(!file_exists($cachedConfigPath)) {
-			if(!mkdir($cachedConfigPath, 0777, TRUE)) {
+			if(!mkdir($cachedConfigPath, 0777, true)) {
 				die ('Cannot create directory ' . $cachedConfigPath);
 			}
 		}
@@ -98,7 +98,7 @@ if(!isset($config)) {
 	
 	// write file to cache
 	
-	if(FALSE === file_put_contents($cachedConfigFilename, serialize($config))) {
+	if(false === file_put_contents($cachedConfigFilename, serialize($config))) {
 		die ('<h1>Cannot create serialized config file</h1>' . $cachedConfigFilename);
 	}
 
@@ -108,15 +108,17 @@ if(!isset($config)) {
 
 $application = vxPHP\Application\Application::getInstance($config);
 
-// make loader in application available
+// set path information
 
 $application
 	->setRootPath			($rootPath)
 	->setAbsoluteAssetsPath	($assetsPath)
-	->registerPlugins		();
+    ->setRelativeAssetsPath (dirname($_SERVER['SCRIPT_NAME']))
+	->registerPlugins		()
+;
 
 // set debugging and error reporting level depending on environment
 
 if(!$application->runsLocally()) {
-	vxPHP\Debug\Debug::enable(E_ALL, FALSE);
+	vxPHP\Debug\Debug::enable(E_ALL, false);
 }
