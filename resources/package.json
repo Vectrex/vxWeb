@@ -1,14 +1,19 @@
 {
+  "name": "vxweb",
+
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "latest",
     "gulp-clean-css": "latest",
+    "gulp-concat": "latest",
     "gulp-csscomb": "latest",
     "gulp-rename": "latest",
     "gulp-sass": "latest",
     "gulp-uglify": "latest",
-    "gulp-concat": "latest"
+
+    "spectre.css": "latest"
   },
+
   "browserslist": [
     "last 4 Chrome versions",
     "Edge >= 12",
@@ -16,5 +21,6 @@
     "last 4 Safari versions",
     "last 4 Opera versions",
     "Explorer >= 10"
-  ]
+  ],
+  "dependencies": {}
 }

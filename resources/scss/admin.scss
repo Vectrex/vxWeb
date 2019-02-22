@@ -12,15 +12,13 @@ $base-font-family: "IBMPlexSans";
 
 $sidebar-width: 10rem;
 
-@import "vx/functions";
 @import "mixin/webfont";
-
-@import "spectre/spectre";
-@import "spectre/spectre-exp";
-@import "spectre/_calendars";
-
+@import "vx/functions";
 @import "vx/icon_variables";
 @import "vx/tree";
+
+@import "../node_modules/spectre.css/src/spectre";
+@import "../node_modules/spectre.css/src/spectre-exp";
 
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
 

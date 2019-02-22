@@ -1,4 +1,58 @@
 @CHARSET 'UTF-8';
+/* a power function for SCSS */
+/* calculates the luminance of a color */
+/* depending on the the luminance of $color either white or a semi-opaque black is returned lifted from Bulma https://github.com/jgthms/bulma/blob/master/sass/utilities/functions.sass */
+.vx-tree li
+{
+    list-style-type: none;
+}
+
+.vx-tree li label
+{
+    display: inline-block;
+}
+
+.vx-tree li span
+{display: inline-block; cursor: pointer; 
+    vertical-align: middle;
+}
+
+.vx-tree li input
+{
+    display: none;
+}
+
+.vx-tree li input + label:before
+{
+    display: inline-block; width: 1.5rem; height: 1rem; content: ''; vertical-align: middle; background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2216%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20fill%3D%22%230089cc%22%20d%3D%22M13%201H1c-.55%200-1%20.45-1%201v12c0%20.55.45%201%201%201h12c.55%200%201-.45%201-1V2c0-.55-.45-1-1-1zm0%2013H1V2h12v12zM6%209H3V7h3V4h2v3h3v2H8v3H6V9z%22%2F%3E%3C%2Fsvg%3E') 50% 50% no-repeat;
+}
+
+.vx-tree li input ~ ul > li
+{
+    display: none;
+}
+
+.vx-tree li input:checked + label:before
+{
+    background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2216%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20fill%3D%22%230089cc%22%20d%3D%22M13%201H1c-.55%200-1%20.45-1%201v12c0%20.55.45%201%201%201h12c.55%200%201-.45%201-1V2c0-.55-.45-1-1-1zm0%2013H1V2h12v12zm-2-5H3V7h8v2z%22%2F%3E%3C%2Fsvg%3E') 50% 50% no-repeat;
+}
+
+.vx-tree li input:checked ~ ul > li
+{
+    display: block;
+}
+
+.vx-tree li.terminates input:checked + label:before,
+.vx-tree li.terminates input + label:before
+{
+    background: none;
+}
+
+.vx-tree li.current > span
+{
+    font-weight: bold;
+}
+
 /*! Spectre.css v0.5.8 | MIT License | github.com/picturepan2/spectre */
 /* Manually forked from Normalize.css */
 /* normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
@@ -4660,232 +4714,6 @@ a.text-error:visited
 .viewer-360 .viewer-image
 {max-width: 100%; background-repeat: no-repeat; 
     background-position-y: 0; background-size: 100%; -ms-flex-order: 1; order: 1;
-}
-
-.calendar
-{display: block; min-width: 280px; 
-
-    border: .05rem solid #c9ced1; border-radius: .1rem;
-}
-
-.calendar .calendar-nav
-{font-size: .9rem; display: -ms-flexbox; display: flex; padding: .4rem; border-top-left-radius: .1rem; border-top-right-radius: .1rem; background: #e4e7e8; 
-
-    -ms-flex-align: center; align-items: center;
-}
-
-.calendar .calendar-header,
-.calendar .calendar-body
-{
-    display: -ms-flexbox;    display: flex; padding: .4rem 0; -ms-flex-wrap: wrap;     flex-wrap: wrap; -ms-flex-pack: center; justify-content: center;
-}
-
-.calendar .calendar-header .calendar-date,
-.calendar .calendar-body .calendar-date
-{max-width: 14.28%; 
-
-    -ms-flex: 0 0 14.28%;        flex: 0 0 14.28%;
-}
-
-.calendar .calendar-header
-{font-size: .7rem; text-align: center; color: #adb5b9; border-bottom: .05rem solid #c9ced1; 
-    background: #e4e7e8;
-}
-
-.calendar .calendar-body
-{
-    color: #5f696f;
-}
-
-.calendar .calendar-date
-{padding: .2rem; 
-
-    border: 0;
-}
-
-.calendar .calendar-date .date-item
-{font-size: .7rem; line-height: 1rem; position: relative; width: 1.4rem; height: 1.4rem; padding: .1rem; cursor: pointer; transition: background .2s, border .2s, box-shadow .2s, color .2s; text-align: center; vertical-align: middle; white-space: nowrap; text-decoration: none; color: #5f696f; border: .05rem solid transparent; border-radius: 50%; outline: none; background: transparent; 
-
-    -webkit-appearance: none;       -moz-appearance: none;            appearance: none;
-}
-
-.calendar .calendar-date .date-item.date-today
-{color: #0089cc; 
-    border-color: #97d5ff;
-}
-
-.calendar .calendar-date .date-item:focus
-{
-    box-shadow: 0 0 0 .1rem rgba(0, 137, 204, .2);
-}
-
-.calendar .calendar-date .date-item:focus,
-.calendar .calendar-date .date-item:hover
-{text-decoration: none; color: #0089cc; border-color: #97d5ff; 
-    background: #b5e1ff;
-}
-
-.calendar .calendar-date .date-item:active,
-.calendar .calendar-date .date-item.active
-{color: #fff; border-color: #006ea3; 
-    background: #007fbd;
-}
-
-.calendar .calendar-date .date-item.badge::after
-{
-    position: absolute; top: 3px; right: 3px; transform: translate(50%, -50%);
-}
-
-.calendar .calendar-date .date-item:disabled,
-.calendar .calendar-date .date-item.disabled,
-.calendar .calendar-date .calendar-event:disabled,
-.calendar .calendar-date .calendar-event.disabled
-{
-    cursor: default; pointer-events: none; opacity: .25;
-}
-
-.calendar .calendar-date.prev-month .date-item,
-.calendar .calendar-date.prev-month .calendar-event,
-.calendar .calendar-date.next-month .date-item,
-.calendar .calendar-date.next-month .calendar-event
-{
-    opacity: .25;
-}
-
-.calendar .calendar-range
-{
-    position: relative;
-}
-
-.calendar .calendar-range::before
-{position: absolute; top: 50%; right: 0; left: 0; height: 1.4rem; content: ''; transform: translateY(-50%); 
-
-    background: #a6dbff;
-}
-
-.calendar .calendar-range.range-start::before
-{
-    left: 50%;
-}
-
-.calendar .calendar-range.range-end::before
-{
-    right: 50%;
-}
-
-.calendar .calendar-range.range-start .date-item,
-.calendar .calendar-range.range-end .date-item
-{color: #fff; border-color: #006ea3; 
-    background: #007fbd;
-}
-
-.calendar .calendar-range .date-item
-{
-    color: #0089cc;
-}
-
-.calendar.calendar-lg .calendar-body
-{
-    padding: 0;
-}
-
-.calendar.calendar-lg .calendar-body .calendar-date
-{display: -ms-flexbox; display: flex;     flex-direction: column; height: 5.5rem; padding: 0; border-right: .05rem solid #c9ced1; 
-    border-bottom: .05rem solid #c9ced1; -ms-flex-direction: column;
-}
-
-.calendar.calendar-lg .calendar-body .calendar-date:nth-child(7n)
-{
-    border-right: 0;
-}
-
-.calendar.calendar-lg .calendar-body .calendar-date:nth-last-child(-n+7)
-{
-    border-bottom: 0;
-}
-
-.calendar.calendar-lg .date-item
-{height: 1.4rem; margin-top: .2rem; margin-right: .2rem; 
-
-    -ms-flex-item-align: end; align-self: flex-end;
-}
-
-.calendar.calendar-lg .calendar-range::before
-{
-    top: 19px;
-}
-
-.calendar.calendar-lg .calendar-range.range-start::before
-{
-    left: auto; width: 19px;
-}
-
-.calendar.calendar-lg .calendar-range.range-end::before
-{
-    right: 19px;
-}
-
-.calendar.calendar-lg .calendar-events
-{line-height: 1; overflow-y: auto; padding: .2rem; 
-
-    -ms-flex-positive: 1; flex-grow: 1;
-}
-
-.calendar.calendar-lg .calendar-event
-{font-size: .7rem; display: block; overflow: hidden; margin: .1rem auto; padding: 3px 4px; white-space: nowrap; text-overflow: ellipsis; 
-
-    border-radius: .1rem;
-}
-
-.vx-tree li
-{
-    list-style-type: none;
-}
-
-.vx-tree li label
-{
-    display: inline-block;
-}
-
-.vx-tree li span
-{display: inline-block; cursor: pointer; 
-    vertical-align: middle;
-}
-
-.vx-tree li input
-{
-    display: none;
-}
-
-.vx-tree li input + label:before
-{
-    display: inline-block; width: 1.5rem; height: 1rem; content: ''; vertical-align: middle; background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2216%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20fill%3D%22%230089cc%22%20d%3D%22M13%201H1c-.55%200-1%20.45-1%201v12c0%20.55.45%201%201%201h12c.55%200%201-.45%201-1V2c0-.55-.45-1-1-1zm0%2013H1V2h12v12zM6%209H3V7h3V4h2v3h3v2H8v3H6V9z%22%2F%3E%3C%2Fsvg%3E') 50% 50% no-repeat;
-}
-
-.vx-tree li input ~ ul > li
-{
-    display: none;
-}
-
-.vx-tree li input:checked + label:before
-{
-    background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2216%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20fill%3D%22%230089cc%22%20d%3D%22M13%201H1c-.55%200-1%20.45-1%201v12c0%20.55.45%201%201%201h12c.55%200%201-.45%201-1V2c0-.55-.45-1-1-1zm0%2013H1V2h12v12zm-2-5H3V7h8v2z%22%2F%3E%3C%2Fsvg%3E') 50% 50% no-repeat;
-}
-
-.vx-tree li input:checked ~ ul > li
-{
-    display: block;
-}
-
-.vx-tree li.terminates input:checked + label:before,
-.vx-tree li.terminates input + label:before
-{
-    background: none;
-}
-
-.vx-tree li.current > span
-{
-    font-weight: bold;
 }
 
 @font-face
