@@ -145,4 +145,48 @@ class ProfileController extends Controller {
 			
 		}
 	}
+
+    protected function getProfileData()
+    {
+        $admin = Application::getInstance()->getCurrentUser();
+        $notifications = array_filter(
+            Notification::getAvailableNotifications($admin->getRoles()[0]->getRoleName()),
+            function($notification) {
+                return !$notification->not_displayed;
+            }
+        );
+
+        $notified = [];
+
+        foreach($notifications as $notification) {
+            if($notification->notifies($admin)) {
+                $notified[] = $notification->id;
+            }
+        }
+
+        return new JsonResponse([
+            'formData' => [
+                'username' => $admin->getUsername(),
+                'email' => $admin->getAttribute('email'),
+                'name' => $admin->getAttribute('name'),
+                'notifications' => $notified
+            ],
+            'notifications' => array_values(
+                array_map(function($notfication) {
+
+                        /* @var \vxWeb\User\Notification\Notification $notification */
+
+                        return [
+                            'alias' => $notfication->alias,
+                            'label' => $notfication->description,
+                            'id' => $notfication->id
+                        ];
+
+                    },
+                    $notifications
+                )
+            )
+        ]);
+    }
+
 }
