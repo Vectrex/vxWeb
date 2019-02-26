@@ -55,7 +55,7 @@
 
         <div class="divider text-center" data-content="Benachrichtigungen"></div>
 
-        <div class="form-sect">
+        <div class="form-sect off-3">
 
             <div class="form-group" v-for="notification in notifications">
                 <label class="form-switch"><input name="notification[]" v-bind:value="notification.alias" type="checkbox" v-model="form.notifications"><i class="form-icon"></i>{{ notification.label }}</label>
@@ -65,8 +65,8 @@
 
         <div class="form-base">
 
-            <div class="form-group">
-                <label class="form-label col-3"></label><button name="submit_profile" value="" type='submit' class='btn btn-success'>Änderungen speichern</button>
+            <div class="form-group off-3">
+                <button name="submit_profile" value="" type='submit' class='btn btn-success'>Änderungen speichern</button>
             </div>
 
         </div>

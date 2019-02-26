@@ -1,0 +1,66 @@
+@import "../node_modules/spectre.css/src/_variables";
+
+// flexbox offsets
+[class*="off-"][class~="col-12"] {
+  margin-left: 0
+}
+@for $i from 1 through 11 {
+  .off-#{$i} {
+    margin-left: calc(100% / 12 * #{$i});
+  }
+}
+
+@media (max-width: $size-xl) {
+  [class*="off-"][class~="col-xl-12"] {
+    margin-left: 0
+  }
+  @for $i from 0 through 11 {
+    .off-xl-#{$i} {
+      margin-left: calc(100% / 12 * #{$i});
+    }
+  }
+}
+
+@media (max-width: $size-lg) {
+  [class*="off-"][class~="col-lg-12"] {
+    margin-left: 0
+  }
+  @for $i from 0 through 11 {
+    .off-lg-#{$i} {
+      margin-left: calc(100% / 12 * #{$i});
+    }
+  }
+}
+
+@media (max-width: $size-md) {
+  [class*="off-"][class~="col-md-12"] {
+    margin-left: 0
+  }
+  @for $i from 0 through 11 {
+    .off-md-#{$i} {
+      margin-left: calc(100% / 12 * #{$i});
+    }
+  }
+}
+
+@media (max-width: $size-sm) {
+  [class*="off-"][class~="col-sm-12"] {
+    margin-left: 0
+  }
+  @for $i from 0 through 11 {
+    .off-sm-#{$i} {
+      margin-left: calc(100% / 12 * #{$i});
+    }
+  }
+}
+
+@media (max-width: $size-xs) {
+  [class*="off-"][class~="col-xs-12"] {
+    margin-left: 0
+  }
+  @for $i from 0 through 11 {
+    .off-xs-#{$i} {
+      margin-left: calc(100% / 12 * #{$i});
+    }
+  }
+}
