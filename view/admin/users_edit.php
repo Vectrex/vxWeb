@@ -82,8 +82,6 @@
 <script>
     "use strict";
 
-    this.vxWeb.routes.userGet = "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_get')->getUrl() ?>";
-
     document.addEventListener("DOMContentLoaded", function() {
 
         var postData = function (url = "", data = {}) {
@@ -169,7 +167,7 @@
 
         });
 
-        fetch(vxWeb.routes.userGet + "?id=" + app.form.id)
+        fetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_get')->getUrl() ?>?id=" + app.form.id)
             .then(response => response.json())
             .then(function (data) {
                 app.options.admingroups = data.options.admingroups;

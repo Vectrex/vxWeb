@@ -7,7 +7,8 @@
 		<page id="logout" controller="admin/logout" />
 
 		<page id="profile" controller="admin/profile" auth="observe_row" />
-		<page id="profile_data_get" path="profile_data" controller="admin/profile" method="getProfileData" auth="observe_row" request_methods="GET" />
+		<page id="profile_data_get" path="profile_data" controller="admin/profile" method="get" auth="observe_row" request_methods="GET" />
+		<page id="profile_data_post" path="profile_data" controller="admin/profile" method="post" auth="observe_row" request_methods="POST" />
 
 		<page id="pages" controller="admin/pages" auth="superadmin" />
 		<page id="pagesXhr" controller="admin/pages" method="xhrExecute" auth="superadmin" />

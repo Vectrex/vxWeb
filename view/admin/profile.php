@@ -58,7 +58,7 @@
         <div class="form-sect">
 
             <div class="form-group" v-for="notification in notifications">
-                <label class="form-switch"><input name="notification[]" v-bind:value="notification.id" type="checkbox" v-model="form.notifications"><i class="form-icon"></i>{{ notification.label }}</label>
+                <label class="form-switch"><input name="notification[]" v-bind:value="notification.alias" type="checkbox" v-model="form.notifications"><i class="form-icon"></i>{{ notification.label }}</label>
             </div>
 
         </div>
@@ -76,10 +76,6 @@
 
 <script>
     "use strict";
-
-
-    this.vxWeb.routes.profileGet = "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>";
-    this.vxWeb.routes.userPost = "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_post')->getUrl() ?>";
 
     document.addEventListener("DOMContentLoaded", function() {
 
@@ -127,7 +123,7 @@
                 submit() {
                     this.buttonClass = "loading";
 
-                    postData("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_post')->getUrl() ?>", this.form)
+                    postData("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_post')->getUrl() ?>", this.form)
                         .then(function(response) {
 
                             app.buttonClass = "";
@@ -163,7 +159,7 @@
 
         });
 
-        fetch(vxWeb.routes.profileGet)
+        fetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>")
             .then(response => response.json())
             .then(function (data) {
                 app.notifications = data.notifications;
