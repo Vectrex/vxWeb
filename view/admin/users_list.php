@@ -1,7 +1,5 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
 
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-
 <h1>User</h1>
 
 <?php $currentUsername = vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername(); ?>
@@ -16,7 +14,10 @@
             <th
                 v-for="column in columns"
                 :class="[ 'vx-sortable-header', setHeaderClass(column), columnProperties[column].width ? columnProperties[column].width : '' ]"
-                @click="{ sort = { column: column, dir: sort.dir === 'asc' ? 'desc' : 'asc' } }">{{ columnProperties[column].label }}</th>
+                @click="clickSort(column)"
+            >
+                {{ columnProperties[column].label }}
+            </th>
             <th class="col-1"></th>
         </tr>
     </thead>
@@ -30,7 +31,6 @@
             </td>
         </tr>
     </tbody>
-
 </table>
 
 <script>
@@ -79,47 +79,46 @@
 
         methods: {
             setHeaderClass: function(column) {
+
                 if(this.sort.column === column) {
                     return this.sort.dir;
                 }
                 return "";
+
+            },
+
+            clickSort: function(col) {
+
+                if(this.columnProperties[col].sortable) {
+                    this.sort = {
+                        column: col,
+                        dir: this.sort.dir === 'asc' ? 'desc' : 'asc'
+                    };
+                }
+
+                window.localStorage.setItem(lsKey, JSON.stringify(this.sort));
             },
 
             doSort: function(prop, dir) {
 
-                if(this.columnProperties[prop].sortable) {
+                this.users.sort((a, b) => {
 
-                    this.users.sort((a, b) => {
+                    if (a[prop] < b[prop]) {
+                        return dir === "asc" ? -1 : 1;
+                    }
+                    if (a[prop] > b[prop]) {
+                        return dir === "asc" ? 1 : -1;
+                    }
 
-                        if (a[prop] < b[prop]) {
-                            return dir === "asc" ? -1 : 1;
-                        }
-                        if (a[prop] > b[prop]) {
-                            return dir === "asc" ? 1 : -1;
-                        }
-
-                        return 0;
-                    });
-
-                    // window.localStorage.setItem(lsKey, JSON.stringify( { col: prop, sortDir: this.currentSortDir } ));
-
-                    // this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
-                    // this.currentSortColumn = prop;
-
-                }
+                    return 0;
+                });
 
             }
         }
-
-        /*
-        if(window.localStorage && (lsValue = window.localStorage.getItem(lsKey))) {
-            lsValue = JSON.parse(lsValue);
-            app.currentSortDir = lsValue.sortDir;
-            app.currentSortColumn =
-        }
-        */
     });
 
-    app.sort.column = 'username';
+    if(window.localStorage && (lsValue = window.localStorage.getItem(lsKey))) {
+        app.sort = JSON.parse(lsValue);
+    }
 
 </script>

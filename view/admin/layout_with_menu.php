@@ -24,6 +24,7 @@
         <script type="text/javascript" src="/js/vendor/vxJS/widgets/calendar.js"></script>
         -->
 
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script type="text/javascript">
 			if(!this.vxWeb) {
 				this.vxWeb = {};
@@ -106,7 +107,7 @@
                 </div>
             </div>
 
-            <div id="messageBox" class="toast" v-bind:class="messageBoxClasses">{{ message }}<button class="btn btn-clear float-right" v-on:click="showMessage = false"></button></div>
+            <div id="messageBox" class="toast" :class="messageBoxClasses">{{ message }}<button class="btn btn-clear float-right" @click="showMessage = false"></button></div>
 		</div>
 
 	</body>
