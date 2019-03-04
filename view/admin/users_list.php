@@ -4,40 +4,6 @@
 
 <h1>User</h1>
 
-<script type="text/javascript">
-    /*
-	vxJS.event.addDomReadyListener(function() {
-		var lsValue, lsKey = window.location.origin + "/admin/users__sort__",
-			t = vxJS.widget.sorTable(
-			document.querySelector(".table"),	{
-				columnFormat: [
-					null,
-					null,
-					null,
-					null,
-					"no_sort"
-				]
-			});
-
-		vxJS.event.addListener(
-			t,
-			"finishSort",
-			function() {
-				var c = this.getActiveColumn();
-				window.localStorage.setItem(lsKey, JSON.stringify( { ndx: c.ndx, asc: c.asc } ));
-			}
-		);
-
-		if(window.localStorage) {
-            if ((lsValue = window.localStorage.getItem(lsKey))) {
-                lsValue = JSON.parse(lsValue);
-                t.sortBy(lsValue.ndx, lsValue.asc ? "asc" : "desc");
-            }
-        }
-	});
-*/
-</script>
-
 <?php $currentUsername = vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername(); ?>
 
 <div class="vx-button-bar">
@@ -47,14 +13,17 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th  v-for="column in columns" class="vx-sortable-header" :class="[ setHeaderClass(column), columnProperties[column].width ? columnProperties[column].width : '' ]" @click="sort(column)">{{ columnProperties[column].label }}</th>
+            <th
+                v-for="column in columns"
+                :class="[ 'vx-sortable-header', setHeaderClass(column), columnProperties[column].width ? columnProperties[column].width : '' ]"
+                @click="{ sort = { column: column, dir: sort.dir === 'asc' ? 'desc' : 'asc' } }">{{ columnProperties[column].label }}</th>
             <th class="col-1"></th>
         </tr>
     </thead>
     <tbody>
         <tr v-for="user in users" :class="{ 'disabled' : currentUser.username === user.username }">
 
-            <td v-for="column in columns" :class="{ 'active': currentSortColumn === column }">{{ user[column] }}</td>
+            <td v-for="column in columns" :class="{ 'active': sort.column === column }">{{ user[column] }}</td>
             <td class="right">
                 <a v-if="currentUser.username !== user.username" class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" :href="'users?id=' + user.username">&#xe002;</a>
                 <a v-if="currentUser.username !== user.username" class="btn webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" :href="'users/del?id=' + user.username" onclick="return window.confirm('Wirklich löschen?');">&#xe011;</a>
@@ -67,6 +36,8 @@
 <script>
 
     "use strict";
+
+    var lsKey = window.location.origin + "/admin/users__sort__", lsValue;
 
     var app = new Vue({
 
@@ -91,45 +62,64 @@
                 alias: { label: "Gruppe", sortable: true, width: "col-2" }
             },
 
-            currentSortDir: "asc",
-            currentSortColumn: null
+            sort: {
+                column: null,
+                dir: "asc"
+            }
         },
 
-        computed: {
-            fullname: function() { return alias + " " }
+        watch: {
+            sort: {
+                handler: function (val) {
+                    this.doSort(val.column, val.dir);
+                },
+                deep: true
+            }
         },
 
         methods: {
             setHeaderClass: function(column) {
-                if(this.currentSortColumn === column) {
-                    return this.currentSortDir;
+                if(this.sort.column === column) {
+                    return this.sort.dir;
                 }
                 return "";
             },
 
-            sort: function(prop) {
+            doSort: function(prop, dir) {
 
                 if(this.columnProperties[prop].sortable) {
 
                     this.users.sort((a, b) => {
 
                         if (a[prop] < b[prop]) {
-                            return this.currentSortDir === "asc" ? -1 : 1;
+                            return dir === "asc" ? -1 : 1;
                         }
                         if (a[prop] > b[prop]) {
-                            return this.currentSortDir === "asc" ? 1 : -1;
+                            return dir === "asc" ? 1 : -1;
                         }
 
                         return 0;
                     });
 
-                    this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
-                    this.currentSortColumn = prop;
+                    // window.localStorage.setItem(lsKey, JSON.stringify( { col: prop, sortDir: this.currentSortDir } ));
+
+                    // this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
+                    // this.currentSortColumn = prop;
 
                 }
 
             }
         }
 
+        /*
+        if(window.localStorage && (lsValue = window.localStorage.getItem(lsKey))) {
+            lsValue = JSON.parse(lsValue);
+            app.currentSortDir = lsValue.sortDir;
+            app.currentSortColumn =
+        }
+        */
     });
+
+    app.sort.column = 'username';
+
 </script>
