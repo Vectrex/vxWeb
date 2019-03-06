@@ -1,6 +1,5 @@
 {
   "name": "vxweb",
-
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "latest",
@@ -10,10 +9,9 @@
     "gulp-rename": "latest",
     "gulp-sass": "latest",
     "gulp-uglify": "latest",
-
-    "spectre.css": "latest"
+    "spectre.css": "latest",
+    "vue": "latest"
   },
-
   "browserslist": [
     "last 4 Chrome versions",
     "Edge >= 12",
