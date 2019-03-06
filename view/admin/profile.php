@@ -1,7 +1,5 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
 
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-
 <h1>Meine Einstellungen</h1>
 
 <div class="form-content">

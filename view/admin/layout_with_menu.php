@@ -24,7 +24,7 @@
         <script type="text/javascript" src="/js/vendor/vxJS/widgets/calendar.js"></script>
         -->
 
-        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script type="text/javascript">
 			if(!this.vxWeb) {
 				this.vxWeb = {};

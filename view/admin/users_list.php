@@ -43,30 +43,35 @@
 
         el: "table",
 
-        data: {
-            users: JSON.parse('<?= json_encode(array_map(function ($u) {
-                unset ($u['pwd']);
-                return $u;
-            }, (array)$this->users)) ?>'),
+        data:
+            function() {
 
-            currentUser: {
-                username: <?= json_encode(vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername()) ?>
-            },
+                return {
+                    users: JSON.parse('<?= json_encode(array_map(function ($u) {
+                        unset ($u['pwd']);
+                        return $u;
+                    }, (array)$this->users)) ?>'),
 
-            columns: ["username", "name", "email", "alias"],
+                    currentUser: {
+                        username: <?= json_encode(vxPHP\Application\Application::getInstance()->getCurrentUser()->getUsername()) ?>
+                    },
 
-            columnProperties: {
-                username: {label: "Username", sortable: true, width: "col-3" },
-                name: { label: "Name", sortable: true, width: "col-2" },
-                email: { label: "Email", sortable: false },
-                alias: { label: "Gruppe", sortable: true, width: "col-2" }
-            },
+                    columns: ["username", "name", "email", "alias"],
 
-            sort: {
-                column: null,
-                dir: "asc"
+                    columnProperties: {
+                        username: {label: "Username", sortable: true, width: "col-3" },
+                        name: { label: "Name", sortable: true, width: "col-2" },
+                        email: { label: "Email", sortable: false },
+                        alias: { label: "Gruppe", sortable: true, width: "col-2" }
+                    },
+
+                    sort: {
+                        column: null,
+                        dir: "asc"
+                    }
+                };
             }
-        },
+        ,
 
         watch: {
             sort: {
