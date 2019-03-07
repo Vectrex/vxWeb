@@ -71,8 +71,9 @@
                 <label class="col-3 form-label"></label><button name="submit_user" value="" type='submit' class='btn btn-success' :class=buttonClass>{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</button>
             </div>
         </div>
-
     </form>
+
+    <message-toast :message="message" :classname="messageClass" :state="messageState"></message-toast>
 
 </div>
 
@@ -86,9 +87,7 @@
             method: "POST",
             mode: "cors",
             cache: "no-cache",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             referrer: "no-referrer",
             body: JSON.stringify(data)
         })
@@ -96,9 +95,37 @@
 
     };
 
+    var timeoutId;
+
+    Vue.component("message-toast", {
+        data: function() {
+            return {
+                localState: this.state
+            };
+        },
+        props: [
+            'message',
+            'classname',
+            'state'
+        ],
+
+        watch: {
+            state: function(newVal) {
+                this.localState = newVal;
+
+                if(timeoutId) {
+                    window.clearTimeout(timeoutId);
+                }
+                timeoutId = window.setTimeout(() => { this.localState = false }, 5000);
+            }
+        },
+
+        template: `<div id="messageBox" :class="[{ 'display': localState }, classname, 'toast']">{{ message }}<button class="btn btn-clear float-right" @click="localState = false"></button></div>`
+    });
+
     var app = new Vue({
 
-        el: "#page",
+        el: ".form-content",
 
         data: {
             form: {
@@ -109,23 +136,18 @@
             },
             errors: {},
             message: "",
-            showMessage: false,
+            messageState: false,
             buttonClass: ""
         },
 
         computed: {
-            messageBoxClasses: function() {
-                return {
-                    display : this.showMessage,
-                    'toast-error': Object.keys(this.errors).length,
-                    'toast-success': !Object.keys(this.errors).length
-                };
-            }
+            messageClass: function() { return Object.keys(this.errors).length ? 'toast-error' : 'toast-success'; }
         },
 
         methods: {
             submit() {
                 this.buttonClass = "loading";
+                this.messageState = false;
 
                 postData("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_post')->getUrl() ?>", this.form)
                     .then(function(response) {
@@ -148,19 +170,12 @@
                             }
                         }
 
-                        app.showMessage = !!response.message;
+                        app.messageState = !!response.message;
                         app.message = response.message;
 
-                        if(app.showMessage) {
-                            window.setTimeout(() => { app.showMessage = false }, 5000);
-                        }
-
                     });
-
             }
-
         }
-
     });
 
     fetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_get')->getUrl() ?>?id=" + app.form.id)

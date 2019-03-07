@@ -106,9 +106,6 @@
                     <!-- { block: content_block } -->
                 </div>
             </div>
-
-            <div id="messageBox" class="toast" :class="messageBoxClasses">{{ message }}<button class="btn btn-clear float-right" @click="showMessage = false"></button></div>
 		</div>
-
-	</body>
+    </body>
 </html>
