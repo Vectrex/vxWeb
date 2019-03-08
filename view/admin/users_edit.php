@@ -77,53 +77,18 @@
 
 </div>
 
+<script type="module">
 
-<script>
+    import MessageToast from "/js/vue/message-toast.js";
+    import FormPost from "/js/vue/form-post.js";
+
     "use strict";
 
-    var postData = function (url = "", data = {}) {
-
-        return fetch(url, {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            headers: { "Content-Type": "application/json" },
-            referrer: "no-referrer",
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json());
-
-    };
-
-    var timeoutId;
-
-    Vue.component("message-toast", {
-        data: function() {
-            return {
-                localState: this.state
-            };
-        },
-        props: [
-            'message',
-            'classname',
-            'state'
-        ],
-
-        watch: {
-            state: function(newVal) {
-                this.localState = newVal;
-
-                if(timeoutId) {
-                    window.clearTimeout(timeoutId);
-                }
-                timeoutId = window.setTimeout(() => { this.localState = false }, 5000);
-            }
-        },
-
-        template: `<div id="messageBox" :class="[{ 'display': localState }, classname, 'toast']">{{ message }}<button class="btn btn-clear float-right" @click="localState = false"></button></div>`
-    });
+    Vue.component("message-toast", MessageToast);
 
     var app = new Vue({
+
+        extends: FormPost,
 
         el: ".form-content",
 
@@ -137,44 +102,12 @@
             errors: {},
             message: "",
             messageState: false,
-            buttonClass: ""
+            buttonClass: "",
+            url: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_post')->getUrl() ?>"
         },
 
         computed: {
             messageClass: function() { return Object.keys(this.errors).length ? 'toast-error' : 'toast-success'; }
-        },
-
-        methods: {
-            submit() {
-                this.buttonClass = "loading";
-                this.messageState = false;
-
-                postData("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_post')->getUrl() ?>", this.form)
-                    .then(function(response) {
-
-                        app.buttonClass = "";
-
-                        if(!response.success) {
-                            if(response.errors) {
-                                app.errors = response.errors;
-                            }
-                            else {
-                                app.errors = { 'generic': true };
-                            }
-                        }
-                        else {
-                            app.errors = {};
-
-                            if(response.id) {
-                                app.form.id = response.id;
-                            }
-                        }
-
-                        app.messageState = !!response.message;
-                        app.message = response.message;
-
-                    });
-            }
         }
     });
 

@@ -6,6 +6,7 @@ let rename = require('gulp-rename');
 let autoprefixer = require('gulp-autoprefixer');
 let uglify = require('gulp-uglify');
 let concat = require('gulp-concat');
+let vueComponent = require('gulp-vue-single-file-component');
 
 let scssPaths = {
     src: "./scss/*.scss",
@@ -25,9 +26,7 @@ gulp.task('scssBuild', () => {
     .pipe(csscomb())
     .pipe(gulp.dest(scssPaths.dest))
     .pipe(cleancss())
-    .pipe(rename({
-      suffix: '.min'
-    }))
+    .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest(scssPaths.dest));
 });
 
@@ -50,4 +49,11 @@ gulp.task('jsBuild', () => {
         .pipe(concat("vxjs.js"))
         .pipe(uglify())
         .pipe(gulp.dest(jsPaths.dest));
+});
+
+gulp.task('vue', () => {
+   gulp.src("./js/vue/components/*.vue")
+       .pipe(vueComponent())
+       .pipe(rename({ extname: ".js" }))
+       .pipe(gulp.dest("./dist/js/vue"));
 });

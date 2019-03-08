@@ -9,6 +9,7 @@
     "gulp-rename": "latest",
     "gulp-sass": "latest",
     "gulp-uglify": "latest",
+    "gulp-vue-single-file-component": "^1.0.9",
     "spectre.css": "latest",
     "vue": "latest"
   },

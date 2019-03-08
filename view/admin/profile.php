@@ -70,102 +70,49 @@
         </div>
 
     </form>
+
+    <message-toast :message="message" :classname="messageClass" :state="messageState"></message-toast>
+
 </div>
 
-<script>
+<script type="module">
+
+    import MessageToast from "/js/vue/message-toast.js";
+    import FormPost from "/js/vue/form-post.js";
+
     "use strict";
 
-    document.addEventListener("DOMContentLoaded", function() {
+    Vue.component("message-toast", MessageToast);
 
-        var postData = function (url = "", data = {}) {
+    var app = new Vue({
 
-            return fetch(url, {
-                method: "POST",
-                mode: "cors",
-                cache: "no-cache",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                referrer: "no-referrer",
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json());
+        extends: FormPost,
 
-        };
+        el: ".form-content",
 
-        var app = new Vue({
-
-            el: "#page",
-
-            data: {
-                form: {
-                },
-                notifications: [],
-                errors: {},
-                message: "",
-                showMessage: false,
-                buttonClass: ""
+        data: {
+            form: {
             },
+            notifications: [],
+            errors: {},
+            message: "",
+            messageState: false,
+            buttonClass: "",
+            url: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_post')->getUrl() ?>"
+        },
 
-            computed: {
-                messageBoxClasses: function() {
-                    return {
-                        display : this.showMessage,
-                        'toast-error': Object.keys(this.errors).length,
-                        'toast-success': !Object.keys(this.errors).length
-                    };
-                }
-            },
-
-            methods: {
-                submit() {
-                    this.buttonClass = "loading";
-
-                    postData("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_post')->getUrl() ?>", this.form)
-                        .then(function(response) {
-
-                            app.buttonClass = "";
-
-                            if(!response.success) {
-                                if(response.errors) {
-                                    app.errors = response.errors;
-                                }
-                                else {
-                                    app.errors = { 'generic': true };
-                                }
-                            }
-                            else {
-                                app.errors = {};
-
-                                if(response.id) {
-                                    app.form.id = response.id;
-                                }
-                            }
-
-                            app.showMessage = !!response.message;
-                            app.message = response.message;
-
-                            if(app.showMessage) {
-                                window.setTimeout(() => { app.showMessage = false }, 5000);
-                            }
-
-                        });
-
-                }
-
-            }
-
-        });
-
-        fetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>")
-            .then(response => response.json())
-            .then(function (data) {
-                app.notifications = data.notifications;
-                if (data.formData) {
-                    app.form = data.formData;
-                }
-            });
-
+        computed: {
+            messageClass: function() { return Object.keys(this.errors).length ? 'toast-error' : 'toast-success'; }
+        }
     });
+
+    fetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>")
+        .then(response => response.json())
+        .then(function (data) {
+            app.notifications = data.notifications;
+            if (data.formData) {
+                app.form = data.formData;
+            }
+        });
 
 </script>
