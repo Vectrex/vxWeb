@@ -3,12 +3,9 @@
 <h1>Meine Einstellungen</h1>
 
 <div class="form-content">
-    <form action="/admin/profile" method="POST"  class="form-horizontal" v-on:submit.prevent="submit">
-
-        <input name="_csrf_token" value="bXKjZZq0WmxbwGVkpm2jQxANy0ht1W6135pOEPyp1BQ" type="hidden">
+    <form action="/" class="form-horizontal" v-on:submit.prevent="submit">
 
         <div class="form-sect">
-
             <div class="form-group">
                 <label class="form-label col-3" for="username_input"><strong>Username*</strong></label>
                 <div class="col-9">
@@ -48,25 +45,20 @@
                     <p id="error_new_PWD_verify" class="form-input-hint vx-error-box" v-bind:class="{ 'error' : errors.new_PWD_verify }">{{ errors.new_PWD_verify }}</p>
                 </div>
             </div>
-
         </div>
 
         <div class="divider text-center" data-content="Benachrichtigungen"></div>
 
         <div class="form-sect off-3">
-
             <div class="form-group" v-for="notification in notifications">
                 <label class="form-switch"><input name="notification[]" v-bind:value="notification.alias" type="checkbox" v-model="form.notifications"><i class="form-icon"></i>{{ notification.label }}</label>
             </div>
-
         </div>
 
         <div class="form-base">
-
             <div class="form-group off-3">
                 <button name="submit_profile" value="" type='submit' class='btn btn-success'>Änderungen speichern</button>
             </div>
-
         </div>
 
     </form>
@@ -86,13 +78,12 @@
 
     var app = new Vue({
 
-        extends: FormPost,
+        mixins: [FormPost],
 
         el: ".form-content",
 
         data: {
-            form: {
-            },
+            form: {},
             notifications: [],
             errors: {},
             message: "",

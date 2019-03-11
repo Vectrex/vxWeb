@@ -7,12 +7,9 @@
 </div>
 
 <div class="form-content">
-    <form action="/admin/users/new" method="POST" class="form-horizontal" @submit.prevent="submit">
-
-        <input name="_csrf_token" value="9Xw0YgzQdpNsPkCtSXbKfCzS-rgkoRkdFHBLazQzmeM" type="hidden">
+    <form action="/" class="form-horizontal" @submit.prevent="submit">
 
         <div class="form-sect">
-
             <div class="form-group">
                 <label class="form-label col-3" for="username_input"><strong>Username*</strong></label>
                 <div class="col-9">
@@ -75,20 +72,24 @@
 
     <message-toast :message="message" :classname="messageClass" :state="messageState"></message-toast>
 
+    <user-form :url="url" :data="form" :options="options"></user-form>
+
 </div>
 
 <script type="module">
 
     import MessageToast from "/js/vue/message-toast.js";
     import FormPost from "/js/vue/form-post.js";
+    import UserForm from "/js/vue/user-form.js";
 
     "use strict";
 
     Vue.component("message-toast", MessageToast);
+    Vue.component("user-form", UserForm);
 
     var app = new Vue({
 
-        extends: FormPost,
+        mixins: [FormPost],
 
         el: ".form-content",
 

@@ -26,5 +26,4 @@
                 this.vars.timeoutId = window.setTimeout(() => { this.localState = false }, 5000);
             }
         }
-
     }
