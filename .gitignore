@@ -1,5 +1,7 @@
 .*
+!.gitignore
 vendor
 !vendor/vxWeb
-resources/js
 resources/node_modules
+resources/js
+!resources/js/vue
