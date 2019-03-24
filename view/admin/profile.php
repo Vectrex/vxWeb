@@ -29,10 +29,6 @@
 
     var app = new Vue({
 
-        mixins: [
-            FormPost
-        ],
-
         components: {
             "message-toast": MessageToast,
             "profile-form": ProfileForm
