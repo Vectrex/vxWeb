@@ -8,12 +8,10 @@
 <script>
     export default {
 
-        data: function() {
-            return {
-                activeTimeout: null,
-                isActive: false
-            };
-        },
+        data: () => ({
+            activeTimeout: null,
+            isActive: false
+        }),
 
         props: {
             message: String,

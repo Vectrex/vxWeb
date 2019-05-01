@@ -3,5 +3,6 @@
 vendor
 !vendor/vxWeb
 resources/node_modules
-resources/js
-!resources/js/vue
+
+resources/js/*
+!resources/js/vue/

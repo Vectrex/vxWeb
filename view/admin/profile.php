@@ -16,14 +16,14 @@
             :notifications="notifications"
             @form-response-received="responseReceived"
     ></profile-form>
-
+    <datepicker></datepicker>
 </div>
 
 <script type="module">
 
     import MessageToast from "/js/vue/message-toast.js";
-    import FormPost from "/js/vue/form-post.js";
     import ProfileForm from "/js/vue/profile-form.js";
+    import Datepicker from  "/js/vue/datepicker.js";
 
     "use strict";
 
@@ -31,7 +31,8 @@
 
         components: {
             "message-toast": MessageToast,
-            "profile-form": ProfileForm
+            "profile-form": ProfileForm,
+            "datepicker": Datepicker
         },
 
         el: ".form-content",

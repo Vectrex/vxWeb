@@ -28,7 +28,6 @@
     <script type="module">
 
     import MessageToast from "/js/vue/message-toast.js";
-    import FormPost from "/js/vue/form-post.js";
     import UserForm from "/js/vue/user-form.js";
 
     "use strict";

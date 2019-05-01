@@ -2,12 +2,10 @@
     export default {
 		template: '<div id="messageBox" :class="[{ &#39;display&#39;: isActive }, classname, &#39;toast&#39;]">{{ message }}<button class="btn btn-clear float-right" @click="isActive = false"></button></div>',
 
-        data: function() {
-            return {
-                activeTimeout: null,
-                isActive: false
-            };
-        },
+        data: () => ({
+            activeTimeout: null,
+            isActive: false
+        }),
 
         props: {
             message: String,
