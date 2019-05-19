@@ -1,17 +1,28 @@
 {
   "name": "vxweb",
+  "dependencies": {
+    "vue": "^2.6.10"
+  },
   "devDependencies": {
+    "css-loader": "^2.1.1",
     "gulp": "^3.9.1",
-    "gulp-autoprefixer": "latest",
-    "gulp-clean-css": "latest",
+    "gulp-autoprefixer": "^6.1.0",
+    "gulp-clean-css": "^4.2.0",
     "gulp-concat": "latest",
     "gulp-csscomb": "latest",
     "gulp-rename": "latest",
     "gulp-sass": "latest",
-    "gulp-uglify": "latest",
+    "gulp-uglify": "^3.0.2",
     "gulp-vue-single-file-component": "^1.0.9",
     "spectre.css": "latest",
-    "vue": "latest"
+    "vue-loader": "^15.7.0",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.2"
+  },
+  "scripts": {
+    "start": "webpack --config build/webpack.config.js"
   },
   "browserslist": [
     "last 4 Chrome versions",
@@ -20,6 +31,5 @@
     "last 4 Safari versions",
     "last 4 Opera versions",
     "Explorer >= 10"
-  ],
-  "dependencies": {}
+  ]
 }

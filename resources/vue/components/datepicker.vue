@@ -38,7 +38,7 @@
 </template>
 
 <script>
-    import DateInput from './date-input.js';
+    import DateInput from './date-input.vue';
     export default {
 
         components: {

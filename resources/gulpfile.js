@@ -52,7 +52,7 @@ gulp.task('jsBuild', () => {
 });
 
 gulp.task('vue', () => {
-   gulp.src("./js/vue/components/*.vue")
+   gulp.src("./vue/components/*.vue")
        .pipe(vueComponent())
        .pipe(rename({ extname: ".js" }))
        .pipe(gulp.dest("./dist/js/vue"));
