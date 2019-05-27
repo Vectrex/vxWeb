@@ -17,6 +17,13 @@
             @form-response-received="responseReceived"
     ></profile-form>
     <datepicker></datepicker>
+    <searchselect
+        v-model="searchTerm"
+        :options="searchOptions"
+        option-label="title"
+        option-key="id"
+    ></searchselect>
+
 </div>
 
 <script type="module">
@@ -24,6 +31,7 @@
     import MessageToast from "/js/vue/message-toast.js";
     import ProfileForm from "/js/vue/profile-form.js";
     import Datepicker from  "/js/vue/datepicker.js";
+    import SearchSelect from "/js/vue/searchselect.js";
 
     "use strict";
 
@@ -32,7 +40,8 @@
         components: {
             "message-toast": MessageToast,
             "profile-form": ProfileForm,
-            "datepicker": Datepicker
+            "datepicker": Datepicker,
+            "searchselect": SearchSelect
         },
 
         el: ".form-content",
@@ -44,7 +53,36 @@
                 message: "",
                 messageClass: "",
                 isActive: false
-            }
+            },
+
+
+            searchTerm: null,
+
+            searchOptions: [
+                { id: 1, title: "baz bar" },
+                { id: 2, title: "foo bar" },
+                {
+                    id: 3,
+                    title: "Eos rerum veniam quia mollitia quod et et accusamus." },
+
+                { id: 4, title: "Robs THread" },
+                { id: 5, title: "test" },
+                { id: 6, title: "goose" },
+                { id: 7, title: "loose goose" },
+                { id: 8, title: "geese" },
+                { id: 9, title: "moose" },
+                { id: 10, title: "test thread updated" },
+                {
+                    id: 11,
+                    title:
+                        "Distinctio quo praesentium quis commodi praesentium excepturi." },
+
+                { id: 12, title: "changed new thread" },
+                { id: 13, title: "fred" },
+                { id: 14, title: "barney" }
+            ]
+
+
         },
 
         methods: {
