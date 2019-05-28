@@ -15,7 +15,7 @@
                    v-model="searchText"
             >
 
-            <button type="button" @click="toggleDropdown" class="btn" style="position: absolute; top: 0; right: 0;">
+            <button type="button" @click="toggleDropdown" class="btn" style="position: absolute; top: 0; right: 0; background: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='#667189' d='M2 0L0 2h4zm0 5L0 3h4z'/>)</svg>\") no-repeat;">
                 <i class="icon" :class="dropdownOpen ? 'icon-arrow-up' : 'icon-arrow-down'"></i>
             </button>
 
