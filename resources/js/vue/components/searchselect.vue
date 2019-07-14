@@ -1,6 +1,6 @@
 <template>
-    <div :class="classes.wrapper">
-        <div style="position: relative; width: 100%; display: inline-block;"  v-if="!selectedOption">
+    <div class="form-autocomplete">
+        <div class="form-autocomplete-input form-input">
             <input ref="search"
                    :class="['form-input', isRequired]"
                    :id="inputId"
@@ -15,29 +15,34 @@
                    v-model="searchText"
             >
 
-            <button type="button" @click="toggleDropdown" class="btn" style="position: absolute; top: 0; right: 0; background: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='#667189' d='M2 0L0 2h4zm0 5L0 3h4z'/>)</svg>\") no-repeat;">
-                <i class="icon" :class="dropdownOpen ? 'icon-arrow-up' : 'icon-arrow-down'"></i>
-            </button>
+            <button type="button" @click="toggleDropdown" class="btn" style="position: absolute; top: 0; right: 0; background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0IDUnPjxwYXRoIGZpbGw9JyM2NjcxODknIGQ9J00yIDBMMCAyaDR6bTAgNUwwIDNoNHonLz48L3N2Zz4=') no-repeat;"></button>
 
-            <ul tabindex="-1" ref="options" v-if="matchingOptions"
-                :style="{'max-height': maxHeight}" style="z-index: 100; width: 100%; overflow: auto; position: absolute;"
+        </div>
+
+        <ul tabindex="-1" ref="options" v-if="matchingOptions && dropdownOpen" class="menu">
+
+            <li tabindex="-1"
+                v-for="(option, ndx) in matchingOptions" :key="ndx"
+                class="menu-item"
+                :class="ndx === pointer ? classes.activeClass : ''"
+                class="cursor-pointer outline-none"
+                @blur="handleClickOutside($event)"
+                @mouseover="setPointerIdx(ndx)"
+                @keyup.enter="setOption"
+                @click.prevent="setOption"
+                @keyup.up="movePointerUp"
+                @keyup.down="movePointerDown"
             >
-                <li tabindex="-1"
-                    v-for="(option, ndx) in matchingOptions" :key="ndx"
-                    :class="ndx === pointer ? classes.activeClass : ''"
-                    class="cursor-pointer outline-none"
-                    @blur="handleClickOutside($event)"
-                    @mouseover="setPointerIdx(ndx)"
-                    @keyup.enter="setOption"
-                    @click.prevent="setOption"
-                    @keyup.up="movePointerUp"
-                    @keyup.down="movePointerDown"
-                >
-                    <slot name="option" v-bind="{option, ndx}">
-                        {{ getOptionDescription(option) }}
-                    </slot>
-                </li>
-            </ul>
+                <slot name="option" v-bind="{option, ndx}">
+                    {{ getOptionDescription(option) }}
+                </slot>
+            </li>
+        </ul>
+
+        <!--
+        <div style="position: relative; width: 100%; display: inline-block;"  v-if="!selectedOption">
+
+
         </div>
         <div style="position: relative; width: 100%; display: inline-block;" v-else>
             <input :id="inputId"
@@ -56,6 +61,7 @@
                 </button>
             </div>
         </div>
+        -->
     </div>
 </template>
 
