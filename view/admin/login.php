@@ -19,16 +19,27 @@
 
 <div id="test">
     <autocomplete
-            :search="search"
-            placeholder="Static search for a country"
-            aria-label="Search for a country"
+        :search="search"
+        placeholder="Static search for a country"
+        aria-label="Search for a country"
     ></autocomplete>
 
     <autocomplete
-            :search="getCountries"
-            :get-result-value="parseResult"
-            placeholder="Dynamic search for a country"
-            aria-label="Search for a country"
+        :search="getCountries"
+        :get-result-value="parseResult"
+        placeholder="Dynamic search for a country"
+        aria-label="Search for a country"
+    ></autocomplete>
+
+    <autocomplete
+        :search="getCountries"
+        :get-result-value="parseResult"
+        placeholder="Dynamic search for a country Spectre style"
+        aria-label="Search for a country"
+        base-class="autocomplete"
+        input-class="autocomplete-input"
+        result-list-class="autocomplete-result-list"
+        result-class="autocomplete-result"
     ></autocomplete>
 
 </div>

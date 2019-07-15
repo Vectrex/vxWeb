@@ -37,20 +37,19 @@ export default {
     },
     baseClass: {
       type: String,
-      //default: 'form-autocomplete'
-      default: 'autocomplete'
+      default: 'form-autocomplete'
     },
     resultListClass: {
       type: String,
-      default: 'autocomplete-result-list'
+      default: 'menu'
     },
     resultClass: {
       type: String,
-      default: 'autocomplete-result'
+      default: 'menu-item'
     },
     inputClass: {
       type: String,
-      default: 'autocomplete-input'
+      default: 'autocomplete-input form-input'
     },
     autoSelect: {
       type: Boolean,
