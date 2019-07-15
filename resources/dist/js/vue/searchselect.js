@@ -157,9 +157,9 @@
         },
         data() {
             return {
-            searchText: "",
-            selectedOption: null,
-            dropdownOpen: false
+                searchText: "",
+                selectedOption: null,
+                dropdownOpen: false
             };
         },
         watch: {
@@ -204,13 +204,9 @@
                 if (!this.searchText.length) {
                     return [...this.options].slice(0, this.maxResults);
                 }
-                return this.options
-                    .filter(option =>
-                        this.filterBy(option)
-                    )
-                    .slice(0, this.maxResults);
-                }
-            },
+                return this.options.filter(option => this.filterBy(option)).slice(0, this.maxResults);
+            }
+        },
         methods: {
             setPointerIdx(idx) {
                 this.pointer = idx;

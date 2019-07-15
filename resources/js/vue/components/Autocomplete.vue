@@ -1,13 +1,5 @@
 <template>
-  <div ref="root">
-    <slot
-      :rootProps="rootProps"
-      :inputProps="inputProps"
-      :resultListProps="resultListProps"
-      :results="results"
-      :resultProps="resultProps"
-    >
-      <div v-bind="rootProps">
+      <div v-bind="containerProps" ref="container">
         <input
           ref="input"
           v-bind="inputProps"
@@ -32,8 +24,6 @@
           </template>
         </ul>
       </div>
-    </slot>
-  </div>
 </template>
 
 <script>
@@ -69,12 +59,25 @@ export default {
 
   props: {
     search: {
-      type: [Function, Promise],
+      type: Function,
       required: true
     },
     baseClass: {
       type: String,
+      //default: 'form-autocomplete'
       default: 'autocomplete'
+    },
+    resultListClass: {
+      type: String,
+      default: 'autocomplete-result-list'
+    },
+    resultClass: {
+      type: String,
+      default: 'autocomplete-result'
+    },
+    inputClass: {
+      type: String,
+      default: 'autocomplete-input'
     },
     autoSelect: {
       type: Boolean,
@@ -93,7 +96,7 @@ export default {
   data() {
     return {
       value: this.defaultValue,
-      resultListId: uniqueId(this.baseClass + "-result-list-"),
+      resultListId: uniqueId(this.listClass + "-"),
       results: [],
       selectedIndex: -1,
       searchCounter: 0,
@@ -105,7 +108,7 @@ export default {
   },
 
   computed: {
-    rootProps() {
+    containerProps() {
       return {
         class: this.baseClass,
         style: { position: 'relative' },
@@ -116,7 +119,7 @@ export default {
     },
     inputProps() {
       return {
-        class: this.baseClass + "-input",
+        class: this.inputClass,
         value: this.value,
         role: 'combobox',
         autocomplete: 'off',
@@ -134,7 +137,7 @@ export default {
     resultListProps() {
       return {
         id: this.resultListId,
-        class: this.baseClass + "-result-list",
+        class: this.resultListClass,
         role: 'listbox',
         style: {
           position: 'absolute',
@@ -148,8 +151,8 @@ export default {
     },
     resultProps() {
       return this.results.map((result, index) => ({
-        id: this.baseClass + "-result-" + index,
-        class: this.baseClass + "-result",
+        id: this.resultClass + "-" + index,
+        class: this.resultClass,
         'data-result-index': index,
         role: 'option',
         ...(this.selectedIndex === index ? { 'aria-selected': 'true' } : {})
@@ -275,7 +278,7 @@ export default {
     },
 
     handleDocumentClick (event) {
-      if (this.$refs.root.contains(event.target)) {
+      if (this.$refs.container.contains(event.target)) {
         return;
       }
       this.hideResults();
@@ -283,12 +286,14 @@ export default {
 
     updateResults: function (value) {
 
-      if (this.search instanceof Promise) {
+      const search = this.search(value);
+
+      if (search instanceof Promise) {
 
         const currentSearch = ++this.searchCounter;
         this.loading = true;
 
-        this.search(value).then(results => {
+        search.then(results => {
           if (currentSearch !== this.searchCounter) {
             return;
           }
@@ -305,7 +310,7 @@ export default {
 
       } else {
 
-        this.results = this.search(value);
+        this.results = search;
 
         if (this.results.length === 0) {
           this.hideResults();
@@ -315,6 +320,7 @@ export default {
         }
       }
     }
+
   }
 }
 </script>

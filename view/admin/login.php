@@ -20,9 +20,17 @@
 <div id="test">
     <autocomplete
             :search="search"
-            placeholder="Search for a country"
+            placeholder="Static search for a country"
             aria-label="Search for a country"
     ></autocomplete>
+
+    <autocomplete
+            :search="getCountries"
+            :get-result-value="parseResult"
+            placeholder="Dynamic search for a country"
+            aria-label="Search for a country"
+    ></autocomplete>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -44,12 +52,23 @@
         methods: {
             search(input) {
                 if (input.length < 1) {
-                    return []
+                    return [];
                 }
                 return this.countries.filter(country => {
                     return country.toLowerCase()
                         .startsWith(input.toLowerCase())
                 })
+            },
+
+            getCountries(input) {
+                if (input.trim().length < 1) {
+                    return [];
+                }
+                return fetch("https://restcountries.eu/rest/v2/name/" + input.toLowerCase()).then(result => result.json());
+            },
+
+            parseResult(result) {
+                return result.name;
             }
         },
 
