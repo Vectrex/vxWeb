@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       value: this.defaultValue,
-      resultListId: uniqueId(this.listClass + "-"),
+      resultListId: uniqueId(this.resultListClass + "-"),
       results: [],
       selectedIndex: -1,
       searchCounter: 0,

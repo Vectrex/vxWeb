@@ -5065,7 +5065,7 @@ a.text-error:visited
 
 .form-autocomplete[data-loading='true']::after
 {right: .8rem; 
-    /* content: ""; border: 3px solid $primary-color; border-right-color: transparent; border-radius: 100%; width: 20px; height: 20px; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); animation: rotate 0.5s linear infinite; */ left: auto;
+    left: auto;
 }
 
 @font-face
