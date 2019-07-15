@@ -1,0 +1,10 @@
+@import "../../node_modules/spectre.css/src/variables";
+
+.form-autocomplete[data-loading="true"] {
+
+  &::after {
+    @extend .loading::after;
+    left: auto;
+    right: 0.8rem;
+  }
+}

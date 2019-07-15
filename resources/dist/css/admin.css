@@ -661,7 +661,9 @@ html:lang(ko),
 }
 
 .btn:active.loading::after,
-.btn.active.loading::after
+.btn.form-autocomplete:active[data-loading='true']::after,
+.btn.active.loading::after,
+.btn.active.form-autocomplete[data-loading='true']::after
 {
     border-bottom-color: #fff; border-left-color: #fff;
 }
@@ -690,7 +692,8 @@ html:lang(ko),
     background: #0071a8;
 }
 
-.btn.btn-primary.loading::after
+.btn.btn-primary.loading::after,
+.btn.btn-primary.form-autocomplete[data-loading='true']::after
 {
     border-bottom-color: #fff; border-left-color: #fff;
 }
@@ -717,7 +720,8 @@ html:lang(ko),
     background: #2a9a39;
 }
 
-.btn.btn-success.loading::after
+.btn.btn-success.loading::after,
+.btn.btn-success.form-autocomplete[data-loading='true']::after
 {
     border-bottom-color: #fff; border-left-color: #fff;
 }
@@ -744,7 +748,8 @@ html:lang(ko),
     background: #c44900;
 }
 
-.btn.btn-error.loading::after
+.btn.btn-error.loading::after,
+.btn.btn-error.form-autocomplete[data-loading='true']::after
 {
     border-bottom-color: #fff; border-left-color: #fff;
 }
@@ -3305,7 +3310,8 @@ a.text-error:visited
     color: transparent !important;
 }
 
-.loading::after
+.loading::after,
+.form-autocomplete[data-loading='true']::after
 {position: absolute; z-index: 1; top: 50%; left: 50%; display: block; width: .8rem; height: .8rem; margin-top: -.4rem; margin-left: -.4rem; content: ''; 
     animation: loading 500ms infinite linear; border: .1rem solid #0089cc; border-top-color: transparent; border-right-color: transparent; border-radius: 50%;
 }
@@ -3315,7 +3321,8 @@ a.text-error:visited
     min-height: 2rem;
 }
 
-.loading.loading-lg::after
+.loading.loading-lg::after,
+.loading-lg.form-autocomplete[data-loading='true']::after
 {width: 1.6rem; 
     height: 1.6rem; margin-top: -.8rem; margin-left: -.8rem;
 }
@@ -5054,6 +5061,11 @@ a.text-error:visited
     {
         margin-left: calc(100% / 12 * 11);
     }
+}
+
+.form-autocomplete[data-loading='true']::after
+{right: .8rem; 
+    /* content: ""; border: 3px solid $primary-color; border-right-color: transparent; border-radius: 100%; width: 20px; height: 20px; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); animation: rotate 0.5s linear infinite; */ left: auto;
 }
 
 @font-face
