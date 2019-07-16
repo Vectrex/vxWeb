@@ -137,15 +137,7 @@ export default {
       return {
         id: this.resultListId,
         class: this.resultListClass,
-        role: 'listbox',
-        style: {
-          position: 'absolute',
-          zIndex: 1,
-          width: '100%',
-          visibility: this.expanded ? 'visible' : 'hidden',
-          pointerEvents: this.expanded ? 'auto' : 'none',
-          [this.position === 'below' ? 'top' : 'bottom']: '100%'
-        }
+        role: 'listbox'
       }
     },
     resultProps() {
@@ -174,7 +166,10 @@ export default {
       return;
     }
 
-    if (this.resetPosition && this.results.length > 0) {
+    if (this.resetPosition && this.results.length) {
+
+      this.resetPosition = false;
+
       inputPos = this.$refs.input.getBoundingClientRect();
       listPos = this.$refs.resultList.getBoundingClientRect();
 
