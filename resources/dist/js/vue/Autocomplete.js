@@ -75,7 +75,8 @@ export default {
       expanded: false,
       loading: false,
       position: 'below',
-      resetPosition: true
+      resetPosition: true,
+      resultListMaxHeight: 200
     }
   },
 
@@ -110,7 +111,8 @@ export default {
       return {
         id: this.resultListId,
         class: this.resultListClass,
-        role: 'listbox'
+        role: 'listbox',
+        style: { /*'max-height': this.resultListMaxHeight + "px" ,*/ overflowY: 'auto' }
       }
     },
     resultProps() {
@@ -147,7 +149,7 @@ export default {
       listPos = this.$refs.resultList.getBoundingClientRect();
 
       this.position = (inputPos.bottom + listPos.height > window.innerHeight) && (window.innerHeight - inputPos.bottom < inputPos.top) && (window.pageYOffset + inputPos.top - listPos.height > 0) ? "above" : "below";
-
+      this.resultListMaxHeight = this.position === 'below' ? (window.innerHeight - inputPos.bottom) : inputPos.top;
     }
 
     // Make sure selected result isn't scrolled out of view
