@@ -76,7 +76,7 @@ export default {
       loading: false,
       position: 'below',
       resetPosition: true,
-      resultListMaxHeight: 200
+      resultListMaxHeight: 'auto'
     }
   },
 
@@ -112,7 +112,7 @@ export default {
         id: this.resultListId,
         class: this.resultListClass,
         role: 'listbox',
-        style: { /*'max-height': this.resultListMaxHeight + "px" ,*/ overflowY: 'auto' }
+        style: { 'max-height': this.resultListMaxHeight, overflowY: 'auto' }
       }
     },
     resultProps() {
@@ -134,22 +134,34 @@ export default {
     document.body.removeEventListener('click', this.handleDocumentClick);
   },
 
-  updated() {
-    let inputPos, listPos;
+  beforeUpdate() {
 
+    // set max-height to auto to allow height calculation in updated()
+
+    if (this.resetPosition && this.results.length) {
+      // this.resultListMaxHeight = 'auto';
+    }
+  },
+
+  updated() {
     if (!this.$refs.input || !this.$refs.resultList) {
       return;
     }
+
+    let inputPos = this.$refs.input.getBoundingClientRect();
+    let listPos = this.$refs.resultList.getBoundingClientRect();
 
     if (this.resetPosition && this.results.length) {
 
       this.resetPosition = false;
 
-      inputPos = this.$refs.input.getBoundingClientRect();
-      listPos = this.$refs.resultList.getBoundingClientRect();
+      // show list above or below
 
       this.position = (inputPos.bottom + listPos.height > window.innerHeight) && (window.innerHeight - inputPos.bottom < inputPos.top) && (window.pageYOffset + inputPos.top - listPos.height > 0) ? "above" : "below";
-      this.resultListMaxHeight = this.position === 'below' ? (window.innerHeight - inputPos.bottom) : inputPos.top;
+
+      // set max-height, so that list fits in window (with a slight margin)
+
+      // this.resultListMaxHeight = ((this.position === 'below' ? (window.innerHeight - inputPos.bottom) : inputPos.top) - 8) + "px";
     }
 
     // Make sure selected result isn't scrolled out of view
@@ -191,8 +203,9 @@ export default {
       const key = event.key;
 
       switch (key) {
-        case 'Up': // IE/Edge
-        case 'Down': // IE/Edge
+        /* IE and Edge prefer their own key names */
+        case 'Up':
+        case 'Down':
         case 'ArrowUp':
         case 'ArrowDown': {
           event.preventDefault();
@@ -206,8 +219,7 @@ export default {
           break;
         }
         case 'Enter': {
-          this.selectResult();
-          this.handleSubmit(this.results[this.selectedIndex]);
+          this.handleSubmit(this.selectResult());
           break;
         }
         case 'Esc': // IE/Edge
@@ -232,6 +244,7 @@ export default {
         this.setValue(selectedResult);
       }
       this.hideResults();
+      return selectedResult;
     },
 
     handleSubmit (selectedResult) {
@@ -242,8 +255,7 @@ export default {
       const result = event.target.closest('[data-result-index]');
       if (result) {
         this.selectedIndex = parseInt(result.dataset.resultIndex, 10);
-        this.selectResult();
-        this.handleSubmit(this.results[this.selectedIndex]);
+        this.handleSubmit(this.selectResult());
       }
     },
 

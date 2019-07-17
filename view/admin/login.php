@@ -18,29 +18,31 @@
 </div>
 
 <div id="test">
-    <autocomplete
-        :search="search"
-        placeholder="Static search for a country"
-        aria-label="Search for a country"
-    ></autocomplete>
+    <div class="form-group">
+        <autocomplete
+            :search="search"
+            placeholder="Static search for a country"
+            aria-label="Search for a country"
+            :auto-select="true"
+        />
+    </div>
 
-    <autocomplete
-        :search="getCountries"
-        :get-result-value="parseResult"
-        placeholder="Dynamic search for a country"
-        aria-label="Search for a country"
-    ></autocomplete>
+    <div class="form-group">
+        <autocomplete
+            :search="getCountries"
+            :get-result-value="parseResult"
+            placeholder="Search country on restcountries.eu"
+            aria-label="Search for a country"
+            @submit="valuePicked"
+        >
+            <template v-slot:result="row">
+                <li class="menu-item" :key="row.props.id" :aria-selected="row.props['aria-selected']" :data-result-index="row.props['data-result-index']">
+                    <strong>{{ row.result.name }}</strong> ({{ row.result.alpha2Code }})
+                </li>
+            </template>
 
-    <autocomplete
-        :search="getCountries"
-        :get-result-value="parseResult"
-        placeholder="Dynamic search for a country Spectre style"
-        aria-label="Search for a country"
-        base-class="autocomplete"
-        input-class="autocomplete-input"
-        result-list-class="autocomplete-result-list"
-        result-class="autocomplete-result"
-    ></autocomplete>
+        </autocomplete>
+    </div>
 
 </div>
 
@@ -72,7 +74,7 @@
             },
 
             getCountries(input) {
-                if (input.trim().length < 1) {
+                if (input.trim().length < 3) {
                     return [];
                 }
                 return fetch("https://restcountries.eu/rest/v2/name/" + input.toLowerCase()).then(result => result.json());
@@ -80,6 +82,10 @@
 
             parseResult(result) {
                 return result.name;
+            },
+
+            valuePicked(result) {
+                console.log (result.name);
             }
         },
 
