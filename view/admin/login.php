@@ -44,6 +44,9 @@
         </autocomplete>
     </div>
 
+    <div class="form-group">
+        <datepicker></datepicker>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -51,13 +54,15 @@
 <script type="module">
 
     import Autocomplete from "/js/vue/Autocomplete.js";
+    import Datepicker from  "/js/vue/datepicker.js";
 
     "use strict";
 
     const app = new Vue({
 
         components: {
-            "autocomplete": Autocomplete
+            "autocomplete": Autocomplete,
+            "datepicker": Datepicker
         },
 
         el: "#test",

@@ -222,7 +222,7 @@ export default {
           this.handleSubmit(this.selectResult());
           break;
         }
-        case 'Esc': // IE/Edge
+        case 'Esc':
         case 'Escape': {
           this.hideResults();
           this.setValue();

@@ -21,7 +21,10 @@
                     <div v-for="day in currentDays" class="calendar-date">
                         <button
                             class="date-item"
-                            :class="[today.toString() === (new Date(year, month, day)).toString() ? 'date-today' : '', day === dateDay ? 'active' : '']"
+                            :class="[
+                                today.toString() === (new Date(year, month, day)).toString() ? 'date-today' : '',
+                                selectedDate && selectedDate.toString() === (new Date(year, month, day)).toString() ? 'active' : ''
+                            ]"
                             @click="selectDate(day, month)"
                         >{{ day }}</button>
                     </div>
