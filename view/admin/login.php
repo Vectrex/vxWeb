@@ -47,6 +47,17 @@
     <div class="form-group">
         <datepicker></datepicker>
     </div>
+
+    <div class="form-group">
+        <datepicker
+            :start-of-week-index="0"
+            :weekdays="'Su Mo Tu We Th Fr Sa'.split(' ')"
+            date-format="%w %m/%d/%Y"
+            :day-names="'Sun Mon Tue Wed Thu Fri Sat'.split(' ')"
+            :month-names="'January February March April May June July August September October November December'.split(' ')"
+        ></datepicker>
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

@@ -16,7 +16,6 @@
 </template>
 
 <script>
-
     export default {
 
         data() {
@@ -27,12 +26,12 @@
 
         props: {
             monthNames: {
-                type: String,
-                default: "Jan Feb Mar Apr Mai Jun Jul Aug Sep Okt Nov Dez"
+                type: Array,
+                default: () => "Jan Feb Mar Apr Mai Jun Jul Aug Sep Okt Nov Dez".split(" ")
             },
             dayNames: {
-                type: String,
-                default: "Mo Di Mi Do Fr Sa So"
+                type: Array,
+                default: () => "Mo Di Mi Do Fr Sa So".split(" ")
             },
             dateFormat: {
                 type: String,
@@ -42,7 +41,7 @@
                 type: Boolean,
                 default: true
             },
-            selectedDate: Date
+            date: Date
         },
 
         computed: {
@@ -52,8 +51,8 @@
             },
 
             formattedValue() {
-                if(this.selectedDate) {
-                    return this.formatDate(this.selectedDate, this.dateFormat);
+                if(this.date) {
+                    return this.formatDate(this.date, this.dateFormat);
                 }
             }
 
@@ -72,10 +71,10 @@
                     .replace("%D", ("0" + date.getDate()).slice(-2))
                     .replace("%m", date.getMonth() + 1)
                     .replace("%M", ("0" + (date.getMonth() + 1)).slice(-2))
-                    .replace("%MMM", this.monthNames.split(" ")[date.getMonth()].trim())
+                    .replace("%MMM", this.monthNames[date.getMonth()].trim())
                     .replace("%y", date.getFullYear().toString().slice(-2))
                     .replace("%Y", date.getFullYear())
-                    .replace("%w", this.dayNames.split(" ")[date.getDay()].trim());
+                    .replace("%w", this.dayNames[date.getDay()].trim());
             },
 
             showDatepicker() {
@@ -83,5 +82,4 @@
             }
         }
     }
-
 </script>
