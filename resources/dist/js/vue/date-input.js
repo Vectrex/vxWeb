@@ -1,6 +1,6 @@
 
     export default {
-		template: '<div class="input-group input-inline"><input type="text" autocomplete="off" :class="computedClass" :value="formattedValue"><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click="showDatepicker"></button></div>',
+		template: '<div class="input-group input-inline"><input type="text" autocomplete="off" :class="computedClass" :value="formattedValue"><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click="$emit(&#39;toggle-datepicker&#39;)"></button></div>',
 
         data() {
             return {
@@ -59,10 +59,6 @@
                     .replace("%y", date.getFullYear().toString().slice(-2))
                     .replace("%Y", date.getFullYear())
                     .replace("%w", this.dayNames[date.getDay()].trim());
-            },
-
-            showDatepicker() {
-                this.$emit("show-datepicker");
             }
         }
     }

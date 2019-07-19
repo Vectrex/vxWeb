@@ -10,7 +10,7 @@
             v-if="showButton"
             type="button"
             class="btn webfont-icon-only calendarPopper btn-primary"
-            @click="showDatepicker"
+            @click="$emit('toggle-datepicker')"
         >&#xe00c;</button>
     </div>
 </template>
@@ -75,10 +75,6 @@
                     .replace("%y", date.getFullYear().toString().slice(-2))
                     .replace("%Y", date.getFullYear())
                     .replace("%w", this.dayNames[date.getDay()].trim());
-            },
-
-            showDatepicker() {
-                this.$emit("show-datepicker");
             }
         }
     }

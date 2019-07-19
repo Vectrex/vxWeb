@@ -1,13 +1,15 @@
 <template>
-    <div class="datepicker">
+    <div class="datepicker" v-bind="rootProps">
         <date-input
             :date="selectedDate"
             :date-format="$attrs['date-format']"
             :day-names="$attrs['day-names']"
             :show-button="$attrs['show-button']"
             :month-name="$attrs['month-names']"
+            @toggle-datepicker="toggleDatepicker"
+            v-bind="inputProps"
         ></date-input>
-        <div class="calendar">
+        <div class="calendar" v-bind="calendarProps">
             <div class="calendar-nav navbar">
                 <button class="btn btn-action btn-link btn-large prvMon" @click="previousMonth"></button>
                 <div class="month navbar-primary">{{ monthLabel }} {{ year }}</div>
@@ -22,9 +24,9 @@
                         <button
                                 class="date-item"
                                 :class="[
-                                today.toString() === day.toString() ? 'date-today' : '',
-                                selectedDate && selectedDate.toString() === day.toString() ? 'active' : ''
-                            ]"
+                                    today.toString() === day.toString() ? 'date-today' : '',
+                                    selectedDate && selectedDate.toString() === day.toString() ? 'active' : ''
+                                ]"
                                 @click="selectDate(day)"
                         >{{ day.getDate() }}</button>
                     </div>
@@ -36,8 +38,8 @@
 
 <script>
     import DateInput from './date-input.js';
-    export default {
 
+    export default {
         components: {
             DateInput
         },
@@ -47,11 +49,33 @@
                 year: this.initDate.getFullYear(),
                 month: this.initDate.getMonth(),
                 dateDay: this.initDate.getDate(),
-                selectedDate: null
+                selectedDate: null,
+                expanded: false
             };
         },
 
         computed: {
+            rootProps() {
+                return {
+                    style: { position: 'relative' }
+                }
+            },
+            inputProps() {
+                return {
+                    style: { position: 'relative' }
+                }
+            },
+            calendarProps() {
+                return {
+                    style: {
+                        display: this.expanded ? 'block': 'none',
+                        position: 'absolute',
+                        top: '100%',
+                        transform: 'translateY(.2rem)',
+                        'z-index': 300
+                    }
+                }
+            },
             days() {
                 const dates = [];
                 const nextMonth = new Date(this.year, this.month + 1, 0);
@@ -118,7 +142,6 @@
                         return '';
                 }
             },
-
             previousMonth() {
                 const d = new Date(this.year, --this.month, this.dateDay);
                 this.month = d.getMonth();
@@ -134,6 +157,10 @@
             selectDate(day) {
                 this.selectedDate = day;
                 this.$emit("selected", day);
+                this.expanded = false;
+            },
+            toggleDatepicker() {
+                this.expanded = !this.expanded;
             }
         }
     }
