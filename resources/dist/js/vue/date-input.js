@@ -45,6 +45,7 @@
         methods: {
 
             formatDate(date, format) {
+
                 if (!date instanceof Date) {
                     return "";
                 }
@@ -63,7 +64,6 @@
             parseDate(dateString, format) {
 
                 let matches, escapedFormat = format.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), posMap = [];
-                const date = new Date();
 
                 // check for single day, month and year expression
 
@@ -76,7 +76,7 @@
                 else {
                     return false;
                 }
-                posMap[2] = format.toLowerCase().indexOf('d');
+                posMap.push( { srcPos: format.toLowerCase().indexOf('d'), destPos: 2 });
 
                 if((matches = format.match(/\bm\b/gi)) && 1 === matches.length) {
                     escapedFormat = escapedFormat.replace('m', '(\\d{1,2})');
@@ -87,7 +87,7 @@
                 else {
                     return false;
                 }
-                posMap[1] = format.toLowerCase().indexOf('m');
+                posMap.push( { srcPos: format.toLowerCase().indexOf('m'), destPos: 1 });
 
                 if((matches = format.match(/\by\b/gi)) && 1 === matches.length) {
                     escapedFormat = escapedFormat.replace('y', '(\\d{4})');
@@ -95,7 +95,7 @@
                 else {
                     return false;
                 }
-                posMap[0] = format.toLowerCase().indexOf('y');
+                posMap.push( { srcPos: format.toLowerCase().indexOf('y'), destPos: 0 });
 
                 if(!(matches = dateString.match(escapedFormat))) {
                     return false;
@@ -105,14 +105,20 @@
 
                 matches.shift();
 
-                /*
-                 e.g.
-                 [y, m, d] -
-                 [4, 0, 2] => [2, 0, 1] (m/d/y)
-                 [4, 2, 0] => [2, 1, 0] (d.m.y)
-                 [0, 6, 4] => [0, 2, 1] (y.d.m)
-                 */
+                // bring day, month, year in correct order to allow ISO notation
 
+                posMap.sort( (a, b) => a.srcPos < b.srcPos ? -1 : 1);
+
+                let result = [], part, pos;
+
+                while((part = matches.shift())) {
+                    pos = posMap.shift();
+                    result[pos.destPos] = part;
+                }
+
+                result = Date.parse(result.join('-'));
+
+                return result ? new Date(result) : false;
             }
         }
     }
