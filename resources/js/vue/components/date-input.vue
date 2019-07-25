@@ -5,6 +5,8 @@
             autocomplete="off"
             :class="computedClass"
             :value="formattedValue"
+            @focus="handleFocus"
+            @blur="handleBlur"
         >
         <button
             v-if="showButton"
@@ -20,7 +22,9 @@
 
         data() {
             return {
-                dateString: null
+                dateString: null,
+                error: false,
+                parsedDate: null
             }
         },
 
@@ -33,7 +37,11 @@
                 type: Array,
                 default: () => "Mo Di Mi Do Fr Sa So".split(" ")
             },
-            dateFormat: {
+            inputFormat: {
+                type: String,
+                default: "Y-M-D"
+            },
+            outputFormat: {
                 type: String,
                 default: "%Y-%M-%D"
             },
@@ -52,13 +60,25 @@
 
             formattedValue() {
                 if(this.date) {
-                    return this.formatDate(this.date, this.dateFormat);
+                    return this.formatDate(this.date, this.outputFormat);
                 }
             }
 
         },
 
+        watch: {
+            date(newValue) {
+                this.dateString = this.formatDate(newValue, this.outputFormat);
+            }
+        },
+
         methods: {
+            handleBlur () {
+            },
+
+            handleFocus () {
+                this.error = false;
+            },
 
             formatDate(date, format) {
 

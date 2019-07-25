@@ -2,7 +2,8 @@
     <div class="datepicker" v-bind="rootProps">
         <date-input
             :date="selectedDate"
-            :date-format="$attrs['date-format']"
+            :input-format="$attrs['date-format']"
+            :output-format="$attrs['date-format']"
             :day-names="$attrs['day-names']"
             :show-button="$attrs['show-button']"
             :month-name="$attrs['month-names']"

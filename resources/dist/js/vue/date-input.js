@@ -1,10 +1,12 @@
 
     export default {
-		template: '<div class="input-group input-inline"><input type="text" autocomplete="off" :class="computedClass" :value="formattedValue"><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click="$emit(&#39;toggle-datepicker&#39;)"></button></div>',
+		template: '<div class="input-group input-inline"><input type="text" autocomplete="off" :class="computedClass" :value="formattedValue" @focus="handleFocus" @blur="handleBlur"><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click="$emit(&#39;toggle-datepicker&#39;)"></button></div>',
 
         data() {
             return {
-                dateString: null
+                dateString: null,
+                error: false,
+                parsedDate: null
             }
         },
 
@@ -17,7 +19,11 @@
                 type: Array,
                 default: () => "Mo Di Mi Do Fr Sa So".split(" ")
             },
-            dateFormat: {
+            inputFormat: {
+                type: String,
+                default: "Y-M-D"
+            },
+            outputFormat: {
                 type: String,
                 default: "%Y-%M-%D"
             },
@@ -36,13 +42,25 @@
 
             formattedValue() {
                 if(this.date) {
-                    return this.formatDate(this.date, this.dateFormat);
+                    return this.formatDate(this.date, this.outputFormat);
                 }
             }
 
         },
 
+        watch: {
+            date(newValue) {
+                this.dateString = this.formatDate(newValue, this.outputFormat);
+            }
+        },
+
         methods: {
+            handleBlur () {
+            },
+
+            handleFocus () {
+                this.error = false;
+            },
 
             formatDate(date, format) {
 
