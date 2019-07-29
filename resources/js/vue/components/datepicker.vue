@@ -13,9 +13,9 @@
         ></date-input>
         <div class="calendar" v-bind="calendarProps">
             <div class="calendar-nav navbar">
-                <button class="btn btn-action btn-link btn-large prvMon" @click="previousMonth"></button>
+                <button class="btn btn-action btn-link btn-large prvMon" @click.stop="previousMonth"></button>
                 <div class="month navbar-primary">{{ monthLabel }} {{ year }}</div>
-                <button class="btn btn-action btn-link btn-large nxtMon" @click="nextMonth"></button>
+                <button class="btn btn-action btn-link btn-large nxtMon" @click.stop="nextMonth"></button>
             </div>
             <div class="calendar-container">
                 <div class="calendar-header">
