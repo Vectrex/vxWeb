@@ -1,6 +1,7 @@
 <template>
     <div class="datepicker" v-bind="rootProps">
         <date-input
+            v-if="hasInput"
             :date="selectedDate"
             :input-format="$attrs['date-format']"
             :output-format="$attrs['date-format']"
@@ -51,7 +52,7 @@
                 month: this.initDate.getMonth(),
                 dateDay: this.initDate.getDate(),
                 selectedDate: null,
-                expanded: false
+                expanded: !this.hasInput
             };
         },
 
@@ -68,13 +69,13 @@
             },
             calendarProps() {
                 return {
-                    style: {
+                    style: this.hasInput ? {
                         display: this.expanded ? 'block': 'none',
                         position: 'absolute',
                         top: '100%',
                         transform: 'translateY(.2rem)',
                         'z-index': 300
-                    }
+                    } : {}
                 }
             },
             days() {
@@ -89,7 +90,6 @@
 
                 return (dates);
             },
-
             preceedingDays() {
                 const days = [];
                 for(let i = (new Date(this.year, this.month, 0)).getDay(); i--;) {
@@ -129,6 +129,22 @@
                 type: Number,
                 default: 1,
                 validator: value => !value || value === 1
+            },
+            hasInput: {
+                type: Boolean,
+                default: true
+            }
+        },
+
+        mounted() {
+            if(this.hasInput) {
+                document.body.addEventListener('click', this.handleDocumentClick);
+            }
+        },
+
+        beforeDestroy() {
+            if(this.hasInput) {
+                document.body.removeEventListener('click', this.handleDocumentClick);
             }
         },
 
@@ -158,11 +174,15 @@
             selectDate(day) {
                 this.selectedDate = day;
                 this.$emit("selected", day);
-                this.expanded = false;
+                this.expanded = !this.hasInput;
             },
             toggleDatepicker() {
                 this.expanded = !this.expanded;
+            },
+            handleDocumentClick() {
+                this.expanded = false;
             }
+
         }
     }
 </script>

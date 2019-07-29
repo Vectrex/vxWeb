@@ -2,7 +2,7 @@
     import DateInput from './date-input.js';
 
     export default {
-		template: '<div class="datepicker" v-bind="rootProps"><date-input :date="selectedDate" :input-format="$attrs[&#39;date-format&#39;]" :output-format="$attrs[&#39;date-format&#39;]" :day-names="$attrs[&#39;day-names&#39;]" :show-button="$attrs[&#39;show-button&#39;]" :month-name="$attrs[&#39;month-names&#39;]" @toggle-datepicker="toggleDatepicker" v-bind="inputProps"></date-input><div class="calendar" v-bind="calendarProps"><div class="calendar-nav navbar"><button class="btn btn-action btn-link btn-large prvMon" @click="previousMonth"></button><div class="month navbar-primary">{{ monthLabel }} {{ year }}</div><button class="btn btn-action btn-link btn-large nxtMon" @click="nextMonth"></button></div><div class="calendar-container"><div class="calendar-header"><div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div></div><div class="calendar-body"><div v-for="day in days" class="calendar-date" :class="getCellClass(day)"><button class="date-item" :class="[today.toString() === day.toString() ? &#39;date-today&#39; : &#39;&#39;,selectedDate &amp;&amp; selectedDate.toString() === day.toString() ? &#39;active&#39; : &#39;&#39;]" @click="selectDate(day)">{{ day.getDate() }}</button></div></div></div></div></div>',
+		template: '<div class="datepicker" v-bind="rootProps"><date-input v-if="hasInput" :date="selectedDate" :input-format="$attrs[&#39;date-format&#39;]" :output-format="$attrs[&#39;date-format&#39;]" :day-names="$attrs[&#39;day-names&#39;]" :show-button="$attrs[&#39;show-button&#39;]" :month-name="$attrs[&#39;month-names&#39;]" @toggle-datepicker="toggleDatepicker" v-bind="inputProps"></date-input><div class="calendar" v-bind="calendarProps"><div class="calendar-nav navbar"><button class="btn btn-action btn-link btn-large prvMon" @click="previousMonth"></button><div class="month navbar-primary">{{ monthLabel }} {{ year }}</div><button class="btn btn-action btn-link btn-large nxtMon" @click="nextMonth"></button></div><div class="calendar-container"><div class="calendar-header"><div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div></div><div class="calendar-body"><div v-for="day in days" class="calendar-date" :class="getCellClass(day)"><button class="date-item" :class="[today.toString() === day.toString() ? &#39;date-today&#39; : &#39;&#39;,selectedDate &amp;&amp; selectedDate.toString() === day.toString() ? &#39;active&#39; : &#39;&#39;]" @click="selectDate(day)">{{ day.getDate() }}</button></div></div></div></div></div>',
         components: {
             DateInput
         },
@@ -13,7 +13,7 @@
                 month: this.initDate.getMonth(),
                 dateDay: this.initDate.getDate(),
                 selectedDate: null,
-                expanded: false
+                expanded: !this.hasInput
             };
         },
 
@@ -30,13 +30,13 @@
             },
             calendarProps() {
                 return {
-                    style: {
+                    style: this.hasInput ? {
                         display: this.expanded ? 'block': 'none',
                         position: 'absolute',
                         top: '100%',
                         transform: 'translateY(.2rem)',
                         'z-index': 300
-                    }
+                    } : {}
                 }
             },
             days() {
@@ -51,7 +51,6 @@
 
                 return (dates);
             },
-
             preceedingDays() {
                 const days = [];
                 for(let i = (new Date(this.year, this.month, 0)).getDay(); i--;) {
@@ -91,6 +90,22 @@
                 type: Number,
                 default: 1,
                 validator: value => !value || value === 1
+            },
+            hasInput: {
+                type: Boolean,
+                default: true
+            }
+        },
+
+        mounted() {
+            if(this.hasInput) {
+                document.body.addEventListener('click', this.handleDocumentClick);
+            }
+        },
+
+        beforeDestroy() {
+            if(this.hasInput) {
+                document.body.removeEventListener('click', this.handleDocumentClick);
             }
         },
 
@@ -120,10 +135,14 @@
             selectDate(day) {
                 this.selectedDate = day;
                 this.$emit("selected", day);
-                this.expanded = false;
+                this.expanded = !this.hasInput;
             },
             toggleDatepicker() {
                 this.expanded = !this.expanded;
+            },
+            handleDocumentClick() {
+                this.expanded = false;
             }
+
         }
     }

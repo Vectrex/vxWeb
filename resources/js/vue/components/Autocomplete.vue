@@ -13,7 +13,7 @@
           ref="resultList"
           v-bind="resultListProps"
           @click="handleResultClick"
-          @mousedown.prevent=""
+          @mousedown.prevent
         >
           <template v-for="(result, index) in results">
             <slot name="result" :result="result" :props="resultProps[index]">

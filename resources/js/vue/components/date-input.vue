@@ -12,7 +12,7 @@
             v-if="showButton"
             type="button"
             class="btn webfont-icon-only calendarPopper btn-primary"
-            @click="$emit('toggle-datepicker')"
+            @click.stop="$emit('toggle-datepicker')"
         >&#xe00c;</button>
     </div>
 </template>

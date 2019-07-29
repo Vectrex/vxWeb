@@ -58,6 +58,12 @@
         ></datepicker>
     </div>
 
+    <div class="form-group">
+        <datepicker
+            :has-input="false"
+        ></datepicker>
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

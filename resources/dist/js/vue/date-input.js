@@ -1,6 +1,6 @@
 
     export default {
-		template: '<div class="input-group input-inline"><input type="text" autocomplete="off" :class="computedClass" :value="formattedValue" @focus="handleFocus" @blur="handleBlur"><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click="$emit(&#39;toggle-datepicker&#39;)"></button></div>',
+		template: '<div class="input-group input-inline"><input type="text" autocomplete="off" :class="computedClass" :value="formattedValue" @focus="handleFocus" @blur="handleBlur"><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click.stop="$emit(&#39;toggle-datepicker&#39;)"></button></div>',
 
         data() {
             return {
