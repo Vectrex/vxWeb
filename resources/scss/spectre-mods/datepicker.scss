@@ -1,0 +1,13 @@
+@import "../../node_modules/spectre.css/src/variables";
+
+.date-input {
+  input.form-input {
+    border-color: transparent;
+    box-shadow: none;
+    display: block;
+    height: 1.2rem;
+    line-height: .8rem;
+    margin: .1rem;
+    width: auto;
+  }
+}

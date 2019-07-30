@@ -21,6 +21,7 @@ $sidebar-width: 10rem;
 @import "../node_modules/spectre.css/src/spectre-exp";
 @import "spectre-mods/spectre_offsets";
 @import "spectre-mods/autocomplete";
+@import "spectre-mods/datepicker";
 
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
 

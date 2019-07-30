@@ -5110,6 +5110,12 @@ a.text-error:visited
     top: auto; bottom: 100%; transform: translateY(-.2rem);
 }
 
+.date-input input.form-input
+{line-height: .8rem; display: block; width: auto; height: 1.2rem; margin: .1rem; 
+
+    border-color: transparent; box-shadow: none;
+}
+
 @font-face
 {
     font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2');

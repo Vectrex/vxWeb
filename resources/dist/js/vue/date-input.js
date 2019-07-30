@@ -1,6 +1,6 @@
 
     export default {
-		template: '<div class="input-group input-inline"><input type="text" autocomplete="off" :class="computedClass" :value="formattedValue" @focus="handleFocus" @blur="handleBlur"><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click.stop="$emit(&#39;toggle-datepicker&#39;)"></button></div>',
+		template: '<div class="date-input"><div class="input-group input-inline"><div class="form-input"><span v-if="dateString" class="chip">{{ dateString }}<a href="#" class="btn btn-clear" aria-label="Close" role="button" @click="clearDate"></a></span><input v-else="" type="text" autocomplete="off" :class="computedClass" :value="formattedValue" @focus="handleFocus" @blur="handleBlur"></div><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click.stop="$emit(&#39;toggle-datepicker&#39;)"></button></div></div>',
 
         data() {
             return {
@@ -57,11 +57,12 @@
         methods: {
             handleBlur () {
             },
-
             handleFocus () {
                 this.error = false;
             },
-
+            clearDate () {
+                this.dateString = null;
+            },
             formatDate(date, format) {
 
                 if (!date instanceof Date) {
@@ -78,7 +79,6 @@
                     .replace("%Y", date.getFullYear())
                     .replace("%w", this.dayNames[date.getDay()].trim());
             },
-
             parseDate(dateString, format) {
 
                 let matches, escapedFormat = format.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), posMap = [];
