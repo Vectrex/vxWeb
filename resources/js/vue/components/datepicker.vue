@@ -1,5 +1,5 @@
 <template>
-    <div class="datepicker" v-bind="rootProps" @click.stop>
+    <div class="datepicker" v-bind="rootProps">
         <date-input
             v-if="hasInput"
             :date="selectedDate"
@@ -9,13 +9,15 @@
             :show-button="$attrs['show-button']"
             :month-name="$attrs['month-names']"
             @toggle-datepicker="toggleDatepicker"
+            @dateinput-blurred="updateDate"
             v-bind="inputProps"
+            ref="input"
         ></date-input>
         <div class="calendar" v-bind="calendarProps">
             <div class="calendar-nav navbar">
-                <button class="btn btn-action btn-link btn-large prvMon" @click="previousMonth"></button>
+                <button class="btn btn-action btn-link btn-large prvMon" @click.stop="previousMonth"></button>
                 <div class="month navbar-primary">{{ monthLabel }} {{ year }}</div>
-                <button class="btn btn-action btn-link btn-large nxtMon" @click="nextMonth"></button>
+                <button class="btn btn-action btn-link btn-large nxtMon" @click.stop="nextMonth"></button>
             </div>
             <div class="calendar-container">
                 <div class="calendar-header">
@@ -24,12 +26,12 @@
                 <div class="calendar-body">
                     <div v-for="day in days" class="calendar-date" :class="getCellClass(day)">
                         <button
-                                class="date-item"
-                                :class="[
-                                    today.toString() === day.toString() ? 'date-today' : '',
-                                    selectedDate && selectedDate.toString() === day.toString() ? 'active' : ''
-                                ]"
-                                @click="selectDate(day)"
+                            class="date-item"
+                            :class="[
+                                today.toString() === day.toString() ? 'date-today' : '',
+                                selectedDate && selectedDate.toString() === day.toString() ? 'active' : ''
+                            ]"
+                            @click.stop="selectDate(day)"
                         >{{ day.getDate() }}</button>
                     </div>
                 </div>
@@ -181,8 +183,10 @@
             },
             handleDocumentClick() {
                 this.expanded = false;
+            },
+            updateDate(dateString) {
+                console.log(this.$refs.input.parseDate(dateString, 'Y-m-d'));
             }
-
         }
     }
 </script>

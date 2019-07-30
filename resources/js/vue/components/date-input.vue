@@ -4,7 +4,7 @@
             <div class="form-input">
                 <span v-if="dateString" class="chip">
                     {{ dateString }}
-                    <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click="clearDate"></a>
+                    <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="clearDate"></a>
                 </span>
                 <input v-else
                     type="text"
@@ -12,7 +12,7 @@
                     :class="computedClass"
                     :value="formattedValue"
                     @focus="handleFocus"
-                    @blur="handleBlur"
+                    @blur="$emit('dateinput-blurred', $event.target.value)"
                 >
             </div>
             <button
@@ -81,8 +81,6 @@
         },
 
         methods: {
-            handleBlur () {
-            },
             handleFocus () {
                 this.error = false;
             },
@@ -107,7 +105,7 @@
             },
             parseDate(dateString, format) {
 
-                let matches, escapedFormat = format.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), posMap = [];
+                let matches, escapedFormat = format.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), posMap = [];
 
                 // check for single day, month and year expression
 

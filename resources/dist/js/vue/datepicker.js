@@ -2,7 +2,7 @@
     import DateInput from './date-input.js';
 
     export default {
-		template: '<div class="datepicker" v-bind="rootProps" @click.stop=""><date-input v-if="hasInput" :date="selectedDate" :input-format="$attrs[&#39;date-format&#39;]" :output-format="$attrs[&#39;date-format&#39;]" :day-names="$attrs[&#39;day-names&#39;]" :show-button="$attrs[&#39;show-button&#39;]" :month-name="$attrs[&#39;month-names&#39;]" @toggle-datepicker="toggleDatepicker" v-bind="inputProps"></date-input><div class="calendar" v-bind="calendarProps"><div class="calendar-nav navbar"><button class="btn btn-action btn-link btn-large prvMon" @click="previousMonth"></button><div class="month navbar-primary">{{ monthLabel }} {{ year }}</div><button class="btn btn-action btn-link btn-large nxtMon" @click="nextMonth"></button></div><div class="calendar-container"><div class="calendar-header"><div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div></div><div class="calendar-body"><div v-for="day in days" class="calendar-date" :class="getCellClass(day)"><button class="date-item" :class="[today.toString() === day.toString() ? &#39;date-today&#39; : &#39;&#39;,selectedDate &amp;&amp; selectedDate.toString() === day.toString() ? &#39;active&#39; : &#39;&#39;]" @click="selectDate(day)">{{ day.getDate() }}</button></div></div></div></div></div>',
+		template: '<div class="datepicker" v-bind="rootProps"><date-input v-if="hasInput" :date="selectedDate" :input-format="$attrs[&#39;date-format&#39;]" :output-format="$attrs[&#39;date-format&#39;]" :day-names="$attrs[&#39;day-names&#39;]" :show-button="$attrs[&#39;show-button&#39;]" :month-name="$attrs[&#39;month-names&#39;]" @toggle-datepicker="toggleDatepicker" @dateinput-blurred="updateDate" v-bind="inputProps" ref="input"></date-input><div class="calendar" v-bind="calendarProps"><div class="calendar-nav navbar"><button class="btn btn-action btn-link btn-large prvMon" @click.stop="previousMonth"></button><div class="month navbar-primary">{{ monthLabel }} {{ year }}</div><button class="btn btn-action btn-link btn-large nxtMon" @click.stop="nextMonth"></button></div><div class="calendar-container"><div class="calendar-header"><div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div></div><div class="calendar-body"><div v-for="day in days" class="calendar-date" :class="getCellClass(day)"><button class="date-item" :class="[today.toString() === day.toString() ? &#39;date-today&#39; : &#39;&#39;,selectedDate &amp;&amp; selectedDate.toString() === day.toString() ? &#39;active&#39; : &#39;&#39;]" @click.stop="selectDate(day)">{{ day.getDate() }}</button></div></div></div></div></div>',
         components: {
             DateInput
         },
@@ -142,7 +142,9 @@
             },
             handleDocumentClick() {
                 this.expanded = false;
+            },
+            updateDate(dateString) {
+                console.log(this.$refs.input.parseDate(dateString, 'Y-m-d'));
             }
-
         }
     }

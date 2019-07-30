@@ -1,6 +1,6 @@
 
     export default {
-		template: '<div class="date-input"><div class="input-group input-inline"><div class="form-input"><span v-if="dateString" class="chip">{{ dateString }}<a href="#" class="btn btn-clear" aria-label="Close" role="button" @click="clearDate"></a></span><input v-else="" type="text" autocomplete="off" :class="computedClass" :value="formattedValue" @focus="handleFocus" @blur="handleBlur"></div><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click.stop="$emit(&#39;toggle-datepicker&#39;)"></button></div></div>',
+		template: '<div class="date-input"><div class="input-group input-inline"><div class="form-input"><span v-if="dateString" class="chip">{{ dateString }}<a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="clearDate"></a></span><input v-else="" type="text" autocomplete="off" :class="computedClass" :value="formattedValue" @focus="handleFocus" @blur="$emit(&#39;dateinput-blurred&#39;, $event.target.value)"></div><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click.stop="$emit(&#39;toggle-datepicker&#39;)"></button></div></div>',
 
         data() {
             return {
@@ -55,8 +55,6 @@
         },
 
         methods: {
-            handleBlur () {
-            },
             handleFocus () {
                 this.error = false;
             },
@@ -81,7 +79,7 @@
             },
             parseDate(dateString, format) {
 
-                let matches, escapedFormat = format.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), posMap = [];
+                let matches, escapedFormat = format.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), posMap = [];
 
                 // check for single day, month and year expression
 
