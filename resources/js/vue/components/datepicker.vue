@@ -185,7 +185,11 @@
                 this.expanded = false;
             },
             updateDate(dateString) {
-                console.log(this.$refs.input.parseDate(dateString, 'Y-m-d'));
+                let day = this.$refs.input.parseDate(dateString, 'Y-m-d');
+                if(day) {
+                    this.selectedDate = day;
+                    this.$emit("selected", day);
+                }
             }
         }
     }

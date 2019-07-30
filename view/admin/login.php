@@ -70,7 +70,7 @@
 
 <script type="module">
 
-    import Autocomplete from "/js/vue/Autocomplete.js";
+    import Autocomplete from "/js/vue/autocomplete.js";
     import Datepicker from  "/js/vue/datepicker.js";
 
     "use strict";
