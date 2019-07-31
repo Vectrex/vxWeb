@@ -2,7 +2,7 @@
     import DateInput from './date-input.js';
 
     export default {
-		template: '<div class="datepicker" v-bind="rootProps"><date-input v-if="hasInput" :date="selectedDate" :input-format="$attrs[&#39;date-format&#39;]" :output-format="$attrs[&#39;date-format&#39;]" :day-names="$attrs[&#39;day-names&#39;]" :show-button="$attrs[&#39;show-button&#39;]" :month-name="$attrs[&#39;month-names&#39;]" @toggle-datepicker="toggleDatepicker" @dateinput-blurred="updateDate" v-bind="inputProps" ref="input"></date-input><div class="calendar" v-bind="calendarProps"><div class="calendar-nav navbar"><button class="btn btn-action btn-link btn-large prvMon" @click.stop="previousMonth"></button><div class="month navbar-primary">{{ monthLabel }} {{ year }}</div><button class="btn btn-action btn-link btn-large nxtMon" @click.stop="nextMonth"></button></div><div class="calendar-container"><div class="calendar-header"><div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div></div><div class="calendar-body"><div v-for="day in days" class="calendar-date" :class="getCellClass(day)"><button class="date-item" :class="[today.toString() === day.toString() ? &#39;date-today&#39; : &#39;&#39;,selectedDate &amp;&amp; selectedDate.toString() === day.toString() ? &#39;active&#39; : &#39;&#39;]" @click.stop="selectDate(day)">{{ day.getDate() }}</button></div></div></div></div></div>',
+		template: '<div v-bind="rootProps"><date-input v-if="hasInput" :date="selectedDate" :output-format="$attrs[&#39;output-format&#39;]" :day-names="$attrs[&#39;day-names&#39;]" :show-button="$attrs[&#39;show-button&#39;]" :month-name="$attrs[&#39;month-names&#39;]" @toggle-datepicker="toggleDatepicker" @dateinput-blur="updateDate" @date-clear="clearDate" v-bind="inputProps" ref="input"></date-input><div class="calendar" v-bind="calendarProps"><div class="calendar-nav navbar"><button class="btn btn-action btn-link btn-large prvMon" @click.stop="previousMonth"></button><div class="month navbar-primary">{{ monthLabel }} {{ year }}</div><button class="btn btn-action btn-link btn-large nxtMon" @click.stop="nextMonth"></button></div><div class="calendar-container"><div class="calendar-header"><div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div></div><div class="calendar-body"><div v-for="day in days" class="calendar-date" :class="getCellClass(day)"><button class="date-item" :class="[today.toString() === day.toString() ? &#39;date-today&#39; : &#39;&#39;,selectedDate &amp;&amp; selectedDate.toString() === day.toString() ? &#39;active&#39; : &#39;&#39;]" @click.stop="selectDate(day)">{{ day.getDate() }}</button></div></div></div></div></div>',
         components: {
             DateInput
         },
@@ -20,6 +20,7 @@
         computed: {
             rootProps() {
                 return {
+                    class: ['datepicker', this.$attrs['class']],
                     style: { position: 'relative' }
                 }
             },
@@ -50,13 +51,6 @@
                 }
 
                 return (dates);
-            },
-            preceedingDays() {
-                const days = [];
-                for(let i = (new Date(this.year, this.month, 0)).getDay(); i--;) {
-                    days.push((new Date(this.year, this.month, -i)).getDate());
-                }
-                return days;
             },
             monthLabel() {
                 return this.monthNames[this.month];
@@ -94,6 +88,10 @@
             hasInput: {
                 type: Boolean,
                 default: true
+            },
+            inputFormat: {
+                type: String,
+                default: 'y-m-d'
             }
         },
 
@@ -124,17 +122,17 @@
                 const d = new Date(this.year, --this.month, this.dateDay);
                 this.month = d.getMonth();
                 this.year = d.getFullYear();
-                this.$emit("changedMonth");
+                this.$emit("month-change");
             },
             nextMonth() {
                 const d = new Date(this.year, ++this.month, this.dateDay);
                 this.month = d.getMonth();
                 this.year = d.getFullYear();
-                this.$emit("changedMonth");
+                this.$emit("month-change");
             },
             selectDate(day) {
                 this.selectedDate = day;
-                this.$emit("selected", day);
+                this.$emit('select', day);
                 this.expanded = !this.hasInput;
             },
             toggleDatepicker() {
@@ -144,11 +142,15 @@
                 this.expanded = false;
             },
             updateDate(dateString) {
-                let day = this.$refs.input.parseDate(dateString, 'Y-m-d');
+                let day = this.$refs.input.parseDate(dateString, this.inputFormat);
                 if(day) {
                     this.selectedDate = day;
-                    this.$emit("selected", day);
+                    this.$emit("select", day);
                 }
+            },
+            clearDate() {
+                this.selectedDate = null;
+                this.$emit('clear');
             }
         }
     }

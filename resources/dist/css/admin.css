@@ -5113,7 +5113,7 @@ a.text-error:visited
 .date-input input.form-input
 {line-height: .8rem; display: block; width: auto; height: 1.2rem; margin: .1rem; 
 
-    border-color: transparent; box-shadow: none;
+    border-color: transparent; box-shadow: none; -ms-flex: none;     flex: none;
 }
 
 @font-face

@@ -45,25 +45,25 @@
     </div>
 
     <div class="form-group">
-        <datepicker></datepicker>
+        <datepicker
+                :has-input="false"
+        ></datepicker>
     </div>
 
     <div class="form-group">
-        <datepicker
+        <datepicker class="col-5"></datepicker>
+    </div>
+
+    <div class="form-group">
+        <datepicker class="col-5"
             :start-of-week-index="0"
             :weekdays="'Su Mo Tu We Th Fr Sa'.split(' ')"
-            date-format="%w %m/%d/%Y"
+            input-format="m/d/y"
+            output-format="w mm/dd/y"
             :day-names="'Sun Mon Tue Wed Thu Fri Sat'.split(' ')"
             :month-names="'January February March April May June July August September October November December'.split(' ')"
         ></datepicker>
     </div>
-
-    <div class="form-group">
-        <datepicker
-            :has-input="false"
-        ></datepicker>
-    </div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

@@ -2,14 +2,13 @@
     import DateFunctions from "./mixins/date-functions.js";
 
     export default {
-		template: '<div class="date-input"><div class="input-group input-inline"><div class="form-input"><span v-if="dateString" class="chip">{{ dateString }}<a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="clearDate"></a></span><input v-else="" type="text" autocomplete="off" :class="computedClass" :value="formattedValue" @focus="handleFocus" @blur="$emit(&#39;dateinput-blurred&#39;, $event.target.value)"></div><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click.stop="$emit(&#39;toggle-datepicker&#39;)"></button></div></div>',
+		template: '<div class="date-input"><div class="input-group input-inline" :style="computedStyles"><div class="form-input"><div v-if="dateString"><span class="chip">{{ dateString }}<a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="$emit(&#39;date-clear&#39;)"></a></span></div><input v-else="" type="text" autocomplete="off" class="form-input" :value="formattedValue" @blur="$emit(&#39;dateinput-blur&#39;, $event.target.value)"></div><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click.stop="$emit(&#39;toggle-datepicker&#39;)"></button></div></div>',
 
         mixins: [ DateFunctions ],
 
         data() {
             return {
                 dateString: null,
-                error: false,
                 parsedDate: null
             }
         },
@@ -23,13 +22,9 @@
                 type: Array,
                 default: () => "Mo Di Mi Do Fr Sa So".split(" ")
             },
-            inputFormat: {
-                type: String,
-                default: "Y-M-D"
-            },
             outputFormat: {
                 type: String,
-                default: "%Y-%M-%D"
+                default: "y-mm-dd"
             },
             showButton: {
                 type: Boolean,
@@ -39,31 +34,24 @@
         },
 
         computed: {
-
-            computedClass() {
-                return "form-input";
-            },
-
             formattedValue() {
                 if(this.date) {
                     return this.formatDate(this.date, this.outputFormat);
                 }
+            },
+            computedStyles() {
+                return {
+                    width: '100%'
+                }
             }
-
         },
 
         watch: {
             date(newValue) {
-                this.dateString = this.formatDate(newValue, this.outputFormat);
+                this.dateString = newValue ? this.formatDate(newValue, this.outputFormat) : '';
             }
         },
 
         methods: {
-            handleFocus () {
-                this.error = false;
-            },
-            clearDate () {
-                this.dateString = null;
-            }
         }
     }
