@@ -64,16 +64,28 @@
             :month-names="'January February March April May June July August September October November December'.split(' ')"
         ></datepicker>
     </div>
+
+    <z-pagination
+        :page.sync="pagination.currentPage"
+        :total="pagination.total"
+        :per-page="pagination.perPage"
+        :on-page-change="onPageChange"
+    />
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <script type="module">
 
-    import Autocomplete from "/js/vue/autocomplete.js";
-    import Datepicker from  "/js/vue/datepicker.js";
+    import Autocomplete from "/js/vue/components/autocomplete.js";
+    import Datepicker from  "/js/vue/components/datepicker.js";
+    import Pagination from  "/js/vue/components/zutre/pagination.js";
+    import Link from  "/js/vue/components/zutre/link.js";
 
     "use strict";
+
+    Vue.component("z-link", Link);
+    Vue.component("z-pagination", Pagination);
 
     const app = new Vue({
 
@@ -108,10 +120,19 @@
 
             valuePicked(result) {
                 console.log (result.name);
+            },
+
+            onPageChange(payload) {
+                console.log(payload);
             }
         },
 
         data: {
+            pagination: {
+              currentPage: 1,
+              total: 200,
+              perPage: 15
+            },
             countries: [
                 'Afghanistan',
                 'Albania',

@@ -1,11 +1,11 @@
 <template>
-    <form action="/" class="form-horizontal" v-on:submit.prevent="submit">
+    <form action="/" class="form-horizontal" @submit.prevent="submit">
 
         <div class="form-sect">
             <div class="form-group">
                 <label class="form-label col-3" for="username_input"><strong>Username*</strong></label>
                 <div class="col-9">
-                    <input name="username" maxlength="128" class="form-input" autocomplete="off" id="username_input" type="text" v-model="form.username">
+                    <input name="username" id="username_input" class="form-input" autocomplete="off" maxlength="128" type="text" v-model="form.username">
                     <p v-if="errors.username" class="form-input-hint vx-error-box error">{{ errors.username }}</p>
                 </div>
             </div>
@@ -27,13 +27,23 @@
             </div>
 
             <div class="form-group">
+                <label class="form-label col-3" for="admingroupsid_select"><strong>Gruppe*</strong></label>
+                <div class="col-9">
+                    <select name="admingroupsid" id="admingroupsID_select" class="form-select" v-model="form.admingroupsid">
+                        <option v-for="option in options.admingroups" :value="option.admingroupsid">
+                            {{ option.name }}
+                        </option>
+                    </select>
+                    <p v-if="errors.admingroupsid" class="form-input-hint vx-error-box error">{{ errors.admingroupsid }}</p>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="form-label col-3" for="pwd_input">Neues Passwort</label>
                 <div class="col-9">
                     <input name="new_PWD" id="pwd_input" class="form-input" autocomplete="off" maxlength="128" type="password" v-model="form.new_PWD">
                     <p v-if="errors.new_PWD" class="form-input-hint vx-error-box error">{{ errors.new_PWD }}</p>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="form-label col-3" for="pwd2_input">Passwort wiederholen</label>
                 <div class="col-9">
@@ -43,28 +53,19 @@
             </div>
         </div>
 
-        <div class="divider text-center" data-content="Benachrichtigungen"></div>
-
-        <div class="form-sect off-3">
-            <div class="form-group" v-for="notification in notifications">
-                <label class="form-switch"><input name="notification[]" v-bind:value="notification.alias" type="checkbox" v-model="form.notifications"><i class="form-icon"></i>{{ notification.label }}</label>
-            </div>
-        </div>
-
         <div class="divider"></div>
 
         <div class="form-base">
             <div class="form-group off-3">
-                <button name="submit_profile" value="" type='submit' class='btn btn-success'>Änderungen speichern</button>
+                <button name="submit_user" value="" type='submit' class='btn btn-success' :class=buttonClass>{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</button>
             </div>
         </div>
 
     </form>
 </template>
-
 <script>
 
-    import FormPost from "./form-post.js";
+    import FormPost from "../mixins/form-post.js";
 
     export default {
 
@@ -72,7 +73,7 @@
         props: {
             url: { type: String, required: true },
             initialData: { type: Object, default: () => { return {} } },
-            notifications: { type: Array }
+            options: { type: Object }
         },
 
         data: function() {
@@ -85,7 +86,7 @@
         },
 
         watch: {
-            initialData (newValue) {
+            initialData(newValue) {
                 this.form = newValue;
             }
         }

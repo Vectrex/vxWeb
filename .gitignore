@@ -5,4 +5,4 @@ vendor
 resources/node_modules
 
 resources/js/*
-!resources/js/vue/
+!resources/vue/

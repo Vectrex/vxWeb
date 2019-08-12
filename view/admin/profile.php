@@ -16,22 +16,12 @@
             :notifications="notifications"
             @form-response-received="responseReceived"
     ></profile-form>
-    <datepicker></datepicker>
-    <searchselect
-        v-model="searchTerm"
-        :options="searchOptions"
-        option-label="title"
-        option-key="id"
-    ></searchselect>
-
 </div>
 
 <script type="module">
 
-    import MessageToast from "/js/vue/message-toast.js";
-    import ProfileForm from "/js/vue/profile-form.js";
-    import Datepicker from  "/js/vue/datepicker.js";
-    import SearchSelect from "/js/vue/searchselect.js";
+    import MessageToast from "/js/vue/components/message-toast.js";
+    import ProfileForm from "/js/vue/components/profile-form.js";
 
     "use strict";
 
@@ -39,9 +29,7 @@
 
         components: {
             "message-toast": MessageToast,
-            "profile-form": ProfileForm,
-            "datepicker": Datepicker,
-            "searchselect": SearchSelect
+            "profile-form": ProfileForm
         },
 
         el: ".form-content",

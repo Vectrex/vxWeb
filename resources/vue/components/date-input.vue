@@ -1,8 +1,35 @@
+<template>
+    <div class="date-input">
+        <div class="input-group input-inline" :style="computedStyles">
+            <div class="form-input">
+                <div v-if="dateString">
+                    <span class="chip">
+                        {{ dateString }}
+                        <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="$emit('date-clear')"></a>
+                    </span>
+                </div>
+                <input v-else
+                    type="text"
+                    autocomplete="off"
+                    class="form-input"
+                    :value="formattedValue"
+                    @blur="$emit('dateinput-blur', $event.target.value)"
+                >
+            </div>
+            <button
+                v-if="showButton"
+                type="button"
+                class="btn webfont-icon-only calendarPopper btn-primary"
+                @click.stop="$emit('toggle-datepicker')"
+            >&#xe00c;</button>
+        </div>
+    </div>
+</template>
 
-    import DateFunctions from "./mixins/date-functions.js";
+<script>
+    import DateFunctions from "../mixins/date-functions.js";
 
     export default {
-		template: '<div class="date-input"><div class="input-group input-inline" :style="computedStyles"><div class="form-input"><div v-if="dateString"><span class="chip">{{ dateString }}<a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="$emit(&#39;date-clear&#39;)"></a></span></div><input v-else="" type="text" autocomplete="off" class="form-input" :value="formattedValue" @blur="$emit(&#39;dateinput-blur&#39;, $event.target.value)"></div><button v-if="showButton" type="button" class="btn webfont-icon-only calendarPopper btn-primary" @click.stop="$emit(&#39;toggle-datepicker&#39;)"></button></div></div>',
 
         mixins: [ DateFunctions ],
 
@@ -55,3 +82,4 @@
         methods: {
         }
     }
+</script>
