@@ -5116,6 +5116,11 @@ a.text-error:visited
     border-color: transparent; box-shadow: none; -ms-flex: none;     flex: none;
 }
 
+.pagination a
+{
+    cursor: pointer;
+}
+
 @font-face
 {
     font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2');
@@ -5362,13 +5367,13 @@ th.vx-sortable-header.asc:before
 table.table-striped tbody td.active,
 table.table-striped tbody tr.active
 {
-    background: #fffaf2;
+    background: #ffeccc;
 }
 
 table.table-striped tbody tr:nth-of-type(2n+1) td.active,
 table.table-striped tbody tr:nth-of-type(2n+1).active
 {
-    background: #ffe4bf;
+    background: #ffd180;
 }
 
 .vx-activity-indicator
