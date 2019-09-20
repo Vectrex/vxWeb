@@ -5,16 +5,17 @@
 <div class="form-content">
 
     <message-toast
-            :message="toastProps.message"
-            :classname="toastProps.messageClass"
-            :active="toastProps.isActive"
-            ref="toast"
+        :message="toastProps.message"
+        :classname="toastProps.messageClass"
+        :active="toastProps.isActive"
+        ref="toast"
     ></message-toast>
     <profile-form
-            :url="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_post')->getUrl() ?>'"
-            :initial-data="form"
-            :notifications="notifications"
-            @form-response-received="responseReceived"
+        :url="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_post')->getUrl() ?>'"
+        :initial-data="form"
+        :notifications="notifications"
+        @response-received="responseReceived"
+        ref="form"
     ></profile-form>
 </div>
 
@@ -42,39 +43,11 @@
                 messageClass: "",
                 isActive: false
             },
-
-
-            searchTerm: null,
-
-            searchOptions: [
-                { id: 1, title: "baz bar" },
-                { id: 2, title: "foo bar" },
-                {
-                    id: 3,
-                    title: "Eos rerum veniam quia mollitia quod et et accusamus." },
-
-                { id: 4, title: "Robs THread" },
-                { id: 5, title: "test" },
-                { id: 6, title: "goose" },
-                { id: 7, title: "loose goose" },
-                { id: 8, title: "geese" },
-                { id: 9, title: "moose" },
-                { id: 10, title: "test thread updated" },
-                {
-                    id: 11,
-                    title:
-                        "Distinctio quo praesentium quis commodi praesentium excepturi." },
-
-                { id: 12, title: "changed new thread" },
-                { id: 13, title: "fred" },
-                { id: 14, title: "barney" }
-            ]
-
-
         },
 
         methods: {
-            responseReceived (response) {
+            responseReceived () {
+                let response = this.$refs.form.fetch.response;
                 this.toastProps = {
                     message: response.message,
                     messageClass: response.success ? 'toast-success' : 'toast-error',

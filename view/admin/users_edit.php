@@ -19,7 +19,8 @@
             :url="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_post')->getUrl() ?>'"
             :initial-data="form"
             :options="options"
-            @form-response-received="responseReceived"
+            @response-received="responseReceived"
+            ref="form"
         ></user-form>
     </div>
 
@@ -56,7 +57,8 @@
         },
 
         methods: {
-            responseReceived (response) {
+            responseReceived () {
+                let response = this.$refs.form.fetch.response;
                 this.toastProps = {
                     message: response.message,
                     messageClass: response.success ? 'toast-success' : 'toast-error',

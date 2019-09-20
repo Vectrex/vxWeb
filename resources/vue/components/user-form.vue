@@ -57,7 +57,7 @@
 
         <div class="form-base">
             <div class="form-group off-3">
-                <button name="submit_user" value="" type='submit' class='btn btn-success' :class=buttonClass>{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</button>
+                <button name="submit_user" value="" type='submit' class='btn btn-success'>{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</button>
             </div>
         </div>
 
@@ -65,11 +65,11 @@
 </template>
 <script>
 
-    import FormPost from "../mixins/form-post.js";
+    import FetchResponse from "../mixins/fetch-response.js";
 
     export default {
 
-        mixins: [FormPost],
+        mixins: [FetchResponse],
         props: {
             url: { type: String, required: true },
             initialData: { type: Object, default: () => { return {} } },
@@ -78,16 +78,28 @@
 
         data: function() {
             return {
-                form: {},
-                errors: {},
-                message: "",
-                buttonClass: ""
+                form: {}
+            }
+        },
+
+        computed: {
+            errors () {
+                return this.fetch.response ? (this.fetch.response.errors || {}) : {};
+            },
+            message () {
+                return this.fetch.response ? this.fetch.response.message : "";
             }
         },
 
         watch: {
-            initialData(newValue) {
+            initialData (newValue) {
                 this.form = newValue;
+            }
+        },
+
+        methods: {
+            submit() {
+                this.fetchPostResponse(this.url, this.form);
             }
         }
 
