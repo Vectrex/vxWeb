@@ -42,7 +42,7 @@
                 message: "",
                 messageClass: "",
                 isActive: false
-            },
+            }
         },
 
         methods: {
