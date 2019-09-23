@@ -1,7 +1,7 @@
 {
   "name": "vxweb",
   "devDependencies": {
-    "gulp": "^3.9.1",
+    "gulp": "latest",
     "gulp-autoprefixer": "latest",
     "gulp-clean-css": "latest",
     "gulp-concat": "latest",
@@ -9,7 +9,7 @@
     "gulp-rename": "latest",
     "gulp-sass": "latest",
     "gulp-uglify": "latest",
-    "gulp-vue-single-file-component": "^1.0.9",
+    "gulp-vue-single-file-component": "^1.0.12",
     "spectre.css": "latest",
     "vue": "latest"
   },

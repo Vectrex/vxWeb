@@ -14,23 +14,25 @@ let scssPaths = {
 };
 
 gulp.task('scssWatch', () => {
-  gulp.watch('./scss/*.scss', ['scssBuild']);
+    return gulp.watch('./scss/*.scss', gulp.series('scssBuild'));
 });
 
 gulp.task('scssBuild', () => {
-  gulp.src(scssPaths.src)
-    .pipe(sass({outputStyle: 'compact', precision: 10})
-      .on('error', sass.logError)
-    )
-    .pipe(autoprefixer())
-    .pipe(csscomb())
-    .pipe(gulp.dest(scssPaths.dest))
-    .pipe(cleancss())
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest(scssPaths.dest));
+    return gulp.src(scssPaths.src)
+        .pipe(sass({outputStyle: 'compact', precision: 10})
+            .on('error', sass.logError)
+        )
+        .pipe(autoprefixer())
+        .pipe(csscomb())
+        .pipe(gulp.dest(scssPaths.dest))
+        .pipe(cleancss())
+        .pipe(rename({
+            suffix: '.min'
+        }))
+        .pipe(gulp.dest(scssPaths.dest));
 });
 
-gulp.task('default', ['scssBuild']);
+gulp.task('default', gulp.series('scssBuild'));
 
 var jsPaths = {
     src: "./js/",
@@ -38,7 +40,7 @@ var jsPaths = {
 };
 
 gulp.task('jsBuild', () => {
-    gulp.src([
+    return gulp.src([
         "./js/core.js",
         "./js/xhr.js",
         "./js/widgets/xhrform.js",
@@ -52,7 +54,7 @@ gulp.task('jsBuild', () => {
 });
 
 gulp.task('vue', () => {
-   gulp.src("./vue/**/*.vue")
+   return gulp.src("./vue/**/*.vue")
        .pipe(vueComponent())
        .pipe(rename({ extname: ".js" }))
        .pipe(gulp.dest("./dist/js/vue"));
