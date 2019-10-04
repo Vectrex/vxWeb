@@ -34,6 +34,8 @@
         :active="toastProps.isActive"
         ref="toast"
     ></message-toast>
+
+    <input type="hidden" value="<?= $this->csrf_token ?>" name="_csrf_token">
 </div>
 
 

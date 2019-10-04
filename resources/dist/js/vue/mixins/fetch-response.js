@@ -25,7 +25,10 @@ export default {
                 method: "POST",
                 mode: "cors",
                 cache: "no-cache",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-Token": this.$el.querySelector("[name=_csrf_token]") ? this.$el.querySelector("[name=_csrf_token]").value || '' : ''
+                },
                 referrer: "no-referrer",
                 body: JSON.stringify(parameters)
             })

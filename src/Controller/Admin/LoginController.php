@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Service\vxWeb\BruteforceThrottler;
 use vxPHP\Http\ParameterBag;
 use vxPHP\Routing\Route;
+use vxPHP\Security\Csrf\CsrfToken;
+use vxPHP\Security\Csrf\CsrfTokenManager;
 use vxPHP\User\Exception\UserException;
 use vxPHP\Application\Application;
 use vxPHP\Template\SimpleTemplate;
@@ -57,6 +59,10 @@ class LoginController extends Controller {
             $userProvider = new SessionUserProvider();
 			$userProvider->unsetSessionUser();
 
+			if(!(new CsrfTokenManager())->isTokenValid(new CsrfToken('login', $this->request->headers->get('X-CSRF-Token')))) {
+			    return new JsonResponse(['error' => 1, 'message' => 'Possible malicious login attempt detected.']);
+            }
+
 			try {
 				$admin = $userProvider->instanceUserByUsername($username);
 
@@ -82,7 +88,7 @@ class LoginController extends Controller {
 
 		else {
 
-			return new Response(SimpleTemplate::create('admin/login.php')->display());
+			return new Response(SimpleTemplate::create('admin/login.php')->assign('csrf_token', (new CsrfTokenManager())->refreshToken('login'))->display());
 
 		}
 	}
