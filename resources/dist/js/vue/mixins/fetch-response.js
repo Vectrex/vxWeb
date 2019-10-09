@@ -30,7 +30,7 @@ export default {
                     "X-CSRF-Token": this.$el.querySelector("[name=_csrf_token]") ? this.$el.querySelector("[name=_csrf_token]").value || '' : ''
                 },
                 referrer: "no-referrer",
-                body: JSON.stringify(parameters)
+                body: JSON.stringify(parameters || {})
             })
                 .then(response => response.json())
                 .then(response => {
@@ -47,7 +47,7 @@ export default {
 
             let query = [];
 
-            Object.keys(parameters).forEach(key => query += encodeURIComponent(key) + "=" + encodeURIComponent(parameters[key]));
+            Object.keys(parameters || {}).forEach(key => query += encodeURIComponent(key) + "=" + encodeURIComponent(parameters[key]));
 
             if(query.length) {
                 url += (url.indexOf("?") === -1 ? '?' : '&') + query.join('&');
