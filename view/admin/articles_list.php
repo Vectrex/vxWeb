@@ -8,8 +8,62 @@
 <script type="text/javascript">
 
 	"use strict";
-	
-	this.vxWeb.routes.publish = "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('publishXhr')->getUrl() ?>";
+
+    if(!this.vxWeb) {
+        this.vxWeb = {};
+    }
+    if(!this.vxWeb.routes) {
+        this.vxWeb.routes = {};
+    }
+
+    vxWeb.messageToast = function(selector) {
+
+        var mBox, lastAddedClass, timeoutId, button;
+
+        var hide = function() {
+            if(mBox) {
+                mBox.classList.remove("display");
+            }
+        };
+
+        var show = function(msg, className) {
+
+            if(mBox === undefined) {
+                mBox = document.querySelector(selector || "#messageBox");
+
+                if(mBox && (button = mBox.querySelector("button"))) {
+                    button.addEventListener("click", hide);
+                }
+            }
+
+            if(mBox) {
+                if(lastAddedClass) {
+                    mBox.classList.remove(lastAddedClass);
+                }
+                if(className) {
+                    mBox.classList.add(className);
+                }
+                lastAddedClass = className;
+            }
+
+            mBox.innerHTML = msg;
+            mBox.appendChild(button);
+            mBox.classList.add("display");
+
+            if(timeoutId) {
+                window.clearTimeout(timeoutId);
+            }
+            timeoutId = window.setTimeout(hide, 5000);
+
+        };
+
+        return {
+            show: show,
+            hide: hide
+        };
+    };
+
+    this.vxWeb.routes.publish = "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('publishXhr')->getUrl() ?>";
 	this.vxWeb.routes.filter = "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articles')->getUrl(['action' => 'list']) ?>";
 
 	/**
@@ -232,7 +286,7 @@
 			<th class="col-1 vx-sortable-header">Anzeige bis</th>
 			<th class="vx-sortable-header">Sortierziffer</th>
 			<th class="col-2 vx-sortable-header">Angelegt/aktualisiert</th>
-			<th></th>
+			<th class="col-1"></th>
 		</tr>
 	</thead>
 </table>

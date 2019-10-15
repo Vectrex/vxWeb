@@ -50,6 +50,7 @@
                     <!-- { block: content_block } -->
                 </div>
             </div>
+            <div id="messageBox" class="toast"><button class="btn btn-clear float-right"></button></div>
 		</div>
     </body>
 </html>
