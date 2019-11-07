@@ -230,7 +230,14 @@ export default {
       const key = event.key;
 
       switch (key) {
-        /* IE and Edge prefer their own key names */
+          /* IE and Edge prefer their own key names */
+        case 'Down':
+        case 'ArrowDown': {
+            if(!this.expanded) {
+                this.handleFocus(event);
+                break;
+            }
+        }
         case 'Up':
         case 'Down':
         case 'ArrowUp':
