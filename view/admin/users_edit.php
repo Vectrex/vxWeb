@@ -26,10 +26,11 @@
 
 </div>
 
-    <script type="module">
+<script type="module">
 
     import MessageToast from "/js/vue/components/message-toast.js";
     import UserForm from "/js/vue/components/user-form.js";
+    import SimpleFetch from "/js/vue/util/simple-fetch.js";
 
     "use strict";
 
@@ -58,7 +59,7 @@
 
         methods: {
             responseReceived () {
-                let response = this.$refs.form.fetch.response;
+                let response = this.$refs.form.response;
                 this.toastProps = {
                     message: response.message,
                     messageClass: response.success ? 'toast-success' : 'toast-error',
@@ -68,8 +69,7 @@
         }
     });
 
-    fetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_get')->getUrl() ?>?id=" + app.form.id)
-        .then(response => response.json())
+    SimpleFetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_get')->getUrl() ?>?id=" + app.form.id)
         .then(function (data) {
             app.options.admingroups = data.options.admingroups;
             if (data.formData) {

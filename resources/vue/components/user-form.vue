@@ -1,5 +1,5 @@
 <template>
-    <form action="/" class="form-horizontal" @submit.prevent="submit">
+    <form action="/" class="form-horizontal" @submit.prevent>
 
         <div class="form-sect">
             <div class="form-group">
@@ -57,7 +57,7 @@
 
         <div class="form-base">
             <div class="form-group off-3">
-                <button name="submit_user" value="" type='submit' class='btn btn-success'>{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</button>
+                <button name="submit_user" value="" type='button' class='btn btn-success' :class="{'loading': loading}" :disabled="loading" @click="submit">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</button>
             </div>
         </div>
 
@@ -65,11 +65,10 @@
 </template>
 <script>
 
-    import FetchResponse from "../mixins/fetch-response.js";
+    import SimpleFetch from "../util/simple-fetch.js";
 
     export default {
 
-        mixins: [FetchResponse],
         props: {
             url: { type: String, required: true },
             initialData: { type: Object, default: () => { return {} } },
@@ -78,16 +77,17 @@
 
         data: function() {
             return {
-                form: {}
+                form: {},
+                response: {}
             }
         },
 
         computed: {
             errors () {
-                return this.fetch.response ? (this.fetch.response.errors || {}) : {};
+                return this.response ? (this.response.errors || {}) : {};
             },
             message () {
-                return this.fetch.response ? this.fetch.response.message : "";
+                return this.response ? this.response.message : "";
             }
         },
 
@@ -98,10 +98,13 @@
         },
 
         methods: {
-            submit() {
-                this.fetchPostResponse(this.url, this.form);
+            async submit() {
+                this.loading = true;
+                this.$emit("request-sent");
+                this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(this.form));
+                this.loading = false;
+                this.$emit("response-received");
             }
         }
-
     }
 </script>

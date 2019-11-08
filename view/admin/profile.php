@@ -23,6 +23,7 @@
 
     import MessageToast from "/js/vue/components/message-toast.js";
     import ProfileForm from "/js/vue/components/profile-form.js";
+    import SimpleFetch from "/js/vue/util/simple-fetch.js";
 
     "use strict";
 
@@ -47,7 +48,7 @@
 
         methods: {
             responseReceived () {
-                let response = this.$refs.form.fetch.response;
+                let response = this.$refs.form.response;
                 this.toastProps = {
                     message: response.message,
                     messageClass: response.success ? 'toast-success' : 'toast-error',
@@ -57,8 +58,7 @@
         }
     });
 
-    fetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>")
-        .then(response => response.json())
+    SimpleFetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>")
         .then(function (data) {
             app.notifications = data.notifications;
             if (data.formData) {

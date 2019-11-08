@@ -27,11 +27,9 @@
 </template>
 
 <script>
-    import DateFunctions from "../mixins/date-functions.js";
+    import DateFunctions from "../util/date-functions.js";
 
     export default {
-
-        mixins: [ DateFunctions ],
 
         data() {
             return {
@@ -63,7 +61,7 @@
         computed: {
             formattedValue() {
                 if(this.date) {
-                    return this.formatDate(this.date, this.outputFormat);
+                    return DateFunctions.formatDate(this.date, this.outputFormat);
                 }
             },
             computedStyles() {
@@ -75,11 +73,8 @@
 
         watch: {
             date(newValue) {
-                this.dateString = newValue ? this.formatDate(newValue, this.outputFormat) : '';
+                this.dateString = newValue ? DateFunctions.formatDate(newValue, this.outputFormat) : '';
             }
-        },
-
-        methods: {
         }
     }
 </script>

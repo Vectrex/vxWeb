@@ -42,6 +42,7 @@
 
 <script>
     import DateInput from './date-input.js';
+    import DateFunctions from '../util/date-functions.js';
 
     export default {
         components: {
@@ -183,7 +184,7 @@
                 this.expanded = false;
             },
             updateDate(dateString) {
-                let day = this.$refs.input.parseDate(dateString, this.inputFormat);
+                let day = DateFunctions.parseDate(dateString, this.inputFormat);
                 if(day) {
                     this.selectedDate = day;
                     this.$emit("select", day);
