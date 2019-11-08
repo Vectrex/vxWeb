@@ -1,19 +1,25 @@
+const defaultMonthNames = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
+const defaultDayNames = "Sun Mon Tue Wed Thu Fri Sat".split(" ");
+
 export default {
 
-    formatDate(date, format) {
+    formatDate(date, format, options) {
 
         if (!date instanceof Date) {
             return "";
         }
+
+        let dayNames = options && options.dayNames ? options.dayNames : defaultDayNames;
+        let monthNames = options && options.monthNames ? options.monthNames : defaultMonthNames;
 
         return format
             .replace(/\bd\b/, date.getDate())
             .replace(/\bdd\b/, ("0" + date.getDate()).slice(-2))
             .replace(/\bm\b/, date.getMonth() + 1)
             .replace(/\bmm\b/, ("0" + (date.getMonth() + 1)).slice(-2))
-            .replace(/\bmmm\b/, this.monthNames[date.getMonth()].trim())
+            .replace(/\bmmm\b/, monthNames[date.getMonth()].trim())
             .replace(/\by\b/, date.getFullYear())
-            .replace(/\bw\b/, this.dayNames[date.getDay()].trim());
+            .replace(/\bw\b/, dayNames[date.getDay()].trim());
     },
 
     parseDate(dateString, format) {
