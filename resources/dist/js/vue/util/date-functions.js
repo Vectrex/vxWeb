@@ -84,6 +84,19 @@ export default {
         }
         result = new Date(result);
         return new Date(result.getFullYear(), result.getMonth(), result.getDate(), 0, 0, 0);
-    }
 
+    },
+
+    isValidTime: function (timeString) {
+        let matches = timeString.match(/^\s*([0-9]{1,2}):([0-9]{1,2})(?::([0-9]{1,2}))?\s*$/);
+        return (
+            matches
+            &&
+            matches[1] < 24
+            &&
+            matches[2] < 60
+            &&
+            (!matches[3] || matches[3] < 60)
+        );
+    }
 }
