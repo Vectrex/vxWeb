@@ -36,6 +36,14 @@ $sidebar-width: 10rem;
 /*
   additions and extensions to spectre.css
 */
+.modal {
+  &.modal-lg {
+    .modal-overlay {
+      background: rgba($bg-color, .75);
+    }
+  }
+}
+
 .navbar {
   background: $gray-color-light;
   padding: $unit-2;
