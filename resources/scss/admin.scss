@@ -115,47 +115,6 @@ a.webfont-icon-only {
   }
 }
 
-.calendar {
-  @include shadow-variant(.05rem);
-  background: white;
-  max-width: 16rem;
-
-  &.cw {
-    .calendar-body,
-    .calendar-header {
-      .calendar-date {
-        max-width: percentage(1 / 8);
-      }
-
-      .cw {
-        border-right: solid $border-width $gray-color-light;
-      }
-    }
-  }
-
-  span.date-item {
-    display: block;
-    cursor: default;
-  }
-
-  .prvMon,
-  .prvYear {
-    &:before {
-      font-family: icomoon;
-      content: "\e025";
-    }
-  }
-
-  .nxtMon,
-  .nxtYear {
-    &:before {
-      font-family: icomoon;
-      content: "\e023";
-    }
-  }
-
-}
-
 // custom layout
 
 html, body {
