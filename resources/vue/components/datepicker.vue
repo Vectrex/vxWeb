@@ -29,10 +29,11 @@
                             type="button"
                             class="date-item"
                             :class="[
-                                today.toString() === day.toString() ? 'date-today' : '',
-                                selectedDate && selectedDate.toString() === day.toString() ? 'active' : ''
+                                today.getTime() === day.getTime() ? 'date-today' : '',
+                                selectedDate && selectedDate.getTime() === day.getTime() ? 'active' : ''
                             ]"
-                            @click.stop="selectDate(day)"
+                            :disabled="isDisabled(day)"
+                            @click.stop="isDisabled(day) ? null : selectDate(day)"
                         >{{ day.getDate() }}</button>
                     </div>
                 </div>
@@ -151,6 +152,9 @@
         },
 
         methods: {
+            isDisabled(day) {
+                return (this.validFrom && this.validFrom > day) || (this.validUntil && this.validUntil < day())
+            },
             getCellClass(day) {
                 switch(day.getMonth() - this.month) {
                     case -1:

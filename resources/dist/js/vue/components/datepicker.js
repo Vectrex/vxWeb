@@ -3,7 +3,7 @@
     import DateFunctions from '../util/date-functions.js';
 
     export default {
-		template: '<div v-bind="rootProps"><date-input v-if="hasInput" :date="selectedDate" :output-format="$attrs[&#39;output-format&#39;]" :day-names="$attrs[&#39;day-names&#39;]" :show-button="$attrs[&#39;show-button&#39;]" :month-name="$attrs[&#39;month-names&#39;]" @toggle-datepicker="toggleDatepicker" @dateinput-blur="updateDate" @date-clear="clearDate" v-bind="inputProps" ref="input"></date-input><div class="calendar" v-bind="calendarProps"><div class="calendar-nav navbar"><button class="btn btn-action btn-link btn-large prvMon" @click.stop="previousMonth"></button><div class="month navbar-primary">{{ monthLabel }} {{ year }}</div><button class="btn btn-action btn-link btn-large nxtMon" @click.stop="nextMonth"></button></div><div class="calendar-container"><div class="calendar-header"><div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div></div><div class="calendar-body"><div v-for="day in days" class="calendar-date text-center" :class="getCellClass(day)"><button type="button" class="date-item" :class="[today.toString() === day.toString() ? &#39;date-today&#39; : &#39;&#39;,selectedDate &amp;&amp; selectedDate.toString() === day.toString() ? &#39;active&#39; : &#39;&#39;]" @click.stop="selectDate(day)">{{ day.getDate() }}</button></div></div></div></div></div>',
+		template: '<div v-bind="rootProps"><date-input v-if="hasInput" :date="selectedDate" :output-format="$attrs[&#39;output-format&#39;]" :day-names="$attrs[&#39;day-names&#39;]" :show-button="$attrs[&#39;show-button&#39;]" :month-name="$attrs[&#39;month-names&#39;]" @toggle-datepicker="toggleDatepicker" @dateinput-blur="updateDate" @date-clear="clearDate" v-bind="inputProps" ref="input"></date-input><div class="calendar" v-bind="calendarProps"><div class="calendar-nav navbar"><button class="btn btn-action btn-link btn-large prvMon" @click.stop="previousMonth"></button><div class="month navbar-primary">{{ monthLabel }} {{ year }}</div><button class="btn btn-action btn-link btn-large nxtMon" @click.stop="nextMonth"></button></div><div class="calendar-container"><div class="calendar-header"><div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div></div><div class="calendar-body"><div v-for="day in days" class="calendar-date text-center" :class="getCellClass(day)"><button type="button" class="date-item" :class="[today.getTime() === day.getTime() ? &#39;date-today&#39; : &#39;&#39;,selectedDate &amp;&amp; selectedDate.getTime() === day.getTime() ? &#39;active&#39; : &#39;&#39;]" :disabled="isDisabled(day)" @click.stop="isDisabled(day) ? null : selectDate(day)">{{ day.getDate() }}</button></div></div></div></div></div>',
         components: {
             DateInput
         },
@@ -109,6 +109,9 @@
         },
 
         methods: {
+            isDisabled(day) {
+                return (this.validFrom && this.validFrom > day) || (this.validUntil && this.validUntil < day())
+            },
             getCellClass(day) {
                 switch(day.getMonth() - this.month) {
                     case -1:
