@@ -24,8 +24,9 @@
                     <div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div>
                 </div>
                 <div class="calendar-body">
-                    <div v-for="day in days" class="calendar-date" :class="getCellClass(day)">
+                    <div v-for="day in days" class="calendar-date text-center" :class="getCellClass(day)">
                         <button
+                            type="button"
                             class="date-item"
                             :class="[
                                 today.toString() === day.toString() ? 'date-today' : '',
