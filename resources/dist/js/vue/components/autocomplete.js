@@ -59,8 +59,7 @@
         expanded: false,
         loading: false,
         position: 'below',
-        resetPosition: true,
-        resultListMaxHeight: 'auto'
+        resetPosition: true
       }
     },
 
@@ -95,8 +94,7 @@
         return {
           id: this.resultListId,
           class: this.resultListClass,
-          role: 'listbox',
-          style: { 'max-height': this.resultListMaxHeight, overflowY: 'auto' }
+          role: 'listbox'
         }
       },
       resultProps() {
