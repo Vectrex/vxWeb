@@ -12,7 +12,7 @@
  * @prop {Boolean} exact
  */
 export default {
-		template: '<a v-if="!hasLink" :href="linkHref" :class="linkClass" v-bind:data-badge="badge" @click="$emit(&#39;click&#39;)"><template v-if="hasDefaultSlot"><z-icon v-if="hasIcon" :name="icon"> <slot></slot></z-icon></template><template v-else-if="!hasDefaultSlot"><z-icon v-if="hasIcon" :name="icon"> {{ linkName }}</z-icon></template></a><router-link v-else-if="!hasHref &amp;&amp; hasLink" :to="linkRouter" :class="linkClass" @click="$emit(&#39;click&#39;)" v-bind:active-class="activeClass" v-bind:exact="exact" v-bind:data-badge="badge"><template v-if="hasDefaultSlot"><z-icon v-if="hasIcon" :name="icon"> <slot></slot></z-icon></template><template v-else-if="!hasDefaultSlot"><z-icon v-if="hasIcon" :name="icon"> {{ linkName }}</z-icon></template></router-link>',
+		template: '<a v-if="!hasLink" :href="linkHref" :class="linkClass" v-bind:data-badge="badge" @click="$emit(&#39;click&#39;)"><template v-if="hasDefaultSlot"><z-icon v-if="hasIcon" :name="icon" /> <slot></slot></template><template v-else-if="!hasDefaultSlot"><z-icon v-if="hasIcon" :name="icon" /> {{ linkName }}</template></a><router-link v-else-if="!hasHref &amp;&amp; hasLink" :to="linkRouter" :class="linkClass" @click="$emit(&#39;click&#39;)" v-bind:active-class="activeClass" v-bind:exact="exact" v-bind:data-badge="badge"><template v-if="hasDefaultSlot"><z-icon v-if="hasIcon" :name="icon" /> <slot></slot></template><template v-else-if="!hasDefaultSlot"><z-icon v-if="hasIcon" :name="icon" /> {{ linkName }}</template></router-link>',
   name: 'Link',
   props: {
     href: {
