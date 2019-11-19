@@ -1,7 +1,7 @@
 export default async function simpleFetch(url, method = 'GET', headers = {}, payload = null) {
 
     if(!headers['X-CSRF-Token'] && document.querySelector('meta[name="csrf-token"]')) {
-        headers['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').attr("content");
+        headers['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     }
 
     const response = await fetch(
