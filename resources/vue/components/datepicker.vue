@@ -28,10 +28,7 @@
                         <button
                             type="button"
                             class="date-item"
-                            :class="[
-                                today.getTime() === day.getTime() ? 'date-today' : '',
-                                selectedDate && selectedDate.getTime() === day.getTime() ? 'active' : ''
-                            ]"
+                            :class="getButtonClass(day)"
                             :disabled="isDisabled(day)"
                             @click.stop="isDisabled(day) ? null : selectDate(day)"
                         >{{ day.getDate() }}</button>
@@ -53,12 +50,23 @@
 
         data() {
             return {
-                year: this.initDate.getFullYear(),
-                month: this.initDate.getMonth(),
-                dateDay: this.initDate.getDate(),
+                year: null,
+                month: null,
+                dateDay: null,
                 selectedDate: null,
                 expanded: !this.hasInput
             };
+        },
+
+        watch: {
+            initDate (newValue) {
+                this.year = newValue.getFullYear();
+                this.month = newValue.getMonth();
+                this.dateDay = newValue.getDate();
+            },
+            pickedDate (newValue) {
+                this.selectedDate = new Date(newValue.getFullYear(), newValue.getMonth(), newValue.getDate(), 0, 0, 0);
+            }
         },
 
         computed: {
@@ -110,6 +118,9 @@
                 type: Date,
                 default: () => (new Date())
             },
+            pickedDate: {
+                type: Date
+            },
             validFrom: {
                 type: Date
             },
@@ -139,12 +150,17 @@
             }
         },
 
-        mounted() {
+        mounted () {
             if(this.hasInput) {
                 document.body.addEventListener('click', this.handleDocumentClick);
             }
+            this.year = this.initDate.getFullYear();
+            this.month = this.initDate.getMonth();
+            this.dateDay = this.initDate.getDate();
+            if(this.pickedDate) {
+                this.selectedDate = new Date(this.pickedDate.getFullYear(), this.pickedDate.getMonth(), this.pickedDate.getDate(), 0, 0, 0);
+            }
         },
-
         beforeDestroy() {
             if(this.hasInput) {
                 document.body.removeEventListener('click', this.handleDocumentClick);
@@ -165,14 +181,24 @@
                         return '';
                 }
             },
+            getButtonClass(day) {
+                const classes = [];
+                if(this.today.getTime() === day.getTime()) {
+                    classes.push('date-today');
+                }
+                if(this.selectedDate && this.selectedDate.getTime() === day.getTime()) {
+                    classes.push('active');
+                }
+                return classes;
+            },
             previousMonth() {
-                const d = new Date(this.year, --this.month, this.dateDay);
+                const d = new Date(this.year, this.month - 1, this.dateDay);
                 this.month = d.getMonth();
                 this.year = d.getFullYear();
                 this.$emit("month-change");
             },
             nextMonth() {
-                const d = new Date(this.year, ++this.month, this.dateDay);
+                const d = new Date(this.year, this.month + 1, this.dateDay);
                 this.month = d.getMonth();
                 this.year = d.getFullYear();
                 this.$emit("month-change");
