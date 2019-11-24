@@ -63,6 +63,12 @@
       }
     },
 
+    watch: {
+      defaultValue (newValue) {
+        this.value = newValue;
+      }
+    },
+
     computed: {
       containerProps() {
         return {
