@@ -205,6 +205,29 @@ class ArticlesController extends Controller {
 		$markup = [];
 		$canPublish = $admin->hasRole('superadmin');
 
+		// id, alias, category, title, published, marked, article_date, show_from, show_until, sort_number, created/updated
+
+        /*
+        $articles = [];
+
+        foreach($query->select() as $article) {
+            $articles[] = [
+                'id' => $article->getId(),
+                'headline' => $article->getHeadline(),
+                'categoryId' => $article->getCategory()->getId(),
+                'published' => $article->isPublished(),
+                'customFlags' => $article->getCustomFlags(),
+                'date' => $article->getDate() ? $article->getDate()->format('Y-m-d') : null,
+                'displayFrom' => $article->getDisplayFrom() ? $article->getDisplayFrom()->format('Y-m-d') : null,
+                'displayUntil' => $article->getDisplayUntil() ? $article->getDisplayUntil()->format('Y-m-d') : null,
+                'customSort' => $article->getCustomSort(),
+                'updated' => $article->getLastUpdated() ? $article->getLastUpdated()->format('Y-m-d H:i:s') : null
+            ];
+        }
+
+        return new JsonResponse(['articles' => $articles]);
+        */
+
 		foreach($query->select() as $article) {
 			$markup[] = $tpl
 				->assign('article', $article)

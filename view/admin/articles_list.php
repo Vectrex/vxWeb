@@ -4,7 +4,33 @@
 <div class="vx-button-bar">
 	<a class="btn with-webfont-icon-right btn-primary" data-icon="&#xe018;" href="$articles/new">Artikel anlegen</a>
 </div>
-
+<!--
+<div id="app">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th
+                        v-for="column in columns"
+                        :class="[ 'vx-sortable-header', setHeaderClass(column), columnProperties[column].width ? columnProperties[column].width : '' ]"
+                        @click="clickSort(column)"
+                >
+                    {{ columnProperties[column].label }}
+                </th>
+                <th class="col-1"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="article in filteredArticles">
+                <td v-for="column in columns" :class="{ 'active': sort.column === column }">{{ article[column] }}</td>
+                <td class="right">
+                    <a class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" :href="'/admin/articles?id=' + article.id">&#xe002;</a>
+                    <a class="btn webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" :href="'/admin/articles/del?id=' + article.id" onclick="return window.confirm('Wirklich löschen?');">&#xe011;</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+-->
 <script type="text/javascript">
 
 	"use strict";
