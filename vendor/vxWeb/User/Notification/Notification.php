@@ -102,8 +102,8 @@ class Notification {
 	 * 
 	 * @param string $alias
 	 */
-	public function __construct($alias) {
-
+	public function __construct($alias)
+    {
 		if(!isset(self::$cachedNotificationData)) {
 			self::queryAllNotifications();
 		}
@@ -116,7 +116,6 @@ class Notification {
 				}
 			}
 		}
-	
 	}
 
 	/**
@@ -124,18 +123,16 @@ class Notification {
 	 * 
 	 * @param string $p
 	 */	
-	public function __get($p) {
-
+	public function __get($p)
+    {
 		if(property_exists($this, $p)) {
 			return $this->$p;
 		}
-
 	}
 
-	public function __toString() {
-
+	public function __toString()
+    {
 		return $this->alias;
-
 	}
 
 	/**
@@ -144,8 +141,8 @@ class Notification {
 	 * @param string $groupAlias
 	 * @return Notification[]
 	 */
-	public static function getAvailableNotifications($groupAlias = NULL) {
-
+	public static function getAvailableNotifications($groupAlias = null): array
+    {
 		if(!isset(self::$cachedNotificationData)) {
 			self::queryAllNotifications();
 		}
@@ -160,11 +157,10 @@ class Notification {
 		}
 
 		return $result;
-
 	}
 
-	private static function queryAllNotifications() {
-
+	private static function queryAllNotifications()
+    {
 		$db = Application::getInstance()->getDb();
 		
 		$rows = $db->doPreparedQuery("
@@ -197,39 +193,38 @@ class Notification {
 				$r['attachment'] = preg_split('~\s*,\s*~', $r['attachment']);
 			}
 			else {
-				$r['attachment'] = NULL;
+				$r['attachment'] = null;
 			}
 
 			$r['notifies'] = $adminIds;	
 
 			self::$cachedNotificationData[$r['alias']] = $r;
 		}
-
 	}
 
-	/**
-	 * check whether a user will be notified by the notification
-	 * 
-	 * @param User $user
-	 * return boolean
-	 */
-	public function notifies(User $user) {
-		
+    /**
+     * check whether a user will be notified by the notification
+     *
+     * @param User $user
+     * @return bool
+     */
+	public function notifies(User $user): bool
+    {
 		return ($id = $user->getAttribute('id')) && in_array($id, $this->notifies);
-		
 	}
 
-	/**
-	 * adds a user to the list of notified users by inserting a record
-	 * in admin_notifications table; table is left unchanged if user is
-	 * already on the list
-	 * does no further checking of insertion result
-	 * 
-	 * @param User $user
-	 * @return \vxWeb\User\Notification\Notification
-	 */
-	public function subscribe(User $user) {
-
+    /**
+     * adds a user to the list of notified users by inserting a record
+     * in admin_notifications table; table is left unchanged if user is
+     * already on the list
+     * does no further checking of insertion result
+     *
+     * @param User $user
+     * @return \vxWeb\User\Notification\Notification
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
+	public function subscribe(User $user): Notification
+    {
 		if(($id = $user->getAttribute('id')) && !in_array($id, $this->notifies)) {
 			
 			Application::getInstance()->getDb()->insertRecord('admin_notifications', ['adminID' => $id, 'notificationsID' => $this->id]);
@@ -238,20 +233,20 @@ class Notification {
 		}
 		
 		return $this;
-		
 	}
-	
-	/**
-	 * adds a user to the list of notified users by inserting a record
-	 * in admin_notifications table; table is left unchanged if user is
-	 * already on the list
-	 * does no further checking of insertion result
-	 *
-	 * @param User $user
-	 * @return \vxWeb\User\Notification\Notification
-	 */
-	public function unSubscribe(User $user) {
-	
+
+    /**
+     * adds a user to the list of notified users by inserting a record
+     * in admin_notifications table; table is left unchanged if user is
+     * already on the list
+     * does no further checking of insertion result
+     *
+     * @param User $user
+     * @return \vxWeb\User\Notification\Notification
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
+	public function unSubscribe(User $user): Notification
+    {
 		if(($id = $user->getAttribute('id')) && in_array($id, $this->notifies)) {
 				
 			Application::getInstance()->getDb()->deleteRecord('admin_notifications', ['adminID' => $id, 'notificationsID' => $this->id]);
@@ -260,7 +255,6 @@ class Notification {
 		}
 	
 		return $this;
-	
 	}
 	
 	/**
@@ -270,8 +264,8 @@ class Notification {
 	 * @param array $fieldValues
 	 * @return string
 	 */
-	public function fillMessage(array $fieldValues = []) {
-
+	public function fillMessage(array $fieldValues = []): string
+    {
 		$txt = $this->message;
 
 		if(empty($txt)) {
@@ -282,6 +276,5 @@ class Notification {
 			$txt = str_replace('{' . $key . '}', $val, $txt);
 		}
 		return $txt;
-	
 	}
 }
