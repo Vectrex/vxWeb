@@ -185,8 +185,8 @@ class MetaFolder {
 			[(string) $path, (string) $altPath]
 		);
 
-		if(count($rows)) {
-			return array_change_key_case(current($rows), CASE_LOWER);
+		if($rows->count()) {
+			return array_change_key_case($rows->current(), CASE_LOWER);
 		}
 		else {
 			throw new MetaFolderException(sprintf("MetaFolder database entry for '%s (%s)' not found.", $this->fullPath, $path), MetaFolderException::METAFOLDER_DOES_NOT_EXIST);
@@ -200,8 +200,8 @@ class MetaFolder {
 			[(int) $id]
 		);
 
-        if(count($rows)) {
-            return array_change_key_case(current($rows), CASE_LOWER);
+        if($rows->count()) {
+            return array_change_key_case($rows->current(), CASE_LOWER);
 		}
 		else {
 			throw new MetaFolderException(sprintf("MetaFolder database entry for id '%d' not found.", $id), MetaFolderException::METAFOLDER_DOES_NOT_EXIST);
@@ -542,8 +542,8 @@ class MetaFolder {
 				//no parent
 
 				$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders', []);
-				$metaData['l'] = (!count($rows) || !isset(current($rows)['l'])) ? 0 : current($rows)['l'];
-				$metaData['r'] = current($rows)['l'] + 1;
+				$metaData['l'] = (!$rows->count() || !isset($rows->current()['l'])) ? 0 : $rows->current()['l'];
+				$metaData['r'] = $rows->current()['l'] + 1;
 				$metaData['level'] = 0;
 			}
 
@@ -558,12 +558,12 @@ class MetaFolder {
 
 					$rows = $db->doPreparedQuery("SELECT r, l, level FROM folders WHERE foldersID = ?", [$parent->getId()]);
 
-					$db->execute('UPDATE folders SET r = r + 2 WHERE r >= ?', [(int) current($rows)['r']]);
-					$db->execute('UPDATE folders SET l = l + 2 WHERE l > ?', [(int) current($rows)['r']]);
+					$db->execute('UPDATE folders SET r = r + 2 WHERE r >= ?', [(int) $rows->current()['r']]);
+					$db->execute('UPDATE folders SET l = l + 2 WHERE l > ?', [(int) $rows->current()['r']]);
 
-					$metaData['l'] = current($rows)['r'];
-					$metaData['r'] = current($rows)['r'] + 1;
-					$metaData['level'] = current($rows)['level'] + 1;
+					$metaData['l'] = $rows->current()['r'];
+					$metaData['r'] = $rows->current()['r'] + 1;
+					$metaData['level'] = $rows->current()['level'] + 1;
 
 				}
 
@@ -572,8 +572,8 @@ class MetaFolder {
 					// no parent directory
 
 					$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders', []);
-                    $metaData['l'] = (!count($rows) || !isset(current($rows)['l'])) ? 0 : current($rows)['l'];
-                    $metaData['r'] = current($rows)['l'] + 1;
+                    $metaData['l'] = (!$rows->count() || !isset($rows->current()['l'])) ? 0 : $rows->current()['l'];
+                    $metaData['r'] = $rows->current()['l'] + 1;
 					$metaData['level'] = 0;
 
 				}

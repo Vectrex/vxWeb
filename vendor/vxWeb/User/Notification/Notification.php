@@ -19,7 +19,7 @@ use vxPHP\User\User;
  *  
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.2.0 2017-02-20
+ * @version 0.3.0 2019-12-06
  * 
  */
 class Notification {
@@ -273,7 +273,7 @@ class Notification {
 		}
 
 		foreach ($fieldValues as $key => $val) {
-			$txt = str_replace('{' . $key . '}', $val, $txt);
+			$txt = preg_replace('/{\\s*' . preg_quote($key) . '\\s*}/i', $val, $txt);
 		}
 		return $txt;
 	}

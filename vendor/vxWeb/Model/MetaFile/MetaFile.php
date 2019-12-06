@@ -514,8 +514,8 @@ class MetaFile implements PublisherInterface {
 			]
 		);
 
-		if(count($rows)) {
-			return array_change_key_case(current($rows), CASE_LOWER);
+		if($rows->count()) {
+			return array_change_key_case($rows->current(), CASE_LOWER);
 		}
 		else {
 			throw new MetaFileException(sprintf("MetaFile database entry for '%s' not found.", $path));
@@ -530,8 +530,8 @@ class MetaFile implements PublisherInterface {
 			[(int) $id]
 		);
 
-		if(count($rows)) {
-			return array_change_key_case(current($rows), CASE_LOWER);
+		if($rows->count()) {
+			return array_change_key_case($rows->current(), CASE_LOWER);
 		}
 		else {
 			throw new MetaFileException(sprintf("MetaFile database entry for id '%d' not found.", $id));
