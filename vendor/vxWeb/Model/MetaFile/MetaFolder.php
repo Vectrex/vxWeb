@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace vxWeb\Model\MetaFile;
 
 use vxPHP\File\FilesystemFolder;
@@ -22,7 +21,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.4.0 2018-06-10
+ * @version 1.5.0 2019-12-08
  *
  * @todo compatibility checks on windows systems
  */
@@ -305,8 +304,8 @@ class MetaFolder {
      * @throws Exception\MetaFileException
      * @throws \vxPHP\Application\Exception\ApplicationException
      */
-	public function getMetaFiles($force = FALSE) {
-
+	public function getMetaFiles($force = false)
+    {
 		if(!isset($this->metaFiles) || $force) {
 			$this->metaFiles = [];
 
@@ -321,8 +320,29 @@ class MetaFolder {
 		}
 
 		return $this->metaFiles;
-
 	}
+
+    /**
+     * return all metafiles with a "compatible" image mimetype within
+     * this folder
+     *
+     * @param bool $force
+     * @return MetaFile[]
+     * @throws Exception\MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
+	public function getMetaImages($force = false): array
+    {
+        $files = $this->getMetaFiles($force);
+        array_filter(
+            $files,
+            static function($file) {
+                /* @var MetaFile $file */
+                return $file->isWebImage();
+            }
+        );
+        return $files;
+    }
 
     /**
      * return all metafolders within this folder
