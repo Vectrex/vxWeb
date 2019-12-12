@@ -51,8 +51,6 @@
             "message-toast": MessageToast
         },
 
-        mixins: [FetchResponse],
-
         el: "#login",
 
         routes: {
