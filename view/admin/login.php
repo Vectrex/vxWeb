@@ -31,7 +31,7 @@
     <message-toast
         :message="toastProps.message"
         :classname="toastProps.messageClass"
-        :active="status === "received""
+        :active="status === 'received'"
         ref="toast"
     ></message-toast>
 </div>
