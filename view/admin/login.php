@@ -76,7 +76,7 @@
             submit: async function () {
                 if (this.form.username && this.form.pwd) {
                     this.status = null;
-                    let response = SimpleFetch(this.$options.routes.loginUrl, this.form, 'POST', {}, JSON.stringify(this.form));
+                    let response = SimpleFetch(this.$options.routes.loginUrl, 'POST', {}, JSON.stringify(this.form));
                     if (response.locationHref) {
                         window.location.href = response.locationHref;
                     } else {
