@@ -31,20 +31,17 @@
     <message-toast
         :message="toastProps.message"
         :classname="toastProps.messageClass"
-        :active="toastProps.isActive"
+        :active="status === "received""
         ref="toast"
     ></message-toast>
-
-    <input type="hidden" value="<?= $this->csrf_token ?>" name="_csrf_token">
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <script type="module">
 
     import MessageToast from "/js/vue/components/message-toast.js";
-    import FetchResponse from "/js/vue/mixins/fetch-response.js";
+    import SimpleFetch from "/js/vue/util/simple-fetch.js";
 
     "use strict";
 
@@ -64,27 +61,32 @@
 
         data: {
             form: {},
-            response: null
+            response: {},
+            status: null
         },
 
         computed: {
             toastProps() {
                 return {
-                    message: this.fetch.response && this.fetch.response.message ? this.fetch.response.message : "",
-                    messageClass: this.fetch.response && this.fetch.response.error ? "toast-error" : "toast-success",
-                    isActive: this.fetch.status && this.fetch.status === "received"
+                    message: this.response.message ? this.response.message : "",
+                    messageClass: this.response.error ? "toast-error" : "toast-success"
                 }
             }
         },
 
         methods: {
-            submit() {
-                if(this.form.username && this.form.pwd) {
-                    this.fetchPostResponse(this.$options.routes.loginUrl, this.form);
+            submit: async function () {
+                if (this.form.username && this.form.pwd) {
+                    this.status = null;
+                    let response = SimpleFetch(this.$options.routes.loginUrl, this.form, 'POST', {}, JSON.stringify(this.form));
+                    if (response.locationHref) {
+                        window.location.href = response.locationHref;
+                    } else {
+                        this.response = response;
+                        this.status = "received";
+                    }
                 }
             }
         }
     });
-
-
 </script>
