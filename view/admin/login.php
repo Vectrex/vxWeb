@@ -64,7 +64,7 @@
         },
 
         computed: {
-            toastProps() {
+            toastProps () {
                 return {
                     message: this.response.message ? this.response.message : "",
                     messageClass: this.response.error ? "toast-error" : "toast-success"
@@ -73,10 +73,10 @@
         },
 
         methods: {
-            submit: async function () {
+            async submit () {
                 if (this.form.username && this.form.pwd) {
                     this.status = null;
-                    let response = SimpleFetch(this.$options.routes.loginUrl, 'POST', {}, JSON.stringify(this.form));
+                    let response = await SimpleFetch(this.$options.routes.loginUrl, 'POST', {}, JSON.stringify(this.form));
                     if (response.locationHref) {
                         window.location.href = response.locationHref;
                     } else {
