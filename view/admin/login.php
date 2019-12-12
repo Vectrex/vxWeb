@@ -15,7 +15,7 @@
                 <label class="form-label col-2">Passwort</label>
                 <div class="input-group input-inline col-10">
                     <input name="pwd" value="" maxlength="128" class="form-input" type="password" v-model="form.pwd">
-                    <button name="submit_login" value="" type='submit' class='btn btn-success'>Login</button>
+                    <button name="submit_login" value="" type='submit' class='btn btn-success' :disabled="status === 'loading'" :class="{ 'loading': status === 'loading' }">Login</button>
                 </div>
             </div>
 
@@ -75,7 +75,7 @@
         methods: {
             async submit () {
                 if (this.form.username && this.form.pwd) {
-                    this.status = null;
+                    this.status = "loading";
                     let response = await SimpleFetch(this.$options.routes.loginUrl, 'POST', {}, JSON.stringify(this.form));
                     if (response.locationHref) {
                         window.location.href = response.locationHref;

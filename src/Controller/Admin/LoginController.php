@@ -59,7 +59,7 @@ class LoginController extends Controller {
             $userProvider = new SessionUserProvider();
 			$userProvider->unsetSessionUser();
 
-			if(!(new CsrfTokenManager())->isTokenValid(new CsrfToken('login', $this->request->headers->get('X-CSRF-Token')))) {
+			if(!(new CsrfTokenManager())->isTokenValid(new CsrfToken('admin', $this->request->headers->get('X-CSRF-Token')))) {
 			    return new JsonResponse(['error' => 1, 'message' => 'Possible malicious login attempt detected.']);
             }
 
