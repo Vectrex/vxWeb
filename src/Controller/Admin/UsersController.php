@@ -73,7 +73,7 @@ class UsersController extends Controller {
 
 		// show list
 
-		$users	= $db->doPreparedQuery("SELECT a.*, ag.alias FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
+		$users	= $db->doPreparedQuery("SELECT a.*, ag.alias, a.adminid AS `key` FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
 
 		return new Response(
 			SimpleTemplate::create('admin/users_list.php')
