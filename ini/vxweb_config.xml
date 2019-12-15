@@ -19,7 +19,9 @@
 		<page id="user_data_post" path="users/user_data" controller="admin/users" method="postUserData" auth="superadmin" request_methods="POST" />
 
 		<page id="articles" controller="admin/articles" path="articles/{action=}" auth="privileged" />
-		<page id="publishXhr" controller="admin/articles" method="xhrPublish" auth="superadmin" />
+		<page id="articles_init" controller="admin/articles" method="init" auth="superadmin" />
+		<page id="article_publish" controller="admin/articles" method="publish" auth="superadmin" />
+
 		<page id="articlesXhr" controller="admin/articles" method="xhrExecute" auth="privileged" />
 
 		<page id="files" controller="admin/files" auth="privileged" />

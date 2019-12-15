@@ -10,9 +10,11 @@
                     sortColumn === column ? sortDir : null,
                     column.width
                 ]"
-                @click="clickSort(column)"
+                @click="column.sortable ? clickSort(column) : null"
             >
-                {{ column.label }}
+                <slot :name="column.prop + '-header'" :column="column">
+                    {{ column.label }}
+                </slot>
             </th>
         </tr>
         </thead>
@@ -74,30 +76,32 @@
 
         methods: {
             clickSort (column) {
-                if(column.sortable) {
-                    if(this.sortColumn === column) {
-                        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-                    }
-                    else {
-                        this.sortColumn = column;
-                    }
+                if(this.sortColumn === column) {
+                    this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+                }
+                else {
+                    this.sortColumn = column;
                 }
             },
-            doSort: function(column, dir) {
-
-                let prop = column.prop;
-
+            doSort (column, dir) {
                 this.$emit('before-sort');
 
-                this.rows.sort((a, b) => {
-                    if (a[prop] < b[prop]) {
-                        return dir === "asc" ? -1 : 1;
-                    }
-                    if (a[prop] > b[prop]) {
-                        return dir === "asc" ? 1 : -1;
-                    }
-                    return 0;
-                });
+                if (column.sortFunction) {
+                    this.rows.sort (column.sortFunction);
+                }
+                else {
+                    let prop = column.prop;
+
+                    this.rows.sort((a, b) => {
+                        if (a[prop] < b[prop]) {
+                            return dir === "asc" ? -1 : 1;
+                        }
+                        if (a[prop] > b[prop]) {
+                            return dir === "asc" ? 1 : -1;
+                        }
+                        return 0;
+                    });
+                }
 
                 this.$emit('after-sort');
             }

@@ -22,7 +22,6 @@ use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 
 use vxPHP\Application\Application;
-use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Database\Util;
 use vxPHP\Constraint\Validator\Date;
@@ -157,7 +156,41 @@ class ArticlesController extends Controller {
 		}
 		return $val;
 	}
-	
+
+	protected function init()
+    {
+        $categories = [];
+        $articles = [];
+
+        foreach(ArticleCategoryQuery::create(Application::getInstance()->getDb())->sortBy('customsort')->sortBy('title')->select() as $cat) {
+            $categories[$cat->getId()] = [
+                'id' => $cat->getId(),
+                'alias' => $cat->getAlias(),
+                'label' => $cat->getTitle()
+            ];
+        }
+
+        foreach(ArticleQuery::create(Application::getInstance()->getDb())->select() as $article) {
+            $articles[] = [
+                'key' => $article->getId(),
+                'title' => $article->getHeadline(),
+                'catId' => $article->getCategory()->getId(),
+                'pub' => $article->isPublished(),
+                'marked' => $article->getCustomFlags(),
+                'date' => $article->getDate() ? $article->getDate()->format('Y-m-d') : null,
+                'from' => $article->getDisplayFrom() ? $article->getDisplayFrom()->format('Y-m-d') : null,
+                'until' => $article->getDisplayUntil() ? $article->getDisplayUntil()->format('Y-m-d') : null,
+                'sort' => $article->getCustomSort(),
+                'updated' => $article->getLastUpdated() ? $article->getLastUpdated()->format('Y-m-d H:i:s') : null
+            ];
+        }
+
+        return new JsonResponse([
+            'categories' => array_values($categories),
+            'articles' => $articles
+        ]);
+    }
+
 	private function createArticlesList(array $filter = [], array $sort = null) {
 
 		$admin = Application::getInstance()->getCurrentUser();
@@ -239,7 +272,7 @@ class ArticlesController extends Controller {
 		
 	}
 	
-	protected function xhrPublish() {
+	protected function publish() {
 		
 		$id = $this->request->request->getInt('id');
 		$state = $this->request->request->getInt('state');

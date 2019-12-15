@@ -1,36 +1,112 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
-<h1>Artikel &amp; News</h1>
 
-<div class="vx-button-bar">
-	<a class="btn with-webfont-icon-right btn-primary" data-icon="&#xe018;" href="$articles/new">Artikel anlegen</a>
-</div>
-<!--
 <div id="app">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th
-                        v-for="column in columns"
-                        :class="[ 'vx-sortable-header', setHeaderClass(column), columnProperties[column].width ? columnProperties[column].width : '' ]"
-                        @click="clickSort(column)"
-                >
-                    {{ columnProperties[column].label }}
-                </th>
-                <th class="col-1"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="article in filteredArticles">
-                <td v-for="column in columns" :class="{ 'active': sort.column === column }">{{ article[column] }}</td>
-                <td class="right">
-                    <a class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" :href="'/admin/articles?id=' + article.id">&#xe002;</a>
-                    <a class="btn webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" :href="'/admin/articles/del?id=' + article.id" onclick="return window.confirm('Wirklich löschen?');">&#xe011;</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+    <h1>Artikel &amp; News</h1>
+
+    <div class="vx-button-bar">
+        <a class="btn with-webfont-icon-right btn-primary" data-icon="&#xe018;" href="$articles/new">Artikel anlegen</a>
+        <select v-model="filter.cat" class="form-select">
+            <option value="">(Kategorie filtern)</option>
+            <option v-for="cat in categories" :value="cat.id">{{ cat.label }}</option>
+        </select>
+    </div>
+
+    <sortable :rows="filteredArticles" :columns="cols">
+        <template v-slot:pub="slotProps">
+            <label class="form-switch">
+                <input type="checkbox" :checked="slotProps.row.pub" @click="publish(slotProps.row)">
+                <i class="form-icon"></i>
+            </label>
+        </template>
+        <template v-slot:marked="slotProps">
+            <label class="form-checkbox">
+                <input type="checkbox" disabled="disabled" :checked="slotProps.row.marked">
+                <i class="form-icon"></i>
+            </label>
+        </template>
+        <template v-slot:action="slotProps">
+            <a class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" href="#">&#xe002;</a>
+            <a class="btn webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" href="#" @click.prevent="del(slotProps.row)">&#xe011;</a>
+        </template>
+    </sortable>
+
 </div>
--->
+
+<script type="module">
+    import Sortable from  "/js/vue/components/sortable.js";
+    import SimpleFetch from  "/js/vue/util/simple-fetch.js";
+
+    let app = new Vue({
+
+        el: "#app",
+        components: { "sortable": Sortable },
+
+        routes: {
+            init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articles_init')->getUrl() ?>",
+            publish: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_publish')->getUrl() ?>",
+            delete: '',
+            filter: ''
+        },
+
+        data: {
+            articles: [],
+            categories: [],
+            cols: [
+                { label: "Kategorie", sortable: true, prop: "cat" },
+                { label: "Titel", sortable: true, prop: "title" },
+                { label: "Pub", sortable: true, prop: "pub" },
+                { label: "*", sortable: true, prop: "marked" },
+                { label: "Artikeldatum", sortable: true, prop: "date" },
+                { label: "Anzeige von", sortable: true, prop: "from" },
+                { label: "Anzeige bis", sortable: true, prop: "until" },
+                { label: "Sortierziffer", sortable: true, prop: "sort" },
+                { label: "Angelegt/aktualisiert", sortable: true, prop: "updated" },
+                { label: "", prop: "action" }
+            ],
+            initSort: {},
+            filter: {
+                cat: ''
+            }
+        },
+
+        computed: {
+            filteredArticles() {
+                return this.articles.filter(item => !this.filter.cat || this.filter.cat === item.catId);
+            }
+        },
+
+        async created () {
+            let lsValue = window.localStorage.getItem(window.location.origin + "/admin/users__sort__");
+            if(window.localStorage && lsValue) {
+                this.initSort = JSON.parse(lsValue);
+            }
+
+            let response = await SimpleFetch(this.$options.routes.init);
+
+            this.categories = response.categories || [];
+
+            let catLookup = {};
+            this.categories.forEach(item => catLookup[item.id] = item);
+            this.articles = response.articles || [];
+            this.articles.forEach(item => item.cat = catLookup[item.catId].label);
+        },
+
+        methods: {
+            publish (row) {
+                console.log(row);
+                this.$set(row, 'pub', !row.pub);
+            },
+            del (row) {
+                if(window.confirm('Wirklich löschen?')) {
+                    console.log(row);
+                    this.articles.splice(this.articles.findIndex(item => row === item), 1);
+                }
+            }
+        }
+    });
+</script>
+<!--
 <script type="text/javascript">
 
 	"use strict";
@@ -41,53 +117,6 @@
     if(!this.vxWeb.routes) {
         this.vxWeb.routes = {};
     }
-
-    vxWeb.messageToast = function(selector) {
-
-        var mBox, lastAddedClass, timeoutId, button;
-
-        var hide = function() {
-            if(mBox) {
-                mBox.classList.remove("display");
-            }
-        };
-
-        var show = function(msg, className) {
-
-            if(mBox === undefined) {
-                mBox = document.querySelector(selector || "#messageBox");
-
-                if(mBox && (button = mBox.querySelector("button"))) {
-                    button.addEventListener("click", hide);
-                }
-            }
-
-            if(mBox) {
-                if(lastAddedClass) {
-                    mBox.classList.remove(lastAddedClass);
-                }
-                if(className) {
-                    mBox.classList.add(className);
-                }
-                lastAddedClass = className;
-            }
-
-            mBox.innerHTML = msg;
-            mBox.appendChild(button);
-            mBox.classList.add("display");
-
-            if(timeoutId) {
-                window.clearTimeout(timeoutId);
-            }
-            timeoutId = window.setTimeout(hide, 5000);
-
-        };
-
-        return {
-            show: show,
-            hide: hide
-        };
-    };
 
     this.vxWeb.routes.publish = "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('publishXhr')->getUrl() ?>";
 	this.vxWeb.routes.filter = "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articles')->getUrl(['action' => 'list']) ?>";
@@ -316,3 +345,4 @@
 		</tr>
 	</thead>
 </table>
+-->
