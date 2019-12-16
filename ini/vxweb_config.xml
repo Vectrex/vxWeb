@@ -18,9 +18,12 @@
 		<page id="user_data_get" path="users/user_data" controller="admin/users" method="getUserData" auth="superadmin" request_methods="GET" />
 		<page id="user_data_post" path="users/user_data" controller="admin/users" method="postUserData" auth="superadmin" request_methods="POST" />
 
-		<page id="articles" controller="admin/articles" path="articles/{action=}" auth="privileged" />
-		<page id="articles_init" controller="admin/articles" method="init" auth="superadmin" />
-		<page id="article_publish" controller="admin/articles" method="publish" auth="superadmin" />
+		<page id="articles" controller="admin/articles" auth="privileged" />
+		<page id="articles_init" controller="admin/articles" method="init" auth="privileged" />
+		<page id="article_add" controller="admin/articles" method="add" path="articles/add" auth="privileged" />
+		<page id="article_del" controller="admin/articles" method="del" auth="privileged" request_methods="DELETE" />
+		<page id="article_edit" controller="admin/articles" method="edit" path="articles/edit" auth="privileged" />
+		<page id="article_publish" controller="admin/articles" method="publish" auth="superadmin" request_methods="POST" />
 
 		<page id="articlesXhr" controller="admin/articles" method="xhrExecute" auth="privileged" />
 

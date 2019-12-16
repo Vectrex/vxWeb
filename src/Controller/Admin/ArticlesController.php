@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use vxPHP\Http\ParameterBag;
 use vxPHP\Util\Rex;
 
 use vxPHP\Image\ImageModifierFactory;
@@ -31,130 +32,9 @@ use vxWeb\Model\ArticleCategory\ArticleCategoryQuery;
 
 class ArticlesController extends Controller {
 
-	protected function execute() {
-
-	    $app = Application::getInstance();
-		$admin = $app->getCurrentUser();
-		$redirectUrl = $app->getRouter()->getRoute('articles', 'admin.php')->getUrl();
-		$action = $this->route->getPathParameter('action');
-		
-		if($action === 'list') {
-			return $this->createArticlesList($this->request->request->get('filter'));
-		}
-
-		// editing something?
-
-		else if(($id = $this->request->query->get('id'))) {
-
-			try {
-				$article = Article::getInstance($id);
-			}
-			catch(ArticleException $e) {
-				return $this->redirect($redirectUrl);
-			}
-
-			// check permission of non superadmin
-
-			if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
-				return $this->redirect($redirectUrl);
-			}
-		}
-
-		// delete article
-
-		if(isset($article) && $action === 'del') {
-
-			try {
-				$article->delete();
-			}
-			catch(ArticleException $e) { }
-
-			return $this->redirect($redirectUrl);
-		}
-
-		// edit or add article
-
-		if(isset($article) || $action === 'new') {
-			
-			MenuGenerator::setForceActiveMenu(true);
-
-			// fill category related properties - replacing default method allows user privilege considerations
-
-			$articleForm = $this->buildEditForm();
-
-			if(isset($article)) {
-
-				$articleForm->setInitFormValues([
-					'articlecategoriesid'	=> $article->getCategory()->getId(),
-					'headline'				=> $article->getHeadline(),
-					'subline'               => $article->getData('subline'),
-					'customsort'			=> $article->getCustomSort(),
-					'teaser'				=> $article->getData('teaser'),
-					'content'				=> htmlspecialchars($article->getData('content'), ENT_NOQUOTES, 'UTF-8'),
-					'article_date'			=> is_null($article->getDate())			? '' : $article->getDate()->format('d.m.Y'),
-					'display_from'			=> is_null($article->getDisplayFrom())	? '' : $article->getDisplayFrom()->format('d.m.Y'),
-					'display_until'			=> is_null($article->getDisplayUntil())	? '' : $article->getDisplayUntil()->format('d.m.Y')
-				]);
-
-                $articleForm->getElementsByName('customflags')->setChecked($article->getCustomFlags());
-
-				$submitLabel = 'Änderungen übernehmen';
-
-			}
-
-			else {
-
-				$article = new Article();
-				$submitLabel = 'Artikel anlegen';
-				$articleForm->initVar('is_add', 1);
-			}
-
-			$articleForm->addElement(FormElementFactory::create('button', 'submit_article')->setInnerHTML($submitLabel));
-
-			$uploadMaxFilesize = min(
-                $this->toBytes(ini_get('upload_max_filesize')),
-                $this->toBytes(ini_get('post_max_size'))
-			);
-			$maxExecutionTime = ini_get('max_execution_time');
-
-			return new Response(
-				SimpleTemplate::create('admin/articles_edit.php')
-					->assign('title', $article->getHeadline())
-					->assign('backlink', $this->pathSegments[0])
-					->assign('article_form', $articleForm->render())
-					->assign('upload_max_filesize',		$uploadMaxFilesize)
-					->assign('max_execution_time_ms',	$maxExecutionTime * 900) // 10pct "safety margin"
-					->display()
-			);
-		}
-
-		$categories = ArticleCategoryQuery::create(Application::getInstance()->getDb())->sortBy('alias')->select();
-		return new Response(SimpleTemplate::create('admin/articles_list.php')->assign('categories', $categories)->display());
-
-	}
-
-    /**
-     * simple helper function to convert ini values like 10M or 256K to integer
-     *
-     * @param string $val
-     * @return int|string
-     */
-	private function toBytes($val) {
-
-		$suffix = strtolower(substr(trim($val),-1));
-		
-		$val = (int) $val;
-		
-		switch($suffix) {
-		
-			case 'g':
-				$val *= 1024;
-			case 'm':
-				$val *= 1024;
-			case 'k':
-				$val *= 1024;
-		}
-		return $val;
+	protected function execute()
+    {
+		return new Response(SimpleTemplate::create('admin/articles_list.php')->display());
 	}
 
 	protected function init()
@@ -191,114 +71,159 @@ class ArticlesController extends Controller {
         ]);
     }
 
-	private function createArticlesList(array $filter = [], array $sort = null) {
-
+	protected function publish()
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+		$id = $bag->getInt('id');
+		$state = $bag->getInt('state');
 		$admin = Application::getInstance()->getCurrentUser();
-		$db = Application::getInstance()->getDb();
 
-		// restrict list to articles which were created by user
+        if(!$id) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $article = Article::getInstance($id);
+        }
+        catch(ArticleException $e) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+        if($state) {
 
-		$query = ArticleQuery::create($db)
-			->where($admin->hasRole('superadmin') ? '1 = 1' : ('createdBy = ' . (int) $admin->getAttribute('id')))
-		;
+            // publish logs publishedById
 
-		// add sorting
+            $article->publish($admin->getAttribute('id'))->save();
+        }
+        else {
 
-		if($sort) {
-			if($sort['column'] !== 'category') {
-				$query->sortBy($sort['column'], $sort['asc']);
-			}
-			else {
-			}
-		}
-		else {
-			$query->sortBy('lastUpdated', false);
-		}
-		
-		// apply filter for title
+            // unpublish sets publishedById to null
 
-		if(isset($filter['title']) && trim($filter['title'])) {
-
-			$query->where('headline LIKE ?', ['%' . trim($filter['title']) . '%']);
-
-		}
-		
-		// apply filter for a category name
-		
-		if(isset($filter['category'])) {
-			
-			try {
-				$query->filterByCategory(ArticleCategory::getInstance($filter['category']));
-			}
-			catch(ArticleCategoryException $e) {}
-
-		}
-
-		$tpl = SimpleTemplate::create('admin/snippets/article_row.php');
-		$markup = [];
-		$canPublish = $admin->hasRole('superadmin');
-
-		// id, alias, category, title, published, marked, article_date, show_from, show_until, sort_number, created/updated
-
-        /*
-        $articles = [];
-
-        foreach($query->select() as $article) {
-            $articles[] = [
-                'id' => $article->getId(),
-                'headline' => $article->getHeadline(),
-                'categoryId' => $article->getCategory()->getId(),
-                'published' => $article->isPublished(),
-                'customFlags' => $article->getCustomFlags(),
-                'date' => $article->getDate() ? $article->getDate()->format('Y-m-d') : null,
-                'displayFrom' => $article->getDisplayFrom() ? $article->getDisplayFrom()->format('Y-m-d') : null,
-                'displayUntil' => $article->getDisplayUntil() ? $article->getDisplayUntil()->format('Y-m-d') : null,
-                'customSort' => $article->getCustomSort(),
-                'updated' => $article->getLastUpdated() ? $article->getLastUpdated()->format('Y-m-d H:i:s') : null
-            ];
+            $article->unpublish()->save();
         }
 
-        return new JsonResponse(['articles' => $articles]);
-        */
-
-		foreach($query->select() as $article) {
-			$markup[] = $tpl
-				->assign('article', $article)
-				->assign('can_publish', $canPublish)
-				->display();
-		}
-		
-		return new JsonResponse(['rows' => $markup]);
-		
+        return new JsonResponse(['success' => true]);
 	}
-	
-	protected function publish() {
-		
-		$id = $this->request->request->getInt('id');
-		$state = $this->request->request->getInt('state');
-		$admin = Application::getInstance()->getCurrentUser();
-		
-		try {
-			if($id && $article = Article::getInstance($id)) {
-				if($state) {
-					
-					// publish logs publishedById
-					
-					$article->publish($admin->getAttribute('id'))->save();
-				}
-				else {
-					
-					// unpublish sets publishedById to null
 
-					$article->unpublish()->save();
-				}
-				return new JsonResponse(['success' => true]);
-			}
-		}
-		catch(\Exception $e) {
-			return new JsonResponse(['success' => false, 'error' => $e->getMessage()]);
-		}
-	}
+	protected function del ()
+    {
+        $id = $this->request->query->get('id');
+
+        if(!$id) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $article = Article::getInstance($id);
+        }
+        catch(ArticleException $e) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+
+        // check permission of non superadmin
+
+        $admin = Application::getInstance()->getCurrentUser();
+
+        if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
+            return new Response('', Response::HTTP_FORBIDDEN);
+        }
+
+        try {
+            $article->delete();
+        }
+        catch(ArticleException $e) {
+            return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    protected function add ()
+    {
+        MenuGenerator::setForceActiveMenu(true);
+
+        $articleForm = $this->buildEditForm();
+
+        $submitLabel = 'Artikel anlegen';
+        $articleForm->initVar('is_add', 1);
+
+        $articleForm->addElement(FormElementFactory::create('button', 'submit_article')->setInnerHTML($submitLabel));
+
+        $uploadMaxFilesize = min(
+            $this->toBytes(ini_get('upload_max_filesize')),
+            $this->toBytes(ini_get('post_max_size'))
+        );
+        $maxExecutionTime = ini_get('max_execution_time');
+
+        return new Response(
+            SimpleTemplate::create('admin/articles_edit.php')
+                ->assign('title', '')
+                ->assign('backlink', $this->pathSegments[0])
+                ->assign('article_form', $articleForm->render())
+                ->assign('upload_max_filesize', $uploadMaxFilesize)
+                ->assign('max_execution_time_ms', $maxExecutionTime * 900) // 10pct "safety margin"
+                ->display()
+        );
+    }
+
+    protected function edit ()
+    {
+        $id = $this->request->query->get('id');
+
+        if(!$id) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $article = Article::getInstance($id);
+        }
+        catch(ArticleException $e) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+
+        // check permission of non superadmin
+
+        $admin = Application::getInstance()->getCurrentUser();
+
+        if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
+            return new Response('', Response::HTTP_FORBIDDEN);
+        }
+
+        MenuGenerator::setForceActiveMenu(true);
+
+        // fill category related properties - replacing default method allows user privilege considerations
+
+        $articleForm = $this->buildEditForm();
+
+        $articleForm->setInitFormValues([
+            'articlecategoriesid' => $article->getCategory()->getId(),
+            'headline' => $article->getHeadline(),
+            'subline' => $article->getData('subline'),
+            'customsort' => $article->getCustomSort(),
+            'teaser' => $article->getData('teaser'),
+            'content' => htmlspecialchars($article->getData('content'), ENT_NOQUOTES, 'UTF-8'),
+            'article_date' => is_null($article->getDate()) ? '' : $article->getDate()->format('d.m.Y'),
+            'display_from' => is_null($article->getDisplayFrom()) ? '' : $article->getDisplayFrom()->format('d.m.Y'),
+            'display_until' => is_null($article->getDisplayUntil()) ? '' : $article->getDisplayUntil()->format('d.m.Y')
+        ]);
+
+        $articleForm->getElementsByName('customflags')->setChecked($article->getCustomFlags());
+        $submitLabel = 'Änderungen übernehmen';
+
+        $articleForm->addElement(FormElementFactory::create('button', 'submit_article')->setInnerHTML($submitLabel));
+
+        $uploadMaxFilesize = min(
+            $this->toBytes(ini_get('upload_max_filesize')),
+            $this->toBytes(ini_get('post_max_size'))
+        );
+        $maxExecutionTime = ini_get('max_execution_time');
+
+        return new Response(
+            SimpleTemplate::create('admin/articles_edit.php')
+                ->assign('title', $article->getHeadline())
+                ->assign('backlink', $this->pathSegments[0])
+                ->assign('article_form', $articleForm->render())
+                ->assign('upload_max_filesize', $uploadMaxFilesize)
+                ->assign('max_execution_time_ms', $maxExecutionTime * 900) // 10pct "safety margin"
+                ->display()
+        );
+    }
 
 	protected function xhrExecute() {
 
@@ -529,4 +454,27 @@ class ArticlesController extends Controller {
 		return str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest);
 	}
 
+    /**
+     * simple helper function to convert ini values like 10M or 256K to integer
+     *
+     * @param string $val
+     * @return int|string
+     */
+    private function toBytes($val) {
+
+        $suffix = strtolower(substr(trim($val),-1));
+
+        $val = (int) $val;
+
+        switch($suffix) {
+
+            case 'g':
+                $val *= 1024;
+            case 'm':
+                $val *= 1024;
+            case 'k':
+                $val *= 1024;
+        }
+        return $val;
+    }
 }

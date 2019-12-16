@@ -54,7 +54,7 @@
 
         created () {
             let lsValue = window.localStorage.getItem(window.location.origin + "/admin/users__sort__");
-            if(window.localStorage && lsValue) {
+            if(lsValue) {
                 this.initSort = JSON.parse(lsValue);
             }
         },
