@@ -2,10 +2,10 @@
 
 <div id="vue-root">
 
-    <h1>User <em class="smaller"><?= $tpl->user ? $tpl->user['name'] : 'neuer User' ?></em></h1>
+    <h1>User <em class="smaller"><?= htmlspecialchars($this->user['name'] ?? 'neuer User') ?></em></h1>
 
     <div class="vx-button-bar">
-        <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="$users">Zurück zur Übersicht</a>
+        <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('users')->getUrl() ?>">Zurück zur Übersicht</a>
     </div>
 
     <div class="form-content">
@@ -16,9 +16,9 @@
             ref="toast"
         ></message-toast>
         <user-form
-            :url="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_post')->getUrl() ?>'"
-            :initial-data="form"
-            :options="options"
+            :url="formProps.url"
+            :initial-data="formProps.form"
+            :options="formProps.options"
             @response-received="responseReceived"
             ref="form"
         ></user-form>
@@ -44,17 +44,41 @@
         el: "#vue-root",
 
         data: {
-            form: {
-                id: "<?= \vxPHP\Http\Request::createFromGlobals()->query->get('id', '') ?>"
-            },
-            options: {
-                admingroups: []
+            instanceId: <?= $this->user['id'] ?? 'null' ?>,
+            formProps: {
+                form: {},
+                url: "",
+                options: {}
             },
             toastProps: {
                 message: "",
                 messageClass: "",
                 isActive: false
             }
+        },
+
+        computed: {
+            formUrl () {
+                if(!this.instanceId) {
+                    return this.formProps.url;
+                }
+                return this.formProps.url + "?id=" + this.instanceId;
+            }
+        },
+
+        routes: {
+            init: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_init')->getUrl() ?>",
+            update: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_update')->getUrl() ?>"
+        },
+
+        async created () {
+            let response = await SimpleFetch(this.$options.routes.init + "?id=" + (this.instanceId || ''));
+
+            this.formProps = Object.assign({}, this.formProps, {
+                options: response.options || {},
+                form: response.form || {},
+                url: this.$options.routes.update
+            });
         },
 
         methods: {
@@ -65,16 +89,11 @@
                     messageClass: response.success ? 'toast-success' : 'toast-error',
                 };
                 this.$refs.toast.isActive = true;
+                if(response.instanceId) {
+                    this.instanceId = response.instanceId;
+                    this.formProps.form = Object.assign({}, this.formProps.form, { id: response.instanceId });
+                }
             }
         }
     });
-
-    SimpleFetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_data_get')->getUrl() ?>?id=" + app.form.id)
-        .then(function (data) {
-            app.options.admingroups = data.options.admingroups;
-            if (data.formData) {
-                app.form = data.formData;
-            }
-        });
-
 </script>

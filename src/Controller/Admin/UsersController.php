@@ -20,96 +20,91 @@ use vxWeb\User\Util;
 
 class UsersController extends Controller {
 
-	protected function execute() {
-
-		$app = Application::getInstance();
-		$admin = $app->getCurrentUser();
-		$db = $app->getDb();
-		
-        $redirectUrl = $app->getRouter()->getRoute('users')->getUrl();
-		$action = $this->route->getPathParameter('action');
-
-		// editing or deleting something? Ensure user exists
-
-		if(($id = urldecode($this->request->query->get('id')))) {
-
-			// editing own record is not allowed
-			
-			if($admin->getUsername() == $id) {
-				return $this->redirect($redirectUrl);
-			}
-
-			$userRow = $db->doPreparedQuery(sprintf("SELECT * FROM %s WHERE username = ?", $db->quoteIdentifier('admin')), [$id])->current();
-			if(!$userRow) {
-				return $this->redirect($redirectUrl);
-			}
-		}
-		else {
-            $userRow = [];
-        }
-		
-		// delete user
-		
-		if($id && $action === 'del') {
-		
-			$db->deleteRecord('admin', ['username' => $id]);
-
-			return $this->redirect($redirectUrl);
-			
-		}
-
-		// edit or add user
-		
-		if($id || $action === 'new') {
-
-			MenuGenerator::setForceActiveMenu(true);
-
-			return new Response(
-				SimpleTemplate::create('admin/users_edit.php')
-                    ->assign('user', $userRow)
-                    ->display()
-			);
-		}
-
-		// show list
-
-		$users	= $db->doPreparedQuery("SELECT a.*, ag.alias, a.adminid AS `key` FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
-
-		return new Response(
-			SimpleTemplate::create('admin/users_list.php')
-				->assign('users', $users)
-				->display()
-		);
-	}
-	
-	protected function getUserData()
+	protected function execute()
     {
+		return new Response(SimpleTemplate::create('admin/users_list.php')->display());
+	}
 
-        $id = $this->request->query->get('id');
-        $db = Application::getInstance()->getVxPDO();
-
-        if ($id) {
-            $formData = $db->doPreparedQuery("SELECT username as id, username, email, name, admingroupsid FROM " . $db->quoteIdentifier('admin') . " WHERE username = ?", [$id])->current();
-        } else {
-            $formData = null;
+    protected function del ()
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new Response('', Response::HTTP_NOT_FOUND);
         }
 
-        $adminGroups = $db->doPreparedQuery("SELECT admingroupsid, name FROM admingroups ORDER BY privilege_level");
+        try {
+            if(Application::getInstance()->getCurrentUser()->getAttribute('adminid') === $id) {
+                return new Response('', Response::HTTP_FORBIDDEN);
+            }
+            Application::getInstance()->getDb()->deleteRecord('admin', $id);
+        }
+        catch(ArticleException $e) {
+            return new Response('', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-        return new JsonResponse([
-            'formData' => $formData,
-            'options' => [
-                'admingroups' => (array)$adminGroups
-            ]
-        ]);
-
+        return new JsonResponse(['success' => true]);
     }
 
-    protected function postUserData()
+    protected function edit ()
     {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
 
+        // editing own record is not allowed
+
+        if(Application::getInstance()->getCurrentUser()->getAttribute('adminid') === $id) {
+            return new Response('', Response::HTTP_FORBIDDEN);
+        }
+
+        $db = Application::getInstance()->getDb();
+        $userRow = $db->doPreparedQuery(sprintf("SELECT adminid AS id, username, name FROM %s WHERE adminid = ?", $db->quoteIdentifier('admin')), [$id])->current();
+
+        if(!$userRow) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+
+        MenuGenerator::setForceActiveMenu(true);
+        return new Response(SimpleTemplate::create('admin/users_edit.php')->assign('user', $userRow)->display());
+    }
+
+    protected function add ()
+    {
+        MenuGenerator::setForceActiveMenu(true);
+        return new Response(SimpleTemplate::create('admin/users_edit.php')->assign('user', [])->display());
+    }
+
+    protected function editInit ()
+    {
+        $db = Application::getInstance()->getVxPDO();
+
+        if ($id = $this->request->query->getInt('id')) {
+            $formData = $db->doPreparedQuery("SELECT adminid as id, username, email, name, admingroupsid FROM " . $db->quoteIdentifier('admin') . " WHERE adminid = ?", [$id])->current();
+        }
+
+        return new JsonResponse([
+            'form' => $formData ?? null,
+            'options' => [
+                'admingroups' => (array) $db->doPreparedQuery("SELECT admingroupsid, name FROM admingroups ORDER BY privilege_level")
+            ]
+        ]);
+    }
+
+    protected function init ()
+    {
+        $app = Application::getInstance();
+        $admin = $app->getCurrentUser();
+        $db = $app->getDb();
+
+        $users = $db->doPreparedQuery("SELECT a.*, ag.alias, a.adminid AS `key` FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
+
+        return new JsonResponse(['users' => (array) $users, 'currentUser' => ['username' => $admin->getUsername()]]);
+    }
+
+    protected function update ()
+    {
         $request = new ParameterBag(json_decode($this->request->getContent(), true));
         $id = $request->get('id');
+
         $db = Application::getInstance()->getVxPDO();
 
         $form = HtmlForm::create()
@@ -143,7 +138,7 @@ class UsersController extends Controller {
         }
 
         if($id) {
-            $userRow = $db->doPreparedQuery("SELECT * FROM " . $db->quoteIdentifier('admin') . " WHERE username = ?", [$id])->current();
+            $userRow = $db->doPreparedQuery("SELECT * FROM " . $db->quoteIdentifier('admin') . " WHERE adminid = ?", [$id])->current();
 
             if (!$userRow) {
                 return new JsonResponse('', Response::HTTP_FORBIDDEN);
@@ -162,25 +157,16 @@ class UsersController extends Controller {
             try {
 
                 if($id) {
-
-                    $db->updateRecord('admin', ['username' => $id], $v->all());
-
-                    return new JsonResponse([
-                        'success' => true,
-                        'user_id' => $v->get('username'),
-                        'message' => 'Daten erfolgreich übernommen.'
-                    ]);
-
+                    $db->updateRecord('admin', $id, $v->all());
                 } else {
-
-                    $db->insertRecord('admin', $v->all());
-
-                    return new JsonResponse([
-                        'success' => true,
-                        'id' => $v->get('username'),
-                        'message' => 'Daten erfolgreich übernommen.'
-                    ]);
+                    $id = $db->insertRecord('admin', $v->all());
                 }
+
+                return new JsonResponse([
+                    'success' => true,
+                    'instanceId' => $id,
+                    'message' => 'Daten erfolgreich übernommen.'
+                ]);
 
             } catch (\Exception $e) {
                 return new JsonResponse([
@@ -198,7 +184,5 @@ class UsersController extends Controller {
         }
 
         return new JsonResponse(['success' => false, 'errors' => $response, 'message' => 'Formulardaten unvollständig oder fehlerhaft.']);
-
     }
-
 }

@@ -14,9 +14,13 @@
 		<page id="pagesXhr" controller="admin/pages" method="xhrExecute" auth="superadmin" />
         <page id="inlineEditXhr" controller="admin/pages" method="updateInlineEdit" path="pages/inline" auth="superadmin" />
 
-		<page id="users" controller="admin/users" path="users/{action=}" auth="superadmin" />
-		<page id="user_data_get" path="users/user_data" controller="admin/users" method="getUserData" auth="superadmin" request_methods="GET" />
-		<page id="user_data_post" path="users/user_data" controller="admin/users" method="postUserData" auth="superadmin" request_methods="POST" />
+		<page id="users" controller="admin/users" path="users" auth="superadmin" />
+		<page id="users_init" controller="admin/users" auth="superadmin" method="init" />
+		<page id="user_add" controller="admin/users" auth="superadmin" method="add" />
+		<page id="user_del" controller="admin/users" auth="superadmin" method="del" request_methods="DELETE" />
+		<page id="user_edit" controller="admin/users" auth="superadmin" method="edit" />
+		<page id="user_init" controller="admin/users" auth="superadmin" method="editInit" />
+		<page id="user_update" controller="admin/users" auth="superadmin" method="update" request_methods="POST" />
 
 		<page id="articles" controller="admin/articles" auth="privileged" />
 		<page id="articles_init" controller="admin/articles" method="init" auth="privileged" />

@@ -6,11 +6,11 @@
 
     <div class="vx-button-bar">
         <a class="btn with-webfont-icon-right btn-primary" data-icon="&#xe018;" href="<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_add')->getUrl() ?>">Artikel anlegen</a>
-        <select v-model="filter.cat" class="form-select">
+        <select v-model="filter.cat" class="form-select col-2 mx-2">
             <option value="">(Alle Kategorien)</option>
             <option v-for="cat in categories" :value="cat.id">{{ cat.label }}</option>
         </select>
-        <input v-model="filter.title" class="form-input" placeholder="Titel filtern...">
+        <input v-model="filter.title" class="form-input col-2 mx-2" placeholder="Titel filtern...">
     </div>
 
     <sortable

@@ -14,7 +14,8 @@
         data: function() {
             return {
                 form: {},
-                response: {}
+                response: {},
+                loading: false
             }
         },
 
