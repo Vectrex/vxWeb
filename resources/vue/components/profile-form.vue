@@ -43,13 +43,15 @@
             </div>
         </div>
 
-        <div class="divider text-center" data-content="Benachrichtigungen"></div>
+        <template v-if="notifications.length">
+            <div class="divider text-center" data-content="Benachrichtigungen"></div>
 
-        <div class="form-sect off-3">
-            <div class="form-group" v-for="notification in notifications">
-                <label class="form-switch"><input name="notification[]" v-bind:value="notification.alias" type="checkbox" v-model="form.notifications"><i class="form-icon"></i>{{ notification.label }}</label>
+            <div class="form-sect off-3">
+                <div class="form-group" v-for="notification in notifications">
+                    <label class="form-switch"><input name="notification[]" v-bind:value="notification.alias" type="checkbox" v-model="form.notifications"><i class="form-icon"></i>{{ notification.label }}</label>
+                </div>
             </div>
-        </div>
+        </template>
 
         <div class="divider"></div>
 
