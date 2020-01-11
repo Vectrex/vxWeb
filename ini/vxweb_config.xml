@@ -32,6 +32,7 @@
 		<page id="articlesXhr" controller="admin/articles" method="xhrExecute" auth="privileged" />
 
 		<page id="files" controller="admin/files" auth="privileged" />
+		<page id="files_init" controller="admin/files" method="init" auth="privileged" />
 		<page id="filepicker" controller="admin/files" auth="privileged" />
 		<page id="filesXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
 		<page id="filepickerXhr" controller="admin/files" method="xhrExecute" auth="privileged" />

@@ -1,118 +1,114 @@
 <!-- {extend: admin/layout_with_menu.php @ content_block } -->
 
-<script type="text/javascript">
-    if(!this.vxWeb) {
-        this.vxWeb = {};
-    }
-</script>
+<div id="app">
 
-<script type="text/javascript" src="/js/admin/fileManager.js"></script>
+    <h1>Dateien</h1>
 
-<script type="text/javascript">
-    if(!this.vxWeb.routes) {
-        this.vxWeb.routes = {};
-    }
-
-    vxWeb.messageToast = function(selector) {
-
-        var mBox, lastAddedClass, timeoutId, button;
-
-        var hide = function() {
-            if(mBox) {
-                mBox.classList.remove("display");
-            }
-        };
-
-        var show = function(msg, className) {
-
-            if(mBox === undefined) {
-                mBox = document.querySelector(selector || "#messageBox");
-
-                if(mBox && (button = mBox.querySelector("button"))) {
-                    button.addEventListener("click", hide);
-                }
-            }
-
-            if(mBox) {
-                if(lastAddedClass) {
-                    mBox.classList.remove(lastAddedClass);
-                }
-                if(className) {
-                    mBox.classList.add(className);
-                }
-                lastAddedClass = className;
-            }
-
-            mBox.innerHTML = msg;
-            mBox.appendChild(button);
-            mBox.classList.add("display");
-
-            if(timeoutId) {
-                window.clearTimeout(timeoutId);
-            }
-            timeoutId = window.setTimeout(hide, 5000);
-
-        };
-
-        return {
-            show: show,
-            hide: hide
-        };
-    };
-
-    this.vxWeb.routes.files		= "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('filesXhr')->getUrl() ?>";
-	this.vxWeb.routes.upload	= "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('uploadXhr')->getUrl() ?>";
-
-	vxJS.event.addDomReadyListener(function() {
-		vxWeb.fileManager({
-			directoryBar:		document.getElementById("directoryBar"),
-			filesList:			document.getElementById("filesList"),
-			uploadMaxFilesize:	<?= $this->upload_max_filesize ?>,
-			maxUploadTime:		<?= $this->max_execution_time_ms ?>
-		});
-	});
-</script>
-
-<h1>Dateien</h1>
-
-<div class="navbar">
-    <div class="navbar-section">
-        <span class="btn-group" id="directoryBar"></span>
-    </div>
-
-    <div class="navbar-section">
-        <div id="uploadProgress" class="col-3 vx-progress-bar tooltip">
-            <div class="bar">
-                <div class="bar-item"></div>
-            </div>
+    <div class="vx-button-bar">
+        <div class="navbar-section">
+            <span class="btn-group">
+                <button class="btn" v-for="breadcrumb in breadcrumbs">{{ breadcrumb.name }}</button>
+            </span>
         </div>
-        <span id="activityIndicator" class="vx-activity-indicator"></span>
-        <input id="addFolderInput" class="form-input col-3" style="display: none;">
-        <button id="addFolder" class="btn with-webfont-icon-right btn-primary" type="button" data-icon="&#xe007;">Verzeichnis anlegen</button>
-        <button id="addFile" class="btn with-webfont-icon-right btn-primary" type="button" data-icon="&#xe00e;">Datei hinzufügen</button>
     </div>
+
+    <sortable
+        :rows="directoryEntries"
+        :columns="cols"
+        :sort-prop="initSort.column"
+        :sort-direction="initSort.dir"
+        @after-sort="storeSort"
+        ref="sortable"
+    >
+        <template v-slot:name="slotProps">
+            <a :href="'#' + slotProps.row.id" v-if="slotProps.row.isFolder" @click.prevent="getFolder(slotProps.row.id)">{{ slotProps.row.name }}</a>
+            <template v-else>{{ slotProps.row.name }}</template>
+        </template>
+        <template v-slot:action="slotProps">
+            <button class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="editFile(slotProps.row)" v-if="!slotProps.row.isFolder">&#xe002;</button>
+        </template>
+        <template v-slot:size="slotProps">
+            {{ slotProps.row.size | formatInt('.') }}
+        </template>
+    </sortable>
 </div>
 
-<div id="filesList">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th class="vx-sortable-header">Dateiname</th>
-                <th class="col-1 vx-sortable-header">Größe</th>
-                <th class="col-2 vx-sortable-header">Typ/Vorschau</th>
-                <th class="col-2 vx-sortable-header">Erstellt</th>
-                <th class="col-2"></th>
-            </tr>
-        </thead>
+<script type="module">
+    import Sortable from  "/js/vue/components/sortable.js";
+    import SimpleFetch from  "/js/vue/util/simple-fetch.js";
 
-        <tbody>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+    let app = new Vue({
+
+        el: "#app",
+        components: { "sortable": Sortable },
+
+        routes: {
+            init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('files_init')->getUrl() ?>"
+        },
+
+        data: {
+            files: [],
+            folders: [],
+            breadcrumbs: [],
+            cols: [
+                { label: "Dateiname", sortable: true, prop: "name" },
+                { label: "Größe", sortable: true, prop: "size" },
+                { label: "Typ/Vorschau", sortable: true, prop: "type" },
+                { label: "Erstellt", sortable: true, prop: "modified"},
+                { label: "", prop: "action" }
+            ],
+            initSort: {}
+        },
+
+        computed: {
+            directoryEntries() {
+                let folders = this.folders;
+                folders.forEach(item => item.isFolder = true);
+                return [...folders, ...this.files];
+            }
+        },
+
+        async created () {
+            let lsValue = window.localStorage.getItem(window.location.origin + "/admin/files__sort__");
+            if(lsValue) {
+                this.initSort = JSON.parse(lsValue);
+            }
+
+            let response = await SimpleFetch(this.$options.routes.init);
+
+            this.breadcrumbs = response.breadcrumbs || [];
+            this.files = response.files || [];
+            this.folders = response.folders || [];
+        },
+
+        methods: {
+            async getFolder (id) {
+                console.log(id);
+            },
+            async editFile (row) {
+
+            },
+            async del (row) {
+
+            },
+            storeSort () {
+                window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
+            }
+        },
+
+        filters: {
+            formatInt(size, sep) {
+
+                if(size) {
+                    let str = size.toString(), fSize = '';
+
+                    while (str.length > 3) {
+                        fSize = (sep || ',') + str.slice(-3) + fSize;
+                        str = str.slice(0, -3);
+                    }
+                    return str + fSize;
+                }
+            }
+        }
+    });
+</script>

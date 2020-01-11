@@ -69,6 +69,23 @@ class FilesController extends Controller
                 ->display());
     }
 
+    protected function init(): JsonResponse
+    {
+        try {
+            $folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
+        } catch (MetaFolderException $e) {
+            return new JsonResponse(['error' => $e->getMessage()]);
+        }
+
+        File::cleanupMetaFolder($folder);
+
+        return new JsonResponse([
+            'files' => $this->getFileRows($folder),
+            'folders' => $this->getFolderRows($folder),
+            'breadcrumbs' => $this->getBreadcrumbs($folder)
+        ]);
+    }
+
     /**
      * simple helper function to convert ini values like 10M or 256K to integer
      *
@@ -626,6 +643,57 @@ class FilesController extends Controller
         }
 
         return $folders;
+    }
+
+    private function getFileRows (MetaFolder $folder): array
+    {
+        $files = [];
+
+        foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
+            $metaData = $f->getData();
+            $row = [
+                'id' => $f->getId(),
+                'name' => $f->getFilename(),
+                'title' => $metaData['title'],
+                'image' => $f->isWebImage(),
+                'size' => $f->getFileInfo()->getSize(),
+                'modified' => (new \DateTime())->setTimestamp($f->getFileInfo()->getMTime())->format('Y-m-d H:i:s'),
+                'type' => $f->getMimetype(),
+            ];
+
+            if($row['image']) {
+                $row['src'] = '';
+            }
+
+            $files[] = $row;
+        }
+
+        return $files;
+    }
+
+    private function getFolderRows (MetaFolder $folder): array
+    {
+        $folders = [];
+
+        foreach ($folder->getMetaFolders() as $f) {
+            $folders[] = [
+                'id' => $f->getId(),
+                'name' => $f->getName()
+            ];
+        }
+
+        return $folders;
+    }
+
+    private function getBreadcrumbs (MetaFolder $folder): array
+    {
+        $breadcrumbs = [['name' => $folder->getName(), 'id' => $folder->getId()]];
+
+        while (($folder = $folder->getParentMetafolder())) {
+            array_unshift($pathSegments, ['name' => $folder->getName(), 'id' => $folder->getId()]);
+        }
+
+        return $breadcrumbs;
     }
 
     private function getFileList(MetaFolder $folder, array $columns)
