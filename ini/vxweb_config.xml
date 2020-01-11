@@ -35,6 +35,7 @@
 		<page id="files_init" controller="admin/files" method="init" auth="privileged" />
 		<page id="file_del" controller="admin/files" method="fileDel" auth="privileged" request_methods="DELETE" />
 		<page id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
+		<page id="folder_add" controller="admin/files" method="folderAdd" auth="privileged" />
 
 		<page id="filepicker" controller="admin/files" auth="privileged" />
 		<page id="filesXhr" controller="admin/files" method="xhrExecute" auth="privileged" />

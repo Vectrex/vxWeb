@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 /* @TODO sanitize metadata */
 
-use vxPHP\File\FilesystemFolder;
+use vxPHP\Http\ParameterBag;
 use vxPHP\Util\Rex;
 
 use vxPHP\File\Exception\FilesystemFileException;
@@ -88,39 +88,62 @@ class FilesController extends Controller
 
     protected function fileDel (): JsonResponse
     {
-        $id = $this->request->query->getInt('id');
-
-        if($id) {
-            try {
-                // MetaFile::getInstance(NULL, $id)->delete();
-                return new JsonResponse(['success' => true]);
-            }
-            catch (\Exception $e) {
-                return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
-
-        return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        try {
+            // MetaFile::getInstance(null, $id)->delete();
+            return new JsonResponse(['success' => true]);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     protected function folderDel (): JsonResponse
     {
-        $id = $this->request->query->getInt('id');
-
-        if($id) {
-            try {
-                // MetaFolder::getInstance(NULL, $id)->delete();
-                return new JsonResponse(['success' => true]);
-            }
-            catch (\Exception $e) {
-                return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
-
-        return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        try {
+            // MetaFolder::getInstance(null, $id)->delete();
+            return new JsonResponse(['success' => true]);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
+    protected function folderAdd (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
+        if(!($parent = $bag->getInt('parent'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $name = trim($bag->get('name'));
+            if(!$name) {
+                throw new \InvalidArgumentException('Missing filename.');
+            }
+            $name = preg_replace('~[^a-z0-9_-]~i', '_', $name);
+            $parentFolder = MetaFolder::getInstance(null, $parent);
+
+            foreach ($parentFolder->getMetaFolders() as $subFolder) {
+                if ($subFolder->getName() === $name) {
+                    return new JsonResponse(['error' => 1, 'message' => sprintf("Verzeichnis '%s' existiert bereits.", $name)]);
+                }
+            }
+            $folder = $parentFolder->createFolder($name);
+            return new JsonResponse(['success' => true, 'folder' => [
+                'key' => $folder->getId(),
+                'name' => $folder->getName()
+            ]]);
+        }
+        catch(\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+    }
     /**
      * simple helper function to convert ini values like 10M or 256K to integer
      *

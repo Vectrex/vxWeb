@@ -4,11 +4,14 @@
 
     <h1>Dateien</h1>
 
-    <div class="vx-button-bar">
+    <div class="vx-button-bar navbar">
         <div class="navbar-section">
             <span class="btn-group">
                 <button class="btn" v-for="breadcrumb in breadcrumbs">{{ breadcrumb.name }}</button>
             </span>
+        </div>
+        <div class="navbar-section">
+            <button class="btn with-webfont-icon-right btn-primary" type="button" data-icon="&#xe007;" @click="addFolder">Verzeichnis anlegen</button>
         </div>
     </div>
 
@@ -52,7 +55,8 @@
             editFile: "",
             delFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_del')->getUrl() ?>",
             moveFile: "",
-            delFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_del')->getUrl() ?>"
+            delFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_del')->getUrl() ?>",
+            addFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_add')->getUrl() ?>"
         },
 
         data: {
@@ -128,6 +132,8 @@
                         this.folders.splice(this.folders.findIndex(item => row === item), 1);
                     }
                 }
+            },
+            addFolder () {
             },
             async moveFile (row) {
             },
