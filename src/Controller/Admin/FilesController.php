@@ -86,6 +86,41 @@ class FilesController extends Controller
         ]);
     }
 
+    protected function fileDel (): JsonResponse
+    {
+        $id = $this->request->query->getInt('id');
+
+        if($id) {
+            try {
+                // MetaFile::getInstance(NULL, $id)->delete();
+                return new JsonResponse(['success' => true]);
+            }
+            catch (\Exception $e) {
+                return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+    }
+
+    protected function folderDel (): JsonResponse
+    {
+        $id = $this->request->query->getInt('id');
+
+        if($id) {
+            try {
+                // MetaFolder::getInstance(NULL, $id)->delete();
+                return new JsonResponse(['success' => true]);
+            }
+            catch (\Exception $e) {
+                return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+    }
+
+
     /**
      * simple helper function to convert ini values like 10M or 256K to integer
      *
@@ -637,7 +672,7 @@ class FilesController extends Controller
 
         foreach ($folder->getMetaFolders() as $f) {
             $folders[] = [
-                'id' => $f->getId(),
+                'key' => $f->getId(),
                 'name' => $f->getName()
             ];
         }
@@ -652,7 +687,7 @@ class FilesController extends Controller
         foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
             $metaData = $f->getData();
             $row = [
-                'id' => $f->getId(),
+                'key' => $f->getId(),
                 'name' => $f->getFilename(),
                 'title' => $metaData['title'],
                 'image' => $f->isWebImage(),
@@ -677,7 +712,7 @@ class FilesController extends Controller
 
         foreach ($folder->getMetaFolders() as $f) {
             $folders[] = [
-                'id' => $f->getId(),
+                'key' => $f->getId(),
                 'name' => $f->getName()
             ];
         }

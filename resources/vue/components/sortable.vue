@@ -86,8 +86,11 @@
             doSort (column, dir) {
                 this.$emit('before-sort');
 
-                if (column.sortFunction) {
-                    this.rows.sort (column.sortFunction);
+                if (dir === 'asc' && column.sortAscFunction) {
+                    this.rows.sort (column.sortAscFunction);
+                }
+                else if (dir === 'desc' && column.sortDescFunction) {
+                    this.rows.sort (column.sortDescFunction);
                 }
                 else {
                     let prop = column.prop;
