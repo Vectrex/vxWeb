@@ -82,7 +82,8 @@ class FilesController extends Controller
         return new JsonResponse([
             'files' => $this->getFileRows($folder),
             'folders' => $this->getFolderRows($folder),
-            'breadcrumbs' => $this->getBreadcrumbs($folder)
+            'breadcrumbs' => $this->getBreadcrumbs($folder),
+            'currentFolder' => ['key' => $folder->getId(), 'name' => $folder->getName()]
         ]);
     }
 
@@ -92,11 +93,33 @@ class FilesController extends Controller
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         try {
-            // MetaFile::getInstance(null, $id)->delete();
+            MetaFile::getInstance(null, $id)->delete();
             return new JsonResponse(['success' => true]);
         }
         catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected function fileRename (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        if (!($id = $bag->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $name = trim($bag->get('name'));
+            if (!$name) {
+                throw new \InvalidArgumentException('Missing filename.');
+            }
+            $file = MetaFile::getInstance(null, $id);
+            $file->rename($name);
+
+            return new JsonResponse(['success' => true, 'name' => $file->getFilename()]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
     }
 
@@ -106,7 +129,7 @@ class FilesController extends Controller
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         try {
-            // MetaFolder::getInstance(null, $id)->delete();
+            MetaFolder::getInstance(null, $id)->delete();
             return new JsonResponse(['success' => true]);
         }
         catch (\Exception $e) {
@@ -745,10 +768,10 @@ class FilesController extends Controller
 
     private function getBreadcrumbs (MetaFolder $folder): array
     {
-        $breadcrumbs = [['name' => $folder->getName(), 'id' => $folder->getId()]];
+        $breadcrumbs = [['name' => $folder->getName(), 'key' => $folder->getId()]];
 
         while (($folder = $folder->getParentMetafolder())) {
-            array_unshift($pathSegments, ['name' => $folder->getName(), 'id' => $folder->getId()]);
+            array_unshift($pathSegments, ['name' => $folder->getName(), 'key' => $folder->getId()]);
         }
 
         return $breadcrumbs;

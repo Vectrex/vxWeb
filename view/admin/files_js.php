@@ -7,11 +7,23 @@
     <div class="vx-button-bar navbar">
         <div class="navbar-section">
             <span class="btn-group">
-                <button class="btn" v-for="breadcrumb in breadcrumbs">{{ breadcrumb.name }}</button>
+                <button class="btn" v-for="breadcrumb in breadcrumbs" :key="breadcrumb.key">{{ breadcrumb.name }}</button>
             </span>
         </div>
         <div class="navbar-section">
-            <button class="btn with-webfont-icon-right btn-primary" type="button" data-icon="&#xe007;" @click="addFolder">Verzeichnis anlegen</button>
+            <input
+                v-if="showAddFolderInput"
+                v-focus
+                class="form-input"
+                @keydown.enter="addFolder"
+                @keydown.esc="showAddFolderInput = false"
+                ref="addFolderInput">
+            <button
+                v-if="!showAddFolderInput"
+                class="btn with-webfont-icon-right btn-primary"
+                type="button"
+                data-icon="&#xe007;"
+                @click="showAddFolderInput = true">Verzeichnis anlegen</button>
         </div>
     </div>
 
@@ -25,8 +37,23 @@
     >
         <template v-slot:name="slotProps">
             <a :href="'#' + slotProps.row.key" v-if="slotProps.row.isFolder" @click.prevent="getFolder(slotProps.row.key)">{{ slotProps.row.name }}</a>
-            <template v-else>{{ slotProps.row.name }}</template>
+            <template v-else>
+                <input
+                    v-if="slotProps.row === renaming"
+                    v-focus
+                    class="form-input"
+                    :value="slotProps.row.name"
+                    @keydown.enter="renameFile"
+                    @keydown.esc="renaming = null"
+                    @blur="renaming = null"
+                >
+                <template v-else>
+                    <span :title="slotProps.row.title">{{ slotProps.row.name }}</span>
+                    <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="renaming = slotProps.row">&#xe001;</button>
+                </template>
+            </template>
         </template>
+
         <template v-slot:action="slotProps">
             <button v-if="slotProps.row.isFolder" class="btn webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="delFolder(slotProps.row)">&#xe008;</button>
             <template v-else>
@@ -35,6 +62,7 @@
                 <button class="btn webfont-icon-only tooltip" data-tooltip="Löschen" type="button" @click="delFile(slotProps.row)">&#xe011;</button>
             </template>
         </template>
+
         <template v-slot:size="slotProps">
             {{ slotProps.row.size | formatInt('.') }}
         </template>
@@ -54,12 +82,14 @@
             init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('files_init')->getUrl() ?>",
             editFile: "",
             delFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_del')->getUrl() ?>",
+            renameFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_rename')->getUrl() ?>",
             moveFile: "",
             delFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_del')->getUrl() ?>",
             addFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_add')->getUrl() ?>"
         },
 
         data: {
+            currentFolder: {},
             files: [],
             folders: [],
             breadcrumbs: [],
@@ -86,7 +116,9 @@
                 { label: "Erstellt", sortable: true, prop: "modified"},
                 { label: "", prop: "action" }
             ],
-            initSort: {}
+            initSort: {},
+            showAddFolderInput: false,
+            renaming: null
         },
 
         computed: {
@@ -108,6 +140,7 @@
             this.breadcrumbs = response.breadcrumbs || [];
             this.files = response.files || [];
             this.folders = response.folders || [];
+            this.currentFolder = response.currentFolder;
         },
 
         methods: {
@@ -124,8 +157,17 @@
                     }
                 }
             },
+            async renameFile (event) {
+                let name = event.target.value.trim();
+                if(name && this.renaming) {
+                    let response = await SimpleFetch(this.$options.routes.renameFile, 'POST', {}, JSON.stringify({name: name, id: this.renaming.key }));
+                    if(response.success) {
+                        this.renaming.name = response.name || name;
+                        this.renaming = null;
+                    }
+                }
+            },
             async delFolder (row) {
-                console.log(row);
                 if(window.confirm("Ordner und Inhalt von '" + row.name + "' wirklich löschen?")) {
                     let response = await SimpleFetch(this.$options.routes.delFolder + '?id=' + row.key, 'DELETE');
                     if(response.success) {
@@ -133,7 +175,17 @@
                     }
                 }
             },
-            addFolder () {
+            async addFolder () {
+                let name = this.$refs.addFolderInput.value.trim();
+                if(name) {
+                    let response = await SimpleFetch(this.$options.routes.addFolder, 'POST', {}, JSON.stringify({name: name, parent: this.currentFolder.key }));
+                    if(response.success) {
+                        this.showAddFolderInput = false;
+                    }
+                    if(response.folder) {
+                        this.folders.push(response.folder);
+                    }
+                }
             },
             async moveFile (row) {
             },
@@ -152,6 +204,14 @@
                         str = str.slice(0, -3);
                     }
                     return str + fSize;
+                }
+            }
+        },
+
+        directives: {
+            focus: {
+                inserted (el) {
+                    el.focus();
                 }
             }
         }
