@@ -74,7 +74,7 @@ class FilesController extends Controller
         try {
             $folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
         } catch (MetaFolderException $e) {
-            return new JsonResponse(['error' => $e->getMessage()]);
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         File::cleanupMetaFolder($folder);
@@ -84,6 +84,30 @@ class FilesController extends Controller
             'folders' => $this->getFolderRows($folder),
             'breadcrumbs' => $this->getBreadcrumbs($folder),
             'currentFolder' => ['key' => $folder->getId(), 'name' => $folder->getName()]
+        ]);
+    }
+
+    protected function folderRead (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $folder = MetaFolder::getInstance(null, $id);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        File::cleanupMetaFolder($folder);
+
+        return new JsonResponse([
+            'success' => true,
+            'files' => $this->getFileRows($folder),
+            'folders' => $this->getFolderRows($folder),
+            'breadcrumbs' => $this->getBreadcrumbs($folder),
+            'currentFolder' => ['key' => $id, 'name' => $folder->getName()]
         ]);
     }
 
@@ -134,6 +158,28 @@ class FilesController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected function folderRename (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        if (!($id = $bag->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $name = trim($bag->get('name'));
+            if (!$name) {
+                throw new \InvalidArgumentException('Missing folder name.');
+            }
+            $folder = MetaFolder::getInstance(null, $id);
+
+            $folder->rename($name);
+
+            return new JsonResponse(['success' => true, 'name' => MetaFolder::getInstance(null, $id)->getName()]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
     }
 
@@ -771,7 +817,7 @@ class FilesController extends Controller
         $breadcrumbs = [['name' => $folder->getName(), 'key' => $folder->getId()]];
 
         while (($folder = $folder->getParentMetafolder())) {
-            array_unshift($pathSegments, ['name' => $folder->getName(), 'key' => $folder->getId()]);
+            array_unshift($breadcrumbs, ['name' => $folder->getName(), 'key' => $folder->getId()]);
         }
 
         return $breadcrumbs;

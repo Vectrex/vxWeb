@@ -7,7 +7,12 @@
     <div class="vx-button-bar navbar">
         <div class="navbar-section">
             <span class="btn-group">
-                <button class="btn" v-for="breadcrumb in breadcrumbs" :key="breadcrumb.key">{{ breadcrumb.name }}</button>
+                <button
+                    v-for="breadcrumb in breadcrumbs"
+                    class="btn"
+                    :key="breadcrumb.key"
+                    :class="{'active': breadcrumb.key === currentFolder.key }"
+                    @click="readFolder(breadcrumb)">{{ breadcrumb.name }}</button>
             </span>
         </div>
         <div class="navbar-section">
@@ -36,7 +41,21 @@
         ref="sortable"
     >
         <template v-slot:name="slotProps">
-            <a :href="'#' + slotProps.row.key" v-if="slotProps.row.isFolder" @click.prevent="getFolder(slotProps.row.key)">{{ slotProps.row.name }}</a>
+            <template v-if="slotProps.row.isFolder">
+                <input
+                    v-if="slotProps.row === renaming"
+                    v-focus
+                    class="form-input"
+                    :value="slotProps.row.name"
+                    @keydown.enter="renameFolder"
+                    @keydown.esc="renaming = null"
+                    @blur="renaming = null"
+                >
+                <template v-else>
+                    <a :href="'#' + slotProps.row.key" v-if="" @click.prevent="readFolder(slotProps.row)">{{ slotProps.row.name }}</a>
+                    <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="renaming = slotProps.row">&#xe001;</button>
+                </template>
+            </template>
             <template v-else>
                 <input
                     v-if="slotProps.row === renaming"
@@ -67,24 +86,55 @@
             {{ slotProps.row.size | formatInt('.') }}
         </template>
     </sortable>
+
+    <div class="modal active" v-if="showEditForm">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <a href="#close" class="btn btn-clear float-right" aria-label="Close" @click.prevent="showEditForm = false"></a>
+            </div>
+            <div class="modal-body">
+                <!--
+                <edit-form
+                    :options="options"
+                    :url="$options.routes.editUrl"
+                    :initial-data="edit"
+                    @response-received="editResponseReceived"
+                    ref="editForm"
+                />
+                -->
+            </div>
+        </div>
+    </div>
+
+    <message-toast
+        :message="toastProps.message"
+        :classname="toastProps.messageClass"
+        :active="toastProps.isActive"
+        ref="toast"
+    ></message-toast>
+
 </div>
 
 <script type="module">
     import Sortable from  "/js/vue/components/sortable.js";
     import SimpleFetch from  "/js/vue/util/simple-fetch.js";
+    import MessageToast from "/js/vue/components/message-toast.js";
 
     let app = new Vue({
 
         el: "#app",
-        components: { "sortable": Sortable },
+        components: { "sortable": Sortable, 'message-toast': MessageToast },
 
         routes: {
             init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('files_init')->getUrl() ?>",
+            readFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_read')->getUrl() ?>",
             editFile: "",
             delFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_del')->getUrl() ?>",
             renameFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_rename')->getUrl() ?>",
             moveFile: "",
             delFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_del')->getUrl() ?>",
+            renameFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_rename')->getUrl() ?>",
             addFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_add')->getUrl() ?>"
         },
 
@@ -118,7 +168,13 @@
             ],
             initSort: {},
             showAddFolderInput: false,
-            renaming: null
+            renaming: null,
+            showEditForm: false,
+            toastProps: {
+                message: "",
+                messageClass: "",
+                isActive: false
+            }
         },
 
         computed: {
@@ -144,10 +200,18 @@
         },
 
         methods: {
-            async getFolder (id) {
-                console.log(id);
+            async readFolder (row) {
+                let response = await SimpleFetch(this.$options.routes.readFolder + '?id=' + row.key);
+
+                if(response.success) {
+                    this.breadcrumbs = response.breadcrumbs || [];
+                    this.files = response.files || [];
+                    this.folders = response.folders || [];
+                    this.currentFolder = row;
+                }
             },
             async editFile (row) {
+                this.showEditForm = true;
             },
             async delFile (row) {
                 if(window.confirm("Datei '" + row.name + "' wirklich löschen?")) {
@@ -161,6 +225,16 @@
                 let name = event.target.value.trim();
                 if(name && this.renaming) {
                     let response = await SimpleFetch(this.$options.routes.renameFile, 'POST', {}, JSON.stringify({name: name, id: this.renaming.key }));
+                    if(response.success) {
+                        this.renaming.name = response.name || name;
+                        this.renaming = null;
+                    }
+                }
+            },
+            async renameFolder (event) {
+                let name = event.target.value.trim();
+                if(name && this.renaming) {
+                    let response = await SimpleFetch(this.$options.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, id: this.renaming.key }));
                     if(response.success) {
                         this.renaming.name = response.name || name;
                         this.renaming = null;

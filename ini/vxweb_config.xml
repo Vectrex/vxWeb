@@ -35,8 +35,10 @@
 		<page id="files_init" controller="admin/files" method="init" auth="privileged" />
 		<page id="file_rename" controller="admin/files" method="fileRename" auth="privileged" request_methods="POST" />
 		<page id="file_del" controller="admin/files" method="fileDel" auth="privileged" request_methods="DELETE" />
-		<page id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
+		<page id="folder_read" controller="admin/files" method="folderRead" auth="privileged" />
 		<page id="folder_add" controller="admin/files" method="folderAdd" auth="privileged" request_methods="POST" />
+		<page id="folder_rename" controller="admin/files" method="folderRename" auth="privileged" request_methods="POST" />
+		<page id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
 
 		<page id="filepicker" controller="admin/files" auth="privileged" />
 		<page id="filesXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
