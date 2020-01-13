@@ -94,6 +94,8 @@
                 <a href="#close" class="btn btn-clear float-right" aria-label="Close" @click.prevent="showEditForm = false"></a>
             </div>
             <div class="modal-body">
+                <file-edit-form
+                />
                 <!--
                 <edit-form
                     :options="options"
@@ -118,13 +120,14 @@
 
 <script type="module">
     import Sortable from  "/js/vue/components/sortable.js";
+    import FileEditForm from  "/js/vue/components/file-edit-form.js";
     import SimpleFetch from  "/js/vue/util/simple-fetch.js";
     import MessageToast from "/js/vue/components/message-toast.js";
 
     let app = new Vue({
 
         el: "#app",
-        components: { "sortable": Sortable, 'message-toast': MessageToast },
+        components: { "sortable": Sortable, 'message-toast': MessageToast, 'file-edit-form': FileEditForm },
 
         routes: {
             init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('files_init')->getUrl() ?>",

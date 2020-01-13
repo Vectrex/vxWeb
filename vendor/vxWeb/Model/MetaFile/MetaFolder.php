@@ -22,7 +22,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.6.0 2020-01-12
+ * @version 1.6.2 2020-01-13
  *
  * @todo compatibility checks on windows systems
  */
@@ -97,6 +97,7 @@ class MetaFolder {
      * @return MetaFolder
      * @throws MetaFolderException
      * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws FilesystemFolderException
      */
 	public static function getInstance($path = null, $id = null): MetaFolder
     {
@@ -477,12 +478,14 @@ class MetaFolder {
         }
 
         try {
-            Application::getInstance()->getDb()->execute(sprintf(
-                'UPDATE folders SET %s = ?, path = ? WHERE foldersid = ?', Application::getInstance()->getDb()->quoteIdentifier('alias')),
+            // update path of complete tree beneath renamed folder
+
+            Application::getInstance()->getDb()->execute(
+                'UPDATE folders SET path = REPLACE(path, ?, ?) WHERE POSITION(? IN path) = 1',
                 [
-                    strtolower(preg_replace('~[\\\\/]~', '_', rtrim($newRelpath, DIRECTORY_SEPARATOR))),
-                    $newRelpath,
-                    $this->id
+                    rtrim($this->getRelativePath(), DIRECTORY_SEPARATOR),
+                    rtrim($newRelpath, DIRECTORY_SEPARATOR),
+                    rtrim($this->getRelativePath(), DIRECTORY_SEPARATOR)
                 ]
             );
         }
@@ -594,8 +597,6 @@ class MetaFolder {
 			else {
 				$metaData['path'] = rtrim($f->getPath(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 			}
-
-			$metaData['alias'] = strtolower(preg_replace('~[\\\\/]~', '_', rtrim($metaData['path'], DIRECTORY_SEPARATOR)));
 
 			if(!isset($metaData['access']) || !preg_match('~^rw?$~i', $metaData['access'])) {
 				$metaData['access'] = 'RW';

@@ -31,16 +31,21 @@ use vxWeb\Model\MetaFile\MetaFolder;
  */
 class File {
 
-	/**
-	 * add metafolder entries for filesystem subfolders
-	 * add metafile entries for filesystem files
-	 * remove metafile entries for missing file system files
-	 *
-	 * @param MetaFolder $metaFolder the folder which will be cleaned up
-	 * @return void
-	 */
-	public static function cleanupMetaFolder(MetaFolder $metaFolder) {
-
+    /**
+     * add metafolder entries for filesystem subfolders
+     * add metafile entries for filesystem files
+     * remove metafile entries for missing file system files
+     *
+     * @param MetaFolder $metaFolder the folder which will be cleaned up
+     * @return void
+     * @throws FilesystemFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxPHP\File\Exception\FilesystemFolderException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFileException
+     * @throws \vxWeb\Model\MetaFile\Exception\MetaFolderException
+     */
+	public static function cleanupMetaFolder(MetaFolder $metaFolder)
+    {
 		$application = Application::getInstance();
 
 		$nestingInfo = $metaFolder->getNestingInformation();
@@ -105,7 +110,6 @@ class File {
 		foreach($missing as $m) {
 			MetaFile::createMetaFile(FilesystemFile::getInstance($metaFolder->getFullPath() . $m));
 		}
-
 	}
 
     /**

@@ -73,18 +73,19 @@ class FilesController extends Controller
     {
         try {
             $folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
+
+            File::cleanupMetaFolder($folder);
+
+            return new JsonResponse([
+                'files' => $this->getFileRows($folder),
+                'folders' => $this->getFolderRows($folder),
+                'breadcrumbs' => $this->getBreadcrumbs($folder),
+                'currentFolder' => ['key' => $folder->getId(), 'name' => $folder->getName()]
+            ]);
+
         } catch (MetaFolderException $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        File::cleanupMetaFolder($folder);
-
-        return new JsonResponse([
-            'files' => $this->getFileRows($folder),
-            'folders' => $this->getFolderRows($folder),
-            'breadcrumbs' => $this->getBreadcrumbs($folder),
-            'currentFolder' => ['key' => $folder->getId(), 'name' => $folder->getName()]
-        ]);
     }
 
     protected function folderRead (): JsonResponse
