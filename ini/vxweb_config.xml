@@ -33,6 +33,8 @@
 
 		<page id="files" controller="admin/files" auth="privileged" />
 		<page id="files_init" controller="admin/files" method="init" auth="privileged" />
+		<page id="file_get" controller="admin/files" method="fileGet" auth="privileged" />
+		<page id="file_update" controller="admin/files" method="fileUpdate" auth="privileged" request_methods="POST" />
 		<page id="file_rename" controller="admin/files" method="fileRename" auth="privileged" request_methods="POST" />
 		<page id="file_del" controller="admin/files" method="fileDel" auth="privileged" request_methods="DELETE" />
 		<page id="folder_read" controller="admin/files" method="folderRead" auth="privileged" />

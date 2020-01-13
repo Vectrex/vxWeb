@@ -45,7 +45,6 @@ class FilesController extends Controller
      */
     protected function execute()
     {
-
         $uploadMaxFilesize = min(
             $this->toBytes(ini_get('upload_max_filesize')),
             $this->toBytes(ini_get('post_max_size'))
@@ -86,6 +85,25 @@ class FilesController extends Controller
         } catch (MetaFolderException $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    protected function fileGet (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $mf = MetaFile::getInstance(null, $id);
+            return new JsonResponse(array_intersect_key($mf->getData(), array_fill_keys(explode(' ', 'title subtitle description customsort'), null)));
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected function fileUpdate (): JsonResponse
+    {
+
     }
 
     protected function folderRead (): JsonResponse

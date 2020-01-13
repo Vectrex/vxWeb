@@ -95,6 +95,8 @@
             </div>
             <div class="modal-body">
                 <file-edit-form
+                    :initial-data="editFileData"
+                    :url="$options.routes.updateFile"
                 />
                 <!--
                 <edit-form
@@ -132,7 +134,8 @@
         routes: {
             init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('files_init')->getUrl() ?>",
             readFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_read')->getUrl() ?>",
-            editFile: "",
+            getFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_get')->getUrl() ?>",
+            updateFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_update')->getUrl() ?>",
             delFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_del')->getUrl() ?>",
             renameFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_rename')->getUrl() ?>",
             moveFile: "",
@@ -173,6 +176,7 @@
             showAddFolderInput: false,
             renaming: null,
             showEditForm: false,
+            editFileData: {},
             toastProps: {
                 message: "",
                 messageClass: "",
@@ -215,6 +219,7 @@
             },
             async editFile (row) {
                 this.showEditForm = true;
+                this.editFileData = await SimpleFetch(this.$options.routes.getFile + '?id=' + row.key);
             },
             async delFile (row) {
                 if(window.confirm("Datei '" + row.name + "' wirklich löschen?")) {
