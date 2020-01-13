@@ -1,7 +1,26 @@
 <template>
     <form action="/" id="events-edit-form" @submit.prevent>
-        <img :src="fileInfo.img" v-if="fileInfo.img" class="img-responsive">
-        <a :href="fileInfo.url" target="_blank">xxx</a>
+        <div class="columns">
+            <div class="column">
+                <img :src="fileInfo.thumb" v-if="fileInfo.thumb" class="img-responsive">
+            </div>
+            <div class="column">
+                <table class="table">
+                    <tr>
+                        <td>Typ</td>
+                        <td>{{ fileInfo.mimetype }}</td>
+                    </tr>
+                    <tr>
+                        <td>Cache</td>
+                        <td>{{ fileInfo.cache.count }} Files, {{ fileInfo.cache.totalSize | formatFilesize(',') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Link</td>
+                        <td><a :href="'/' + fileInfo.path" target="_blank">{{ fileInfo.name }}</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
         <div class="divider" data-content="Metadaten der Datei"></div>
         <div class="form-group">
             <label for="title_input">Titel</label>
@@ -70,6 +89,12 @@
                 this.response = await SimpleFetch(this.url, 'POST', {}, JSON.stringify(formData));
                 this.$emit('response-received');
                 this.loading = false;
+            }
+        },
+        filters: {
+            formatFilesize(size, sep) {
+                let suffixes = ['B', 'kB', 'MB', 'GB'], ndx = Math.floor(Math.floor(Math.log(size) / Math.log(1000)));
+                return (size / Math.pow(1000, ndx)).toFixed(ndx ? 2: 0).toString().replace('.', sep || '.') + suffixes[ndx];
             }
         }
     }

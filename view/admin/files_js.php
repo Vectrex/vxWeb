@@ -67,7 +67,7 @@
                     @blur="renaming = null"
                 >
                 <template v-else>
-                    <span :title="slotProps.row.title">{{ slotProps.row.name }}</span>
+                    <span>{{ slotProps.row.name }}</span>
                     <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="renaming = slotProps.row">&#xe001;</button>
                 </template>
             </template>
@@ -83,7 +83,7 @@
         </template>
 
         <template v-slot:size="slotProps">
-            {{ slotProps.row.size | formatInt('.') }}
+            {{ slotProps.row.size | formatFilesize(',') }}
         </template>
     </sortable>
 
@@ -95,18 +95,12 @@
             </div>
             <div class="modal-body">
                 <file-edit-form
-                    :initial-data="editFileData"
+                    :initial-data="editFormData"
+                    :file-info="editFileInfo"
                     :url="$options.routes.updateFile"
-                />
-                <!--
-                <edit-form
-                    :options="options"
-                    :url="$options.routes.editUrl"
-                    :initial-data="edit"
                     @response-received="editResponseReceived"
                     ref="editForm"
                 />
-                -->
             </div>
         </div>
     </div>
@@ -116,7 +110,7 @@
         :classname="toastProps.messageClass"
         :active="toastProps.isActive"
         ref="toast"
-    ></message-toast>
+    />
 
 </div>
 
@@ -176,7 +170,8 @@
             showAddFolderInput: false,
             renaming: null,
             showEditForm: false,
-            editFileData: {},
+            editFormData: {},
+            editFileInfo: {},
             toastProps: {
                 message: "",
                 messageClass: "",
@@ -219,7 +214,10 @@
             },
             async editFile (row) {
                 this.showEditForm = true;
-                this.editFileData = await SimpleFetch(this.$options.routes.getFile + '?id=' + row.key);
+                let response = await SimpleFetch(this.$options.routes.getFile + '?id=' + row.key);
+                this.editFormData = response.form || {};
+                this.editFileInfo = response.fileInfo || {};
+                this.editFormData.id = row.key;
             },
             async delFile (row) {
                 if(window.confirm("Datei '" + row.name + "' wirklich löschen?")) {
@@ -269,6 +267,15 @@
                     }
                 }
             },
+            editResponseReceived: function () {
+                let response = this.$refs.editForm.response;
+
+                this.toastProps = {
+                    message: response.message,
+                    messageClass: response.success ? 'toast-success' : 'toast-error',
+                };
+                this.$refs.toast.isActive = true;
+            },
             async moveFile (row) {
             },
             storeSort () {
@@ -287,6 +294,13 @@
                     }
                     return str + fSize;
                 }
+            },
+            formatFilesize(size, sep) {
+                if(!size) {
+                    return '';
+                }
+                let suffixes = ['B', 'kB', 'MB', 'GB'], ndx = Math.floor(Math.floor(Math.log(size) / Math.log(1000)));
+                return (size / Math.pow(1000, ndx)).toFixed(ndx ? 2: 0).toString().replace('.', sep || '.') + suffixes[ndx];
             }
         },
 

@@ -36,6 +36,7 @@ use vxWeb\Util\File;
  */
 class FilesController extends Controller
 {
+    private const FILE_ATTRIBUTES = ['title', 'subtitle', 'description', 'customsort'];
 
     /**
      * depending on route fill response with appropriate template
@@ -94,7 +95,42 @@ class FilesController extends Controller
         }
         try {
             $mf = MetaFile::getInstance(null, $id);
-            return new JsonResponse(array_intersect_key($mf->getData(), array_fill_keys(explode(' ', 'title subtitle description customsort'), null)));
+
+            if($mf->isWebImage()) {
+                $fsf = $mf->getFilesystemFile();
+                $actions = ['resize 0 320'];
+                $dest = sprintf('%s%s@%s.%s',
+                    $fsf->getFolder()->createCache(),
+                    $fsf->getFilename(),
+                    implode('|', $actions),
+                    pathinfo($fsf->getFilename(), PATHINFO_EXTENSION)
+                );
+
+                if (!file_exists($dest)) {
+                    $imgEdit = ImageModifierFactory::create($fsf->getPath());
+
+                    foreach ($actions as $a) {
+                        $params = preg_split('~\s+~', $a);
+
+                        $method = array_shift($params);
+                        if (method_exists($imgEdit, $method)) {
+                            call_user_func_array([$imgEdit, $method], $params);
+                        }
+                    }
+                    $imgEdit->export($dest);
+                }
+            }
+
+            return new JsonResponse([
+                'form' => array_intersect_key($mf->getData(), array_fill_keys(self::FILE_ATTRIBUTES, null)),
+                'fileInfo' => [
+                    'mimetype' => $mf->getMimetype(),
+                    'path' => $mf->getRelativePath(),
+                    'name' => $mf->getFilename(),
+                    'thumb' => $dest ? htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) : null,
+                    'cache' => $mf->getFilesystemFile()->getCacheInfo()
+                ]
+            ]);
         }
         catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -103,7 +139,21 @@ class FilesController extends Controller
 
     protected function fileUpdate (): JsonResponse
     {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
+        if (!($id = $bag->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $file = MetaFile::getInstance(null, $id);
+            $file->setMetaData(array_intersect_key($bag->all(), array_fill_keys(self::FILE_ATTRIBUTES, null)));
+
+            return new JsonResponse(['success' => true, 'message' => 'Daten übernommen.']);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
     }
 
     protected function folderRead (): JsonResponse
