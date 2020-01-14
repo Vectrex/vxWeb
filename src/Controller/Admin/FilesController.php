@@ -229,6 +229,15 @@ class FilesController extends Controller
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
 
+        $contents = file_get_contents('php://input');
+
+        try {
+            $mimeType = MimeTypeGetter::getForBuffer($contents);
+        } catch (\RuntimeException $e) {
+            $mimeType = '';
+        }
+
+        return new JsonResponse($mimeType);
         $filename = FilesystemFile::sanitizeFilename(urldecode($this->request->headers->get('x-file-name')), $fsFolder);
         $contents = file_get_contents('php://input');
 

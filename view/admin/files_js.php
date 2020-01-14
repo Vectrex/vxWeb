@@ -123,8 +123,9 @@
 <script type="module">
     import Sortable from  "/js/vue/components/sortable.js";
     import FileEditForm from  "/js/vue/components/file-edit-form.js";
-    import SimpleFetch from  "/js/vue/util/simple-fetch.js";
     import MessageToast from "/js/vue/components/message-toast.js";
+    import SimpleFetch from  "/js/vue/util/simple-fetch.js";
+    import PromisedXhr from  "/js/vue/util/promised-xhr.js";
 
     let app = new Vue({
 
@@ -136,6 +137,7 @@
             readFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_read')->getUrl() ?>",
             getFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_get')->getUrl() ?>",
             updateFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_update')->getUrl() ?>",
+            uploadFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_upload')->getUrl() ?>",
             delFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_del')->getUrl() ?>",
             renameFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_rename')->getUrl() ?>",
             moveFile: "",
@@ -289,15 +291,24 @@
             storeSort () {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
             },
-            uploadFile (event) {
+            async uploadFile (event) {
                 this.indicateDrag = false;
                 let droppedFiles = event.dataTransfer.files;
-                if (!droppedFiles) {
+
+                if (!droppedFiles || this.uploads.length) {
                     return;
                 }
                 [...droppedFiles].forEach(f => this.uploads.push(f));
 
                 // todo either separate dialog window or "polling" of file lists length
+
+                let formData = new FormData();
+                this.uploads.forEach((f, ndx) => formData.append('file[' + ndx + ']', f));
+
+                let response = await PromisedXhr(this.$options.routes.uploadFile + '?id=' + this.currentFolder.key, 'POST', {}, formData, null, e => { console.log(e); } );
+                this.uploads = [];
+
+
             }
         },
 

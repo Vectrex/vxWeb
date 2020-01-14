@@ -37,7 +37,7 @@
 		<page id="file_update" controller="admin/files" method="fileUpdate" auth="privileged" request_methods="POST" />
 		<page id="file_rename" controller="admin/files" method="fileRename" auth="privileged" request_methods="POST" />
 		<page id="file_del" controller="admin/files" method="fileDel" auth="privileged" request_methods="DELETE" />
-		<page id="file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="PUT" />
+		<page id="file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
 		<page id="folder_read" controller="admin/files" method="folderRead" auth="privileged" />
 		<page id="folder_add" controller="admin/files" method="folderAdd" auth="privileged" request_methods="POST" />
 		<page id="folder_rename" controller="admin/files" method="folderRename" auth="privileged" request_methods="POST" />
