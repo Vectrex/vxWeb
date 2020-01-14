@@ -216,6 +216,31 @@ class FilesController extends Controller
         }
     }
 
+    protected function fileUpload (): JsonResponse
+    {
+        $id = $this->request->query->get('id');
+
+        if(!$id) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $fsFolder = MetaFolder::getInstance(null, $id)->getFilesystemFolder();
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+
+        $filename = FilesystemFile::sanitizeFilename(urldecode($this->request->headers->get('x-file-name')), $fsFolder);
+        $contents = file_get_contents('php://input');
+
+        try {
+            $mimeType = MimeTypeGetter::getForBuffer($contents);
+        } catch (\RuntimeException $e) {
+            $mimeType = '';
+        }
+
+        return new JsonResponse(['success' => true, 'mimetype' => $mimeType]);
+    }
+
     protected function folderDel (): JsonResponse
     {
         if(!($id = $this->request->query->getInt('id'))) {

@@ -1,6 +1,11 @@
 <!-- {extend: admin/layout_with_menu.php @ content_block } -->
 
-<div id="app">
+<div id="app"
+     v-cloak
+     @drop.prevent="uploadFile"
+     @dragover.prevent="indicateDrag = true"
+     @dragleave.prevent="indicateDrag = false"
+     :class="{'dragged-over': indicateDrag}">
 
     <h1>Dateien</h1>
 
@@ -22,6 +27,7 @@
                 class="form-input"
                 @keydown.enter="addFolder"
                 @keydown.esc="showAddFolderInput = false"
+                @blur="showAddFolderInput = false"
                 ref="addFolderInput">
             <button
                 v-if="!showAddFolderInput"
@@ -170,6 +176,8 @@
             showAddFolderInput: false,
             renaming: null,
             showEditForm: false,
+            indicateDrag: false,
+            uploads: [],
             editFormData: {},
             editFileInfo: {},
             toastProps: {
@@ -280,6 +288,16 @@
             },
             storeSort () {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
+            },
+            uploadFile (event) {
+                this.indicateDrag = false;
+                let droppedFiles = event.dataTransfer.files;
+                if (!droppedFiles) {
+                    return;
+                }
+                [...droppedFiles].forEach(f => this.uploads.push(f));
+
+                // todo either separate dialog window or "polling" of file lists length
             }
         },
 
