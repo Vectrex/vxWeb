@@ -316,6 +316,55 @@ class FilesController extends Controller
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
     }
+
+    protected function getFoldersTree ()
+    {
+        $id = $this->request->query->getInt('id');
+
+        if($id) {
+            try {
+                $currentFolder = MetaFolder::getInstance(null, $id);
+            }
+            catch (\Exception $e) {
+                return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            }
+        }
+        else {
+            $currentFolder = null;
+        }
+
+        $parseFolder = function (MetaFolder $f) use (&$parseFolder, $currentFolder) {
+
+            $subTrees = $f->getMetaFolders();
+
+            $branches = [];
+
+            if (count($subTrees)) {
+                foreach ($subTrees as $s) {
+                    $branches[] = $parseFolder($s);
+                }
+            }
+
+            $pathSegs = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
+
+            return [
+                'key' => $f->getId(),
+                'label' => end($pathSegs),
+                'branches' => $branches,
+                'current' => $f === $currentFolder,
+                'path' => $f->getRelativePath()
+            ];
+        };
+
+        $trees = [];
+
+        foreach (MetaFolder::getRootFolders() as $f) {
+            $trees[] = $parseFolder($f);
+        }
+
+        return new JsonResponse($trees);
+    }
+
     /**
      * simple helper function to convert ini values like 10M or 256K to integer
      *
@@ -1050,12 +1099,10 @@ class FilesController extends Controller
         }
 
         return $trees;
-
     }
 
     private function renderFolderTree($tree)
     {
-
         $markup = '';
 
         $renderTree = function ($treeData) use (&$markup, &$renderTree) {

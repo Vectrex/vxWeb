@@ -117,6 +117,17 @@
         </div>
     </div>
 
+    <div class="modal active" v-if="showFolderTree">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <a href="#close" class="btn btn-clear float-right" aria-label="Close" @click.prevent="showFolderTree = false"></a>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+
     <message-toast
         :message="toastProps.message"
         :classname="toastProps.messageClass"
@@ -146,6 +157,7 @@
             uploadFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_upload')->getUrl() ?>",
             delFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_del')->getUrl() ?>",
             renameFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_rename')->getUrl() ?>",
+            getFoldersTree: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folders_tree')->getUrl() ?>",
             moveFile: "",
             delFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_del')->getUrl() ?>",
             renameFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_rename')->getUrl() ?>",
@@ -184,6 +196,7 @@
             showAddFolderInput: false,
             renaming: null,
             showEditForm: false,
+            showFolderTree: false,
             indicateDrag: false,
             uploads: [],
             uploadInProgress: false,
@@ -295,9 +308,9 @@
                 this.$refs.toast.isActive = true;
             },
             async moveFile (row) {
-            },
-            storeSort () {
-                window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
+                let response = await SimpleFetch(this.$options.routes.getFoldersTree + '?id=' + this.currentFolder.key);
+                this.showFolderTree = true;
+                console.log(response);
             },
             uploadFile (event) {
                 this.indicateDrag = false;
@@ -349,6 +362,9 @@
                 this.$refs.toast.isActive = true;
                 this.files = response.files || [];
                 this.uploadInProgress = false;
+            },
+            storeSort () {
+                window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
             }
         },
 
