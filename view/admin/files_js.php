@@ -21,6 +21,12 @@
             </span>
         </div>
         <div class="navbar-section">
+            <template v-if="uploadInProgress">
+                <span class="d-inline-block mr-2">{{ progress.file }}</span>
+                <progress class="progress" :value="progress.loaded" :max="progress.total"></progress>
+            </template>
+        </div>
+        <div class="navbar-section">
             <input
                 v-if="showAddFolderInput"
                 v-focus
@@ -180,6 +186,8 @@
             showEditForm: false,
             indicateDrag: false,
             uploads: [],
+            uploadInProgress: false,
+            progress: { total: null, loaded: null, file: null },
             editFormData: {},
             editFileInfo: {},
             toastProps: {
@@ -282,7 +290,7 @@
 
                 this.toastProps = {
                     message: response.message,
-                    messageClass: response.success ? 'toast-success' : 'toast-error',
+                    messageClass: response.success ? 'toast-success' : 'toast-error'
                 };
                 this.$refs.toast.isActive = true;
             },
@@ -291,24 +299,56 @@
             storeSort () {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
             },
-            async uploadFile (event) {
+            uploadFile (event) {
                 this.indicateDrag = false;
                 let droppedFiles = event.dataTransfer.files;
 
-                if (!droppedFiles || this.uploads.length) {
+                if (!droppedFiles) {
                     return;
                 }
                 [...droppedFiles].forEach(f => this.uploads.push(f));
 
-                // todo either separate dialog window or "polling" of file lists length
+                if(!this.uploadInProgress) {
+                    this.uploadInProgress = true;
+                    this.handleUploads();
+                }
+            },
+            async handleUploads () {
+                let file = null, response = null;
+                while((file = this.uploads.shift()) !== undefined) {
+                    this.progress.file = file.name;
+                    response = await PromisedXhr(
+                        this.$options.routes.uploadFile + '?id=' + this.currentFolder.key,
+                        'POST',
+                        {
+                            'Content-type': file.type || 'application/octet-stream',
+                            'X-File-Name': file.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
+                            'X-File-Size': file.size,
+                            'X-File-Type': file.type
+                        },
+                        file,
+                        null,
+                        e => {
+                            this.progress.total = e.total;
+                            this.progress.loaded = e.loaded;
+                        }
+                    );
+                    if(!response.success) {
+                        this.toastProps = {
+                            message: response.message || 'Ein Fehler ist beim Upload aufgetreten.',
+                            messageClass: 'toast-error'
+                        };
+                        this.$refs.toast.isActive = true;
+                    }
+                }
 
-                let formData = new FormData();
-                this.uploads.forEach((f, ndx) => formData.append('file[' + ndx + ']', f));
-
-                let response = await PromisedXhr(this.$options.routes.uploadFile + '?id=' + this.currentFolder.key, 'POST', {}, formData, null, e => { console.log(e); } );
-                this.uploads = [];
-
-
+                this.toastProps = {
+                    message: response.message || 'Upload erfolgreich.',
+                    messageClass: 'toast-success'
+                };
+                this.$refs.toast.isActive = true;
+                this.files = response.files || [];
+                this.uploadInProgress = false;
             }
         },
 

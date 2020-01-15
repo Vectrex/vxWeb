@@ -223,6 +223,7 @@ class FilesController extends Controller
         if(!$id) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
+
         try {
             $fsFolder = MetaFolder::getInstance(null, $id)->getFilesystemFolder();
         } catch (\Exception $e) {
@@ -231,23 +232,22 @@ class FilesController extends Controller
 
         $contents = file_get_contents('php://input');
 
-        try {
-            $mimeType = MimeTypeGetter::getForBuffer($contents);
-        } catch (\RuntimeException $e) {
-            $mimeType = '';
-        }
-
-        return new JsonResponse($mimeType);
         $filename = FilesystemFile::sanitizeFilename(urldecode($this->request->headers->get('x-file-name')), $fsFolder);
         $contents = file_get_contents('php://input');
 
         try {
             $mimeType = MimeTypeGetter::getForBuffer($contents);
         } catch (\RuntimeException $e) {
-            $mimeType = '';
+            $mimeType = null;
+        }
+        try {
+            file_put_contents($fsFolder->getPath() . $filename, $contents);
+            MetaFile::createMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename));
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
         }
 
-        return new JsonResponse(['success' => true, 'mimetype' => $mimeType]);
+        return new JsonResponse(['success' => true, 'files' => $this->getFileRows(MetaFolder::getInstance(null, $id))]);
     }
 
     protected function folderDel (): JsonResponse
