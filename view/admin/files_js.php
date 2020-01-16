@@ -10,7 +10,7 @@
     <h1>Dateien</h1>
 
     <div class="vx-button-bar navbar">
-        <div class="navbar-section">
+        <section class="navbar-section">
             <span class="btn-group">
                 <button
                     v-for="breadcrumb in breadcrumbs"
@@ -19,14 +19,17 @@
                     :class="{'active': breadcrumb.key === currentFolder.key }"
                     @click="readFolder(breadcrumb)">{{ breadcrumb.name }}</button>
             </span>
-        </div>
-        <div class="navbar-section">
+        </section>
+        <section class="navbar-center">
             <template v-if="uploadInProgress">
                 <span class="d-inline-block mr-2">{{ progress.file }}</span>
                 <progress class="progress" :value="progress.loaded" :max="progress.total"></progress>
             </template>
-        </div>
-        <div class="navbar-section">
+            <div class="text-center" v-else>
+                <strong class="text-primary">Uploads hierher ziehen</strong>
+            </div>
+        </section>
+        <section class="navbar-section">
             <input
                 v-if="showAddFolderInput"
                 v-focus
@@ -41,7 +44,7 @@
                 type="button"
                 data-icon="&#xe007;"
                 @click="showAddFolderInput = true">Verzeichnis anlegen</button>
-        </div>
+        </section>
     </div>
 
     <sortable
