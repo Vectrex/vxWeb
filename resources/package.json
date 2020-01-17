@@ -5,13 +5,13 @@
     "gulp-autoprefixer": "latest",
     "gulp-clean-css": "latest",
     "gulp-concat": "latest",
-    "gulp-csscomb": "latest",
-    "gulp-rename": "latest",
+    "gulp-csscomb": "^3.1.0",
+    "gulp-rename": "^2.0.0",
     "gulp-sass": "latest",
     "gulp-uglify": "latest",
     "gulp-vue-single-file-component": "^1.0.12",
     "spectre.css": "latest",
-    "vue": "latest"
+    "vue": "^2.6.11"
   },
   "browserslist": [
     "last 4 Chrome versions",

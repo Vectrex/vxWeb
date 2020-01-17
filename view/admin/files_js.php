@@ -53,8 +53,7 @@
         :sort-prop="initSort.column"
         :sort-direction="initSort.dir"
         @after-sort="storeSort"
-        ref="sortable"
-    >
+        ref="sortable">
         <template v-slot:name="slotProps">
             <template v-if="slotProps.row.isFolder">
                 <input
@@ -97,9 +96,7 @@
             </template>
         </template>
 
-        <template v-slot:size="slotProps">
-            {{ slotProps.row.size | formatFilesize(',') }}
-        </template>
+        <template v-slot:size="slotProps">{{ slotProps.row.size | formatFilesize(',') }}</template>
     </sortable>
 
     <div class="modal active" v-if="showEditForm">
@@ -127,6 +124,7 @@
                 <a href="#close" class="btn btn-clear float-right" aria-label="Close" @click.prevent="showFolderTree = false"></a>
             </div>
             <div class="modal-body">
+                <simple-tree :branch="root"></simple-tree>
             </div>
         </div>
     </div>
@@ -146,11 +144,12 @@
     import MessageToast from "/js/vue/components/message-toast.js";
     import SimpleFetch from  "/js/vue/util/simple-fetch.js";
     import PromisedXhr from  "/js/vue/util/promised-xhr.js";
+    import SimpleTree from  "/js/vue/components/simple-tree.js"
 
     let app = new Vue({
 
         el: "#app",
-        components: { "sortable": Sortable, 'message-toast': MessageToast, 'file-edit-form': FileEditForm },
+        components: { "sortable": Sortable, 'message-toast': MessageToast, 'file-edit-form': FileEditForm, 'simple-tree': SimpleTree },
 
         routes: {
             init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('files_init')->getUrl() ?>",
@@ -168,6 +167,7 @@
         },
 
         data: {
+            root: {},
             currentFolder: {},
             files: [],
             folders: [],
@@ -313,7 +313,7 @@
             async moveFile (row) {
                 let response = await SimpleFetch(this.$options.routes.getFoldersTree + '?id=' + this.currentFolder.key);
                 this.showFolderTree = true;
-                console.log(response);
+                this.root = response;
             },
             uploadFile (event) {
                 this.indicateDrag = false;
@@ -387,8 +387,8 @@
                 if(!size) {
                     return '';
                 }
-                let suffixes = ['B', 'kB', 'MB', 'GB'], ndx = Math.floor(Math.floor(Math.log(size) / Math.log(1000)));
-                return (size / Math.pow(1000, ndx)).toFixed(ndx ? 2: 0).toString().replace('.', sep || '.') + suffixes[ndx];
+                let i = Math.floor(Math.floor(Math.log(size) / Math.log(1000)));
+                return (size / Math.pow(1000, i)).toFixed(i ? 2 : 0).toString().replace('.', sep || '.') + ['B', 'kB', 'MB', 'GB'][i];
             }
         },
 

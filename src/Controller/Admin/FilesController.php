@@ -362,7 +362,7 @@ class FilesController extends Controller
             $trees[] = $parseFolder($f);
         }
 
-        return new JsonResponse($trees);
+        return new JsonResponse($trees[0]);
     }
 
     /**
