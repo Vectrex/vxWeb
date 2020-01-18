@@ -27,19 +27,9 @@
     display: inline-block; width: 1.5rem; height: 1rem; content: ''; vertical-align: middle; background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2216%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20fill%3D%22%230089cc%22%20d%3D%22M13%201H1c-.55%200-1%20.45-1%201v12c0%20.55.45%201%201%201h12c.55%200%201-.45%201-1V2c0-.55-.45-1-1-1zm0%2013H1V2h12v12zM6%209H3V7h3V4h2v3h3v2H8v3H6V9z%22%2F%3E%3C%2Fsvg%3E') 50% 50% no-repeat;
 }
 
-.vx-tree li input ~ ul > li
-{
-    display: none;
-}
-
 .vx-tree li input:checked + label:before
 {
     background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2216%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20fill%3D%22%230089cc%22%20d%3D%22M13%201H1c-.55%200-1%20.45-1%201v12c0%20.55.45%201%201%201h12c.55%200%201-.45%201-1V2c0-.55-.45-1-1-1zm0%2013H1V2h12v12zm-2-5H3V7h8v2z%22%2F%3E%3C%2Fsvg%3E') 50% 50% no-repeat;
-}
-
-.vx-tree li input:checked ~ ul > li
-{
-    display: block;
 }
 
 .vx-tree li.terminates input:checked + label:before,
@@ -4409,18 +4399,18 @@ a.text-error:visited
 }
 
 .slider::-webkit-slider-thumb
-{width: .6rem; height: .6rem; margin-top: -.25rem; transition: transform .2s; border: 0; border-radius: 50%; background: #0089cc; 
+{width: .6rem; height: .6rem; margin-top: -.25rem; -webkit-transition: transform .2s;         transition: transform .2s; border: 0; border-radius: 50%; background: #0089cc; 
 
     -webkit-appearance: none;
 }
 
 .slider::-moz-range-thumb
-{width: .6rem; height: .6rem; transition: transform .2s; border: 0; border-radius: 50%; 
+{width: .6rem; height: .6rem; -moz-transition: transform .2s;      transition: transform .2s; border: 0; border-radius: 50%; 
     background: #0089cc;
 }
 
 .slider::-ms-thumb
-{width: .6rem; height: .6rem; transition: transform .2s; border: 0; border-radius: 50%; 
+{width: .6rem; height: .6rem; -ms-transition: transform .2s;     transition: transform .2s; border: 0; border-radius: 50%; 
     background: #0089cc;
 }
 
@@ -5116,6 +5106,40 @@ a.text-error:visited
     border-color: transparent; box-shadow: none; -ms-flex: none;     flex: none;
 }
 
+.calendar
+{background: white; 
+    box-shadow: 0 .05rem .2rem rgba(36, 40, 42, .3);
+}
+
+.calendar.cw .calendar-body .calendar-date,
+.calendar.cw .calendar-header .calendar-date
+{
+    max-width: 12.5%;
+}
+
+.calendar.cw .calendar-body .cw,
+.calendar.cw .calendar-header .cw
+{
+    border-right: solid .05rem #e4e7e8;
+}
+
+.calendar span.date-item
+{
+    display: block; cursor: default;
+}
+
+.calendar .prvMon:before,
+.calendar .prvYear:before
+{
+    font-family: icomoon; content: '\e025';
+}
+
+.calendar .nxtMon:before,
+.calendar .nxtYear:before
+{
+    font-family: icomoon; content: '\e023';
+}
+
 .pagination a
 {
     cursor: pointer;
@@ -5167,6 +5191,11 @@ a.text-error:visited
 }
 
 /* additions and extensions to spectre.css */
+.modal.modal-lg .modal-overlay
+{
+    background: rgba(228, 231, 232, .75);
+}
+
 .navbar,
 .vx-navbar
 {padding: .4rem; 
@@ -5240,40 +5269,6 @@ a.webfont-icon-only
 .tab-item.disabled a:hover
 {
     cursor: not-allowed;
-}
-
-.calendar
-{background: white; 
-    box-shadow: 0 .05rem .2rem rgba(36, 40, 42, .3);
-}
-
-.calendar.cw .calendar-body .calendar-date,
-.calendar.cw .calendar-header .calendar-date
-{
-    max-width: 12.5%;
-}
-
-.calendar.cw .calendar-body .cw,
-.calendar.cw .calendar-header .cw
-{
-    border-right: solid .05rem #e4e7e8;
-}
-
-.calendar span.date-item
-{
-    display: block; cursor: default;
-}
-
-.calendar .prvMon:before,
-.calendar .prvYear:before
-{
-    font-family: icomoon; content: '\e025';
-}
-
-.calendar .nxtMon:before,
-.calendar .nxtYear:before
-{
-    font-family: icomoon; content: '\e023';
 }
 
 html,

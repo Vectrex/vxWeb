@@ -91,7 +91,7 @@
             <button v-if="slotProps.row.isFolder" class="btn webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="delFolder(slotProps.row)">&#xe008;</button>
             <template v-else>
                 <button class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="editFile(slotProps.row)">&#xe002;</button>
-                <button class="btn webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="moveFile(slotProps.row)">&#xe004;</button>
+                <button class="btn webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="getFolderTree(slotProps.row)">&#xe004;</button>
                 <button class="btn webfont-icon-only tooltip" data-tooltip="Löschen" type="button" @click="delFile(slotProps.row)">&#xe011;</button>
             </template>
         </template>
@@ -122,9 +122,10 @@
         <div class="modal-container">
             <div class="modal-header">
                 <a href="#close" class="btn btn-clear float-right" aria-label="Close" @click.prevent="showFolderTree = false"></a>
+                <div class="modal-title h5">Zielordner wählen&hellip;</div>
             </div>
             <div class="modal-body">
-                <simple-tree :branch="root"></simple-tree>
+                <simple-tree :branch="root" @branch-selected="moveToFolder"></simple-tree>
             </div>
         </div>
     </div>
@@ -145,6 +146,22 @@
     import SimpleFetch from  "/js/vue/util/simple-fetch.js";
     import PromisedXhr from  "/js/vue/util/promised-xhr.js";
     import SimpleTree from  "/js/vue/components/simple-tree.js"
+
+    // simple directive to enable event bubbling
+
+    Vue.directive('bubble', (el, binding, vnode) => {
+        Object.keys(binding.modifiers).forEach(event => {
+            // Bubble events of Vue components
+            if (vnode.componentInstance) {
+                vnode.componentInstance.$off(event);
+                vnode.componentInstance.$on(event, (...args) => { vnode.context.$emit(event, ...args); });
+                // Bubble events of native DOM elements
+            }
+            else {
+                el.addEventListener(event, payload => { vnode.context.$emit(event, payload); });
+            }
+        })
+    });
 
     let app = new Vue({
 
@@ -310,10 +327,13 @@
                 };
                 this.$refs.toast.isActive = true;
             },
-            async moveFile (row) {
+            async getFolderTree (row) {
                 let response = await SimpleFetch(this.$options.routes.getFoldersTree + '?id=' + this.currentFolder.key);
                 this.showFolderTree = true;
                 this.root = response;
+            },
+            async moveToFolder (folder) {
+                console.log(folder.key);
             },
             uploadFile (event) {
                 this.indicateDrag = false;
