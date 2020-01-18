@@ -941,7 +941,30 @@ class FilesController extends Controller
             ];
 
             if($row['image']) {
-                $row['src'] = '';
+                $fsf = $f->getFilesystemFile();
+                $actions = ['crop 1', 'resize 48 0'];
+                $dest = sprintf('%s%s@%s.%s',
+                    $fsf->getFolder()->createCache(),
+                    $fsf->getFilename(),
+                    implode('|', $actions),
+                    pathinfo($fsf->getFilename(), PATHINFO_EXTENSION)
+                );
+
+                if (!file_exists($dest)) {
+                    $imgEdit = ImageModifierFactory::create($fsf->getPath());
+
+                    foreach ($actions as $a) {
+                        $params = preg_split('~\s+~', $a);
+
+                        $method = array_shift($params);
+                        if (method_exists($imgEdit, $method)) {
+                            call_user_func_array([$imgEdit, $method], $params);
+                        }
+                    }
+                    $imgEdit->export($dest);
+                }
+
+                $row['src'] = htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest));
             }
 
             $files[] = $row;

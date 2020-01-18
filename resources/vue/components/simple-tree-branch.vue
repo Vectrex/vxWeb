@@ -1,7 +1,7 @@
 <template>
   <li :class="{ 'terminates': !branch.branches || !branch.branches.length }">
     <template v-if="branch.branches && branch.branches.length">
-      <input type="checkbox" :id="'branch-' + branch.key" @click="expanded = !expanded">
+      <input type="checkbox" :id="'branch-' + branch.key" @click="expanded = !expanded" :checked="expanded">
       <label :for="'branch-' + branch.key" />
     </template>
     <strong v-if="branch.current">{{ branch.label }}</strong>

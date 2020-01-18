@@ -97,6 +97,10 @@
         </template>
 
         <template v-slot:size="slotProps">{{ slotProps.row.size | formatFilesize(',') }}</template>
+        <template v-slot:type="slotProps">
+            <img :src="slotProps.row.src" alt="" v-if="slotProps.row.image">
+            <span v-else>{{ slotProps.row.type }}</span>
+        </template>
     </sortable>
 
     <div class="modal active" v-if="showEditForm">
