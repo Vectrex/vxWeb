@@ -180,6 +180,24 @@ class FilesController extends Controller
         ]);
     }
 
+    protected function fileMove (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        if (!($id = $bag->getInt('id')) || !$folderId = $bag->getInt('folderId')) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $file = MetaFile::getInstance(null, $id);
+            $file->move(MetaFolder::getInstance(null, $folderId));
+            return new JsonResponse(['success' => true, 'message' => 'Daten übernommen.']);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+    }
+
     protected function fileDel (): JsonResponse
     {
         if(!($id = $this->request->query->getInt('id'))) {

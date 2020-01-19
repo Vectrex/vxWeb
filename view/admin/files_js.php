@@ -57,32 +57,32 @@
         <template v-slot:name="slotProps">
             <template v-if="slotProps.row.isFolder">
                 <input
-                    v-if="slotProps.row === renaming"
+                    v-if="slotProps.row === toRename"
                     v-focus
                     class="form-input"
                     :value="slotProps.row.name"
-                    @keydown.enter="renameFolder"
-                    @keydown.esc="renaming = null"
-                    @blur="renaming = null"
+                    @keydown.enter="rename($event, $options.routes.renameFolder)"
+                    @keydown.esc="toRename = null"
+                    @blur="toRename = null"
                 >
                 <template v-else>
                     <a :href="'#' + slotProps.row.key" v-if="" @click.prevent="readFolder(slotProps.row)">{{ slotProps.row.name }}</a>
-                    <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="renaming = slotProps.row">&#xe001;</button>
+                    <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="toRename = slotProps.row">&#xe001;</button>
                 </template>
             </template>
             <template v-else>
                 <input
-                    v-if="slotProps.row === renaming"
+                    v-if="slotProps.row === toRename"
                     v-focus
                     class="form-input"
                     :value="slotProps.row.name"
-                    @keydown.enter="renameFile"
-                    @keydown.esc="renaming = null"
-                    @blur="renaming = null"
+                    @keydown.enter="rename($event, $options.routes.renameFile)"
+                    @keydown.esc="toRename = null"
+                    @blur="toRename = null"
                 >
                 <template v-else>
                     <span>{{ slotProps.row.name }}</span>
-                    <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="renaming = slotProps.row">&#xe001;</button>
+                    <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="toRename = slotProps.row">&#xe001;</button>
                 </template>
             </template>
         </template>
@@ -114,7 +114,7 @@
                     :initial-data="editFormData"
                     :file-info="editFileInfo"
                     :url="$options.routes.updateFile"
-                    @response-received="editResponseReceived"
+                    @response-received="handleEdit"
                     ref="editForm"
                 />
             </div>
@@ -180,8 +180,8 @@
             uploadFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_upload')->getUrl() ?>",
             delFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_del')->getUrl() ?>",
             renameFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_rename')->getUrl() ?>",
+            moveFile: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('file_move')->getUrl() ?>",
             getFoldersTree: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folders_tree')->getUrl() ?>",
-            moveFile: "",
             delFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_del')->getUrl() ?>",
             renameFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_rename')->getUrl() ?>",
             addFolder: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('folder_add')->getUrl() ?>"
@@ -217,8 +217,9 @@
                 { label: "", prop: "action" }
             ],
             initSort: {},
+            toRename: null,
+            toMove: null,
             showAddFolderInput: false,
-            renaming: null,
             showEditForm: false,
             showFolderTree: false,
             indicateDrag: false,
@@ -282,23 +283,13 @@
                     }
                 }
             },
-            async renameFile (event) {
+            async rename (event, route) {
                 let name = event.target.value.trim();
-                if(name && this.renaming) {
-                    let response = await SimpleFetch(this.$options.routes.renameFile, 'POST', {}, JSON.stringify({name: name, id: this.renaming.key }));
+                if(name && this.toRename) {
+                    let response = await SimpleFetch(route, 'POST', {}, JSON.stringify({name: name, id: this.toRename.key }));
                     if(response.success) {
-                        this.renaming.name = response.name || name;
-                        this.renaming = null;
-                    }
-                }
-            },
-            async renameFolder (event) {
-                let name = event.target.value.trim();
-                if(name && this.renaming) {
-                    let response = await SimpleFetch(this.$options.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, id: this.renaming.key }));
-                    if(response.success) {
-                        this.renaming.name = response.name || name;
-                        this.renaming = null;
+                        this.toRename.name = response.name || name;
+                        this.toRename = null;
                     }
                 }
             },
@@ -322,7 +313,7 @@
                     }
                 }
             },
-            editResponseReceived: function () {
+            handleEdit: function () {
                 let response = this.$refs.editForm.response;
 
                 this.toastProps = {
@@ -332,12 +323,30 @@
                 this.$refs.toast.isActive = true;
             },
             async getFolderTree (row) {
+                this.toMove = row;
                 let response = await SimpleFetch(this.$options.routes.getFoldersTree + '?id=' + this.currentFolder.key);
                 this.showFolderTree = true;
                 this.root = response;
             },
             async moveToFolder (folder) {
-                console.log(folder.key);
+                if(this.toMove) {
+                    let response = await SimpleFetch(this.$options.routes.moveFile, 'POST', {}, JSON.stringify({
+                        id: this.toMove.key,
+                        folderId: folder.key
+                    }));
+                    if (response.success) {
+                        this.files.splice(this.files.findIndex(item => this.toMove === item), 1);
+                        this.toMove = null;
+                        this.showFolderTree = false;
+                    }
+                    else {
+                        this.toastProps = {
+                            message: response.message,
+                            messageClass: 'toast-error'
+                        };
+                        this.$refs.toast.isActive = true;
+                    }
+                }
             },
             uploadFile (event) {
                 this.indicateDrag = false;
