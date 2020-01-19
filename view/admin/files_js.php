@@ -60,7 +60,7 @@
                     v-focus
                     class="form-input"
                     :value="slotProps.row.name"
-                    @keydown.enter="rename($event, $options.routes.renameFolder)"
+                    @keydown.enter="renameFolder"
                     @keydown.esc="toRename = null"
                     @blur="toRename = null"
                 >
@@ -75,7 +75,7 @@
                     v-focus
                     class="form-input"
                     :value="slotProps.row.name"
-                    @keydown.enter="rename($event, $options.routes.renameFile)"
+                    @keydown.enter="renameFile"
                     @keydown.esc="toRename = null"
                     @blur="toRename = null"
                 >
@@ -262,10 +262,18 @@
                 let response = await SimpleFetch(this.$options.routes.readFolder + '?id=' + row.key);
 
                 if(response.success) {
-                    this.breadcrumbs = response.breadcrumbs || [];
                     this.files = response.files || [];
                     this.folders = response.folders || [];
                     this.currentFolder = row;
+                    if(!this.breadcrumbs) {
+                        return;
+                    }
+                    if(
+                        response.breadcrumbs.length >= this.breadcrumbs.length ||
+                        this.breadcrumbs.map(item => item.key).join().indexOf(response.breadcrumbs.map(item => item.key).join()) !== 0
+                    ) {
+                        this.breadcrumbs = response.breadcrumbs;
+                    }
                 }
             },
             async editFile (row) {
@@ -283,11 +291,25 @@
                     }
                 }
             },
-            async rename (event, route) {
+            async renameFile (event) {
                 let name = event.target.value.trim();
                 if(name && this.toRename) {
-                    let response = await SimpleFetch(route, 'POST', {}, JSON.stringify({name: name, id: this.toRename.key }));
+                    let response = await SimpleFetch(this.$options.routes.renameFile, 'POST', {}, JSON.stringify({name: name, id: this.toRename.key }));
                     if(response.success) {
+                        this.toRename.name = response.name || name;
+                        this.toRename = null;
+                    }
+                }
+            },
+            async renameFolder (event) {
+                let name = event.target.value.trim();
+                if(name && this.toRename) {
+                    let response = await SimpleFetch(this.$options.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, id: this.toRename.key }));
+                    if(response.success) {
+                        let ndx = this.breadcrumbs.findIndex(item => item.key === this.toRename.key);
+                        if (ndx !== -1) {
+                            this.breadcrumbs[ndx].name = response.name;
+                        }
                         this.toRename.name = response.name || name;
                         this.toRename = null;
                     }
@@ -298,6 +320,10 @@
                     let response = await SimpleFetch(this.$options.routes.delFolder + '?id=' + row.key, 'DELETE');
                     if(response.success) {
                         this.folders.splice(this.folders.findIndex(item => row === item), 1);
+                        let ndx = this.breadcrumbs.findIndex(item => item.key === row.key);
+                        if (ndx !== -1) {
+                            this.breadcrumbs.splice(ndx);
+                        }
                     }
                 }
             },
@@ -422,17 +448,6 @@
         },
 
         filters: {
-            formatInt(size, sep) {
-                if(size) {
-                    let str = size.toString(), fSize = '';
-
-                    while (str.length > 3) {
-                        fSize = (sep || ',') + str.slice(-3) + fSize;
-                        str = str.slice(0, -3);
-                    }
-                    return str + fSize;
-                }
-            },
             formatFilesize(size, sep) {
                 if(!size) {
                     return '';
