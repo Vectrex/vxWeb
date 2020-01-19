@@ -248,16 +248,17 @@ class FilesController extends Controller
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
 
-        $contents = file_get_contents('php://input');
-
         $filename = FilesystemFile::sanitizeFilename(urldecode($this->request->headers->get('x-file-name')), $fsFolder);
         $contents = file_get_contents('php://input');
 
-        try {
-            $mimeType = MimeTypeGetter::getForBuffer($contents);
-        } catch (\RuntimeException $e) {
-            $mimeType = null;
+        // check expected file size against real one to detect cancelled uploads
+
+        $expectedSize = (int) $this->request->headers->get('x-file-size', 0);
+
+        if($expectedSize !== strlen($contents)) {
+            return new JsonResponse(['error' => 1, 'message' => sprintf("Submitted filesize %d doesn't match binary file size %d.", $expectedSize, strlen($contents))]);
         }
+
         try {
             file_put_contents($fsFolder->getPath() . $filename, $contents);
             MetaFile::createMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename));

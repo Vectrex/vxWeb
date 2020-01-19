@@ -5190,6 +5190,16 @@ a.text-error:visited
     font-family: 'IBMPlexSans'; font-weight: bold; font-style: italic; src: url('../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic.woff') format('woff'), url('../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic.woff2') format('woff2');
 }
 
+[v-cloak] > *
+{
+    display: none !important;
+}
+
+[v-cloak]:before
+{
+    content: '...';
+}
+
 /* additions and extensions to spectre.css */
 .modal.modal-lg .modal-overlay
 {

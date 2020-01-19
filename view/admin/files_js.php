@@ -20,14 +20,13 @@
                     @click="readFolder(breadcrumb)">{{ breadcrumb.name }}</button>
             </span>
         </section>
-        <section class="navbar-center">
+        <section class="navbar-section">
             <template v-if="uploadInProgress">
-                <span class="d-inline-block mr-2">{{ progress.file }}</span>
+                <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Abbrechen" type="button" @click="cancelUpload">&#xe01d;</button>
+                <label class="d-inline-block mr-2">{{ progress.file }}</label>
                 <progress class="progress" :value="progress.loaded" :max="progress.total"></progress>
             </template>
-            <div class="text-center" v-else>
-                <strong class="text-primary">Uploads hierher ziehen</strong>
-            </div>
+            <strong class="text-primary d-block col-12 text-center" v-else>Uploads hierher ziehen</strong>
         </section>
         <section class="navbar-section">
             <input
@@ -225,6 +224,7 @@
             indicateDrag: false,
             uploads: [],
             uploadInProgress: false,
+            cancelUploadToken: {},
             progress: { total: null, loaded: null, file: null },
             editFormData: {},
             editFileInfo: {},
@@ -366,28 +366,40 @@
                 let file = null, response = null;
                 while((file = this.uploads.shift()) !== undefined) {
                     this.progress.file = file.name;
-                    response = await PromisedXhr(
-                        this.$options.routes.uploadFile + '?id=' + this.currentFolder.key,
-                        'POST',
-                        {
-                            'Content-type': file.type || 'application/octet-stream',
-                            'X-File-Name': file.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
-                            'X-File-Size': file.size,
-                            'X-File-Type': file.type
-                        },
-                        file,
-                        null,
-                        e => {
-                            this.progress.total = e.total;
-                            this.progress.loaded = e.loaded;
-                        }
-                    );
+                    try {
+                        response = await PromisedXhr(
+                            this.$options.routes.uploadFile + '?id=' + this.currentFolder.key,
+                            'POST',
+                            {
+                                'Content-type': file.type || 'application/octet-stream',
+                                'X-File-Name': file.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
+                                'X-File-Size': file.size,
+                                'X-File-Type': file.type
+                            },
+                            file,
+                            null,
+                            e => {
+                                this.progress.total = e.total;
+                                this.progress.loaded = e.loaded;
+                            },
+                            this.cancelUploadToken
+                        );
+                        this.files = response.files || [];
+                    } catch(err) {
+                        this.uploads = [];
+                        this.uploadInProgress = false;
+                        return;
+                    }
+
                     if(!response.success) {
                         this.toastProps = {
                             message: response.message || 'Ein Fehler ist beim Upload aufgetreten.',
                             messageClass: 'toast-error'
                         };
                         this.$refs.toast.isActive = true;
+                        this.uploads = [];
+                        this.uploadInProgress = false;
+                        return;
                     }
                 }
 
@@ -396,8 +408,13 @@
                     messageClass: 'toast-success'
                 };
                 this.$refs.toast.isActive = true;
-                this.files = response.files || [];
                 this.uploadInProgress = false;
+            },
+            cancelUpload () {
+                if(this.cancelUploadToken.cancel) {
+                    this.cancelUploadToken.cancel();
+                    this.cancelUploadToken = {};
+                }
             },
             storeSort () {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));

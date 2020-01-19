@@ -25,7 +25,7 @@ export default function PromisedXhr(url, method = 'GET', headers = {}, payload =
         xhr.upload.onprogress = progressCallback || null;
 
         if(cancelToken) {
-            cancelToken.cancel = () =>  { xhr.abort().reject({statusText: 'Request cancelled.'}); };
+            cancelToken.cancel = () =>  { xhr.abort(); reject({ status: 499, statusText: 'Request cancelled.' }); };
         }
 
         xhr.open(method, url, true);
@@ -34,7 +34,7 @@ export default function PromisedXhr(url, method = 'GET', headers = {}, payload =
 
         if (timeout) {
             xhr.timeout = timeout;
-            xhr.ontimeout = (e) => {reject({ status: 408, statusText: 'Request timeout' });};
+            xhr.ontimeout = (e) => {reject({ status: 408, statusText: 'Request timeout.' });};
         }
 
         xhr.send(payload);

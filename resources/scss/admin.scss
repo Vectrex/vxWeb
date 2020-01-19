@@ -33,6 +33,15 @@ $sidebar-width: 10rem;
 @include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-Bold", bold, normal, woff woff2);
 @include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic", bold, italic, woff woff2);
 
+[v-cloak] {
+  & > * {
+    display: none !important;
+  }
+  &:before {
+    content: '...'
+  }
+}
+
 /*
   additions and extensions to spectre.css
 */
