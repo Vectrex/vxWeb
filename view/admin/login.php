@@ -36,14 +36,10 @@
     ></message-toast>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
-<script type="module">
-
-    import MessageToast from "/js/vue/components/message-toast.js";
-    import SimpleFetch from "/js/vue/util/simple-fetch.js";
-
-    "use strict";
+<script src="/js/vue/vxweb.umd.min.js"></script>
+<script>
+    const MessageToast = window.vxweb.default.MessageToast;
+    const SimpleFetch =  window.vxweb.default.SimpleFetch;
 
     const app = new Vue({
 

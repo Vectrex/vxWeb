@@ -26,15 +26,14 @@
 
 </div>
 
-<script type="module">
+<script src="/js/vue/vxweb.umd.min.js"></script>
+<script>
 
-    import MessageToast from "/js/vue/components/message-toast.js";
-    import UserForm from "/js/vue/components/user-form.js";
-    import SimpleFetch from "/js/vue/util/simple-fetch.js";
+    const MessageToast = window.vxweb.default.MessageToast;
+    const UserForm =  window.vxweb.default.UserForm;
+    const SimpleFetch =  window.vxweb.default.SimpleFetch;
 
-    "use strict";
-
-    var app = new Vue({
+    const app = new Vue({
 
         components: {
             "message-toast": MessageToast,

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-    import SimpleFetch from "../util/simple-fetch.js";
+    import SimpleFetch from "../../util/simple-fetch.js";
 
     export default {
         props: {

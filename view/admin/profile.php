@@ -19,22 +19,20 @@
     ></profile-form>
 </div>
 
-<script type="module">
+<script src="/js/vue/vxweb.umd.min.js"></script>
+<script>
 
-    import MessageToast from "/js/vue/components/message-toast.js";
-    import ProfileForm from "/js/vue/components/profile-form.js";
-    import SimpleFetch from "/js/vue/util/simple-fetch.js";
+    const MessageToast = window.vxweb.default.MessageToast;
+    const ProfileForm =  window.vxweb.default.ProfileForm;
+    const SimpleFetch =  window.vxweb.default.SimpleFetch;
 
-    "use strict";
-
-    var app = new Vue({
-
-        components: {
-            "message-toast": MessageToast,
-            "profile-form": ProfileForm
-        },
+    const app = new Vue({
 
         el: ".form-content",
+
+        components: {
+            MessageToast, ProfileForm
+        },
 
         data: {
             form: {},
@@ -44,6 +42,16 @@
                 messageClass: "",
                 isActive: false
             }
+        },
+
+        mounted () {
+            SimpleFetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>")
+                .then(response => {
+                    this.notifications = response.notifications;
+                    if (response.formData) {
+                        this.form = response.formData;
+                    }
+                });
         },
 
         methods: {
@@ -57,13 +65,5 @@
             }
         }
     });
-
-    SimpleFetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>")
-        .then(function (data) {
-            app.notifications = data.notifications;
-            if (data.formData) {
-                app.form = data.formData;
-            }
-        });
 
 </script>

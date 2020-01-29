@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import SimpleTreeBranch from './simple-tree-branch.js';
+    import SimpleTreeBranch from './simple-tree-branch';
 
     export default {
         name: 'simple-tree',

@@ -142,13 +142,15 @@
 
 </div>
 
-<script type="module">
-    import Sortable from  "/js/vue/components/sortable.js";
-    import FileEditForm from  "/js/vue/components/file-edit-form.js";
-    import MessageToast from "/js/vue/components/message-toast.js";
-    import SimpleFetch from  "/js/vue/util/simple-fetch.js";
-    import PromisedXhr from  "/js/vue/util/promised-xhr.js";
-    import SimpleTree from  "/js/vue/components/simple-tree.js"
+<script src="/js/vue/vxweb.umd.min.js"></script>
+<script>
+
+    const Sortable = window.vxweb.default.Sortable;
+    const MessageToast = window.vxweb.default.MessageToast;
+    const SimpleTree = window.vxweb.default.SimpleTree;
+    const FileEditForm = window.vxweb.default.FileEditForm;
+    const SimpleFetch = window.vxweb.default.SimpleFetch;
+    const PromisedXhr = window.vxweb.default.PromisedXhr;
 
     // simple directive to enable event bubbling
 

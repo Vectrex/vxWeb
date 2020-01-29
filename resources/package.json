@@ -11,7 +11,9 @@
     "gulp-uglify": "latest",
     "gulp-vue-single-file-component": "^1.0.12",
     "spectre.css": "latest",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "@vue/cli-service": "^4.1.2",
+    "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
     "last 4 Chrome versions",
@@ -19,7 +21,9 @@
     "Firefox ESR",
     "last 4 Safari versions",
     "last 4 Opera versions",
-    "Explorer >= 10"
+    "Explorer >= 11"
   ],
-  "dependencies": {}
+  "scripts": {
+    "vue-backend-build": "vue-cli-service build --target lib --dest 'dist/vue' --name vxweb ./vue/vxweb.js"
+  }
 }
