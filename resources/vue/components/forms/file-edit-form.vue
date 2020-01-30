@@ -10,7 +10,7 @@
                         <td>Typ</td>
                         <td>{{ fileInfo.mimetype }}</td>
                     </tr>
-                    <tr>
+                    <tr v-if="fileInfo.cache">
                         <td>Cache</td>
                         <td>{{ fileInfo.cache.count }} Files, {{ fileInfo.cache.totalSize | formatFilesize(',') }}</td>
                     </tr>

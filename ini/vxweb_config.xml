@@ -53,7 +53,6 @@
 		<page id="filesXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
 		<page id="filepickerXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
 		<page id="fileincludeXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
-		<page id="uploadXhr" controller="admin/files" method="xhrUpload" auth="privileged" />
 	</pages>
 
 	<pages script="installer.php">
