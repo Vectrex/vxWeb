@@ -13,6 +13,8 @@
 		<page id="pages" controller="admin/pages" auth="superadmin" />
 		<page id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
 		<page id="page_edit" controller="admin/pages" auth="superadmin" method="edit" />
+		<page id="page_init" controller="admin/users" auth="superadmin" method="editInit" />
+
 		<page id="pagesXhr" controller="admin/pages" method="xhrExecute" auth="superadmin" />
         <page id="inlineEditXhr" controller="admin/pages" method="updateInlineEdit" path="pages/inline" auth="superadmin" />
 

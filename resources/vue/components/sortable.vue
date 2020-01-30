@@ -71,6 +71,9 @@
             },
             sortDir (newVal) {
                 this.doSort(this.sortColumn, newVal);
+            },
+            rows (newValue) {
+                this.doSort(this.sortColumn, this.sortDir);
             }
         },
 

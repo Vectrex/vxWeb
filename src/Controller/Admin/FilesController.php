@@ -80,7 +80,7 @@ class FilesController extends Controller
                 'files' => $this->getFileRows($folder),
                 'folders' => $this->getFolderRows($folder),
                 'breadcrumbs' => $this->getBreadcrumbs($folder),
-                'currentFolder' => ['key' => $folder->getId(), 'name' => $folder->getName()]
+                'currentFolder' => ['id' => $folder->getId(), 'name' => $folder->getName()]
             ]);
 
         } catch (MetaFolderException $e) {
@@ -327,7 +327,7 @@ class FilesController extends Controller
             }
             $folder = $parentFolder->createFolder($name);
             return new JsonResponse(['success' => true, 'folder' => [
-                'key' => $folder->getId(),
+                'id' => $folder->getId(),
                 'name' => $folder->getName()
             ]]);
         }
@@ -367,7 +367,7 @@ class FilesController extends Controller
             $pathSegs = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
 
             return [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'label' => end($pathSegs),
                 'branches' => $branches,
                 'current' => $f === $currentFolder,
@@ -935,7 +935,7 @@ class FilesController extends Controller
 
         foreach ($folder->getMetaFolders() as $f) {
             $folders[] = [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'name' => $f->getName()
             ];
         }
@@ -950,7 +950,7 @@ class FilesController extends Controller
         foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
             $metaData = $f->getData();
             $row = [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'name' => $f->getFilename(),
                 'title' => $metaData['title'],
                 'image' => $f->isWebImage(),
@@ -998,7 +998,7 @@ class FilesController extends Controller
 
         foreach ($folder->getMetaFolders() as $f) {
             $folders[] = [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'name' => $f->getName()
             ];
         }
@@ -1008,10 +1008,10 @@ class FilesController extends Controller
 
     private function getBreadcrumbs (MetaFolder $folder): array
     {
-        $breadcrumbs = [['name' => $folder->getName(), 'key' => $folder->getId()]];
+        $breadcrumbs = [['name' => $folder->getName(), 'id' => $folder->getId()]];
 
         while (($folder = $folder->getParentMetafolder())) {
-            array_unshift($breadcrumbs, ['name' => $folder->getName(), 'key' => $folder->getId()]);
+            array_unshift($breadcrumbs, ['name' => $folder->getName(), 'id' => $folder->getId()]);
         }
 
         return $breadcrumbs;
@@ -1126,7 +1126,7 @@ class FilesController extends Controller
             $pathSegs = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
 
             return [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'label' => end($pathSegs),
                 'branches' => $branches,
                 'current' => $f === $currentFolder,

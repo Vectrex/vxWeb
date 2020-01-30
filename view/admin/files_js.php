@@ -15,8 +15,8 @@
                 <button
                     v-for="breadcrumb in breadcrumbs"
                     class="btn"
-                    :key="breadcrumb.key"
-                    :class="{'active': breadcrumb.key === currentFolder.key }"
+                    :key="breadcrumb.id"
+                    :class="{'active': breadcrumb.id === currentFolder.id }"
                     @click="readFolder(breadcrumb)">{{ breadcrumb.name }}</button>
             </span>
         </section>
@@ -65,7 +65,7 @@
                     @blur="toRename = null"
                 >
                 <template v-else>
-                    <a :href="'#' + slotProps.row.key" @click.prevent="readFolder(slotProps.row)">{{ slotProps.row.name }}</a>
+                    <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row)">{{ slotProps.row.name }}</a>
                     <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="toRename = slotProps.row">&#xe001;</button>
                 </template>
             </template>
@@ -240,8 +240,10 @@
         computed: {
             directoryEntries() {
                 let folders = this.folders;
-                folders.forEach(item => { item.isFolder = true, item.key = 'd_' + item.key });
-                return [...folders, ...this.files];
+                let files = this.files;
+                folders.forEach(item => { item.isFolder = true; item.key = 'd' + item.id });
+                files.forEach(item => item.key = item.id);
+                return [...folders, ...files];
             }
         },
 
@@ -261,7 +263,7 @@
 
         methods: {
             async readFolder (row) {
-                let response = await SimpleFetch(this.$options.routes.readFolder + '?id=' + row.key);
+                let response = await SimpleFetch(this.$options.routes.readFolder + '?id=' + row.id);
 
                 if(response.success) {
                     this.files = response.files || [];
@@ -272,7 +274,7 @@
                     }
                     if(
                         response.breadcrumbs.length >= this.breadcrumbs.length ||
-                        this.breadcrumbs.map(item => item.key).join().indexOf(response.breadcrumbs.map(item => item.key).join()) !== 0
+                        this.breadcrumbs.map(item => item.id).join().indexOf(response.breadcrumbs.map(item => item.id).join()) !== 0
                     ) {
                         this.breadcrumbs = response.breadcrumbs;
                     }
@@ -280,14 +282,14 @@
             },
             async editFile (row) {
                 this.showEditForm = true;
-                let response = await SimpleFetch(this.$options.routes.getFile + '?id=' + row.key);
+                let response = await SimpleFetch(this.$options.routes.getFile + '?id=' + row.id);
                 this.editFormData = response.form || {};
                 this.editFileInfo = response.fileInfo || {};
-                this.editFormData.id = row.key;
+                this.editFormData.id = row.id;
             },
             async delFile (row) {
                 if(window.confirm("Datei '" + row.name + "' wirklich löschen?")) {
-                    let response = await SimpleFetch(this.$options.routes.delFile + '?id=' + row.key, 'DELETE');
+                    let response = await SimpleFetch(this.$options.routes.delFile + '?id=' + row.id, 'DELETE');
                     if(response.success) {
                         this.files.splice(this.files.findIndex(item => row === item), 1);
                     }
@@ -296,7 +298,7 @@
             async renameFile (event) {
                 let name = event.target.value.trim();
                 if(name && this.toRename) {
-                    let response = await SimpleFetch(this.$options.routes.renameFile, 'POST', {}, JSON.stringify({name: name, id: this.toRename.key }));
+                    let response = await SimpleFetch(this.$options.routes.renameFile, 'POST', {}, JSON.stringify({name: name, id: this.toRename.id }));
                     if(response.success) {
                         this.toRename.name = response.name || name;
                         this.toRename = null;
@@ -306,9 +308,9 @@
             async renameFolder (event) {
                 let name = event.target.value.trim();
                 if(name && this.toRename) {
-                    let response = await SimpleFetch(this.$options.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, id: this.toRename.key }));
+                    let response = await SimpleFetch(this.$options.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, id: this.toRename.id }));
                     if(response.success) {
-                        let ndx = this.breadcrumbs.findIndex(item => item.key === this.toRename.key);
+                        let ndx = this.breadcrumbs.findIndex(item => item.id === this.toRename.id);
                         if (ndx !== -1) {
                             this.breadcrumbs[ndx].name = response.name;
                         }
@@ -319,10 +321,10 @@
             },
             async delFolder (row) {
                 if(window.confirm("Ordner und Inhalt von '" + row.name + "' wirklich löschen?")) {
-                    let response = await SimpleFetch(this.$options.routes.delFolder + '?id=' + row.key.substr(2), 'DELETE');
+                    let response = await SimpleFetch(this.$options.routes.delFolder + '?id=' + row.id, 'DELETE');
                     if(response.success) {
                         this.folders.splice(this.folders.findIndex(item => row === item), 1);
-                        let ndx = this.breadcrumbs.findIndex(item => item.key === row.key);
+                        let ndx = this.breadcrumbs.findIndex(item => item.id === row.id);
                         if (ndx !== -1) {
                             this.breadcrumbs.splice(ndx);
                         }
@@ -332,7 +334,7 @@
             async addFolder () {
                 let name = this.$refs.addFolderInput.value.trim();
                 if(name) {
-                    let response = await SimpleFetch(this.$options.routes.addFolder, 'POST', {}, JSON.stringify({name: name, parent: this.currentFolder.key }));
+                    let response = await SimpleFetch(this.$options.routes.addFolder, 'POST', {}, JSON.stringify({name: name, parent: this.currentFolder.id }));
                     if(response.success) {
                         this.showAddFolderInput = false;
                     }
@@ -352,15 +354,15 @@
             },
             async getFolderTree (row) {
                 this.toMove = row;
-                let response = await SimpleFetch(this.$options.routes.getFoldersTree + '?id=' + this.currentFolder.key);
+                let response = await SimpleFetch(this.$options.routes.getFoldersTree + '?id=' + this.currentFolder.id);
                 this.showFolderTree = true;
                 this.root = response;
             },
             async moveToFolder (folder) {
                 if(this.toMove) {
                     let response = await SimpleFetch(this.$options.routes.moveFile, 'POST', {}, JSON.stringify({
-                        id: this.toMove.key,
-                        folderId: folder.key
+                        id: this.toMove.id,
+                        folderId: folder.id
                     }));
                     if (response.success) {
                         this.files.splice(this.files.findIndex(item => this.toMove === item), 1);
@@ -396,7 +398,7 @@
                     this.progress.file = file.name;
                     try {
                         response = await PromisedXhr(
-                            this.$options.routes.uploadFile + '?id=' + this.currentFolder.key,
+                            this.$options.routes.uploadFile + '?id=' + this.currentFolder.id,
                             'POST',
                             {
                                 'Content-type': file.type || 'application/octet-stream',
