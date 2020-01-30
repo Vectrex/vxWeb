@@ -65,7 +65,7 @@
                     @blur="toRename = null"
                 >
                 <template v-else>
-                    <a :href="'#' + slotProps.row.key" v-if="" @click.prevent="readFolder(slotProps.row)">{{ slotProps.row.name }}</a>
+                    <a :href="'#' + slotProps.row.key" @click.prevent="readFolder(slotProps.row)">{{ slotProps.row.name }}</a>
                     <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="toRename = slotProps.row">&#xe001;</button>
                 </template>
             </template>
@@ -240,7 +240,7 @@
         computed: {
             directoryEntries() {
                 let folders = this.folders;
-                folders.forEach(item => item.isFolder = true);
+                folders.forEach(item => { item.isFolder = true, item.key = 'd_' + item.key });
                 return [...folders, ...this.files];
             }
         },
@@ -319,7 +319,7 @@
             },
             async delFolder (row) {
                 if(window.confirm("Ordner und Inhalt von '" + row.name + "' wirklich löschen?")) {
-                    let response = await SimpleFetch(this.$options.routes.delFolder + '?id=' + row.key, 'DELETE');
+                    let response = await SimpleFetch(this.$options.routes.delFolder + '?id=' + row.key.substr(2), 'DELETE');
                     if(response.success) {
                         this.folders.splice(this.folders.findIndex(item => row === item), 1);
                         let ndx = this.breadcrumbs.findIndex(item => item.key === row.key);
