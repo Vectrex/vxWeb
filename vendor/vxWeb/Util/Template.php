@@ -230,7 +230,7 @@ class Template {
 		// insert only revision (locale might differ)
 
 		if(count($rows)) {
-			$page = Page::getInstance((int) current($rows)['pagesid']);
+			$page = Page::getInstance((int) $rows->current()['pagesid']);
 		}
 
 		else {

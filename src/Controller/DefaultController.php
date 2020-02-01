@@ -15,10 +15,10 @@ use vxWeb\Model\Page\Page;
 use vxWeb\Model\Page\PageException;
 use IvoPetkov\HTML5DOMDocument;
 
-class DefaultController extends Controller {
-
-	protected function execute() {
-
+class DefaultController extends Controller
+{
+	protected function execute()
+    {
 		try {
 			
 			// check for markup in parameters
@@ -77,41 +77,35 @@ class DefaultController extends Controller {
                         ->insertTemplateAt($include, 'content_block')
                         ->display()
                     );
-
                 }
 
-                else {
-
-                    return new Response($include
-                        ->assign('route', $pageAlias ?? null)
-                        ->assign('page', $page)
-                        ->display()
-                    );
-
-                }
-            }
-
-            else {
-
-                return new Response(
-                    $this->insertInlineEditor(
-                        $include,
-                        ['page' => $page, 'pageAlias' => $pageAlias]
-                    )
+                return new Response($include
+                    ->assign('route', $pageAlias ?? null)
+                    ->assign('page', $page)
+                    ->display()
                 );
-
             }
+
+            return new Response(
+                $this->insertInlineEditor(
+                    $include,
+                    ['page' => $page, 'pageAlias' => $pageAlias ?? null]
+                )
+            );
 		}
 
 		catch(SimpleTemplateException $e) {
 			throw new HttpException(Response::HTTP_NOT_FOUND); 
 		}
-
 	}
 
-	private function insertInlineEditor(SimpleTemplate $include, array $parameters) {
-
+	private function insertInlineEditor(SimpleTemplate $include, array $parameters)
+    {
 	    $parentTemplate = SimpleTemplate::create($include->getParentTemplateFilename() ?? 'layout.php');
+
+        // remove a possible extend-comment to avoid cascaded inclusion
+
+        $include->setRawContents(preg_replace('~<!--\s*\{\s*extend:\s*([\w./-]+)\s*@\s*([\w-]+)\s*\}\s*-->~', '', $include->getRawContents()));
 
         $markup = $parentTemplate
             ->assign('route', $parameters['pageAlias'] ?? null)
@@ -128,7 +122,6 @@ class DefaultController extends Controller {
         foreach($xpath->query('//comment()') as $item) {
 
             if(preg_match('/\{\s*block:\s*content_block\s*\}/i', trim($item->data))) {
-
                 $node = $item->parentNode;
                 break;
             }
@@ -136,9 +129,7 @@ class DefaultController extends Controller {
         }
 
         if($node) {
-
             $node->setAttribute('contenteditable', 'true');
-
         }
 
         // replace outer template contents
@@ -162,6 +153,5 @@ class DefaultController extends Controller {
             ->insertTemplateAt($include, 'content_block')
             ->display([new AnchorHref(), new AssetsPath(), new ImageCache()])
         ;
-
     }
 }

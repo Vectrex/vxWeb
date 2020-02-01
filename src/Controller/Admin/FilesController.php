@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 /* @TODO sanitize metadata */
 
-use vxPHP\File\FilesystemFolder;
+use vxPHP\Http\ParameterBag;
 use vxPHP\Util\Rex;
 
 use vxPHP\File\Exception\FilesystemFileException;
@@ -20,7 +20,6 @@ use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxWeb\Model\Article\Article;
-use vxPHP\File\MimeTypeGetter;
 use vxPHP\Constraint\Validator\RegularExpression;
 
 use vxWeb\Model\MetaFile\MetaFile;
@@ -36,6 +35,7 @@ use vxWeb\Util\File;
  */
 class FilesController extends Controller
 {
+    private const FILE_ATTRIBUTES = ['title', 'subtitle', 'description', 'customsort'];
 
     /**
      * depending on route fill response with appropriate template
@@ -45,7 +45,6 @@ class FilesController extends Controller
      */
     protected function execute()
     {
-
         $uploadMaxFilesize = min(
             $this->toBytes(ini_get('upload_max_filesize')),
             $this->toBytes(ini_get('post_max_size'))
@@ -67,6 +66,321 @@ class FilesController extends Controller
                 ->assign('upload_max_filesize', $uploadMaxFilesize)
                 ->assign('max_execution_time_ms', $maxExecutionTime * 900)// 10pct "safety margin"
                 ->display());
+    }
+
+    protected function init(): JsonResponse
+    {
+        try {
+            $folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
+
+            File::cleanupMetaFolder($folder);
+
+            return new JsonResponse([
+                'files' => $this->getFileRows($folder),
+                'folders' => $this->getFolderRows($folder),
+                'breadcrumbs' => $this->getBreadcrumbs($folder),
+                'currentFolder' => ['id' => $folder->getId(), 'name' => $folder->getName()]
+            ]);
+
+        } catch (MetaFolderException $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected function fileGet (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $mf = MetaFile::getInstance(null, $id);
+
+            if($mf->isWebImage()) {
+                $fsf = $mf->getFilesystemFile();
+                $actions = ['resize 0 320'];
+                $dest = sprintf('%s%s@%s.%s',
+                    $fsf->getFolder()->createCache(),
+                    $fsf->getFilename(),
+                    implode('|', $actions),
+                    pathinfo($fsf->getFilename(), PATHINFO_EXTENSION)
+                );
+
+                if (!file_exists($dest)) {
+                    $imgEdit = ImageModifierFactory::create($fsf->getPath());
+
+                    foreach ($actions as $a) {
+                        $params = preg_split('~\s+~', $a);
+
+                        $method = array_shift($params);
+                        if (method_exists($imgEdit, $method)) {
+                            call_user_func_array([$imgEdit, $method], $params);
+                        }
+                    }
+                    $imgEdit->export($dest);
+                }
+            }
+
+            return new JsonResponse([
+                'form' => array_intersect_key($mf->getData(), array_fill_keys(self::FILE_ATTRIBUTES, null)),
+                'fileInfo' => [
+                    'mimetype' => $mf->getMimetype(),
+                    'path' => $mf->getRelativePath(),
+                    'name' => $mf->getFilename(),
+                    'thumb' => $dest ? htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) : null,
+                    'cache' => $mf->getFilesystemFile()->getCacheInfo()
+                ]
+            ]);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected function fileUpdate (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        if (!($id = $bag->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $file = MetaFile::getInstance(null, $id);
+            $file->setMetaData(array_intersect_key($bag->all(), array_fill_keys(self::FILE_ATTRIBUTES, null)));
+
+            return new JsonResponse(['success' => true, 'message' => 'Daten übernommen.']);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+    }
+
+    protected function folderRead (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $folder = MetaFolder::getInstance(null, $id);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        File::cleanupMetaFolder($folder);
+
+        return new JsonResponse([
+            'success' => true,
+            'files' => $this->getFileRows($folder),
+            'folders' => $this->getFolderRows($folder),
+            'breadcrumbs' => $this->getBreadcrumbs($folder),
+            'currentFolder' => ['key' => $id, 'name' => $folder->getName()]
+        ]);
+    }
+
+    protected function fileMove (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        if (!($id = $bag->getInt('id')) || !$folderId = $bag->getInt('folderId')) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $file = MetaFile::getInstance(null, $id);
+            $file->move(MetaFolder::getInstance(null, $folderId));
+            return new JsonResponse(['success' => true, 'message' => 'Daten übernommen.']);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+    }
+
+    protected function fileDel (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            MetaFile::getInstance(null, $id)->delete();
+            return new JsonResponse(['success' => true]);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected function fileRename (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        if (!($id = $bag->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $name = trim($bag->get('name'));
+            if (!$name) {
+                throw new \InvalidArgumentException('Missing filename.');
+            }
+            $file = MetaFile::getInstance(null, $id);
+            $file->rename($name);
+
+            return new JsonResponse(['success' => true, 'name' => $file->getFilename()]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+    }
+
+    protected function fileUpload (): JsonResponse
+    {
+        $id = $this->request->query->get('id');
+
+        if(!$id) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $fsFolder = MetaFolder::getInstance(null, $id)->getFilesystemFolder();
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+
+        $filename = FilesystemFile::sanitizeFilename(urldecode($this->request->headers->get('x-file-name')), $fsFolder);
+        $contents = file_get_contents('php://input');
+
+        // check expected file size against real one to detect cancelled uploads
+
+        $expectedSize = (int) $this->request->headers->get('x-file-size', 0);
+
+        if($expectedSize !== strlen($contents)) {
+            return new JsonResponse(['error' => 1, 'message' => sprintf("Submitted filesize %d doesn't match binary file size %d.", $expectedSize, strlen($contents))]);
+        }
+
+        try {
+            file_put_contents($fsFolder->getPath() . $filename, $contents);
+            MetaFile::createMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename));
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
+        }
+
+        return new JsonResponse(['success' => true, 'files' => $this->getFileRows(MetaFolder::getInstance(null, $id))]);
+    }
+
+    protected function folderDel (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            MetaFolder::getInstance(null, $id)->delete();
+            return new JsonResponse(['success' => true]);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected function folderRename (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        if (!($id = $bag->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $name = trim($bag->get('name'));
+            if (!$name) {
+                throw new \InvalidArgumentException('Missing folder name.');
+            }
+            $folder = MetaFolder::getInstance(null, $id);
+
+            $folder->rename($name);
+
+            return new JsonResponse(['success' => true, 'name' => MetaFolder::getInstance(null, $id)->getName()]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+    }
+
+    protected function folderAdd (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        if(!($parent = $bag->getInt('parent'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $name = trim($bag->get('name'));
+            if(!$name) {
+                throw new \InvalidArgumentException('Missing filename.');
+            }
+            $name = preg_replace('~[^a-z0-9_-]~i', '_', $name);
+            $parentFolder = MetaFolder::getInstance(null, $parent);
+
+            foreach ($parentFolder->getMetaFolders() as $subFolder) {
+                if ($subFolder->getName() === $name) {
+                    return new JsonResponse(['error' => 1, 'message' => sprintf("Verzeichnis '%s' existiert bereits.", $name)]);
+                }
+            }
+            $folder = $parentFolder->createFolder($name);
+            return new JsonResponse(['success' => true, 'folder' => [
+                'id' => $folder->getId(),
+                'name' => $folder->getName()
+            ]]);
+        }
+        catch(\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+        }
+    }
+
+    protected function getFoldersTree ()
+    {
+        $id = $this->request->query->getInt('id');
+
+        if($id) {
+            try {
+                $currentFolder = MetaFolder::getInstance(null, $id);
+            }
+            catch (\Exception $e) {
+                return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            }
+        }
+        else {
+            $currentFolder = null;
+        }
+
+        $parseFolder = function (MetaFolder $f) use (&$parseFolder, $currentFolder) {
+
+            $subTrees = $f->getMetaFolders();
+
+            $branches = [];
+
+            if (count($subTrees)) {
+                foreach ($subTrees as $s) {
+                    $branches[] = $parseFolder($s);
+                }
+            }
+
+            $pathSegs = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
+
+            return [
+                'id' => $f->getId(),
+                'label' => end($pathSegs),
+                'branches' => $branches,
+                'current' => $f === $currentFolder,
+                'path' => $f->getRelativePath()
+            ];
+        };
+
+        $trees = [];
+
+        foreach (MetaFolder::getRootFolders() as $f) {
+            $trees[] = $parseFolder($f);
+        }
+
+        return new JsonResponse($trees[0]);
     }
 
     /**
@@ -91,99 +405,6 @@ class FilesController extends Controller
                 $val *= 1024;
         }
         return $val;
-    }
-
-    /**
-     * handle file upload via drag and drop
-     */
-    protected function xhrUpload()
-    {
-
-        // get metafolder
-
-        try {
-            if (($id = $this->request->query->get('folder'))) {
-                $folder = MetaFolder::getInstance(NULL, $id);
-            } else {
-                $folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
-            }
-
-            $fsFolder = $folder->getFilesystemFolder();
-        } catch (MetaFolderException $e) {
-            return new JsonResponse(['error' => $e->getMessage()]);
-        }
-
-        // get articles reference
-
-        if ($articlesId = $this->request->query->get('articlesId')) {
-            $article = Article::getInstance($articlesId);
-        }
-
-        // get filename
-
-        $filename = FilesystemFile::sanitizeFilename(urldecode($this->request->headers->get('x-file-name')), $fsFolder);
-        $contents = file_get_contents('php://input');
-
-        try {
-            $mimeType = MimeTypeGetter::getForBuffer($contents);
-        } catch (\RuntimeException $e) {
-            $mimeType = '';
-        }
-
-        try {
-            if ($mimeType === 'application/zip' && $this->request->query->getInt('unpack')) {
-
-                // unpack ZIP files
-
-                $files = [];
-
-                $tmpFile = tmpfile();
-                $tmpName = stream_get_meta_data($tmpFile)['uri'];
-                fwrite($tmpFile, $contents);
-                fseek($tmpFile, 0);
-
-                $files = File::extractZip($tmpName, $fsFolder);
-
-                // link to article, when in "article" mode
-
-                if (isset($article)) {
-
-                    foreach ($files as $file) {
-                        $article->linkMetaFile(MetaFile::createMetaFile($file));
-                    }
-
-                    $article->save();
-
-                }
-
-            } else {
-
-                file_put_contents($fsFolder->getPath() . $filename, $contents);
-
-                // link to article, when in "article" mode
-
-                if (isset($article)) {
-                    $article->linkMetaFile(MetaFile::createMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename)));
-                    $article->save();
-                }
-            }
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
-        }
-
-        // @todo better way to handle columns
-
-        $fileColumns = ['name', 'size', 'mime', 'mTime'];
-
-        if (isset($article)) {
-            $fileColumns[] = 'linked';
-        }
-
-        return new JsonResponse([
-            'echo' => ['folder' => $id],
-            'response' => $this->getFiles($folder, $fileColumns)
-        ]);
-
     }
 
     /**
@@ -628,6 +849,80 @@ class FilesController extends Controller
         return $folders;
     }
 
+    private function getFileRows (MetaFolder $folder): array
+    {
+        $files = [];
+
+        foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
+            $metaData = $f->getData();
+            $row = [
+                'id' => $f->getId(),
+                'name' => $f->getFilename(),
+                'title' => $metaData['title'],
+                'image' => $f->isWebImage(),
+                'size' => $f->getFileInfo()->getSize(),
+                'modified' => (new \DateTime())->setTimestamp($f->getFileInfo()->getMTime())->format('Y-m-d H:i:s'),
+                'type' => $f->getMimetype(),
+            ];
+
+            if($row['image']) {
+                $fsf = $f->getFilesystemFile();
+                $actions = ['crop 1', 'resize 48 0'];
+                $dest = sprintf('%s%s@%s.%s',
+                    $fsf->getFolder()->createCache(),
+                    $fsf->getFilename(),
+                    implode('|', $actions),
+                    pathinfo($fsf->getFilename(), PATHINFO_EXTENSION)
+                );
+
+                if (!file_exists($dest)) {
+                    $imgEdit = ImageModifierFactory::create($fsf->getPath());
+
+                    foreach ($actions as $a) {
+                        $params = preg_split('~\s+~', $a);
+
+                        $method = array_shift($params);
+                        if (method_exists($imgEdit, $method)) {
+                            call_user_func_array([$imgEdit, $method], $params);
+                        }
+                    }
+                    $imgEdit->export($dest);
+                }
+
+                $row['src'] = htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest));
+            }
+
+            $files[] = $row;
+        }
+
+        return $files;
+    }
+
+    private function getFolderRows (MetaFolder $folder): array
+    {
+        $folders = [];
+
+        foreach ($folder->getMetaFolders() as $f) {
+            $folders[] = [
+                'id' => $f->getId(),
+                'name' => $f->getName()
+            ];
+        }
+
+        return $folders;
+    }
+
+    private function getBreadcrumbs (MetaFolder $folder): array
+    {
+        $breadcrumbs = [['name' => $folder->getName(), 'id' => $folder->getId()]];
+
+        while (($folder = $folder->getParentMetafolder())) {
+            array_unshift($breadcrumbs, ['name' => $folder->getName(), 'id' => $folder->getId()]);
+        }
+
+        return $breadcrumbs;
+    }
+
     private function getFileList(MetaFolder $folder, array $columns)
     {
 
@@ -737,7 +1032,7 @@ class FilesController extends Controller
             $pathSegs = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
 
             return [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'label' => end($pathSegs),
                 'branches' => $branches,
                 'current' => $f === $currentFolder,
@@ -752,12 +1047,10 @@ class FilesController extends Controller
         }
 
         return $trees;
-
     }
 
     private function renderFolderTree($tree)
     {
-
         $markup = '';
 
         $renderTree = function ($treeData) use (&$markup, &$renderTree) {

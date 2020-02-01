@@ -1,0 +1,54 @@
+@import "../../node_modules/spectre.css/src/variables";
+
+.date-input {
+  input.form-input {
+    border-color: transparent;
+    box-shadow: none;
+    display: block;
+    height: 1.2rem;
+    line-height: .8rem;
+    margin: .1rem;
+    width: auto;
+    flex: none;
+  }
+}
+
+.calendar {
+  @include shadow-variant(.05rem);
+  background: white;
+
+  &.cw {
+    .calendar-body,
+    .calendar-header {
+      .calendar-date {
+        max-width: percentage(1 / 8);
+      }
+
+      .cw {
+        border-right: solid $border-width $gray-color-light;
+      }
+    }
+  }
+
+  span.date-item {
+    display: block;
+    cursor: default;
+  }
+
+  .prvMon,
+  .prvYear {
+    &:before {
+      font-family: icomoon;
+      content: "\e025";
+    }
+  }
+
+  .nxtMon,
+  .nxtYear {
+    &:before {
+      font-family: icomoon;
+      content: "\e023";
+    }
+  }
+
+}
