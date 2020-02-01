@@ -87,7 +87,7 @@
                 Object.keys(this.form).forEach(key => { if(this.form[key] !== null) { formData[key] = this.form[key]; }});
 
                 this.response = await SimpleFetch(this.url, 'POST', {}, JSON.stringify(formData));
-                this.$emit('response-received');
+                this.$emit('response-received', this.response);
                 this.loading = false;
             }
         },

@@ -29,9 +29,9 @@
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
 
-    const MessageToast = window.vxweb.default.MessageToast;
-    const UserForm =  window.vxweb.default.UserForm;
-    const SimpleFetch =  window.vxweb.default.SimpleFetch;
+    const MessageToast = window.vxweb.Components.MessageToast;
+    const UserForm =  window.vxweb.Components.UserForm;
+    const SimpleFetch =  window.vxweb.Components.SimpleFetch;
 
     const app = new Vue({
 

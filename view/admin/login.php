@@ -38,8 +38,8 @@
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-    const MessageToast = window.vxweb.default.MessageToast;
-    const SimpleFetch =  window.vxweb.default.SimpleFetch;
+    const MessageToast = window.vxweb.Components.MessageToast;
+    const SimpleFetch =  window.vxweb.Components.SimpleFetch;
 
     const app = new Vue({
 
