@@ -1,5 +1,5 @@
 
-    import DateInput from './date-input.js';
+    import DateInput from './date-input';
     import DateFunctions from '../util/date-functions.js';
 
     export default {
