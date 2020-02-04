@@ -260,7 +260,16 @@ class FilesController extends Controller
 
         try {
             file_put_contents($fsFolder->getPath() . $filename, $contents);
-            MetaFile::createMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename));
+            $file = FilesystemFile::getInstance($fsFolder->getPath() . $filename);
+
+            if(function_exists('exif_read_data') && $file->getMimetype() === 'image/jpeg') {
+                $exif = exif_read_data($file->getPath());
+                if (!empty($exif['Orientation'])) {
+                    imagejpeg(imagerotate(imagecreatefromstring($contents), [0, 0, 0, 180, 0, 0, -90, 0, 90][$exif['Orientation']], 0), $file->getPath(), 97);
+                }
+            }
+
+            MetaFile::createMetaFile($file);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
         }
