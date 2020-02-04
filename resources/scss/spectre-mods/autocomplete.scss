@@ -1,0 +1,60 @@
+@import "../../node_modules/spectre.css/src/variables";
+
+.form-autocomplete {
+
+  &[data-loading="true"]::after {
+    @extend .loading::after;
+    left: auto;
+    right: 0.8rem;
+  }
+
+  .menu {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .menu-item {
+
+    cursor: pointer;
+    padding: $unit-1 $unit-2;
+
+    &:hover, &[aria-selected="true"] {
+      background: $secondary-color;
+      color: $primary-color;
+    }
+
+  }
+
+  &[data-expanded="true"] {
+    .menu {
+      visibility: visible;
+      pointer-events: auto;
+    }
+  }
+
+  &[data-position="below"] {
+
+    .autocomplete-input[aria-expanded="true"] {
+      border-bottom-color: transparent;
+    }
+
+    .menu {
+      top: 100%;
+      transform: translateY($layout-spacing-sm);
+    }
+  }
+
+  &[data-position="above"] {
+
+    .autocomplete-input[aria-expanded="true"] {
+      border-top-color: transparent;
+    }
+
+    .menu {
+      top: auto;
+      bottom: 100%;
+      transform: translateY(-$layout-spacing-sm);
+    }
+  }
+
+}

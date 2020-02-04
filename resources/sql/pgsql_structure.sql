@@ -263,7 +263,6 @@ CREATE TABLE "folders" (
 "r" int4,
 "level" int4,
 "static" int2,
-"alias" varchar(255) COLLATE "default",
 "title" varchar(128) COLLATE "default",
 "description" text COLLATE "default",
 "path" varchar(255) COLLATE "C.UTF-8",
@@ -457,7 +456,7 @@ ALTER TABLE "files" ADD PRIMARY KEY ("filesid");
 -- ----------------------------
 -- Indexes structure for table folders
 -- ----------------------------
-CREATE UNIQUE INDEX "folders_alias_idx" ON "folders" USING btree ("alias");
+CREATE UNIQUE INDEX "folders_path_idx" ON "folders" USING btree ("path");
 CREATE INDEX "folders_l_idx" ON "folders" USING btree ("l");
 CREATE INDEX "folders_r_idx" ON "folders" USING btree ("r");
 CREATE INDEX "folders_level_idx" ON "folders" USING btree ("level");

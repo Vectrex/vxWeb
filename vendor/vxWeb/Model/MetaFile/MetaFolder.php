@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-
 namespace vxWeb\Model\MetaFile;
 
+use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\File\FilesystemFolder;
 use vxPHP\Application\Application;
 use vxWeb\Model\MetaFile\Exception\MetaFolderException;
@@ -22,21 +22,21 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.4.0 2018-06-10
+ * @version 1.6.2 2020-01-13
  *
  * @todo compatibility checks on windows systems
  */
 class MetaFolder {
 
 	/**
-	 * @var MetaFile[]
+	 * @var MetaFolder[]
 	 */
-	private static	$instancesById = [];
+	private static $instancesById = [];
 
 	/**
-	 * @var MetaFile[]
+	 * @var MetaFolder[]
 	 */
-	private static	$instancesByPath = [];
+	private static $instancesByPath = [];
 
 	/**
 	 * @var FilesystemFolder
@@ -97,9 +97,10 @@ class MetaFolder {
      * @return MetaFolder
      * @throws MetaFolderException
      * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws FilesystemFolderException
      */
-	public static function getInstance($path = null, $id = null) {
-
+	public static function getInstance($path = null, $id = null): MetaFolder
+    {
 		if(isset($path)) {
 			$path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
@@ -110,20 +111,16 @@ class MetaFolder {
 			}
 
 			return self::$instancesByPath[$lookup];
-
 		}
-		else if(isset($id)) {
 
+		if(isset($id)) {
 			if(!isset(self::$instancesById[$id])) {
 				new self(null, $id);
 			}
-
 			return self::$instancesById[$id];
 		}
 
-		else {
-			throw new MetaFolderException("Either folder id or path required.", MetaFolderException::ID_OR_PATH_REQUIRED);
-		}
+        throw new MetaFolderException("Either folder id or path required.", MetaFolderException::ID_OR_PATH_REQUIRED);
 	}
 
     /**
@@ -137,9 +134,10 @@ class MetaFolder {
      * @param array $dbEntry row data of a metafolder
      * @throws MetaFolderException
      * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws FilesystemFolderException
      */
-	private function __construct($path = null, $id = null, array $dbEntry = null) {
-
+	private function __construct($path = null, $id = null, array $dbEntry = null)
+    {
 		if(isset($path)) {
 			$path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 			$this->fullPath = Application::getInstance()->extendToAbsoluteAssetsPath($path);
@@ -167,7 +165,6 @@ class MetaFolder {
 
         self::$instancesByPath[$this->fullPath] = $this;
         self::$instancesById[$this->id] = $this;
-
     }
 
 	private function getDbEntryByPath($path) {
@@ -185,8 +182,8 @@ class MetaFolder {
 			[(string) $path, (string) $altPath]
 		);
 
-		if(count($rows)) {
-			return array_change_key_case(current($rows), CASE_LOWER);
+		if($rows->count()) {
+			return array_change_key_case($rows->current(), CASE_LOWER);
 		}
 		else {
 			throw new MetaFolderException(sprintf("MetaFolder database entry for '%s (%s)' not found.", $this->fullPath, $path), MetaFolderException::METAFOLDER_DOES_NOT_EXIST);
@@ -200,8 +197,8 @@ class MetaFolder {
 			[(int) $id]
 		);
 
-        if(count($rows)) {
-            return array_change_key_case(current($rows), CASE_LOWER);
+        if($rows->count()) {
+            return array_change_key_case($rows->current(), CASE_LOWER);
 		}
 		else {
 			throw new MetaFolderException(sprintf("MetaFolder database entry for id '%d' not found.", $id), MetaFolderException::METAFOLDER_DOES_NOT_EXIST);
@@ -284,16 +281,16 @@ class MetaFolder {
 
 	}
 
-	/**
-	 * returns path relative to root path of application
-	 * @param boolean $force
-	 *
-	 * @return string
-	 */
-	public function getRelativePath($force = FALSE) {
-
+    /**
+     * returns path relative to root path of application
+     * @param boolean $force
+     *
+     * @return string
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
+	public function getRelativePath($force = false): string
+    {
 		return $this->filesystemFolder->getRelativePath($force);
-
 	}
 
     /**
@@ -304,9 +301,10 @@ class MetaFolder {
      * @return MetaFile[]
      * @throws Exception\MetaFileException
      * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws MetaFolderException
      */
-	public function getMetaFiles($force = FALSE) {
-
+	public function getMetaFiles($force = false): array
+    {
 		if(!isset($this->metaFiles) || $force) {
 			$this->metaFiles = [];
 
@@ -321,8 +319,30 @@ class MetaFolder {
 		}
 
 		return $this->metaFiles;
-
 	}
+
+    /**
+     * return all metafiles with a "compatible" image mimetype within
+     * this folder
+     *
+     * @param bool $force
+     * @return MetaFile[]
+     * @throws Exception\MetaFileException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws MetaFolderException
+     */
+	public function getMetaImages($force = false): array
+    {
+        $files = $this->getMetaFiles($force);
+        array_filter(
+            $files,
+            static function($file) {
+                /* @var MetaFile $file */
+                return $file->isWebImage();
+            }
+        );
+        return $files;
+    }
 
     /**
      * return all metafolders within this folder
@@ -331,8 +351,8 @@ class MetaFolder {
      * @throws MetaFolderException
      * @throws \vxPHP\Application\Exception\ApplicationException
      */
-	public function getMetaFolders() {
-
+	public function getMetaFolders(): array
+    {
 	    $metaFolders = [];
 
         foreach(
@@ -345,7 +365,6 @@ class MetaFolder {
 		}
 
 		return $metaFolders;
-
 	}
 
     /**
@@ -353,9 +372,10 @@ class MetaFolder {
      *
      * @return MetaFolder | null
      * @throws MetaFolderException
+     * @throws \vxPHP\Application\Exception\ApplicationException
      */
-	public function getParentMetafolder() {
-
+	public function getParentMetafolder()
+    {
 		if(!$this->level) {
 			return null;
 		}
@@ -388,14 +408,17 @@ class MetaFolder {
      * if $keepFilesystemFiles is TRUE, only metadata entry of folder and contained files and folders is removed from database
      * otherwise filesystem files and folders will be deleted
      *
+     * warning: any references to this instance still exists and will yield invalid results
+     *
      * @param boolean $keepFilesystemFiles
      * @throws Exception\MetaFileException
      * @throws MetaFolderException
      * @throws \vxPHP\Application\Exception\ApplicationException
      * @throws \vxPHP\File\Exception\FilesystemFolderException
+     * @throws \vxPHP\File\Exception\FilesystemFileException
      */
-	public function delete($keepFilesystemFiles = false) {
-
+	public function delete($keepFilesystemFiles = false)
+    {
 		foreach($this->getMetaFiles() as $f) {
 			$f->delete($keepFilesystemFiles);
 		}
@@ -413,10 +436,9 @@ class MetaFolder {
 		$db->execute('UPDATE folders SET r = r - 2 WHERE r > ?', [(int) $this->r]);
 		$db->execute('UPDATE folders SET l = l - 2 WHERE l > ?', [(int) $this->r]);
 
-		unset(self::$instancesById[$this->id]);
-		unset(self::$instancesByPath[$this->filesystemFolder->getPath()]);
+        unset(self::$instancesById[$this->id], self::$instancesByPath[$this->filesystemFolder->getPath()]);
 
-		if(!$keepFilesystemFiles) {
+        if(!$keepFilesystemFiles) {
 			$this->filesystemFolder->delete();
 		}
 
@@ -425,8 +447,55 @@ class MetaFolder {
 		foreach(self::$instancesById as $f) {
 			$f->refreshNesting();
 		}
-
 	}
+
+    /**
+     * rename metafolder
+     * both filesystem file and database entry are changed synchronously
+     *
+     * doesn't care about race conditions
+     * warning: any references to the instance prior to renaming still exists and will yield invalid results
+     *
+     * @param string $to new filename
+     * @return MetaFolder
+     * @throws FilesystemFolderException
+     * @throws MetaFolderException
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
+    public function rename($to): MetaFolder
+    {
+        $to = trim($to, '/\\');
+
+        $oldpath = $this->filesystemFolder->getPath();
+        $newpath = $this->filesystemFolder->getParentFolder()->getPath() . $to;
+        $newRelpath = (($parent = $this->getParentMetafolder()) ? ($parent->getRelativePath() . $to) : $to) . DIRECTORY_SEPARATOR;
+
+        try {
+            $this->filesystemFolder->rename($to);
+        }
+        catch(FilesystemFolderException $e) {
+            throw new MetaFolderException(sprintf("Rename from '%s' to '%s' failed.", $oldpath, $newpath));
+        }
+
+        try {
+            // update path of complete tree beneath renamed folder
+
+            Application::getInstance()->getDb()->execute(
+                'UPDATE folders SET path = REPLACE(path, ?, ?) WHERE POSITION(? IN path) = 1',
+                [
+                    rtrim($this->getRelativePath(), DIRECTORY_SEPARATOR),
+                    rtrim($newRelpath, DIRECTORY_SEPARATOR),
+                    rtrim($this->getRelativePath(), DIRECTORY_SEPARATOR)
+                ]
+            );
+        }
+        catch(\Exception $e) {
+            throw new MetaFolderException(sprintf("Update of metadata when renaming MetaFolder from '%s' to '%s' failed.", $oldpath, $newpath));
+        }
+
+        unset(self::$instancesByPath[$oldpath]);
+        return self::getInstance($newpath);
+    }
 
     /**
      * retrieves all currently in database stored metafolders
@@ -435,9 +504,10 @@ class MetaFolder {
      * @param boolean $force forces re-reading of metafolders
      * @throws MetaFolderException
      * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws FilesystemFolderException
      */
-	public static function instantiateAllExistingMetaFolders($force = FALSE) {
-
+	public static function instantiateAllExistingMetaFolders($force = false)
+    {
 		foreach(
 			Application::getInstance()->getDb()->doPreparedQuery(
 				'SELECT * FROM folders', []
@@ -445,22 +515,23 @@ class MetaFolder {
 		as $r) {
 			if($force || !isset(self::$instancesById[$r['foldersid']])) {
 				$r = array_change_key_case($r, CASE_LOWER);
-				$f = new self(NULL, NULL, $r);
+				$f = new self(null, null, $r);
 
-				self::$instancesByPath[$f->getFullPath()]	= $f;
-				self::$instancesById[$r['foldersid']]		= $f;
+				self::$instancesByPath[$f->getFullPath()] = $f;
+				self::$instancesById[$r['foldersid']] = $f;
 			}
 		}
 	}
 
-	/**
-	 * retrieve all folders with level 0
-	 *
-	 * @return MetaFolder[]
+    /**
+     * retrieve all folders with level 0
+     *
+     * @return MetaFolder[]
      * @throws MetaFolderException
-	 */
-	public static function getRootFolders() {
-
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     */
+	public static function getRootFolders(): array
+    {
 		self::instantiateAllExistingMetaFolders();
 
 		$roots = [];
@@ -489,9 +560,10 @@ class MetaFolder {
      * @return MetaFolder
      * @throws MetaFolderException
      * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws FilesystemFolderException
      */
-	public static function createMetaFolder(FilesystemFolder $f, array $metaData = []) {
-
+	public static function createMetaFolder(FilesystemFolder $f, array $metaData = []): MetaFolder
+    {
 		$roots = self::getRootFolders();
 		$rootFound = 0;
 
@@ -526,8 +598,6 @@ class MetaFolder {
 				$metaData['path'] = rtrim($f->getPath(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 			}
 
-			$metaData['alias'] = strtolower(preg_replace('~[\\\\/]~', '_', rtrim($metaData['path'], DIRECTORY_SEPARATOR)));
-
 			if(!isset($metaData['access']) || !preg_match('~^rw?$~i', $metaData['access'])) {
 				$metaData['access'] = 'RW';
 			}
@@ -542,8 +612,8 @@ class MetaFolder {
 				//no parent
 
 				$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders', []);
-				$metaData['l'] = (!count($rows) || !isset(current($rows)['l'])) ? 0 : current($rows)['l'];
-				$metaData['r'] = current($rows)['l'] + 1;
+				$metaData['l'] = (!$rows->count() || !isset($rows->current()['l'])) ? 0 : $rows->current()['l'];
+				$metaData['r'] = $rows->current()['l'] + 1;
 				$metaData['level'] = 0;
 			}
 
@@ -558,12 +628,12 @@ class MetaFolder {
 
 					$rows = $db->doPreparedQuery("SELECT r, l, level FROM folders WHERE foldersID = ?", [$parent->getId()]);
 
-					$db->execute('UPDATE folders SET r = r + 2 WHERE r >= ?', [(int) current($rows)['r']]);
-					$db->execute('UPDATE folders SET l = l + 2 WHERE l > ?', [(int) current($rows)['r']]);
+					$db->execute('UPDATE folders SET r = r + 2 WHERE r >= ?', [(int) $rows->current()['r']]);
+					$db->execute('UPDATE folders SET l = l + 2 WHERE l > ?', [(int) $rows->current()['r']]);
 
-					$metaData['l'] = current($rows)['r'];
-					$metaData['r'] = current($rows)['r'] + 1;
-					$metaData['level'] = current($rows)['level'] + 1;
+					$metaData['l'] = $rows->current()['r'];
+					$metaData['r'] = $rows->current()['r'] + 1;
+					$metaData['level'] = $rows->current()['level'] + 1;
 
 				}
 
@@ -572,8 +642,8 @@ class MetaFolder {
 					// no parent directory
 
 					$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM folders', []);
-                    $metaData['l'] = (!count($rows) || !isset(current($rows)['l'])) ? 0 : current($rows)['l'];
-                    $metaData['r'] = current($rows)['l'] + 1;
+                    $metaData['l'] = (!$rows->count() || !isset($rows->current()['l'])) ? 0 : $rows->current()['l'];
+                    $metaData['r'] = $rows->current()['l'] + 1;
 					$metaData['level'] = 0;
 
 				}
@@ -590,7 +660,5 @@ class MetaFolder {
 		}
 
 		return self::getInstance($f->getPath());
-		
 	}
-
 }

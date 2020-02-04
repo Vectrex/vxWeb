@@ -25,47 +25,63 @@ class PagesController extends Controller {
 
 	private $maxPageRevisions = 5;
 
-	protected function execute() {
-
-		if(($id = $this->request->query->getInt('id'))) {
-
-			MenuGenerator::setForceActiveMenu(true);
-
-			try {
-				$page		= Page::getInstance($id);
-				$revision	= $page->getActiveRevision();
-				if(!$revision) {
-					$revision = $page->getNewestRevision();
-				}
-			}
-			catch (PageException $e) {
-				return $this->redirect(Application::getInstance()->getRouter()->getRoute('pages')->getUrl());
-			}
-
-			$form = $this->buildEditForm();
-
-			return new Response(
-				SimpleTemplate::create('admin/page_edit.php')
-					->assign('form', $form->render())
-					->assign('allow_nice_edit', !$revision->containsPHP())
-					->display()
-			);
-		}
-
+	protected function execute(): Response
+    {
 		Template::syncTemplates();
 
-		$pages = Page::getInstances() ?? [];
-		
-		usort($pages, function(Page $a, Page $b) { return $a->getAlias() < $b->getAlias() ? -1 : 1; });
-		
 		return new Response(
-			SimpleTemplate::create('admin/pages_list.php')
-				->assign('pages', $pages)
-				->addFilter(new ShortenText())
-				->display()
+			SimpleTemplate::create('admin/pages_list.php')->display()
 		);
 	}
-	
+
+	protected function init (): JsonResponse
+    {
+        $pages = Page::getInstances() ?? [];
+
+        $rows = [];
+
+        foreach($pages as $page) {
+            $rows[] = [
+                'key' => $page->getId(),
+                'alias' => $page->getAlias(),
+                'template' => $page->getTemplate(),
+                'updated' => $page->getOldestRevision()->getLastUpdated()->format('Y-m-d H:i:s'),
+                'revisionCount' => count($page->getRevisions())
+            ];
+        }
+
+        return new JsonResponse(['pages' => $rows]);
+    }
+
+    protected function edit (): Response
+    {
+        if(($id = $this->request->query->getInt('id'))) {
+
+            MenuGenerator::setForceActiveMenu(true);
+
+            try {
+                $page = Page::getInstance($id);
+                $revision = $page->getActiveRevision();
+                if (!$revision) {
+                    $revision = $page->getNewestRevision();
+                }
+            } catch (PageException $e) {
+                return $this->redirect(Application::getInstance()->getRouter()->getRoute('pages')->getUrl());
+            }
+
+            $form = $this->buildEditForm();
+
+            return new Response(
+                SimpleTemplate::create('admin/page_edit.php')
+                    ->assign('form', $form->render())
+                    ->assign('allow_nice_edit', !$revision->containsPHP())
+                    ->display()
+            );
+        }
+
+        return new Response(null, Response::HTTP_NOT_FOUND);
+    }
+
 	protected function xhrExecute() {
 
 		try {

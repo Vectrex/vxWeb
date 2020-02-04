@@ -278,7 +278,7 @@ class ArticleCategory {
 			$col = 'alias';
 		}
 
-		$row = current($db->doPreparedQuery("
+		$row = $db->doPreparedQuery("
 			SELECT
 				c.*,
 				p.articlecategoriesid AS parentid
@@ -287,7 +287,7 @@ class ArticleCategory {
 				LEFT JOIN articlecategories p ON p.l < c.l AND p.r > c.r AND p.level = c.level - 1
 			WHERE
 				c.$col = ?", [$id]
-        ));
+        )->current();
 
 		if(!$row) {
 			throw new ArticleCategoryException(sprintf("Category with %s '%s' does not exist.", $col, $id), ArticleCategoryException::ARTICLECATEGORY_DOES_NOT_EXIST);

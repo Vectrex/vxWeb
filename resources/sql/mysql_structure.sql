@@ -165,7 +165,6 @@ CREATE TABLE `folders` (
   `r` int(11) DEFAULT NULL,
   `level` int(11) DEFAULT NULL,
   `Static` tinyint(4) DEFAULT NULL,
-  `Alias` varchar(255) DEFAULT NULL,
   `Title` varchar(128) DEFAULT NULL,
   `Description` mediumtext,
   `Path` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
@@ -177,7 +176,7 @@ CREATE TABLE `folders` (
   `lastUpdated` timestamp DEFAULT CURRENT_TIMESTAMP,
   `firstCreated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`foldersID`),
-  UNIQUE KEY `Alias` (`Alias`) USING BTREE,
+  UNIQUE KEY `Path` (`Path`) USING BTREE,
   KEY `level` (`level`) USING BTREE,
   KEY `l` (`l`) USING BTREE,
   KEY `r` (`r`) USING BTREE

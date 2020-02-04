@@ -1,16 +1,19 @@
 {
+  "name": "vxweb",
   "devDependencies": {
-    "gulp": "^3.9.1",
+    "gulp": "latest",
     "gulp-autoprefixer": "latest",
     "gulp-clean-css": "latest",
-    "gulp-csscomb": "latest",
-    "gulp-rename": "latest",
-    "gulp-sass": "latest",
-    "gulp-pug": "latest",
-    "gulp-uglify": "latest",
     "gulp-concat": "latest",
-    "jstransformer-highlight": "latest",
-    "jstransformer-markdown-it": "latest"
+    "gulp-csscomb": "^3.1.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "latest",
+    "gulp-uglify": "latest",
+    "gulp-vue-single-file-component": "^1.0.12",
+    "spectre.css": "latest",
+    "vue": "^2.6.11",
+    "@vue/cli-service": "^4.1.2",
+    "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
     "last 4 Chrome versions",
@@ -18,9 +21,9 @@
     "Firefox ESR",
     "last 4 Safari versions",
     "last 4 Opera versions",
-    "Explorer >= 10"
+    "Explorer >= 11"
   ],
-  "dependencies": {
-    "spectre.css": "^0.5.8"
+  "scripts": {
+    "vue-backend-build": "vue-cli-service build --target lib --dest 'dist/vue' --name vxweb ./vue/vxweb.js"
   }
 }

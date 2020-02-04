@@ -2,25 +2,24 @@
 
 $primary-color: #0089cc;
 $secondary-color: #A6DBFF;
-
-$alternative-primary-color: #ffa200;
-$alternative-secondary-color: #ffcf8c;
-
+$accent-color: #ffa200;
 $dark-color: #24282a;
 
 $base-font-family: "IBMPlexSans";
 
 $sidebar-width: 10rem;
 
-@import "vx/functions";
 @import "mixin/webfont";
-
-@import "spectre/spectre";
-@import "spectre/spectre-exp";
-@import "spectre/_calendars";
-
+@import "vx/functions";
 @import "vx/icon_variables";
 @import "vx/tree";
+
+@import "../node_modules/spectre.css/src/spectre";
+@import "../node_modules/spectre.css/src/spectre-exp";
+@import "spectre-mods/spectre_offsets";
+@import "spectre-mods/autocomplete";
+@import "spectre-mods/datepicker";
+@import "spectre-mods/zutre";
 
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
 
@@ -34,9 +33,26 @@ $sidebar-width: 10rem;
 @include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-Bold", bold, normal, woff woff2);
 @include font-face(IBMPlexSans, "../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic", bold, italic, woff woff2);
 
+[v-cloak] {
+  & > * {
+    display: none !important;
+  }
+  &:before {
+    content: '...'
+  }
+}
+
 /*
   additions and extensions to spectre.css
 */
+.modal {
+  &.modal-lg {
+    .modal-overlay {
+      background: rgba($bg-color, .75);
+    }
+  }
+}
+
 .navbar {
   background: $gray-color-light;
   padding: $unit-2;
@@ -114,47 +130,6 @@ a.webfont-icon-only {
   a:hover {
     cursor: not-allowed;
   }
-}
-
-.calendar {
-  @include shadow-variant(.05rem);
-  background: white;
-  max-width: 16rem;
-
-  &.cw {
-    .calendar-body,
-    .calendar-header {
-      .calendar-date {
-        max-width: percentage(1 / 8);
-      }
-
-      .cw {
-        border-right: solid $border-width $gray-color-light;
-      }
-    }
-  }
-
-  span.date-item {
-    display: block;
-    cursor: default;
-  }
-
-  .prvMon,
-  .prvYear {
-    &:before {
-      font-family: icomoon;
-      content: "\e025";
-    }
-  }
-
-  .nxtMon,
-  .nxtYear {
-    &:before {
-      font-family: icomoon;
-      content: "\e023";
-    }
-  }
-
 }
 
 // custom layout
@@ -264,11 +239,11 @@ th.vx-sortable-header {
 
 table.table-striped tbody td.active,
 table.table-striped tbody tr.active {
-  background: lighten($alternative-secondary-color, 20%);
+  background: lighten($accent-color, 40%);
 }
 table.table-striped tbody tr:nth-of-type(2n+1) td.active,
 table.table-striped tbody tr:nth-of-type(2n+1).active {
-  background: lighten($alternative-secondary-color, 10%);
+  background: lighten($accent-color, 25%);
 }
 
 .vx-activity-indicator {
@@ -300,7 +275,7 @@ td:hover .display-only-on-hover {
 }
 
 .dragged-over {
-  border: solid $unit-1 $alternative-primary-color;
+  border: solid $unit-1 $accent-color;
   margin: -$unit-1;
 }
 
@@ -328,18 +303,18 @@ td:hover .display-only-on-hover {
     }
 
     &.dragged {
-      background: $alternative-primary-color;
+      background: $accent-color;
       td:first-child {
         visibility: visible;
       }
     }
 
     &.insertAbove {
-      border-top: solid $unit-1 $alternative-primary-color;
+      border-top: solid $unit-1 $accent-color;
     }
 
     &.insertBelow {
-      border-bottom: solid $unit-1 $alternative-primary-color;
+      border-bottom: solid $unit-1 $accent-color;
     }
   }
 }
