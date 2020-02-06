@@ -41,9 +41,10 @@
 
 </div>
 
-<script type="module">
-    import Sortable from  "/js/vue/components/sortable.js";
-    import SimpleFetch from  "/js/vue/util/simple-fetch.js";
+<script src="/js/vue/vxweb.umd.min.js"></script>
+<script>
+    const Sortable = window.vxweb.Components.Sortable;
+    const SimpleFetch = window.vxweb.Components.SimpleFetch;
 
     let app = new Vue({
 

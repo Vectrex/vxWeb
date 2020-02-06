@@ -16,12 +16,12 @@
     "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
-    "last 4 Chrome versions",
-    "Edge >= 12",
+    "last 3 Chrome versions",
+    "Edge >= 14",
     "Firefox ESR",
-    "last 4 Safari versions",
-    "last 4 Opera versions",
-    "Explorer >= 11"
+    "last 3 Safari versions",
+    "last 3 Opera versions",
+    "IE >= 11"
   ],
   "scripts": {
     "vue-backend-build": "vue-cli-service build --target lib --dest 'dist/vue' --name vxweb ./vue/vxweb.js"

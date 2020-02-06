@@ -10,7 +10,7 @@
                         <td>Typ</td>
                         <td>{{ fileInfo.mimetype }}</td>
                     </tr>
-                    <tr>
+                    <tr v-if="fileInfo.cache">
                         <td>Cache</td>
                         <td>{{ fileInfo.cache.count }} Files, {{ fileInfo.cache.totalSize | formatFilesize(',') }}</td>
                     </tr>
@@ -87,7 +87,7 @@
                 Object.keys(this.form).forEach(key => { if(this.form[key] !== null) { formData[key] = this.form[key]; }});
 
                 this.response = await SimpleFetch(this.url, 'POST', {}, JSON.stringify(formData));
-                this.$emit('response-received');
+                this.$emit('response-received', this.response);
                 this.loading = false;
             }
         },

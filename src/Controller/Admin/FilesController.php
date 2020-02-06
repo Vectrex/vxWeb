@@ -20,7 +20,6 @@ use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxWeb\Model\Article\Article;
-use vxPHP\File\MimeTypeGetter;
 use vxPHP\Constraint\Validator\RegularExpression;
 
 use vxWeb\Model\MetaFile\MetaFile;
@@ -80,7 +79,7 @@ class FilesController extends Controller
                 'files' => $this->getFileRows($folder),
                 'folders' => $this->getFolderRows($folder),
                 'breadcrumbs' => $this->getBreadcrumbs($folder),
-                'currentFolder' => ['key' => $folder->getId(), 'name' => $folder->getName()]
+                'currentFolder' => ['id' => $folder->getId(), 'name' => $folder->getName()]
             ]);
 
         } catch (MetaFolderException $e) {
@@ -261,7 +260,16 @@ class FilesController extends Controller
 
         try {
             file_put_contents($fsFolder->getPath() . $filename, $contents);
-            MetaFile::createMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename));
+            $file = FilesystemFile::getInstance($fsFolder->getPath() . $filename);
+
+            if(function_exists('exif_read_data') && $file->getMimetype() === 'image/jpeg') {
+                $exif = exif_read_data($file->getPath());
+                if (!empty($exif['Orientation'])) {
+                    imagejpeg(imagerotate(imagecreatefromstring($contents), [0, 0, 0, 180, 0, 0, -90, 0, 90][$exif['Orientation']], 0), $file->getPath(), 97);
+                }
+            }
+
+            MetaFile::createMetaFile($file);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
         }
@@ -327,7 +335,7 @@ class FilesController extends Controller
             }
             $folder = $parentFolder->createFolder($name);
             return new JsonResponse(['success' => true, 'folder' => [
-                'key' => $folder->getId(),
+                'id' => $folder->getId(),
                 'name' => $folder->getName()
             ]]);
         }
@@ -367,7 +375,7 @@ class FilesController extends Controller
             $pathSegs = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
 
             return [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'label' => end($pathSegs),
                 'branches' => $branches,
                 'current' => $f === $currentFolder,
@@ -406,99 +414,6 @@ class FilesController extends Controller
                 $val *= 1024;
         }
         return $val;
-    }
-
-    /**
-     * handle file upload via drag and drop
-     */
-    protected function xhrUpload()
-    {
-
-        // get metafolder
-
-        try {
-            if (($id = $this->request->query->get('folder'))) {
-                $folder = MetaFolder::getInstance(NULL, $id);
-            } else {
-                $folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
-            }
-
-            $fsFolder = $folder->getFilesystemFolder();
-        } catch (MetaFolderException $e) {
-            return new JsonResponse(['error' => $e->getMessage()]);
-        }
-
-        // get articles reference
-
-        if ($articlesId = $this->request->query->get('articlesId')) {
-            $article = Article::getInstance($articlesId);
-        }
-
-        // get filename
-
-        $filename = FilesystemFile::sanitizeFilename(urldecode($this->request->headers->get('x-file-name')), $fsFolder);
-        $contents = file_get_contents('php://input');
-
-        try {
-            $mimeType = MimeTypeGetter::getForBuffer($contents);
-        } catch (\RuntimeException $e) {
-            $mimeType = '';
-        }
-
-        try {
-            if ($mimeType === 'application/zip' && $this->request->query->getInt('unpack')) {
-
-                // unpack ZIP files
-
-                $files = [];
-
-                $tmpFile = tmpfile();
-                $tmpName = stream_get_meta_data($tmpFile)['uri'];
-                fwrite($tmpFile, $contents);
-                fseek($tmpFile, 0);
-
-                $files = File::extractZip($tmpName, $fsFolder);
-
-                // link to article, when in "article" mode
-
-                if (isset($article)) {
-
-                    foreach ($files as $file) {
-                        $article->linkMetaFile(MetaFile::createMetaFile($file));
-                    }
-
-                    $article->save();
-
-                }
-
-            } else {
-
-                file_put_contents($fsFolder->getPath() . $filename, $contents);
-
-                // link to article, when in "article" mode
-
-                if (isset($article)) {
-                    $article->linkMetaFile(MetaFile::createMetaFile(FilesystemFile::getInstance($fsFolder->getPath() . $filename)));
-                    $article->save();
-                }
-            }
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
-        }
-
-        // @todo better way to handle columns
-
-        $fileColumns = ['name', 'size', 'mime', 'mTime'];
-
-        if (isset($article)) {
-            $fileColumns[] = 'linked';
-        }
-
-        return new JsonResponse([
-            'echo' => ['folder' => $id],
-            'response' => $this->getFiles($folder, $fileColumns)
-        ]);
-
     }
 
     /**
@@ -935,7 +850,7 @@ class FilesController extends Controller
 
         foreach ($folder->getMetaFolders() as $f) {
             $folders[] = [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'name' => $f->getName()
             ];
         }
@@ -950,7 +865,7 @@ class FilesController extends Controller
         foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
             $metaData = $f->getData();
             $row = [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'name' => $f->getFilename(),
                 'title' => $metaData['title'],
                 'image' => $f->isWebImage(),
@@ -998,7 +913,7 @@ class FilesController extends Controller
 
         foreach ($folder->getMetaFolders() as $f) {
             $folders[] = [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'name' => $f->getName()
             ];
         }
@@ -1008,10 +923,10 @@ class FilesController extends Controller
 
     private function getBreadcrumbs (MetaFolder $folder): array
     {
-        $breadcrumbs = [['name' => $folder->getName(), 'key' => $folder->getId()]];
+        $breadcrumbs = [['name' => $folder->getName(), 'id' => $folder->getId()]];
 
         while (($folder = $folder->getParentMetafolder())) {
-            array_unshift($breadcrumbs, ['name' => $folder->getName(), 'key' => $folder->getId()]);
+            array_unshift($breadcrumbs, ['name' => $folder->getName(), 'id' => $folder->getId()]);
         }
 
         return $breadcrumbs;
@@ -1126,7 +1041,7 @@ class FilesController extends Controller
             $pathSegs = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
 
             return [
-                'key' => $f->getId(),
+                'id' => $f->getId(),
                 'label' => end($pathSegs),
                 'branches' => $branches,
                 'current' => $f === $currentFolder,

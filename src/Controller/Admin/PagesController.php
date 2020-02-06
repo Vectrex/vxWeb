@@ -21,17 +21,15 @@ use vxWeb\Model\Page\Page;
 use vxWeb\Model\Page\PageException;
 use vxWeb\Model\Page\Revision;
 
-class PagesController extends Controller {
-
+class PagesController extends Controller
+{
 	private $maxPageRevisions = 5;
 
 	protected function execute(): Response
     {
 		Template::syncTemplates();
 
-		return new Response(
-			SimpleTemplate::create('admin/pages_list.php')->display()
-		);
+		return new Response(SimpleTemplate::create('admin/pages_list.php')->display());
 	}
 
 	protected function init (): JsonResponse
@@ -51,6 +49,13 @@ class PagesController extends Controller {
         }
 
         return new JsonResponse(['pages' => $rows]);
+    }
+
+    protected function editInit (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
     }
 
     protected function edit (): Response
