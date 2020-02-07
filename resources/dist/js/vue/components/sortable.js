@@ -58,24 +58,24 @@
             doSort (column, dir) {
                 let rows = this.rows;
 
-                if (dir === 'asc' && column.sortAscFunction) {
-                    rows.sort (column.sortAscFunction);
-                }
-                else if (dir === 'desc' && column.sortDescFunction) {
-                    rows.sort (column.sortDescFunction);
-                }
-                else {
-                    let prop = column.prop;
+                if(column) {
+                    if (dir === 'asc' && column.sortAscFunction) {
+                        rows.sort(column.sortAscFunction);
+                    } else if (dir === 'desc' && column.sortDescFunction) {
+                        rows.sort(column.sortDescFunction);
+                    } else {
+                        let prop = column.prop;
 
-                    rows.sort((a, b) => {
-                        if (a[prop] < b[prop]) {
-                            return dir === "asc" ? -1 : 1;
-                        }
-                        if (a[prop] > b[prop]) {
-                            return dir === "asc" ? 1 : -1;
-                        }
-                        return 0;
-                    });
+                        rows.sort((a, b) => {
+                            if (a[prop] < b[prop]) {
+                                return dir === "asc" ? -1 : 1;
+                            }
+                            if (a[prop] > b[prop]) {
+                                return dir === "asc" ? 1 : -1;
+                            }
+                            return 0;
+                        });
+                    }
                 }
 
                 return rows;
