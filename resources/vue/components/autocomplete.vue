@@ -10,7 +10,7 @@
           @keydown.up.prevent="handleUp"
           @keydown.down.prevent="handleDown"
           @focus="handleFocus"
-          @blur="hideResults"
+          @blur="handleBlur"
           v-on="$listeners"
         />
         <ul
@@ -204,6 +204,11 @@
       handleFocus (event) {
         this.updateResults(event.target.value);
         this.value = event.target.value;
+      },
+
+      handleBlur () {
+        this.hideResults();
+        this.$emit ('blur');
       },
 
       handleUp () {
