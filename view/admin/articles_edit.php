@@ -24,7 +24,18 @@
     </section>
     <section id="article-files" v-if="activeTabIndex === 1">
         <h1>Files</h1>
-        <filemanager :routes="fmProps.routes" :columns="fmProps.cols" :init-sort="{}">
+        <filemanager :routes="fmProps.routes" :columns="fmProps.cols" :init-sort="fmProps.initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
+            <template v-slot:action="slotProps">
+                <button v-if="slotProps.row.isFolder" class="btn webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
+                <template v-else>
+                    <button class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFile(slotProps.row)">&#xe002;</button>
+                    <button class="btn webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.getFolderTree(slotProps.row)">&#xe004;</button>
+                    <button class="btn webfont-icon-only tooltip" data-tooltip="Löschen" type="button" @click="$refs.fm.delFile(slotProps.row)">&#xe011;</button>
+                </template>
+            </template>
+            <template v-slot:linked="slotProps">
+                <label class="form-checkbox" v-if="!slotProps.row.isFolder"><input type="checkbox" @click="handleLink(slotProps.row)"><i class="form-icon"></i></label>
+            </template>
         </filemanager>
     </section>
     <section id="article-files-sort" v-if="activeTabIndex === 2">
@@ -55,12 +66,11 @@
         data: {
             activeTabIndex: 0,
             tabItems: [
-                { name: 'Inhalt', selector: "#article-form" },
-                { name: 'Dateien', selector: "#article-files" },
-                { name: 'Sortierung', selector: "#article-files-sort" }
+                {name: 'Inhalt', selector: "#article-form"},
+                {name: 'Dateien', selector: "#article-files"},
+                {name: 'Sortierung', selector: "#article-files-sort"}
             ],
-            toastProps: {
-            },
+            toastProps: {},
             fmProps: {
                 routes: {
                     init: "<?= $router->getRoute('files_init')->getUrl() ?>",
@@ -94,11 +104,36 @@
                             return a.name.toLowerCase() === b.name.toLowerCase() ? 0 : a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1;
                         }
                     },
-                    { label: "Größe", sortable: true, prop: "size" },
-                    { label: "Typ/Vorschau", sortable: true, prop: "type" },
-                    { label: "Erstellt", sortable: true, prop: "modified" },
-                    { label: "", prop: "action" }
-                ]
+                    {label: "", sortable: true, prop: "linked"},
+                    {label: "Größe", sortable: true, prop: "size"},
+                    {label: "Typ/Vorschau", sortable: true, prop: "type"},
+                    {label: "Erstellt", sortable: true, prop: "modified"},
+                    {label: "", prop: "action"}
+                ],
+                initSort: {}
+            }
+        },
+
+        created () {
+            let lsValue = window.localStorage.getItem(window.location.origin + "/admin/files__sort__");
+            if(lsValue) {
+                this.fmProps.initSort = JSON.parse(lsValue);
+            }
+        },
+
+        methods: {
+            handleResponse (response) {
+                this.toastProps = {
+                    message: response.message,
+                    messageClass: response.success ? 'toast-success' : 'toast-error',
+                    isActive: true
+                };
+            },
+            storeSort (sort) {
+                window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: sort.sortColumn.prop, dir: sort.sortDir }));
+            },
+            handleLink (row) {
+                console.log(row);
             }
         }
     });
