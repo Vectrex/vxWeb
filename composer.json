@@ -17,6 +17,7 @@
 		"php": ">=7.1.0",
 		"ext-pdo": "*",
 		"ext-zip": "*",
+		"ext-gd": "*",
 		"vectrex/vxphp": "dev-master",
 		"ivopetkov/html5-dom-document-php": "^0.6.0",
 		"vectrex/vxjs": "dev-master",

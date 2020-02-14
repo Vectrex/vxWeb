@@ -4,17 +4,19 @@ import DatePicker from './components/datepicker';
 import Sortable from './components/sortable';
 import SimpleTree from './components/simple-tree';
 import Filemanager from './components/filemanager';
+import Tab from './components/tab';
 
-import Pagination from './components/zutre/pagination';
+import ZPagination from './components/zutre/pagination';
+import ZLink from './components/zutre/link';
+
 import SimpleFetch from './util/simple-fetch';
 import PromisedXhr from './util/promised-xhr';
+
 import ProfileForm from './components/forms/profile-form';
 import UserForm from './components/forms/user-form';
 
 import { formatFilesize } from './filters';
 import { Focus, Bubble} from "./directives";
-
-'./directives';
 
 const Components = {
     MessageToast,
@@ -22,9 +24,11 @@ const Components = {
     DatePicker,
     Sortable,
     SimpleTree,
-    Pagination,
-    ProfileForm,
+    ZPagination,
     Filemanager,
+    Tab,
+    ZLink,
+    ProfileForm,
     UserForm,
     SimpleFetch,
     PromisedXhr

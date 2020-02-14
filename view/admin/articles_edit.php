@@ -1,219 +1,105 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
-
-<script type="text/javascript">
-    if(!this.vxWeb) {
-        this.vxWeb = {};
-    }
-</script>
-
-<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
-<script type="text/javascript" src="/js/admin/fileManager.js"></script>
-<script type="text/javascript" src="/js/admin/doArticles.js"></script>
-
-<script type="text/javascript">
-    if(!this.vxWeb.routes) {
-        this.vxWeb.routes = {};
-    }
-
-    vxWeb.messageToast = function(selector) {
-
-        var mBox, lastAddedClass, timeoutId, button;
-
-        var hide = function() {
-            if(mBox) {
-                mBox.classList.remove("display");
-            }
-        };
-
-        var show = function(msg, className) {
-
-            if(mBox === undefined) {
-                mBox = document.querySelector(selector || "#messageBox");
-
-                if(mBox && (button = mBox.querySelector("button"))) {
-                    button.addEventListener("click", hide);
-                }
-            }
-
-            if(mBox) {
-                if(lastAddedClass) {
-                    mBox.classList.remove(lastAddedClass);
-                }
-                if(className) {
-                    mBox.classList.add(className);
-                }
-                lastAddedClass = className;
-            }
-
-            mBox.innerHTML = msg;
-            mBox.appendChild(button);
-            mBox.classList.add("display");
-
-            if(timeoutId) {
-                window.clearTimeout(timeoutId);
-            }
-            timeoutId = window.setTimeout(hide, 5000);
-
-        };
-
-        return {
-            show: show,
-            hide: hide
-        };
-    };
-
-	if(!this.vxWeb.parameters) {
-		this.vxWeb.parameters = {};
-	}
-	if(!this.vxWeb.serverConfig) {
-		this.vxWeb.serverConfig = {};
-	}
-
-	this.vxWeb.routes.articles	= "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articlesXhr')->getUrl() ?>?<?= vxPHP\Http\Request::createFromGlobals()->getQueryString() ?>";
-	this.vxWeb.routes.files		= "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('fileincludeXhr')->getUrl() ?>";
-	this.vxWeb.routes.upload	= "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('uploadXhr')->getUrl() ?>";
-
-	this.vxWeb.parameters.fileColumns = ["name", "size", "mime", "mTime", "linked"];
-	this.vxWeb.parameters.articlesId = <?= vxPHP\Http\Request::createFromGlobals()->query->get('id', 'null') ?>;
-
-	this.vxWeb.serverConfig.uploadMaxFilesize = <?= $this->upload_max_filesize ?>;
-	this.vxWeb.serverConfig.maxUploadTime = <?= $this->max_execution_time_ms ?>; 
-	
-	vxJS.event.addDomReadyListener(function() {
-		vxWeb.doArticles();
-	});
-
-</script>
-
-<script type="text/javascript">
-vxJS.event.addDomReadyListener(function() {
-	CKEDITOR.replace(document.forms[0].elements['content'], {
-		extraAllowedContent: "div(*)",
-        customConfig: "",
-        toolbar:
-			[
-			    ['Maximize','-','Source', '-', 'Undo','Redo'],
-			    ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'],
-			    ['Bold', 'Italic', 'Superscript', 'Subscript', '-', 'CopyFormatting', 'RemoveFormat'],
-                ['NumberedList','BulletedList'],
-                ['Link', 'Unlink'],
-                ['Table'],
-                ['ShowBlocks']
-			], height: "20rem", contentsCss: ['/css/site.css', '/css/site_edit.css']
-		} );
-
-	vxJS.widget.calendar(
-		document.getElementsByName("article_date")[0],
-		{
-		    trigger: vxJS.dom.getElementsByClassName("calendarPopper")[0],
-			inputLocale: "date_de",
-			outputFormat: "%D.%M.%Y"
-		}
-	);
-	vxJS.widget.calendar(
-		document.getElementsByName("display_from")[0],
-		{
-		    trigger: vxJS.dom.getElementsByClassName("calendarPopper")[1],
-			noPast: true,
-			inputLocale: "date_de",
-			outputFormat: "%D.%M.%Y"
-		}
-	);
-	vxJS.widget.calendar(
-		document.getElementsByName("display_until")[0],
-		{
-		    trigger: vxJS.dom.getElementsByClassName("calendarPopper")[2],
-			noPast: true,
-			inputLocale: "date_de",
-			outputFormat: "%D.%M.%Y"
-		}
-	);
-});
-</script>
+<?php $router = \vxPHP\Application\Application::getInstance()->getRouter(); ?>
 
 <h1>Artikel &amp; News <em class="text-smaller"><?= $tpl->title ?></em></h1>
 
-<div class="vx-button-bar">
-    <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="$<?= $tpl->backlink ?>">Zurück zur Übersicht</a>
+<div id="vue-root" v-cloak>
+
+    <div class="vx-button-bar">
+        <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articles')->getUrl() ?>">Zurück zur Übersicht</a>
+    </div>
+
+
+    <message-toast
+            :message="toastProps.message"
+            :classname="toastProps.messageClass"
+            :active="toastProps.isActive"
+            ref="toast"
+    ></message-toast>
+
+    <tab :items="tabItems" :active-index.sync="activeTabIndex"></tab>
+
+    <section id="article-form" v-if="activeTabIndex === 0">
+        <h1>Form</h1>
+    </section>
+    <section id="article-files" v-if="activeTabIndex === 1">
+        <h1>Files</h1>
+        <filemanager :routes="fmProps.routes" :columns="fmProps.cols" :init-sort="{}">
+        </filemanager>
+    </section>
+    <section id="article-files-sort" v-if="activeTabIndex === 2">
+        <h1>Sort</h1>
+    </section>
 </div>
 
-<div class="vxJS_tabThis">
+<script src="/js/vue/vxweb.umd.min.js"></script>
+<script>
+    const components = window.vxweb.Components;
+    const MessageToast = components.MessageToast;
+    const Tab = components.Tab;
+    const Filemanager = components.Filemanager;
+    const SimpleFetch =  components.SimpleFetch;
 
-    <div class="section">
-        <h2 id="article_content">Inhalt</h2>
-        <?= $tpl->article_form ?>
-    </div>
+    Vue.component('z-link', components.ZLink);
 
-    <div class="section">
-        <h2 id="article_files">Dateien</h2>
+    const app = new Vue({
 
-        <div class="navbar">
-            <div class="navbar-section">
-                <span class="btn-group" id="directoryBar"></span>
-            </div>
+        el: '#vue-root',
 
-            <div class="navbar-section">
-                <div id="uploadProgress" class="col-3 vx-progress-bar tooltip">
-                    <div class="bar">
-                        <div class="bar-item"></div>
-                    </div>
-                </div>
-                <span id="activityIndicator" class="vx-activity-indicator"></span>
-                <input id="addFolderInput" class="form-input col-3" style="display: none;">
-                <button id="addFolder" class="btn webfont-icon-only tooltip" data-tooltip="Verzeichnis anlegen" type="button">&#xe007;</button>
-                <button id="addFile" class="btn webfont-icon-only tooltip" type="button" data-tooltip="Datei hinzufügen">&#xe00e;</button>
-                <!-- <button id="sortFiles" class="btn webfont-icon-only tooltip tooltip-left" type="button" data-tooltip="Verlinkte Dateien sortieren">&#xe035;</button> -->
-            </div>
-        </div>
+        components: {
+            "message-toast": MessageToast,
+            "tab": Tab,
+            "filemanager": Filemanager
+        },
 
-        <div id="filesList">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th class="vx-sortable-header">Dateiname</th>
-                        <th class="col-1 vx-sortable-header">Größe</th>
-                        <th class="col-2 vx-sortable-header">Typ/Vorschau</th>
-                        <th class="col-2 vx-sortable-header">Erstellt</th>
-                        <th class="col-1">Link</th>
-                        <th class="col-2"></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-
-    <div class="section">
-        <h2 id="sort_article_files">Sortierung verlinkter Dateien</h2>
-
-        <table class="table table-striped" id="linkedFilesTable">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Typ</th>
-                    <th>Dateiname</th>
-                    <th>Ordner</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+        data: {
+            activeTabIndex: 0,
+            tabItems: [
+                { name: 'Inhalt', selector: "#article-form" },
+                { name: 'Dateien', selector: "#article-files" },
+                { name: 'Sortierung', selector: "#article-files-sort" }
+            ],
+            toastProps: {
+            },
+            fmProps: {
+                routes: {
+                    init: "<?= $router->getRoute('files_init')->getUrl() ?>",
+                    readFolder: "<?= $router->getRoute('folder_read')->getUrl() ?>",
+                    getFile: "<?= $router->getRoute('file_get')->getUrl() ?>",
+                    updateFile: "<?= $router->getRoute('file_update')->getUrl() ?>",
+                    uploadFile: "<?= $router->getRoute('file_upload')->getUrl() ?>",
+                    delFile: "<?= $router->getRoute('file_del')->getUrl() ?>",
+                    renameFile: "<?= $router->getRoute('file_rename')->getUrl() ?>",
+                    moveFile: "<?= $router->getRoute('file_move')->getUrl() ?>",
+                    getFoldersTree: "<?= $router->getRoute('folders_tree')->getUrl() ?>",
+                    delFolder: "<?= $router->getRoute('folder_del')->getUrl() ?>",
+                    renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
+                    addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>"
+                },
+                cols: [
+                    {
+                        label: "Dateiname",
+                        sortable: true,
+                        prop: "name",
+                        sortAscFunction: (a, b) => {
+                            if (a.isFolder && !b.isFolder) {
+                                return -1;
+                            }
+                            return a.name.toLowerCase() === b.name.toLowerCase() ? 0 : a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+                        },
+                        sortDescFunction: (a, b) => {
+                            if (a.isFolder && !b.isFolder) {
+                                return -1;
+                            }
+                            return a.name.toLowerCase() === b.name.toLowerCase() ? 0 : a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1;
+                        }
+                    },
+                    { label: "Größe", sortable: true, prop: "size" },
+                    { label: "Typ/Vorschau", sortable: true, prop: "type" },
+                    { label: "Erstellt", sortable: true, prop: "modified" },
+                    { label: "", prop: "action" }
+                ]
+            }
+        }
+    });
+</script>
