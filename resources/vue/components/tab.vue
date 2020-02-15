@@ -7,7 +7,7 @@
         class="tab-item"
         :class="{ active: activeIndex === ndx }"
       >
-        <z-link :badge="item.badge" :name="item.name" @click="itemOnClick(item)" />
+        <z-link :badge="item.badge" :name="item.name" @click="itemOnClick(item)" :class="{ 'disabled': item.disabled }"/>
       </li>
       <li v-if="hasActionSlot" class="tab-item tab-action">
           <slot name="action"/>
@@ -57,8 +57,10 @@ export default {
   },
   methods: {
     itemOnClick(item) {
-      this.activeTab = item;
-      this.$emit('update:activeIndex', this.items.indexOf(item));
+      if(!item.disabled) {
+        this.activeTab = item;
+        this.$emit('update:activeIndex', this.items.indexOf(item));
+      }
     }
   }
 }

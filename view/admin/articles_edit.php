@@ -9,7 +9,6 @@
         <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articles')->getUrl() ?>">Zurück zur Übersicht</a>
     </div>
 
-
     <message-toast
             :message="toastProps.message"
             :classname="toastProps.messageClass"
@@ -21,6 +20,7 @@
 
     <section id="article-form" v-if="activeTabIndex === 0">
         <h1>Form</h1>
+        <article-form url="" :options="{}"></article-form>
     </section>
     <section id="article-files" v-if="activeTabIndex === 1">
         <h1>Files</h1>
@@ -50,6 +50,7 @@
     const Tab = components.Tab;
     const Filemanager = components.Filemanager;
     const SimpleFetch =  components.SimpleFetch;
+    const ArticleForm = components.ArticleForm;
 
     Vue.component('z-link', components.ZLink);
 
@@ -60,24 +61,25 @@
         components: {
             "message-toast": MessageToast,
             "tab": Tab,
-            "filemanager": Filemanager
+            "filemanager": Filemanager,
+            "article-form": ArticleForm
         },
 
         data: {
             activeTabIndex: 0,
             tabItems: [
-                {name: 'Inhalt', selector: "#article-form"},
-                {name: 'Dateien', selector: "#article-files"},
-                {name: 'Sortierung', selector: "#article-files-sort"}
+                {name: 'Inhalt'},
+                {name: 'Dateien'},
+                {name: 'Sortierung'}
             ],
             toastProps: {},
             fmProps: {
                 routes: {
-                    init: "<?= $router->getRoute('files_init')->getUrl() ?>",
-                    readFolder: "<?= $router->getRoute('folder_read')->getUrl() ?>",
+                    init: "<?= $router->getRoute('article_files_init')->getUrl() ?>",
+                    uploadFile: "<?= $router->getRoute('article_file_upload')->getUrl() ?>",
+                    readFolder: "<?= $router->getRoute('article_folder_read')->getUrl() ?>",
                     getFile: "<?= $router->getRoute('file_get')->getUrl() ?>",
                     updateFile: "<?= $router->getRoute('file_update')->getUrl() ?>",
-                    uploadFile: "<?= $router->getRoute('file_upload')->getUrl() ?>",
                     delFile: "<?= $router->getRoute('file_del')->getUrl() ?>",
                     renameFile: "<?= $router->getRoute('file_rename')->getUrl() ?>",
                     moveFile: "<?= $router->getRoute('file_move')->getUrl() ?>",

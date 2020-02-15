@@ -14,6 +14,7 @@ import PromisedXhr from './util/promised-xhr';
 
 import ProfileForm from './components/forms/profile-form';
 import UserForm from './components/forms/user-form';
+import ArticleForm from './components/forms/article-form';
 
 import { formatFilesize } from './filters';
 import { Focus, Bubble} from "./directives";
@@ -30,6 +31,7 @@ const Components = {
     ZLink,
     ProfileForm,
     UserForm,
+    ArticleForm,
     SimpleFetch,
     PromisedXhr
 };
