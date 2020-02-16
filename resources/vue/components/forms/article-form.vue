@@ -48,8 +48,8 @@
         <div class="form-group">
             <label class="col-3 form-label" :class="{ 'text-error': errors.articlecategoriesid }" for="articlecategoriesid_select"><strong>*Kategorie</strong></label>
             <div class="col-9">
-                <select id="articlecategoriesid_select" class="form-select">
-                    <option v-for="option in options.categories" :value="option.articlesid">{{ option.name }}</option>
+                <select v-model="form.articlecategoriesid" id="articlecategoriesid_select" class="form-select">
+                    <option v-for="option in options.categories" :value="option.id">{{ option.title }}</option>
                 </select>
             </div>
         </div>

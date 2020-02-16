@@ -71,6 +71,39 @@ class ArticlesController extends Controller {
         ]);
     }
 
+    protected function editInit()
+    {
+        $db = Application::getInstance()->getVxPDO();
+
+        if ($id = $this->request->query->getInt('id')) {
+            $formData = $db->doPreparedQuery("
+                SELECT
+                    articlesid as id,
+                    articlecategoriesid,
+                    article_date,
+                    display_from,
+                    display_until,
+                    headline,
+                    subline,
+                    teaser,
+                    content,
+                    customsort,
+                    customflags,
+                    published
+                FROM
+                    articles
+                WHERE
+                    articlesid = ?", [$id])->current();
+        }
+
+        return new JsonResponse([
+            'form' => $formData ?? null,
+            'options' => [
+                'categories' => (array) $db->doPreparedQuery("SELECT articlecategoriesid AS id, title FROM articlecategories ORDER BY title")
+            ]
+        ]);
+    }
+
 	protected function publish()
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
@@ -139,35 +172,14 @@ class ArticlesController extends Controller {
     {
         MenuGenerator::setForceActiveMenu(true);
 
-        $articleForm = $this->buildEditForm();
-
-        $submitLabel = 'Artikel anlegen';
-        $articleForm->initVar('is_add', 1);
-
-        $articleForm->addElement(FormElementFactory::create('button', 'submit_article')->setInnerHTML($submitLabel));
-
-        $uploadMaxFilesize = min(
-            $this->toBytes(ini_get('upload_max_filesize')),
-            $this->toBytes(ini_get('post_max_size'))
-        );
-        $maxExecutionTime = ini_get('max_execution_time');
-
         return new Response(
-            SimpleTemplate::create('admin/articles_edit.php')
-                ->assign('title', '')
-                ->assign('backlink', $this->pathSegments[0])
-                ->assign('article_form', $articleForm->render())
-                ->assign('upload_max_filesize', $uploadMaxFilesize)
-                ->assign('max_execution_time_ms', $maxExecutionTime * 900) // 10pct "safety margin"
-                ->display()
+            SimpleTemplate::create('admin/articles_edit.php')->display()
         );
     }
 
     protected function edit ()
     {
-        $id = $this->request->query->get('id');
-
-        if(!$id) {
+        if(!($id = $this->request->query->getInt('id'))) {
             return new Response('', Response::HTTP_NOT_FOUND);
         }
         try {
@@ -187,40 +199,9 @@ class ArticlesController extends Controller {
 
         MenuGenerator::setForceActiveMenu(true);
 
-        // fill category related properties - replacing default method allows user privilege considerations
-
-        $articleForm = $this->buildEditForm();
-
-        $articleForm->setInitFormValues([
-            'articlecategoriesid' => $article->getCategory()->getId(),
-            'headline' => $article->getHeadline(),
-            'subline' => $article->getData('subline'),
-            'customsort' => $article->getCustomSort(),
-            'teaser' => $article->getData('teaser'),
-            'content' => htmlspecialchars($article->getData('content'), ENT_NOQUOTES, 'UTF-8'),
-            'article_date' => is_null($article->getDate()) ? '' : $article->getDate()->format('d.m.Y'),
-            'display_from' => is_null($article->getDisplayFrom()) ? '' : $article->getDisplayFrom()->format('d.m.Y'),
-            'display_until' => is_null($article->getDisplayUntil()) ? '' : $article->getDisplayUntil()->format('d.m.Y')
-        ]);
-
-        $articleForm->getElementsByName('customflags')->setChecked($article->getCustomFlags());
-        $submitLabel = 'Änderungen übernehmen';
-
-        $articleForm->addElement(FormElementFactory::create('button', 'submit_article')->setInnerHTML($submitLabel));
-
-        $uploadMaxFilesize = min(
-            $this->toBytes(ini_get('upload_max_filesize')),
-            $this->toBytes(ini_get('post_max_size'))
-        );
-        $maxExecutionTime = ini_get('max_execution_time');
-
         return new Response(
             SimpleTemplate::create('admin/articles_edit.php')
-                ->assign('title', $article->getHeadline())
-                ->assign('backlink', $this->pathSegments[0])
-                ->assign('article_form', $articleForm->render())
-                ->assign('upload_max_filesize', $uploadMaxFilesize)
-                ->assign('max_execution_time_ms', $maxExecutionTime * 900) // 10pct "safety margin"
+                ->assign('article', $article)
                 ->display()
         );
     }
@@ -393,16 +374,9 @@ class ArticlesController extends Controller {
      * @throws \vxPHP\Form\Exception\FormElementFactoryException
      * @throws \vxPHP\Form\Exception\HtmlFormException
      */
-	private function buildEditForm() {
-
-		$categories = ['-1' => 'Bitte Kategorie wählen...'];
-		
-		foreach(ArticleCategory::getArticleCategories('sortByCustomSort') as $c) {
-			$categories[$c->getId()] = $c->getTitle();
-		}
-
-		return HtmlForm::create('admin_edit_article.htm')
-			->setAttribute('class', 'editArticleForm')
+	private function buildEditForm()
+    {
+		return HtmlForm::create()
 			->addElement(FormElementFactory::create('select', 'articlecategoriesid', null, [], $categories, true, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Es muss eine Artikelkategorie gewählt werden.'))
 			->addElement(FormElementFactory::create('input', 'headline', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt eine Überschrift.'))
             ->addElement(FormElementFactory::create('input', 'subline', null, [], [], false, ['trim']))
@@ -453,28 +427,4 @@ class ArticlesController extends Controller {
 
 		return str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest);
 	}
-
-    /**
-     * simple helper function to convert ini values like 10M or 256K to integer
-     *
-     * @param string $val
-     * @return int|string
-     */
-    private function toBytes($val) {
-
-        $suffix = strtolower(substr(trim($val),-1));
-
-        $val = (int) $val;
-
-        switch($suffix) {
-
-            case 'g':
-                $val *= 1024;
-            case 'm':
-                $val *= 1024;
-            case 'k':
-                $val *= 1024;
-        }
-        return $val;
-    }
 }

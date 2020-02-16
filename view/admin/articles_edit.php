@@ -1,12 +1,35 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
-<?php $router = \vxPHP\Application\Application::getInstance()->getRouter(); ?>
+<?php
+    function toBytes ($val)
+    {
+        $prefix = strtolower(substr(trim($val),-1));
+        $val = (int) $val;
+        switch($prefix) {
+            case 'g':
+                $val *= 1024;
+            case 'm':
+                $val *= 1024;
+            case 'k':
+                $val *= 1024;
+        }
+        return $val;
+    }
 
-<h1>Artikel &amp; News <em class="text-smaller"><?= $tpl->title ?></em></h1>
+    $router = \vxPHP\Application\Application::getInstance()->getRouter();
+
+    $uploadMaxFilesize = min(
+        toBytes(ini_get('upload_max_filesize')),
+        toBytes(ini_get('post_max_size'))
+    );
+    $maxExecutionTime = ini_get('max_execution_time');
+?>
 
 <div id="vue-root" v-cloak>
 
+    <h1>Artikel &amp; News <em class="text-smaller">{{ formProps.form.headline }}</em></h1>
+
     <div class="vx-button-bar">
-        <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articles')->getUrl() ?>">Zurück zur Übersicht</a>
+        <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="<?= $router->getRoute('articles')->getUrl() ?>">Zurück zur Übersicht</a>
     </div>
 
     <message-toast
@@ -20,8 +43,9 @@
 
     <section id="article-form" v-if="activeTabIndex === 0">
         <h1>Form</h1>
-        <article-form url="" :options="{}"></article-form>
+        <article-form :url="formProps.url" :options="formProps.options" :initial-data="formProps.form"></article-form>
     </section>
+
     <section id="article-files" v-if="activeTabIndex === 1">
         <h1>Files</h1>
         <filemanager :routes="fmProps.routes" :columns="fmProps.cols" :init-sort="fmProps.initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
@@ -38,6 +62,7 @@
             </template>
         </filemanager>
     </section>
+
     <section id="article-files-sort" v-if="activeTabIndex === 2">
         <h1>Sort</h1>
     </section>
@@ -66,13 +91,19 @@
         },
 
         data: {
+            instanceId: <?= isset($this->article) ? $this->article->getId() : 'null' ?>,
             activeTabIndex: 0,
             tabItems: [
-                {name: 'Inhalt'},
-                {name: 'Dateien'},
-                {name: 'Sortierung'}
+                { name: 'Inhalt'},
+                { name: 'Dateien' },
+                { name: 'Sortierung' }
             ],
             toastProps: {},
+            formProps: {
+                url: '',
+                options: {},
+                form: {}
+            },
             fmProps: {
                 routes: {
                     init: "<?= $router->getRoute('article_files_init')->getUrl() ?>",
@@ -116,7 +147,28 @@
             }
         },
 
-        created () {
+        watch: {
+            instanceId (newValue) {
+                if(newValue) {
+                    this.tabItems.forEach((item, ndx) => item.disabled = !this.instanceId && ndx !== 0);
+                }
+            }
+        },
+
+        routes: {
+            init: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_init')->getUrl() ?>"
+        },
+
+        async created () {
+            let response = await SimpleFetch(this.$options.routes.init + "?id=" + (this.instanceId || ''));
+
+            this.tabItems.forEach((item, ndx) => item.disabled = !this.instanceId && ndx !== 0);
+
+            this.formProps = Object.assign({}, this.formProps, {
+                options: response.options || {},
+                form: response.form || {}
+            });
+
             let lsValue = window.localStorage.getItem(window.location.origin + "/admin/files__sort__");
             if(lsValue) {
                 this.fmProps.initSort = JSON.parse(lsValue);

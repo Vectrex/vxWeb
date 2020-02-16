@@ -20,14 +20,15 @@
 
 		<page id="users" controller="admin/users" path="users" auth="superadmin" />
 		<page id="users_init" controller="admin/users" auth="superadmin" method="init" />
+		<page id="user_init" controller="admin/users" auth="superadmin" method="editInit" />
 		<page id="user_add" controller="admin/users" auth="superadmin" method="add" />
 		<page id="user_del" controller="admin/users" auth="superadmin" method="del" request_methods="DELETE" />
 		<page id="user_edit" controller="admin/users" auth="superadmin" method="edit" />
-		<page id="user_init" controller="admin/users" auth="superadmin" method="editInit" />
 		<page id="user_update" controller="admin/users" auth="superadmin" method="update" request_methods="POST" />
 
 		<page id="articles" controller="admin/articles" auth="privileged" />
 		<page id="articles_init" controller="admin/articles" method="init" auth="privileged" />
+		<page id="article_init" controller="admin/articles" method="editInit" auth="privileged" />
 		<page id="article_add" controller="admin/articles" method="add" path="articles/add" auth="privileged" />
 		<page id="article_del" controller="admin/articles" method="del" auth="privileged" request_methods="DELETE" />
 		<page id="article_edit" controller="admin/articles" method="edit" path="articles/edit" auth="privileged" />
