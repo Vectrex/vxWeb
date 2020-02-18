@@ -67,6 +67,9 @@
 
         computed: {
             sortedRows () {
+                if(!this.sortColumn) {
+                    return this.rows;
+                }
                 return this.doSort(this.sortColumn, this.sortDir);
             }
         },

@@ -355,7 +355,7 @@
         },
 
         directives: {
-            focus: Focus,
+            focus: Focus
         },
 
         filters: {
