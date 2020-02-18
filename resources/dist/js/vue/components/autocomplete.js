@@ -10,7 +10,7 @@
   }();
 
   export default {
-		template: '<div v-bind="containerProps" ref="container"><input ref="input" v-bind="inputProps" @input="handleInput" @keydown.enter="handleEnter" @keydown.esc="handleEsc" @keydown.tab="handleTab" @keydown.up.prevent="handleUp" @keydown.down.prevent="handleDown" @focus="handleFocus" @blur="hideResults" v-on="$listeners"><ul ref="resultList" v-bind="resultListProps" @click="handleResultClick" @mousedown.prevent=""><template v-for="(result, index) in results"><slot name="result" :result="result" :props="resultProps[index]"><li :key="resultProps[index].id" v-bind="resultProps[index]">{{ getResultValue(result) }}</li></slot></template></ul></div>',
+		template: '<div v-bind="containerProps" ref="container"><input ref="input" v-bind="inputProps" @input="handleInput" @keydown.enter="handleEnter" @keydown.esc="handleEsc" @keydown.tab="handleTab" @keydown.up.prevent="handleUp" @keydown.down.prevent="handleDown" @focus="handleFocus" @blur="handleBlur" v-on="$listeners"><ul ref="resultList" v-bind="resultListProps" @click="handleResultClick" @mousedown.prevent=""><template v-for="(result, index) in results"><slot name="result" :result="result" :props="resultProps[index]"><li :key="resultProps[index].id" v-bind="resultProps[index]">{{ getResultValue(result) }}</li></slot></template></ul></div>',
     name: 'Autocomplete',
     inheritAttrs: false,
 
@@ -173,6 +173,11 @@
       handleFocus (event) {
         this.updateResults(event.target.value);
         this.value = event.target.value;
+      },
+
+      handleBlur () {
+        this.hideResults();
+        this.$emit ('blur');
       },
 
       handleUp () {
