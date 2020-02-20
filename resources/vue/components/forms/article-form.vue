@@ -2,10 +2,10 @@
     <form action="/" class="form-horizontal" @submit.prevent>
 
         <div class="form-group">
-            <label class="col-3 form-label" :class="{ 'text-error': errors.article_date }" for="article_date_input">Artikeldatum</label>
+            <label class="col-3 form-label" :class="{ 'text-error': errors.article_date }" for="article_date_picker">Artikeldatum</label>
             <div class="col-3">
                 <div class="col-12 input-group input-inline">
-                    <input v-model="form.article_date" id="article_date_input" maxlength="10" class="form-input"><button type="button" class="btn webfont-icon-only calendarPopper btn-primary">&#xe00c;</button>
+                    <datepicker id="article_date_picker" input-format="d.m.y" output-format="d.m.y" ref="dateFrom" @select="setArticleDate" @clear="setArticleDate(null)"></datepicker>
                 </div>
             </div>
         </div>
@@ -76,7 +76,6 @@
         </div>
 
         <div class="form-group">
-
             <label class="col-3 form-label" :class="{ 'text-error': errors.content }" for="content_input"><strong>*Seiteninhalt</strong></label>
             <div class="col-9">
                 <vue-ckeditor v-model="form.content" :config="editorConfig" id="content_input"></vue-ckeditor>
@@ -94,10 +93,12 @@
 
     import SimpleFetch from "../../util/simple-fetch.js";
     import VueCkeditor from "../VueCkeditor";
+    import Datepicker from "../datepicker";
 
     export default {
         components: {
-            'vue-ckeditor': VueCkeditor
+            'vue-ckeditor': VueCkeditor,
+            'datepicker': Datepicker
         },
 
         props: {
@@ -140,6 +141,9 @@
                 this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(this.form));
                 this.$emit("response-received", this.response);
                 this.loading = false;
+            },
+            setArticleDate(date) {
+                this.form.article_date = date;
             }
         }
     }
