@@ -32,6 +32,7 @@
 		<page id="article_add" controller="admin/articles" method="add" path="articles/add" auth="privileged" />
 		<page id="article_del" controller="admin/articles" method="del" auth="privileged" request_methods="DELETE" />
 		<page id="article_edit" controller="admin/articles" method="edit" path="articles/edit" auth="privileged" />
+		<page id="article_update" controller="admin/articles" method="update" auth="privileged" request_methods="POST" />
 		<page id="article_publish" controller="admin/articles" method="publish" auth="superadmin" request_methods="POST" />
 
 		<page id="article_file_upload" controller="admin/files" method="fileUpload" request_methods="POST" />
