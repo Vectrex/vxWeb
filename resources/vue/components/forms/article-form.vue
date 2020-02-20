@@ -76,30 +76,35 @@
         </div>
 
         <div class="form-group">
+
             <label class="col-3 form-label" :class="{ 'text-error': errors.content }" for="content_input"><strong>*Seiteninhalt</strong></label>
             <div class="col-9">
-                <textarea v-model="form.content" id="content_input" rows='10' class='form-input'></textarea>
+                <vue-ckeditor v-model="form.content" :config="editorConfig" id="content_input"></vue-ckeditor>
             </div>
         </div>
 
         <div class="divider"></div>
 
         <div class="form-group">
-            <label class="col-3 form-label"></label><button name="submit_article" type='submit' class='btn btn-success'>Artikel anlegen</button>
+            <button type='button' @click="submit" class='btn btn-success off-3 col-6' :class="{'loading': loading}" :disabled="loading">{{ form.id ? 'Daten übernehmen' : 'Artikel anlegen' }}</button>
         </div>
-
     </form>
 </template>
 <script>
 
     import SimpleFetch from "../../util/simple-fetch.js";
+    import VueCkeditor from "../VueCkeditor";
 
     export default {
+        components: {
+            'vue-ckeditor': VueCkeditor
+        },
 
         props: {
             url: { type: String, required: true },
             initialData: { type: Object, default: () => { return {} } },
-            options: { type: Object }
+            options: { type: Object },
+            editorConfig: { type: Object }
         },
 
         data: function() {
@@ -121,17 +126,20 @@
 
         watch: {
             initialData (newValue) {
-                this.form = newValue;
+                this.form = Object.assign({}, this.form, newValue);
             }
+        },
+
+        mounted () {
+            this.form = Object.assign({}, this.form, this.initialData);
         },
 
         methods: {
             async submit() {
                 this.loading = true;
-                this.$emit("request-sent");
                 this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(this.form));
+                this.$emit("response-received", this.response);
                 this.loading = false;
-                this.$emit("response-received");
             }
         }
     }

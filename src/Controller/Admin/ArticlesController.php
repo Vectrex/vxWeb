@@ -71,6 +71,35 @@ class ArticlesController extends Controller {
         ]);
     }
 
+    protected function edit ()
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $article = Article::getInstance($id);
+        }
+        catch(ArticleException $e) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+
+        // check permission of non superadmin
+
+        $admin = Application::getInstance()->getCurrentUser();
+
+        if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
+            return new Response('', Response::HTTP_FORBIDDEN);
+        }
+
+        MenuGenerator::setForceActiveMenu(true);
+
+        return new Response(
+            SimpleTemplate::create('admin/articles_edit.php')
+                ->assign('article', $article)
+                ->display()
+        );
+    }
+
     protected function editInit()
     {
         $db = Application::getInstance()->getVxPDO();
@@ -104,7 +133,84 @@ class ArticlesController extends Controller {
         ]);
     }
 
-	protected function publish()
+    protected function update ()
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $id = $bag->getInt('id');
+        $admin = Application::getInstance()->getCurrentUser();
+
+        if ($id) {
+            try {
+                $article = Article::getInstance($id);
+            }
+            catch(ArticleException $e) {
+                return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            }
+
+            // check permission of non superadmin
+
+            if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
+                return new JsonResponse(null, Response::HTTP_FORBIDDEN);
+            }
+        }
+        else {
+            $article = new Article();
+        }
+
+        $form = $this->buildEditForm();
+        $form
+            ->disableCsrfToken()
+            ->bindRequestParameters($bag)
+            ->validate()
+        ;
+        if(!$form->getFormErrors()) {
+            $v = $form->getValidFormValues();
+
+            $article->setDate($v['article_date'] ? new \DateTime(Util::unFormatDate($v['article_date'], 'de')) : null);
+            $article->setDate($v['display_from'] ? new \DateTime(Util::unFormatDate($v['display_from'], 'de')) : null);
+            $article->setDate($v['display_until'] ? new \DateTime(Util::unFormatDate($v['display_until'], 'de')) : null);
+
+            $article
+                ->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])))
+                ->setHeadline($v['headline'])
+                ->setData($v->all() /* content, teaser, subline */)
+                ->setCustomSort($v->get('customsort'))
+                ->setCustomFlags($v->get('customflags'));
+
+            if (!$id) {
+                $article->setCreatedById($admin->getAttribute('id'));
+            } else {
+                $article->setUpdatedById($admin->getAttribute('id'));
+            }
+
+            if ($article->wasChanged()) {
+                $article->save();
+                if (!$id) {
+                    return new JsonResponse([
+                        'success' => true,
+                        'id' => $article->getId(),
+                        'message' => 'Artikel angelegt.'
+                    ]);
+                }
+                return new JsonResponse([
+                    'success' => true,
+                    'message' => 'Artikel aktualisiert.'
+                ]);
+            }
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Keine Aktualisierung notwendig.'
+            ]);
+        }
+        $response = [];
+
+        foreach($form->getFormErrors() as $element => $error) {
+            $response[$element] = $error->getErrorMessage();
+        }
+        return new JsonResponse(['success' => false, 'errors' => $response, 'message' => 'Formulardaten unvollständig oder fehlerhaft.']);
+    }
+
+	protected function publish ()
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 		$id = $bag->getInt('id');
@@ -174,35 +280,6 @@ class ArticlesController extends Controller {
 
         return new Response(
             SimpleTemplate::create('admin/articles_edit.php')->display()
-        );
-    }
-
-    protected function edit ()
-    {
-        if(!($id = $this->request->query->getInt('id'))) {
-            return new Response('', Response::HTTP_NOT_FOUND);
-        }
-        try {
-            $article = Article::getInstance($id);
-        }
-        catch(ArticleException $e) {
-            return new Response('', Response::HTTP_NOT_FOUND);
-        }
-
-        // check permission of non superadmin
-
-        $admin = Application::getInstance()->getCurrentUser();
-
-        if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
-            return new Response('', Response::HTTP_FORBIDDEN);
-        }
-
-        MenuGenerator::setForceActiveMenu(true);
-
-        return new Response(
-            SimpleTemplate::create('admin/articles_edit.php')
-                ->assign('article', $article)
-                ->display()
         );
     }
 
@@ -377,7 +454,7 @@ class ArticlesController extends Controller {
 	private function buildEditForm()
     {
 		return HtmlForm::create()
-			->addElement(FormElementFactory::create('select', 'articlecategoriesid', null, [], $categories, true, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Es muss eine Artikelkategorie gewählt werden.'))
+			->addElement(FormElementFactory::create('select', 'articlecategoriesid', null, [], [], true, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Es muss eine Artikelkategorie gewählt werden.'))
 			->addElement(FormElementFactory::create('input', 'headline', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt eine Überschrift.'))
             ->addElement(FormElementFactory::create('input', 'subline', null, [], [], false, ['trim']))
 			->addElement(FormElementFactory::create('textarea', 'teaser', null, [], [], false, ['trim', 'strip_tags']))

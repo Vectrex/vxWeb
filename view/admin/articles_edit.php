@@ -23,6 +23,7 @@
     );
     $maxExecutionTime = ini_get('max_execution_time');
 ?>
+<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 
 <div id="vue-root" v-cloak>
 
@@ -43,7 +44,7 @@
 
     <section id="article-form" v-if="activeTabIndex === 0">
         <h1>Form</h1>
-        <article-form :url="formProps.url" :options="formProps.options" :initial-data="formProps.form"></article-form>
+        <article-form :url="formProps.url" :options="formProps.options" :initial-data="formProps.form" :editor-config="editorConfig" @response-received="handleResponse"></article-form>
     </section>
 
     <section id="article-files" v-if="activeTabIndex === 1">
@@ -98,9 +99,13 @@
                 { name: 'Dateien' },
                 { name: 'Sortierung' }
             ],
-            toastProps: {},
+            toastProps: {
+                message: "",
+                messageClass: "",
+                isActive: false
+            },
             formProps: {
-                url: '',
+                url: "<?= $router->getRoute('article_update')->getUrl() ?>",
                 options: {},
                 form: {}
             },
@@ -144,6 +149,20 @@
                     {label: "", prop: "action"}
                 ],
                 initSort: {}
+            },
+            editorConfig: {
+                extraAllowedContent: "div(*)",
+                customConfig: "",
+                toolbar:
+                    [
+                        ['Maximize','-','Source', '-', 'Undo','Redo'],
+                        ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'],
+                        ['Bold', 'Italic', 'Superscript', 'Subscript', '-', 'CopyFormatting', 'RemoveFormat'],
+                        ['NumberedList','BulletedList'],
+                        ['Link', 'Unlink'],
+                        ['Table'],
+                        ['ShowBlocks']
+                    ], height: "20rem", contentsCss: ['/css/site.css', '/css/site_edit.css']
             }
         },
 
@@ -177,11 +196,11 @@
 
         methods: {
             handleResponse (response) {
-                this.toastProps = {
+                Object.assign(this.toastProps, {
                     message: response.message,
-                    messageClass: response.success ? 'toast-success' : 'toast-error',
-                    isActive: true
-                };
+                    messageClass: response.success ? 'toast-success' : 'toast-error'
+                });
+                this.$refs.toast.isActive = true;
             },
             storeSort (sort) {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: sort.sortColumn.prop, dir: sort.sortDir }));

@@ -89,11 +89,11 @@
 
         methods: {
             handleResponse (response) {
-                this.toastProps = {
+                Object.assign(this.toastProps, {
                     message: response.message,
-                    messageClass: response.success ? 'toast-success' : 'toast-error',
-                    isActive: true
-                };
+                    messageClass: response.success ? 'toast-success' : 'toast-error'
+                });
+                this.$refs.toast.isActive = true;
             },
             storeSort (sort) {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: sort.sortColumn.prop, dir: sort.sortDir }));

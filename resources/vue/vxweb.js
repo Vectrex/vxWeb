@@ -8,6 +8,7 @@ import Tab from './components/tab';
 
 import ZPagination from './components/zutre/pagination';
 import ZLink from './components/zutre/link';
+import VueCkeditor from "./components/VueCkeditor";
 
 import SimpleFetch from './util/simple-fetch';
 import PromisedXhr from './util/promised-xhr';
@@ -25,10 +26,11 @@ const Components = {
     DatePicker,
     Sortable,
     SimpleTree,
-    ZPagination,
     Filemanager,
     Tab,
+    ZPagination,
     ZLink,
+    VueCkeditor,
     ProfileForm,
     UserForm,
     ArticleForm,
