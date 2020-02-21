@@ -5,15 +5,15 @@
                 <div v-if="dateString">
                     <span class="chip">
                         {{ dateString }}
-                        <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="$emit('date-clear')"></a>
+                        <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="handleClear"></a>
                     </span>
                 </div>
                 <input v-else
                     type="text"
                     autocomplete="off"
                     class="form-input"
-                    :value="formattedValue"
-                    @blur="$emit('dateinput-blur', $event.target.value)"
+                    v-model="inputString"
+                    @blur="handleBlur"
                 >
             </div>
             <button
@@ -33,36 +33,43 @@
 
         data() {
             return {
-                dateString: null,
-                parsedDate: null
+                inputString: null
             }
         },
 
         props: {
             monthNames: {
                 type: Array,
-                default: () => "Jan Feb Mar Apr Mai Jun Jul Aug Sep Okt Nov Dez".split(" ")
+                default: () => "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")
             },
             dayNames: {
                 type: Array,
-                default: () => "Mo Di Mi Do Fr Sa So".split(" ")
+                default: () => "Mon Tue Wed Thu Fri Sat Sun".split(" ")
             },
             outputFormat: {
                 type: String,
                 default: "y-mm-dd"
             },
+            inputFormat: {
+                type: String,
+                default: 'y-m-d'
+            },
             showButton: {
                 type: Boolean,
                 default: true
             },
-            date: Date
+            value: Date
+        },
+
+        watch: {
+            value (value) {
+                this.inputString = value ? DateFunctions.formatDate(value, this.outputFormat) : '';
+            }
         },
 
         computed: {
-            formattedValue() {
-                if(this.date) {
-                    return DateFunctions.formatDate(this.date, this.outputFormat);
-                }
+            dateString () {
+                return this.value ? DateFunctions.formatDate(this.value, this.outputFormat) : '';
             },
             computedStyles() {
                 return {
@@ -71,9 +78,13 @@
             }
         },
 
-        watch: {
-            date(newValue) {
-                this.dateString = newValue ? DateFunctions.formatDate(newValue, this.outputFormat) : '';
+        methods: {
+            handleBlur () {
+                let date = DateFunctions.parseDate(this.inputString, this.inputFormat);
+                this.$emit('input', date || null);
+            },
+            handleClear () {
+                this.$emit('input', null);
             }
         }
     }

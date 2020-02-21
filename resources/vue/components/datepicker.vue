@@ -2,14 +2,9 @@
     <div v-bind="rootProps">
         <date-input
             v-if="hasInput"
-            :date="selectedDate"
-            :output-format="$attrs['output-format']"
-            :day-names="$attrs['day-names']"
-            :show-button="$attrs['show-button']"
-            :month-name="$attrs['month-names']"
+            :value="selectedDate"
+            @input="handleInput"
             @toggle-datepicker="toggleDatepicker"
-            @dateinput-blur="updateDate"
-            @date-clear="clearDate"
             v-bind="inputProps"
             ref="input"
         ></date-input>
@@ -41,7 +36,6 @@
 
 <script>
     import DateInput from './date-input';
-    import DateFunctions from '../util/date-functions.js';
 
     export default {
         components: {
@@ -52,20 +46,18 @@
             return {
                 year: null,
                 month: null,
-                dateDay: null,
+                day: null,
                 selectedDate: null,
                 expanded: !this.hasInput
             };
         },
 
         watch: {
-            initDate (newValue) {
-                this.year = newValue.getFullYear();
-                this.month = newValue.getMonth();
-                this.dateDay = newValue.getDate();
-            },
-            pickedDate (newValue) {
-                this.selectedDate = new Date(newValue.getFullYear(), newValue.getMonth(), newValue.getDate(), 0, 0, 0);
+            value (newValue) {
+                this.year = (newValue || this.today).getFullYear();
+                this.month = (newValue || this.today).getMonth();
+                this.dateDay = (newValue || this.today).getDate();
+                this.selectedDate = newValue || null;
             }
         },
 
@@ -78,7 +70,12 @@
             },
             inputProps() {
                 return {
-                    style: { position: 'relative' }
+                    style: { position: 'relative' },
+                    inputFormat: this.$attrs['input-format'],
+                    outputFormat: this.$attrs['output-format'],
+                    dayNames: this.$attrs['day-names'],
+                    monthNames: this.$attrs['month-names'],
+                    showButton: this.$attrs['show-button']
                 }
             },
             calendarProps() {
@@ -114,11 +111,7 @@
         },
 
         props: {
-            initDate: {
-                type: Date,
-                default: () => (new Date())
-            },
-            pickedDate: {
+            value: {
                 type: Date
             },
             validFrom: {
@@ -129,11 +122,11 @@
             },
             weekdays: {
                 type: Array,
-                default: (() => "M D M D F S S".split(" "))
+                default: (() => "M T W T F S S".split(" "))
             },
             monthNames: {
                 type: Array,
-                default: (() => "Jan Feb Mar Apr Mai Jun Jul Aug Sep Okt Nov Dez".split(" "))
+                default: (() => "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" "))
             },
             startOfWeekIndex: {
                 type: Number,
@@ -143,10 +136,6 @@
             hasInput: {
                 type: Boolean,
                 default: true
-            },
-            inputFormat: {
-                type: String,
-                default: 'y-m-d'
             }
         },
 
@@ -154,12 +143,10 @@
             if(this.hasInput) {
                 document.body.addEventListener('click', this.handleDocumentClick);
             }
-            this.year = this.initDate.getFullYear();
-            this.month = this.initDate.getMonth();
-            this.dateDay = this.initDate.getDate();
-            if(this.pickedDate) {
-                this.selectedDate = new Date(this.pickedDate.getFullYear(), this.pickedDate.getMonth(), this.pickedDate.getDate(), 0, 0, 0);
-            }
+            this.year = (this.value || this.today).getFullYear();
+            this.month = (this.value || this.today).getMonth();
+            this.dateDay = (this.value || this.today).getDate();
+            this.selectedDate = this.value || null;
         },
         beforeDestroy() {
             if(this.hasInput) {
@@ -169,17 +156,10 @@
 
         methods: {
             isDisabled(day) {
-                return (this.validFrom && this.validFrom > day) || (this.validUntil && this.validUntil < day())
+                return (this.validFrom && this.validFrom > day) || (this.validUntil && this.validUntil < day)
             },
             getCellClass(day) {
-                switch(day.getMonth() - this.month) {
-                    case -1:
-                        return 'prev-month';
-                    case 1:
-                        return 'next-month';
-                    default:
-                        return '';
-                }
+                return ['prev-month', '', 'next-month'][day.getMonth() - this.month + 1];
             },
             getButtonClass(day) {
                 const classes = [];
@@ -205,7 +185,7 @@
             },
             selectDate(day) {
                 this.selectedDate = day;
-                this.$emit('select', day);
+                this.$emit('input', day);
                 this.expanded = !this.hasInput;
             },
             toggleDatepicker() {
@@ -214,16 +194,9 @@
             handleDocumentClick() {
                 this.expanded = false;
             },
-            updateDate(dateString) {
-                let day = DateFunctions.parseDate(dateString, this.inputFormat);
-                if(day) {
-                    this.selectedDate = day;
-                    this.$emit("select", day);
-                }
-            },
-            clearDate() {
-                this.selectedDate = null;
-                this.$emit('clear');
+            handleInput (date) {
+                this.selectedDate = date;
+                this.$emit('input', date);
             }
         }
     }

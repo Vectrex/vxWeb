@@ -5,25 +5,53 @@
             <label class="col-3 form-label" :class="{ 'text-error': errors.article_date }" for="article_date_picker">Artikeldatum</label>
             <div class="col-3">
                 <div class="col-12 input-group input-inline">
-                    <datepicker id="article_date_picker" input-format="d.m.y" output-format="d.m.y" ref="dateFrom" @select="setArticleDate" @clear="setArticleDate(null)"></datepicker>
+                    <datepicker
+                        id="article_date_picker"
+                        input-format="d.m.y"
+                        output-format="d.m.y"
+                        ref="dateArticle"
+                        v-model="form.article_date"
+                        :day-names="'Mo Di Mi Do Fr Sa So'.split(' ')"
+                        :month-names="'Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez'.split(' ')"
+                    ></datepicker>
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-3 form-label" :class="{ 'text-error': errors.display_from }" for="display_from_input">Anzeige von</label>
+            <label class="col-3 form-label" :class="{ 'text-error': errors.display_from }" for="display_from_picker">Anzeige von</label>
             <div class="col-3">
                 <div class="col-12 input-group input-inline">
-                    <input v-model="form.display_from" id="display_from_input" maxlength="10" class="form-input"><button type="button" class="btn webfont-icon-only calendarPopper btn-primary">&#xe00c;</button>
+                    <datepicker
+                        id="display_from_picker"
+                        input-format="d.m.y"
+                        output-format="d.m.y"
+                        ref="dateFrom"
+                        v-model="form.display_from"
+                        :day-names="'Mo Di Mi Do Fr Sa So'.split(' ')"
+                        :month-names="'Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez'.split(' ')"
+                        :valid-from="new Date()"
+                        :valid-until="new Date()"
+                    ></datepicker>
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-3 form-label" :class="{ 'text-error': errors.display_until }" for="display_until_input">Anzeige bis</label>
+            <label class="col-3 form-label" :class="{ 'text-error': errors.display_until }" for="display_until_picker">Anzeige bis</label>
             <div class="col-3">
                 <div class="col-12 input-group input-inline">
-                    <input v-model="form.display_until" id="display_until_input" maxlength="10" class="form-input"><button type="button" class="btn webfont-icon-only calendarPopper btn-primary">&#xe00c;</button>
+                    <datepicker
+                            id="display_until_picker"
+                            input-format="d.m.y"
+                            output-format="d.m.y"
+                            ref="dateFrom"
+                            v-model="form.display_until"
+                            :day-names="'Mo Di Mi Do Fr Sa So'.split(' ')"
+                            :month-names="'Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez'.split(' ')"
+                            :valid-from="new Date()"
+                            :valid-until="new Date()"
+                    ></datepicker>
                 </div>
             </div>
         </div>
@@ -128,22 +156,28 @@
         watch: {
             initialData (newValue) {
                 this.form = Object.assign({}, this.form, newValue);
+                this.setDates();
             }
         },
 
         mounted () {
             this.form = Object.assign({}, this.form, this.initialData);
+            this.setDates();
         },
 
         methods: {
-            async submit() {
+            async submit () {
                 this.loading = true;
                 this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(this.form));
                 this.$emit("response-received", this.response);
                 this.loading = false;
             },
-            setArticleDate(date) {
-                this.form.article_date = date;
+            setDates () {
+                ['article_date', 'display_from', 'display_until'].forEach(item => {
+                    if (this.form[item] && !(this.form[item] instanceof Date)) {
+                        this.form[item] = new Date(this.form[item]);
+                    }
+                });
             }
         }
     }
