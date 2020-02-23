@@ -1,25 +1,23 @@
 <template>
     <div class="date-input">
-        <div class="input-group input-inline" :style="computedStyles">
-            <div class="form-input">
-                <div v-if="dateString">
-                    <span class="chip">
-                        {{ dateString }}
-                        <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="handleClear"></a>
-                    </span>
-                </div>
-                <input v-else
-                    type="text"
-                    autocomplete="off"
-                    class="form-input"
-                    v-model="inputString"
-                    @blur="handleBlur"
-                >
+        <div class="input-group" :style="computedStyles">
+            <div class="form-input" v-if="dateString">
+                <span class="chip">
+                    {{ dateString }}
+                    <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="handleClear"></a>
+                </span>
             </div>
+            <input v-else
+                type="text"
+                class="form-input"
+                autocomplete="off"
+                v-model="inputString"
+                @blur="handleBlur"
+            >
             <button
                 v-if="showButton"
                 type="button"
-                class="btn webfont-icon-only calendarPopper btn-primary"
+                class="btn webfont-icon-only btn-primary input-group-btn"
                 @click.stop="$emit('toggle-datepicker')"
             >&#xe00c;</button>
         </div>
