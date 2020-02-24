@@ -42,13 +42,11 @@
 
     <tab :items="tabItems" :active-index.sync="activeTabIndex"></tab>
 
-    <section id="article-form" v-if="activeTabIndex === 0">
-        <h1>Form</h1>
+    <section id="article-form" v-if="activeTabIndex === 0" class="form-content">
         <article-form :url="formProps.url" :options="formProps.options" :initial-data="formProps.form" :editor-config="editorConfig" @response-received="handleResponse"></article-form>
     </section>
 
     <section id="article-files" v-if="activeTabIndex === 1">
-        <h1>Files</h1>
         <filemanager :routes="fmProps.routes" :columns="fmProps.cols" :init-sort="fmProps.initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
             <template v-slot:action="slotProps">
                 <button v-if="slotProps.row.isFolder" class="btn webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>

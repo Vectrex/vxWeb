@@ -166,9 +166,9 @@ class ArticlesController extends Controller {
         if(!$form->getFormErrors()) {
             $v = $form->getValidFormValues();
 
-            $article->setDate($v['article_date'] ? new \DateTime(Util::unFormatDate($v['article_date'], 'de')) : null);
-            $article->setDate($v['display_from'] ? new \DateTime(Util::unFormatDate($v['display_from'], 'de')) : null);
-            $article->setDate($v['display_until'] ? new \DateTime(Util::unFormatDate($v['display_until'], 'de')) : null);
+            $article->setDate($v['article_date'] ? new \DateTime($v['article_date']) : null);
+            $article->setDisplayFrom($v['display_from'] ? new \DateTime($v['display_from']) : null);
+            $article->setDisplayUntil($v['display_until'] ? new \DateTime($v['display_until']) : null);
 
             $article
                 ->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])))
@@ -459,9 +459,9 @@ class ArticlesController extends Controller {
             ->addElement(FormElementFactory::create('input', 'subline', null, [], [], false, ['trim']))
 			->addElement(FormElementFactory::create('textarea', 'teaser', null, [], [], false, ['trim', 'strip_tags']))
 			->addElement(FormElementFactory::create('textarea', 'content', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt einen Inhalt.'))
-			->addElement(FormElementFactory::create('input', 'article_date', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'display_from', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'display_until', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('de')])], 'Ungültiges Datum'))
+			->addElement(FormElementFactory::create('input', 'article_date', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum'))
+			->addElement(FormElementFactory::create('input', 'display_from', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum'))
+			->addElement(FormElementFactory::create('input', 'display_until', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum'))
 			->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)], 'Ungültiger Wert'))
             ->addElement(FormElementFactory::create('checkbox', 'customflags', 1))
         ;

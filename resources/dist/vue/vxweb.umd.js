@@ -708,19 +708,19 @@ var autocomplete_component = normalizeComponent(
 )
 
 /* harmony default export */ var autocomplete = (autocomplete_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"85014cd0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/datepicker.vue?vue&type=template&id=a5f44e50&
-var datepickervue_type_template_id_a5f44e50_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',_vm._b({},'div',_vm.rootProps,false),[(_vm.hasInput)?_c('date-input',_vm._b({ref:"input",attrs:{"date":_vm.selectedDate,"output-format":_vm.$attrs['output-format'],"day-names":_vm.$attrs['day-names'],"show-button":_vm.$attrs['show-button'],"month-name":_vm.$attrs['month-names']},on:{"toggle-datepicker":_vm.toggleDatepicker,"dateinput-blur":_vm.updateDate,"date-clear":_vm.clearDate}},'date-input',_vm.inputProps,false)):_vm._e(),_c('div',_vm._b({staticClass:"calendar"},'div',_vm.calendarProps,false),[_c('div',{staticClass:"calendar-nav navbar"},[_c('button',{staticClass:"btn btn-action btn-link btn-large prvMon",on:{"click":function($event){$event.stopPropagation();return _vm.previousMonth($event)}}}),_c('div',{staticClass:"month navbar-primary"},[_vm._v(_vm._s(_vm.monthLabel)+" "+_vm._s(_vm.year))]),_c('button',{staticClass:"btn btn-action btn-link btn-large nxtMon",on:{"click":function($event){$event.stopPropagation();return _vm.nextMonth($event)}}})]),_c('div',{staticClass:"calendar-container"},[_c('div',{staticClass:"calendar-header"},_vm._l((_vm.weekdays),function(weekday){return _c('div',{staticClass:"calendar-date"},[_vm._v(_vm._s(weekday))])}),0),_c('div',{staticClass:"calendar-body"},_vm._l((_vm.days),function(day){return _c('div',{staticClass:"calendar-date text-center",class:_vm.getCellClass(day)},[_c('button',{staticClass:"date-item",class:_vm.getButtonClass(day),attrs:{"type":"button","disabled":_vm.isDisabled(day)},on:{"click":function($event){$event.stopPropagation();_vm.isDisabled(day) ? null : _vm.selectDate(day)}}},[_vm._v(_vm._s(day.getDate()))])])}),0)])])],1)}
-var datepickervue_type_template_id_a5f44e50_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"85014cd0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/datepicker.vue?vue&type=template&id=6fbeef1b&
+var datepickervue_type_template_id_6fbeef1b_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',_vm._b({},'div',_vm.rootProps,false),[(_vm.hasInput)?_c('date-input',_vm._b({ref:"input",attrs:{"value":_vm.selectedDate},on:{"input":_vm.handleInput,"toggle-datepicker":_vm.toggleDatepicker}},'date-input',_vm.inputProps,false)):_vm._e(),_c('div',_vm._b({staticClass:"calendar"},'div',_vm.calendarProps,false),[_c('div',{staticClass:"calendar-nav navbar"},[_c('button',{staticClass:"btn btn-action btn-link btn-large prvMon",on:{"click":function($event){$event.stopPropagation();return _vm.previousMonth($event)}}}),_c('div',{staticClass:"month navbar-primary"},[_vm._v(_vm._s(_vm.monthLabel)+" "+_vm._s(_vm.year))]),_c('button',{staticClass:"btn btn-action btn-link btn-large nxtMon",on:{"click":function($event){$event.stopPropagation();return _vm.nextMonth($event)}}})]),_c('div',{staticClass:"calendar-container"},[_c('div',{staticClass:"calendar-header"},_vm._l((_vm.weekdays),function(weekday){return _c('div',{staticClass:"calendar-date"},[_vm._v(_vm._s(weekday))])}),0),_c('div',{staticClass:"calendar-body"},_vm._l((_vm.days),function(day){return _c('div',{staticClass:"calendar-date text-center",class:_vm.getCellClass(day)},[_c('button',{staticClass:"date-item",class:_vm.getButtonClass(day),attrs:{"type":"button","disabled":_vm.isDisabled(day)},on:{"click":function($event){$event.stopPropagation();_vm.isDisabled(day) ? null : _vm.selectDate(day)}}},[_vm._v(_vm._s(day.getDate()))])])}),0)])])],1)}
+var datepickervue_type_template_id_6fbeef1b_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/datepicker.vue?vue&type=template&id=a5f44e50&
+// CONCATENATED MODULE: ./vue/components/datepicker.vue?vue&type=template&id=6fbeef1b&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"85014cd0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/date-input.vue?vue&type=template&id=68a2bfc6&
-var date_inputvue_type_template_id_68a2bfc6_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"date-input"},[_c('div',{staticClass:"input-group input-inline",style:(_vm.computedStyles)},[_c('div',{staticClass:"form-input"},[(_vm.dateString)?_c('div',[_c('span',{staticClass:"chip"},[_vm._v(" "+_vm._s(_vm.dateString)+" "),_c('a',{staticClass:"btn btn-clear",attrs:{"href":"#","aria-label":"Close","role":"button"},on:{"click":function($event){$event.preventDefault();return _vm.$emit('date-clear')}}})])]):_c('input',{staticClass:"form-input",attrs:{"type":"text","autocomplete":"off"},domProps:{"value":_vm.formattedValue},on:{"blur":function($event){return _vm.$emit('dateinput-blur', $event.target.value)}}})]),(_vm.showButton)?_c('button',{staticClass:"btn webfont-icon-only calendarPopper btn-primary",attrs:{"type":"button"},on:{"click":function($event){$event.stopPropagation();return _vm.$emit('toggle-datepicker')}}},[_vm._v("")]):_vm._e()])])}
-var date_inputvue_type_template_id_68a2bfc6_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"85014cd0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/date-input.vue?vue&type=template&id=8cc1cab0&
+var date_inputvue_type_template_id_8cc1cab0_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"date-input"},[_c('div',{staticClass:"input-group",style:(_vm.computedStyles)},[(_vm.dateString)?_c('div',{staticClass:"form-input"},[_c('span',{staticClass:"chip"},[_vm._v(" "+_vm._s(_vm.dateString)+" "),_c('a',{staticClass:"btn btn-clear",attrs:{"href":"#","aria-label":"Close","role":"button"},on:{"click":function($event){$event.preventDefault();return _vm.handleClear($event)}}})])]):_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.inputString),expression:"inputString"}],staticClass:"form-input",attrs:{"type":"text","autocomplete":"off"},domProps:{"value":(_vm.inputString)},on:{"blur":_vm.handleBlur,"input":function($event){if($event.target.composing){ return; }_vm.inputString=$event.target.value}}}),(_vm.showButton)?_c('button',{staticClass:"btn webfont-icon-only btn-primary input-group-btn",attrs:{"type":"button"},on:{"click":function($event){$event.stopPropagation();return _vm.$emit('toggle-datepicker')}}},[_vm._v("")]):_vm._e()])])}
+var date_inputvue_type_template_id_8cc1cab0_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/date-input.vue?vue&type=template&id=68a2bfc6&
+// CONCATENATED MODULE: ./vue/components/date-input.vue?vue&type=template&id=8cc1cab0&
 
 // CONCATENATED MODULE: ./vue/util/date-functions.js
 const defaultMonthNames = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
@@ -852,8 +852,6 @@ const defaultDayNames = "Sun Mon Tue Wed Thu Fri Sat".split(" ");
 //
 //
 //
-//
-//
 
 
 
@@ -861,36 +859,43 @@ const defaultDayNames = "Sun Mon Tue Wed Thu Fri Sat".split(" ");
 
     data() {
         return {
-            dateString: null,
-            parsedDate: null
+            inputString: null
         }
     },
 
     props: {
         monthNames: {
             type: Array,
-            default: () => "Jan Feb Mar Apr Mai Jun Jul Aug Sep Okt Nov Dez".split(" ")
+            default: () => "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")
         },
         dayNames: {
             type: Array,
-            default: () => "Mo Di Mi Do Fr Sa So".split(" ")
+            default: () => "Mon Tue Wed Thu Fri Sat Sun".split(" ")
         },
         outputFormat: {
             type: String,
             default: "y-mm-dd"
         },
+        inputFormat: {
+            type: String,
+            default: 'y-m-d'
+        },
         showButton: {
             type: Boolean,
             default: true
         },
-        date: Date
+        value: Date
+    },
+
+    watch: {
+        value (value) {
+            this.inputString = value ? date_functions.formatDate(value, this.outputFormat) : '';
+        }
     },
 
     computed: {
-        formattedValue() {
-            if(this.date) {
-                return date_functions.formatDate(this.date, this.outputFormat);
-            }
+        dateString () {
+            return this.value ? date_functions.formatDate(this.value, this.outputFormat) : '';
         },
         computedStyles() {
             return {
@@ -899,9 +904,13 @@ const defaultDayNames = "Sun Mon Tue Wed Thu Fri Sat".split(" ");
         }
     },
 
-    watch: {
-        date(newValue) {
-            this.dateString = newValue ? date_functions.formatDate(newValue, this.outputFormat) : '';
+    methods: {
+        handleBlur () {
+            let date = date_functions.parseDate(this.inputString, this.inputFormat);
+            this.$emit('input', date || null);
+        },
+        handleClear () {
+            this.$emit('input', null);
         }
     }
 });
@@ -918,8 +927,8 @@ const defaultDayNames = "Sun Mon Tue Wed Thu Fri Sat".split(" ");
 
 var date_input_component = normalizeComponent(
   components_date_inputvue_type_script_lang_js_,
-  date_inputvue_type_template_id_68a2bfc6_render,
-  date_inputvue_type_template_id_68a2bfc6_staticRenderFns,
+  date_inputvue_type_template_id_8cc1cab0_render,
+  date_inputvue_type_template_id_8cc1cab0_staticRenderFns,
   false,
   null,
   null,
@@ -965,12 +974,6 @@ var date_input_component = normalizeComponent(
 //
 //
 //
-//
-//
-//
-//
-//
-
 
 
 
@@ -983,20 +986,18 @@ var date_input_component = normalizeComponent(
         return {
             year: null,
             month: null,
-            dateDay: null,
+            day: null,
             selectedDate: null,
             expanded: !this.hasInput
         };
     },
 
     watch: {
-        initDate (newValue) {
-            this.year = newValue.getFullYear();
-            this.month = newValue.getMonth();
-            this.dateDay = newValue.getDate();
-        },
-        pickedDate (newValue) {
-            this.selectedDate = new Date(newValue.getFullYear(), newValue.getMonth(), newValue.getDate(), 0, 0, 0);
+        value (newValue) {
+            this.year = (newValue || this.today).getFullYear();
+            this.month = (newValue || this.today).getMonth();
+            this.dateDay = (newValue || this.today).getDate();
+            this.selectedDate = newValue || null;
         }
     },
 
@@ -1009,7 +1010,12 @@ var date_input_component = normalizeComponent(
         },
         inputProps() {
             return {
-                style: { position: 'relative' }
+                style: { position: 'relative' },
+                inputFormat: this.$attrs['input-format'],
+                outputFormat: this.$attrs['output-format'],
+                dayNames: this.$attrs['day-names'],
+                monthNames: this.$attrs['month-names'],
+                showButton: this.$attrs['show-button']
             }
         },
         calendarProps() {
@@ -1045,11 +1051,7 @@ var date_input_component = normalizeComponent(
     },
 
     props: {
-        initDate: {
-            type: Date,
-            default: () => (new Date())
-        },
-        pickedDate: {
+        value: {
             type: Date
         },
         validFrom: {
@@ -1060,11 +1062,11 @@ var date_input_component = normalizeComponent(
         },
         weekdays: {
             type: Array,
-            default: (() => "M D M D F S S".split(" "))
+            default: (() => "M T W T F S S".split(" "))
         },
         monthNames: {
             type: Array,
-            default: (() => "Jan Feb Mar Apr Mai Jun Jul Aug Sep Okt Nov Dez".split(" "))
+            default: (() => "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" "))
         },
         startOfWeekIndex: {
             type: Number,
@@ -1074,10 +1076,6 @@ var date_input_component = normalizeComponent(
         hasInput: {
             type: Boolean,
             default: true
-        },
-        inputFormat: {
-            type: String,
-            default: 'y-m-d'
         }
     },
 
@@ -1085,12 +1083,10 @@ var date_input_component = normalizeComponent(
         if(this.hasInput) {
             document.body.addEventListener('click', this.handleDocumentClick);
         }
-        this.year = this.initDate.getFullYear();
-        this.month = this.initDate.getMonth();
-        this.dateDay = this.initDate.getDate();
-        if(this.pickedDate) {
-            this.selectedDate = new Date(this.pickedDate.getFullYear(), this.pickedDate.getMonth(), this.pickedDate.getDate(), 0, 0, 0);
-        }
+        this.year = (this.value || this.today).getFullYear();
+        this.month = (this.value || this.today).getMonth();
+        this.dateDay = (this.value || this.today).getDate();
+        this.selectedDate = this.value || null;
     },
     beforeDestroy() {
         if(this.hasInput) {
@@ -1100,17 +1096,10 @@ var date_input_component = normalizeComponent(
 
     methods: {
         isDisabled(day) {
-            return (this.validFrom && this.validFrom > day) || (this.validUntil && this.validUntil < day())
+            return (this.validFrom && this.validFrom > day) || (this.validUntil && this.validUntil < day)
         },
         getCellClass(day) {
-            switch(day.getMonth() - this.month) {
-                case -1:
-                    return 'prev-month';
-                case 1:
-                    return 'next-month';
-                default:
-                    return '';
-            }
+            return ['prev-month', '', 'next-month'][day.getMonth() - this.month + 1];
         },
         getButtonClass(day) {
             const classes = [];
@@ -1136,7 +1125,7 @@ var date_input_component = normalizeComponent(
         },
         selectDate(day) {
             this.selectedDate = day;
-            this.$emit('select', day);
+            this.$emit('input', day);
             this.expanded = !this.hasInput;
         },
         toggleDatepicker() {
@@ -1145,16 +1134,9 @@ var date_input_component = normalizeComponent(
         handleDocumentClick() {
             this.expanded = false;
         },
-        updateDate(dateString) {
-            let day = date_functions.parseDate(dateString, this.inputFormat);
-            if(day) {
-                this.selectedDate = day;
-                this.$emit("select", day);
-            }
-        },
-        clearDate() {
-            this.selectedDate = null;
-            this.$emit('clear');
+        handleInput (date) {
+            this.selectedDate = date;
+            this.$emit('input', date);
         }
     }
 });
@@ -1171,8 +1153,8 @@ var date_input_component = normalizeComponent(
 
 var datepicker_component = normalizeComponent(
   components_datepickervue_type_script_lang_js_,
-  datepickervue_type_template_id_a5f44e50_render,
-  datepickervue_type_template_id_a5f44e50_staticRenderFns,
+  datepickervue_type_template_id_6fbeef1b_render,
+  datepickervue_type_template_id_6fbeef1b_staticRenderFns,
   false,
   null,
   null,
@@ -3032,14 +3014,40 @@ var user_form_component = normalizeComponent(
 )
 
 /* harmony default export */ var user_form = (user_form_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"85014cd0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/article-form.vue?vue&type=template&id=0d895a13&
-var article_formvue_type_template_id_0d895a13_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{staticClass:"form-horizontal",attrs:{"action":"/"},on:{"submit":function($event){$event.preventDefault();}}},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.article_date },attrs:{"for":"article_date_picker"}},[_vm._v("Artikeldatum")]),_c('div',{staticClass:"col-3"},[_c('div',{staticClass:"col-12 input-group input-inline"},[_c('datepicker',{ref:"dateFrom",attrs:{"id":"article_date_picker","input-format":"d.m.y","output-format":"d.m.y"},on:{"select":_vm.setArticleDate,"clear":function($event){return _vm.setArticleDate(null)}}})],1)])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.display_from },attrs:{"for":"display_from_input"}},[_vm._v("Anzeige von")]),_c('div',{staticClass:"col-3"},[_c('div',{staticClass:"col-12 input-group input-inline"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.display_from),expression:"form.display_from"}],staticClass:"form-input",attrs:{"id":"display_from_input","maxlength":"10"},domProps:{"value":(_vm.form.display_from)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "display_from", $event.target.value)}}}),_c('button',{staticClass:"btn webfont-icon-only calendarPopper btn-primary",attrs:{"type":"button"}},[_vm._v("")])])])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.display_until },attrs:{"for":"display_until_input"}},[_vm._v("Anzeige bis")]),_c('div',{staticClass:"col-3"},[_c('div',{staticClass:"col-12 input-group input-inline"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.display_until),expression:"form.display_until"}],staticClass:"form-input",attrs:{"id":"display_until_input","maxlength":"10"},domProps:{"value":(_vm.form.display_until)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "display_until", $event.target.value)}}}),_c('button',{staticClass:"btn webfont-icon-only calendarPopper btn-primary",attrs:{"type":"button"}},[_vm._v("")])])])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.customsort },attrs:{"for":"custom_sort_input"}},[_vm._v("generische Sortierung")]),_c('div',{staticClass:"col-9"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.customsort),expression:"form.customsort"}],staticClass:"form-input col-2",attrs:{"id":"custom_sort_input","maxlength":"4"},domProps:{"value":(_vm.form.customsort)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "customsort", $event.target.value)}}})])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label"},[_vm._v("Markiert")]),_c('div',[_c('label',{staticClass:"form-switch"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.customflags),expression:"form.customflags"}],attrs:{"value":"1","type":"checkbox"},domProps:{"checked":Array.isArray(_vm.form.customflags)?_vm._i(_vm.form.customflags,"1")>-1:(_vm.form.customflags)},on:{"change":function($event){var $$a=_vm.form.customflags,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v="1",$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(_vm.form, "customflags", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(_vm.form, "customflags", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(_vm.form, "customflags", $$c)}}}}),_c('i',{staticClass:"form-icon"})])])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.articlecategoriesid },attrs:{"for":"articlecategoriesid_select"}},[_c('strong',[_vm._v("*Kategorie")])]),_c('div',{staticClass:"col-9"},[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.articlecategoriesid),expression:"form.articlecategoriesid"}],staticClass:"form-select",attrs:{"id":"articlecategoriesid_select"},on:{"change":function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.$set(_vm.form, "articlecategoriesid", $event.target.multiple ? $$selectedVal : $$selectedVal[0])}}},_vm._l((_vm.options.categories),function(option){return _c('option',{domProps:{"value":option.id}},[_vm._v(_vm._s(option.title))])}),0)])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.headline },attrs:{"for":"headline_input"}},[_c('strong',[_vm._v("*Überschrift/Titel")])]),_c('div',{staticClass:"col-9"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.headline),expression:"form.headline"}],staticClass:"form-input",attrs:{"id":"headline_input","maxlength":"200"},domProps:{"value":(_vm.form.headline)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "headline", $event.target.value)}}})])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",attrs:{"for":"subline_input"}},[_vm._v("Unterüberschrift")]),_c('div',{staticClass:"col-9"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.subline),expression:"form.subline"}],staticClass:"form-input",attrs:{"id":"subline_input","maxlength":"200"},domProps:{"value":(_vm.form.subline)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "subline", $event.target.value)}}})])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",attrs:{"for":"teaser_input"}},[_vm._v("Anrisstext")]),_c('div',{staticClass:"col-9"},[_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.teaser),expression:"form.teaser"}],staticClass:"form-input",attrs:{"id":"teaser_input","rows":"3"},domProps:{"value":(_vm.form.teaser)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "teaser", $event.target.value)}}})])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.content },attrs:{"for":"content_input"}},[_c('strong',[_vm._v("*Seiteninhalt")])]),_c('div',{staticClass:"col-9"},[_c('vue-ckeditor',{attrs:{"config":_vm.editorConfig,"id":"content_input"},model:{value:(_vm.form.content),callback:function ($$v) {_vm.$set(_vm.form, "content", $$v)},expression:"form.content"}})],1)]),_c('div',{staticClass:"divider"}),_c('div',{staticClass:"form-group"},[_c('button',{staticClass:"btn btn-success off-3 col-6",class:{'loading': _vm.loading},attrs:{"type":"button","disabled":_vm.loading},on:{"click":_vm.submit}},[_vm._v(_vm._s(_vm.form.id ? 'Daten übernehmen' : 'Artikel anlegen'))])])])}
-var article_formvue_type_template_id_0d895a13_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"85014cd0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/article-form.vue?vue&type=template&id=7c3bd1b2&
+var article_formvue_type_template_id_7c3bd1b2_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{staticClass:"form-horizontal",attrs:{"action":"/"},on:{"submit":function($event){$event.preventDefault();}}},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.article_date },attrs:{"for":"article_date_picker"}},[_vm._v("Artikeldatum")]),_c('div',{staticClass:"col-3"},[_c('div',{staticClass:"col-12 input-group input-inline"},[_c('datepicker',{ref:"dateArticle",attrs:{"id":"article_date_picker","input-format":"d.m.y","output-format":"d.m.y","day-names":'Mo Di Mi Do Fr Sa So'.split(' '),"month-names":'Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez'.split(' ')},model:{value:(_vm.form.article_date),callback:function ($$v) {_vm.$set(_vm.form, "article_date", $$v)},expression:"form.article_date"}})],1)])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.display_from },attrs:{"for":"display_from_picker"}},[_vm._v("Anzeige von")]),_c('div',{staticClass:"col-3"},[_c('div',{staticClass:"col-12 input-group input-inline"},[_c('datepicker',{ref:"dateFrom",attrs:{"id":"display_from_picker","input-format":"d.m.y","output-format":"d.m.y","day-names":'Mo Di Mi Do Fr Sa So'.split(' '),"month-names":'Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez'.split(' '),"valid-from":new Date()},model:{value:(_vm.form.display_from),callback:function ($$v) {_vm.$set(_vm.form, "display_from", $$v)},expression:"form.display_from"}})],1)])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.display_until },attrs:{"for":"display_until_picker"}},[_vm._v("Anzeige bis")]),_c('div',{staticClass:"col-3"},[_c('div',{staticClass:"col-12 input-group input-inline"},[_c('datepicker',{ref:"dateFrom",attrs:{"id":"display_until_picker","input-format":"d.m.y","output-format":"d.m.y","day-names":'Mo Di Mi Do Fr Sa So'.split(' '),"month-names":'Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez'.split(' '),"valid-from":new Date()},model:{value:(_vm.form.display_until),callback:function ($$v) {_vm.$set(_vm.form, "display_until", $$v)},expression:"form.display_until"}})],1)])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.customsort },attrs:{"for":"custom_sort_input"}},[_vm._v("generische Sortierung")]),_c('div',{staticClass:"col-9"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.customsort),expression:"form.customsort"}],staticClass:"form-input col-2",attrs:{"id":"custom_sort_input","maxlength":"4"},domProps:{"value":(_vm.form.customsort)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "customsort", $event.target.value)}}})])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label"},[_vm._v("Markiert")]),_c('div',[_c('label',{staticClass:"form-switch"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.customflags),expression:"form.customflags"}],attrs:{"value":"1","type":"checkbox"},domProps:{"checked":Array.isArray(_vm.form.customflags)?_vm._i(_vm.form.customflags,"1")>-1:(_vm.form.customflags)},on:{"change":function($event){var $$a=_vm.form.customflags,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v="1",$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(_vm.form, "customflags", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(_vm.form, "customflags", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(_vm.form, "customflags", $$c)}}}}),_c('i',{staticClass:"form-icon"})])])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.articlecategoriesid },attrs:{"for":"articlecategoriesid_select"}},[_c('strong',[_vm._v("*Kategorie")])]),_c('div',{staticClass:"col-9"},[_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.articlecategoriesid),expression:"form.articlecategoriesid"}],staticClass:"form-select",attrs:{"id":"articlecategoriesid_select"},on:{"change":function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.$set(_vm.form, "articlecategoriesid", $event.target.multiple ? $$selectedVal : $$selectedVal[0])}}},_vm._l((_vm.options.categories),function(option){return _c('option',{domProps:{"value":option.id}},[_vm._v(_vm._s(option.title))])}),0)])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.headline },attrs:{"for":"headline_input"}},[_c('strong',[_vm._v("*Überschrift/Titel")])]),_c('div',{staticClass:"col-9"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.headline),expression:"form.headline"}],staticClass:"form-input",attrs:{"id":"headline_input","maxlength":"200"},domProps:{"value":(_vm.form.headline)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "headline", $event.target.value)}}})])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",attrs:{"for":"subline_input"}},[_vm._v("Unterüberschrift")]),_c('div',{staticClass:"col-9"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.subline),expression:"form.subline"}],staticClass:"form-input",attrs:{"id":"subline_input","maxlength":"200"},domProps:{"value":(_vm.form.subline)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "subline", $event.target.value)}}})])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",attrs:{"for":"teaser_input"}},[_vm._v("Anrisstext")]),_c('div',{staticClass:"col-9"},[_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.teaser),expression:"form.teaser"}],staticClass:"form-input",attrs:{"id":"teaser_input","rows":"3"},domProps:{"value":(_vm.form.teaser)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "teaser", $event.target.value)}}})])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"col-3 form-label",class:{ 'text-error': _vm.errors.content },attrs:{"for":"content_input"}},[_c('strong',[_vm._v("*Seiteninhalt")])]),_c('div',{staticClass:"col-9"},[_c('vue-ckeditor',{attrs:{"config":_vm.editorConfig,"id":"content_input"},model:{value:(_vm.form.content),callback:function ($$v) {_vm.$set(_vm.form, "content", $$v)},expression:"form.content"}})],1)]),_c('div',{staticClass:"divider"}),_c('div',{staticClass:"form-group"},[_c('button',{staticClass:"btn btn-success off-3 col-3",class:{'loading': _vm.loading},attrs:{"type":"button","disabled":_vm.loading},on:{"click":_vm.submit}},[_vm._v(_vm._s(_vm.form.id ? 'Daten übernehmen' : 'Artikel anlegen'))])])])}
+var article_formvue_type_template_id_7c3bd1b2_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/forms/article-form.vue?vue&type=template&id=0d895a13&
+// CONCATENATED MODULE: ./vue/components/forms/article-form.vue?vue&type=template&id=7c3bd1b2&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/article-form.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3170,22 +3178,34 @@ var article_formvue_type_template_id_0d895a13_staticRenderFns = []
     watch: {
         initialData (newValue) {
             this.form = Object.assign({}, this.form, newValue);
+            this.setDates();
         }
     },
 
     mounted () {
         this.form = Object.assign({}, this.form, this.initialData);
+        this.setDates();
     },
 
     methods: {
-        async submit() {
+        async submit () {
             this.loading = true;
-            this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(this.form));
+            let payload = Object.assign({}, this.form);
+            Object.keys(payload).forEach(prop => {
+                if(payload[prop] instanceof Date) {
+                    payload[prop] = payload[prop].getFullYear() + '-' + (payload[prop].getMonth() + 1) + '-' + payload[prop].getDate();
+                }
+            });
+            this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(payload));
             this.$emit("response-received", this.response);
             this.loading = false;
         },
-        setArticleDate(date) {
-            this.form.article_date = date;
+        setDates () {
+            ['article_date', 'display_from', 'display_until'].forEach(item => {
+                if (this.form[item] && !(this.form[item] instanceof Date)) {
+                    this.form[item] = new Date(this.form[item]);
+                }
+            });
         }
     }
 });
@@ -3202,8 +3222,8 @@ var article_formvue_type_template_id_0d895a13_staticRenderFns = []
 
 var article_form_component = normalizeComponent(
   forms_article_formvue_type_script_lang_js_,
-  article_formvue_type_template_id_0d895a13_render,
-  article_formvue_type_template_id_0d895a13_staticRenderFns,
+  article_formvue_type_template_id_7c3bd1b2_render,
+  article_formvue_type_template_id_7c3bd1b2_staticRenderFns,
   false,
   null,
   null,

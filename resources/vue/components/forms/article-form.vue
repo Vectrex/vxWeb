@@ -31,7 +31,6 @@
                         :day-names="'Mo Di Mi Do Fr Sa So'.split(' ')"
                         :month-names="'Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez'.split(' ')"
                         :valid-from="new Date()"
-                        :valid-until="new Date()"
                     ></datepicker>
                 </div>
             </div>
@@ -50,7 +49,6 @@
                             :day-names="'Mo Di Mi Do Fr Sa So'.split(' ')"
                             :month-names="'Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez'.split(' ')"
                             :valid-from="new Date()"
-                            :valid-until="new Date()"
                     ></datepicker>
                 </div>
             </div>
@@ -113,7 +111,7 @@
         <div class="divider"></div>
 
         <div class="form-group">
-            <button type='button' @click="submit" class='btn btn-success off-3 col-6' :class="{'loading': loading}" :disabled="loading">{{ form.id ? 'Daten übernehmen' : 'Artikel anlegen' }}</button>
+            <button type='button' @click="submit" class='btn btn-success off-3 col-3' :class="{'loading': loading}" :disabled="loading">{{ form.id ? 'Daten übernehmen' : 'Artikel anlegen' }}</button>
         </div>
     </form>
 </template>
@@ -168,7 +166,13 @@
         methods: {
             async submit () {
                 this.loading = true;
-                this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(this.form));
+                let payload = Object.assign({}, this.form);
+                Object.keys(payload).forEach(prop => {
+                    if(payload[prop] instanceof Date) {
+                        payload[prop] = payload[prop].getFullYear() + '-' + (payload[prop].getMonth() + 1) + '-' + payload[prop].getDate();
+                    }
+                });
+                this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(payload));
                 this.$emit("response-received", this.response);
                 this.loading = false;
             },
