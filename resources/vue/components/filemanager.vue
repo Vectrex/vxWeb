@@ -36,10 +36,10 @@
                         ref="addFolderInput">
                 <button
                         v-if="!showAddFolderInput"
-                        class="btn with-webfont-icon-right btn-primary"
+                        class="btn webfont-icon-only btn-primary tooltip"
+                        data-tooltip="Verzeichnis erstellen"
                         type="button"
-                        data-icon=""
-                        @click="showAddFolderInput = true">Verzeichnis anlegen</button>
+                        @click="showAddFolderInput = true"></button>
             </section>
         </div>
         <sortable
