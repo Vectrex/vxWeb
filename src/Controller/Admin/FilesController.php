@@ -22,6 +22,7 @@ use vxPHP\Application\Application;
 use vxWeb\Model\Article\Article;
 use vxPHP\Constraint\Validator\RegularExpression;
 
+use vxWeb\Model\Article\Exception\ArticleException;
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\MetaFile\MetaFolder;
 use vxWeb\Model\MetaFile\Exception\MetaFileException;
@@ -860,6 +861,20 @@ class FilesController extends Controller
 
     private function getFileRows (MetaFolder $folder): array
     {
+        $route = Application::getInstance()->getCurrentRoute();
+
+        if(in_array($route->getRouteId(), ['article_files_init', 'article_folder_read']) && ($articleId = $this->request->query->getInt('article'))) {
+            try {
+                $linkedFiles = Article::getInstance($articleId)->getLinkedMetaFiles();
+            }
+            catch (ArticleException $e) {
+                $linkedFiles = [];
+            }
+        }
+        else {
+            $linkedFiles = [];
+        }
+
         $files = [];
 
         foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
@@ -872,6 +887,7 @@ class FilesController extends Controller
                 'size' => $f->getFileInfo()->getSize(),
                 'modified' => (new \DateTime())->setTimestamp($f->getFileInfo()->getMTime())->format('Y-m-d H:i:s'),
                 'type' => $f->getMimetype(),
+                'linked' => in_array($f, $linkedFiles)
             ];
 
             if($row['image']) {

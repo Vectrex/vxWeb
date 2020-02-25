@@ -35,8 +35,8 @@
 		<page id="article_update" controller="admin/articles" method="update" auth="privileged" request_methods="POST" />
 		<page id="article_publish" controller="admin/articles" method="publish" auth="superadmin" request_methods="POST" />
 
-		<page id="article_file_upload" controller="admin/files" method="fileUpload" request_methods="POST" />
 		<page id="article_files_init" controller="admin/files" method="init" auth="privileged" />
+		<page id="article_file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
 		<page id="article_folder_read" controller="admin/files" method="folderRead" auth="privileged" />
 
 		<page id="articlesXhr" controller="admin/articles" method="xhrExecute" auth="privileged" />

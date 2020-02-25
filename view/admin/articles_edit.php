@@ -47,7 +47,7 @@
     </section>
 
     <section id="article-files" v-if="activeTabIndex === 1">
-        <filemanager :routes="fmProps.routes" :columns="fmProps.cols" :init-sort="fmProps.initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
+        <filemanager :routes="fmRoutes" :columns="fmProps.cols" :init-sort="fmProps.initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
             <template v-slot:action="slotProps">
                 <button v-if="slotProps.row.isFolder" class="btn webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
                 <template v-else>
@@ -57,7 +57,7 @@
                 </template>
             </template>
             <template v-slot:linked="slotProps">
-                <label class="form-checkbox" v-if="!slotProps.row.isFolder"><input type="checkbox" @click="handleLink(slotProps.row)"><i class="form-icon"></i></label>
+                <label class="form-checkbox" v-if="!slotProps.row.isFolder"><input type="checkbox" @click="handleLink(slotProps.row)" :checked="slotProps.row.linked"><i class="form-icon"></i></label>
             </template>
         </filemanager>
     </section>
@@ -89,6 +89,25 @@
             "article-form": ArticleForm
         },
 
+        computed: {
+            fmRoutes () {
+                return {
+                    init: "<?= $router->getRoute('article_files_init')->getUrl() ?>?article=" + this.instanceId,
+                    uploadFile: "<?= $router->getRoute('article_file_upload')->getUrl() ?>?article=" + this.instanceId,
+                    readFolder: "<?= $router->getRoute('article_folder_read')->getUrl() ?>?article=" + this.instanceId,
+                    getFile: "<?= $router->getRoute('file_get')->getUrl() ?>",
+                    updateFile: "<?= $router->getRoute('file_update')->getUrl() ?>",
+                    delFile: "<?= $router->getRoute('file_del')->getUrl() ?>",
+                    renameFile: "<?= $router->getRoute('file_rename')->getUrl() ?>",
+                    moveFile: "<?= $router->getRoute('file_move')->getUrl() ?>",
+                    getFoldersTree: "<?= $router->getRoute('folders_tree')->getUrl() ?>",
+                    delFolder: "<?= $router->getRoute('folder_del')->getUrl() ?>",
+                    renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
+                    addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>"
+                }
+            }
+        },
+
         data: {
             instanceId: <?= isset($this->article) ? $this->article->getId() : 'null' ?>,
             activeTabIndex: 0,
@@ -108,20 +127,6 @@
                 form: {}
             },
             fmProps: {
-                routes: {
-                    init: "<?= $router->getRoute('article_files_init')->getUrl() ?>",
-                    uploadFile: "<?= $router->getRoute('article_file_upload')->getUrl() ?>",
-                    readFolder: "<?= $router->getRoute('article_folder_read')->getUrl() ?>",
-                    getFile: "<?= $router->getRoute('file_get')->getUrl() ?>",
-                    updateFile: "<?= $router->getRoute('file_update')->getUrl() ?>",
-                    delFile: "<?= $router->getRoute('file_del')->getUrl() ?>",
-                    renameFile: "<?= $router->getRoute('file_rename')->getUrl() ?>",
-                    moveFile: "<?= $router->getRoute('file_move')->getUrl() ?>",
-                    getFoldersTree: "<?= $router->getRoute('folders_tree')->getUrl() ?>",
-                    delFolder: "<?= $router->getRoute('folder_del')->getUrl() ?>",
-                    renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
-                    addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>"
-                },
                 cols: [
                     {
                         label: "Dateiname",
