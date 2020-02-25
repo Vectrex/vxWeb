@@ -17,11 +17,10 @@
   },
   "browserslist": [
     "last 3 Chrome versions",
-    "Edge >= 14",
+    "Edge >= 17",
     "Firefox ESR",
     "last 3 Safari versions",
-    "last 3 Opera versions",
-    "IE >= 11"
+    "not IE 11"
   ],
   "scripts": {
     "vue-backend-build": "vue-cli-service build --target lib --dest 'dist/vue' --name vxweb ./vue/vxweb.js"
