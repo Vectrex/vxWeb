@@ -18,7 +18,9 @@ import UserForm from './components/forms/user-form';
 import ArticleForm from './components/forms/article-form';
 
 import { formatFilesize } from './filters';
-import { Focus, Bubble} from "./directives";
+import { Focus, Bubble} from './directives';
+
+import { ContainerMixin, ElementMixin } from 'vue-slicksort';
 
 const Components = {
     MessageToast,
@@ -43,8 +45,13 @@ const Filters = {
 };
 
 const Directives = {
-  Focus,
-  Bubble
+    Focus,
+    Bubble
 };
 
-export { Components, Filters, Directives };
+const Mixins = {
+    ContainerMixin,
+    ElementMixin
+};
+
+export { Components, Filters, Directives, Mixins };

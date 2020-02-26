@@ -283,7 +283,24 @@ class ArticlesController extends Controller {
         );
     }
 
-	protected function xhrExecute() {
+    protected function fileLink (): JsonResponse
+    {
+        try {
+            $article = Article::getInstance($this->request->query->getInt('article'));
+            $file = MetaFile::getInstance(null, $this->request->query->getInt('file'));
+        }
+        catch(\Exception $e) {
+            return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
+        }
+        if (in_array($file, $article->getLinkedMetaFiles())) {
+            $article->unlinkMetaFile($file)->save();
+            return new JsonResponse(['success' => true, 'status' => 'unlinked']);
+        }
+        $article->linkMetaFile($file)->save();
+        return new JsonResponse(['success' => true, 'status' => 'linked']);
+    }
+
+    protected function xhrExecute() {
 
 		// id comes either via URL or as an extra form field
 

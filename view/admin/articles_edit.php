@@ -59,22 +59,35 @@
             <template v-slot:linked="slotProps">
                 <label class="form-checkbox" v-if="!slotProps.row.isFolder"><input type="checkbox" @click="handleLink(slotProps.row)" :checked="slotProps.row.linked"><i class="form-icon"></i></label>
             </template>
+            <template v-slot:linked-header="slotProps">&#128279;</template>
         </filemanager>
     </section>
 
     <section id="article-files-sort" v-if="activeTabIndex === 2">
-        <h1>Sort</h1>
+        <sortable-list v-model="fmProps.cols" lock-axis="y" helper-class="menu">
+            <sortable-item v-for="(item, ndx) in fmProps.cols" :index="ndx" :key="ndx">
+                <div class="tile-content"><div class="tile-title p-2">{{ item.label }}</div></div>
+            </sortable-item>
+        </sortable-list>
     </section>
 </div>
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-    const components = window.vxweb.Components;
+    const components = window.vxweb.Components, mixins = window.vxweb.Mixins;
     const MessageToast = components.MessageToast;
     const Tab = components.Tab;
     const Filemanager = components.Filemanager;
     const SimpleFetch =  components.SimpleFetch;
     const ArticleForm = components.ArticleForm;
+
+    const SortableList = {
+        mixins: [mixins.ContainerMixin], template: '<div><slot /></div>'
+    };
+
+    const SortableItem = {
+        mixins: [mixins.ElementMixin], props: ['item'], template: '<div class="tile tile-centered"><slot>{{ item }}</slot></div>'
+    };
 
     Vue.component('z-link', components.ZLink);
 
@@ -86,7 +99,9 @@
             "message-toast": MessageToast,
             "tab": Tab,
             "filemanager": Filemanager,
-            "article-form": ArticleForm
+            "article-form": ArticleForm,
+            "sortable-list": SortableList,
+            "sortable-item": SortableItem
         },
 
         computed: {
@@ -112,7 +127,7 @@
             instanceId: <?= isset($this->article) ? $this->article->getId() : 'null' ?>,
             activeTabIndex: 0,
             tabItems: [
-                { name: 'Inhalt'},
+                { name: 'Inhalt' },
                 { name: 'Dateien' },
                 { name: 'Sortierung' }
             ],
@@ -145,11 +160,11 @@
                             return a.name.toLowerCase() === b.name.toLowerCase() ? 0 : a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1;
                         }
                     },
-                    {label: "", sortable: true, prop: "linked"},
-                    {label: "Größe", sortable: true, prop: "size"},
-                    {label: "Typ/Vorschau", sortable: true, prop: "type"},
-                    {label: "Erstellt", sortable: true, prop: "modified"},
-                    {label: "", prop: "action"}
+                    { label: "Link", sortable: true, prop: "linked" },
+                    { label: "Größe", sortable: true, prop: "size" },
+                    { label: "Typ/Vorschau", sortable: true, prop: "type" },
+                    { label: "Erstellt", sortable: true, prop: "modified" },
+                    { label: "", prop: "action" }
                 ],
                 initSort: {}
             },
@@ -178,7 +193,8 @@
         },
 
         routes: {
-            init: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_init')->getUrl() ?>"
+            init: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_init')->getUrl() ?>",
+            link: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_link_file')->getUrl() ?>"
         },
 
         async created () {
@@ -205,11 +221,14 @@
                 });
                 this.$refs.toast.isActive = true;
             },
+            async handleLink (row) {
+                let response = await SimpleFetch(this.$options.routes.link + "?article=" + this.instanceId + "&file=" + row.id, 'POST');
+                if(response.success) {
+                    row.linked = response.status === 'linked';
+                }
+            },
             storeSort (sort) {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: sort.sortColumn.prop, dir: sort.sortDir }));
-            },
-            handleLink (row) {
-                console.log(row);
             }
         }
     });
