@@ -48,6 +48,16 @@
     max-width: 8rem;
 }
 
+.slick-sort-item
+{
+    padding: .4rem .8rem; -webkit-user-select: none;    -moz-user-select: none;     -ms-user-select: none;         user-select: none; border-bottom: solid 1px #adb5b9; background: #fff;
+}
+
+.slick-sort-helper
+{
+    background: #b5e1ff;
+}
+
 /*! Spectre.css v0.5.8 | MIT License | github.com/picturepan2/spectre */
 /* Manually forked from Normalize.css */
 /* normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
@@ -892,11 +902,6 @@ legend
 .form-input:focus
 {border-color: #0089cc; 
     box-shadow: 0 0 0 .1rem rgba(0, 137, 204, .2);
-}
-
-.form-input:-ms-input-placeholder
-{
-    color: #adb5b9;
 }
 
 .form-input::-ms-input-placeholder

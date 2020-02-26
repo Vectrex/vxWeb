@@ -1,0 +1,15 @@
+@import "../../node_modules/spectre.css/src/variables";
+
+.slick-sort {
+}
+
+.slick-sort-item {
+  padding: $unit-2 $unit-4;
+  background: $bg-color-light;
+  border-bottom: solid 1px $gray-color;
+  user-select: none;
+}
+
+.slick-sort-helper {
+  background: $secondary-color-light;
+}

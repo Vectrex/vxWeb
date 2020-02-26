@@ -64,9 +64,9 @@
     </section>
 
     <section id="article-files-sort" v-if="activeTabIndex === 2">
-        <sortable-list v-model="fmProps.cols" lock-axis="y" helper-class="menu">
+        <sortable-list v-model="fmProps.cols" lock-axis="y" helper-class="slick-sort-helper" press-delay="200">
             <sortable-item v-for="(item, ndx) in fmProps.cols" :index="ndx" :key="ndx">
-                <div class="tile-content"><div class="tile-title p-2">{{ item.label }}</div></div>
+                <span>{{ item.label }}</span> <a :href="'https://google.com'">Link</a>
             </sortable-item>
         </sortable-list>
     </section>
@@ -86,7 +86,7 @@
     };
 
     const SortableItem = {
-        mixins: [mixins.ElementMixin], props: ['item'], template: '<div class="tile tile-centered"><slot>{{ item }}</slot></div>'
+        mixins: [mixins.ElementMixin], props: ['item'], template: '<div class="slick-sort-item"><slot>{{ item }}</slot></div>'
     };
 
     Vue.component('z-link', components.ZLink);
