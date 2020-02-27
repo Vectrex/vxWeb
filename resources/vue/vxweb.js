@@ -18,7 +18,7 @@ import UserForm from './components/forms/user-form';
 import ArticleForm from './components/forms/article-form';
 
 import { formatFilesize } from './filters';
-import { Focus, Bubble} from './directives';
+import { Focus, Bubble } from './directives';
 
 import { ContainerMixin, ElementMixin } from 'vue-slicksort';
 

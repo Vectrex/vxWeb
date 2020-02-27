@@ -72,7 +72,12 @@ class FilesController extends Controller
     protected function init(): JsonResponse
     {
         try {
-            $folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
+            if(($id = $this->request->query->getInt('folder'))) {
+                $folder = MetaFolder::getInstance(null, $id);
+            }
+            else {
+                $folder = MetaFolder::getInstance(ltrim(FILES_PATH, '/'));
+            }
 
             File::cleanupMetaFolder($folder);
 
@@ -80,7 +85,7 @@ class FilesController extends Controller
                 'files' => $this->getFileRows($folder),
                 'folders' => $this->getFolderRows($folder),
                 'breadcrumbs' => $this->getBreadcrumbs($folder),
-                'currentFolder' => ['id' => $folder->getId(), 'name' => $folder->getName()]
+                'currentFolder' => $folder->getId()
             ]);
 
         } catch (MetaFolderException $e) {
@@ -158,7 +163,7 @@ class FilesController extends Controller
 
     protected function folderRead (): JsonResponse
     {
-        if(!($id = $this->request->query->getInt('id'))) {
+        if(!($id = $this->request->query->getInt('folder'))) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
@@ -236,7 +241,7 @@ class FilesController extends Controller
 
     protected function fileUpload (): JsonResponse
     {
-        $id = $this->request->query->get('id');
+        $id = $this->request->query->get('folder');
 
         if(!$id) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
@@ -280,7 +285,7 @@ class FilesController extends Controller
 
     protected function folderDel (): JsonResponse
     {
-        if(!($id = $this->request->query->getInt('id'))) {
+        if(!($id = $this->request->query->getInt('folder'))) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         try {
@@ -296,7 +301,7 @@ class FilesController extends Controller
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
-        if (!($id = $bag->getInt('id'))) {
+        if (!($id = $bag->getInt('folder'))) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         try {
@@ -345,9 +350,9 @@ class FilesController extends Controller
         }
     }
 
-    protected function getFoldersTree ()
+    protected function getFoldersTree (): JsonResponse
     {
-        $id = $this->request->query->getInt('id');
+        $id = $this->request->query->getInt('folder');
 
         if($id) {
             try {
@@ -713,10 +718,10 @@ class FilesController extends Controller
 
     private function getBreadcrumbs (MetaFolder $folder): array
     {
-        $breadcrumbs = [['name' => $folder->getName(), 'id' => $folder->getId()]];
+        $breadcrumbs = [['name' => $folder->getName(), 'folder' => $folder->getId()]];
 
         while (($folder = $folder->getParentMetafolder())) {
-            array_unshift($breadcrumbs, ['name' => $folder->getName(), 'id' => $folder->getId()]);
+            array_unshift($breadcrumbs, ['name' => $folder->getName(), 'folder' => $folder->getId()]);
         }
 
         return $breadcrumbs;

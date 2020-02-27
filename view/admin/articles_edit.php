@@ -47,7 +47,14 @@
     </section>
 
     <section id="article-files" v-if="activeTabIndex === 1">
-        <filemanager :routes="fmRoutes" :columns="fmProps.cols" :init-sort="fmProps.initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
+        <filemanager
+            :routes="fmRoutes"
+            :columns="fmProps.cols"
+            :init-sort="fmProps.initSort"
+            ref="fm"
+            @response-received="handleResponse"
+            @after-sort="storeSort"
+        >
             <template v-slot:action="slotProps">
                 <button v-if="slotProps.row.isFolder" class="btn webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
                 <template v-else>

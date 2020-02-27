@@ -10,11 +10,12 @@
             <section class="navbar-section">
             <span class="btn-group">
                 <button
-                        v-for="breadcrumb in breadcrumbs"
-                        class="btn"
-                        :key="breadcrumb.id"
-                        :class="{'active': breadcrumb.id === currentFolder.id }"
-                        @click="readFolder(breadcrumb)">{{ breadcrumb.name }}</button>
+                    v-for="(breadcrumb, ndx) in breadcrumbs"
+                    class="btn"
+                    :key="ndx"
+                    :class="{'active': breadcrumb.folder === currentFolder }"
+                    @click="readFolder(breadcrumb.folder)">{{ breadcrumb.name }}
+                </button>
             </span>
             </section>
             <section class="navbar-section">
@@ -62,7 +63,7 @@
                             @blur="toRename = null"
                     >
                     <template v-else>
-                        <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row)">{{ slotProps.row.name }}</a>
+                        <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row.id)">{{ slotProps.row.name }}</a>
                         <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2" data-tooltip="Umbenennen" @click="toRename = slotProps.row">&#xe001;</button>
                     </template>
                 </template>
@@ -131,6 +132,7 @@
     import FileEditForm from './forms/file-edit-form';
     import SimpleFetch from "../util/simple-fetch";
     import PromisedXhr from "../util/promised-xhr";
+    import UrlQuery from "../util/url-query";
     import { formatFilesize } from '../filters';
     import { Focus } from "../directives";
 
@@ -142,7 +144,7 @@
         data () {
             return {
                 root: {},
-                currentFolder: {},
+                currentFolder: null,
                 files: [],
                 folders: [],
                 breadcrumbs: [],
@@ -177,32 +179,39 @@
         props: {
             routes: { type: Object, required: true },
             columns: { type: Array, required: true },
+            folder: { type: String, default: '' },
             initSort: { type: Object }
         },
 
+        watch: {
+            folder (newValue) {
+                this.currentFolder = newValue;
+            }
+        },
+
         async created () {
-            let response = await SimpleFetch(this.routes.init);
+            let response = await SimpleFetch(UrlQuery.create(this.routes.init, { folder: this.folder }));
 
             this.breadcrumbs = response.breadcrumbs || [];
             this.files = response.files || [];
             this.folders = response.folders || [];
-            this.currentFolder = response.currentFolder;
+            this.currentFolder = response.currentFolder || null;
         },
 
         methods: {
-            async readFolder (row) {
-                let response = await SimpleFetch(this.routes.readFolder + '?id=' + row.id);
+            async readFolder (id) {
+                let response = await SimpleFetch(UrlQuery.create(this.routes.readFolder, { folder: id }));
 
                 if(response.success) {
                     this.files = response.files || [];
                     this.folders = response.folders || [];
-                    this.currentFolder = row;
+                    this.currentFolder = id;
                     if(!this.breadcrumbs) {
                         return;
                     }
                     if(
                         response.breadcrumbs.length >= this.breadcrumbs.length ||
-                        this.breadcrumbs.map(item => item.id).join().indexOf(response.breadcrumbs.map(item => item.id).join()) !== 0
+                        this.breadcrumbs.map(item => item.folder).join().indexOf(response.breadcrumbs.map(item => item.folder).join()) !== 0
                     ) {
                         this.breadcrumbs = response.breadcrumbs;
                     }
@@ -210,14 +219,14 @@
             },
             async editFile (row) {
                 this.showEditForm = true;
-                let response = await SimpleFetch(this.routes.getFile + '?id=' + row.id);
+                let response = await SimpleFetch(UrlQuery.create(this.routes.getFile, { id: row.id }));
                 this.editFormData = response.form || {};
                 this.editFileInfo = response.fileInfo || {};
                 this.editFormData.id = row.id;
             },
             async delFile (row) {
                 if(window.confirm("Datei '" + row.name + "' wirklich löschen?")) {
-                    let response = await SimpleFetch(this.routes.delFile + '?id=' + row.id, 'DELETE');
+                    let response = await SimpleFetch(UrlQuery.create(this.routes.delFile, { id: row.id }), 'DELETE');
                     if(response.success) {
                         this.files.splice(this.files.findIndex(item => row === item), 1);
                     }
@@ -236,9 +245,9 @@
             async renameFolder (event) {
                 let name = event.target.value.trim();
                 if(name && this.toRename) {
-                    let response = await SimpleFetch(this.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, id: this.toRename.id }));
+                    let response = await SimpleFetch(this.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, folder: this.toRename.id }));
                     if(response.success) {
-                        let ndx = this.breadcrumbs.findIndex(item => item.id === this.toRename.id);
+                        let ndx = this.breadcrumbs.findIndex(item => item.folder === this.toRename.id);
                         if (ndx !== -1) {
                             this.breadcrumbs[ndx].name = response.name;
                         }
@@ -249,10 +258,10 @@
             },
             async delFolder (row) {
                 if(window.confirm("Ordner und Inhalt von '" + row.name + "' wirklich löschen?")) {
-                    let response = await SimpleFetch(this.routes.delFolder + '?id=' + row.id, 'DELETE');
+                    let response = await SimpleFetch(UrlQuery.create(this.routes.delFolder, { folder: row.id }), 'DELETE');
                     if(response.success) {
                         this.folders.splice(this.folders.findIndex(item => row === item), 1);
-                        let ndx = this.breadcrumbs.findIndex(item => item.id === row.id);
+                        let ndx = this.breadcrumbs.findIndex(item => item.folder === row.id);
                         if (ndx !== -1) {
                             this.breadcrumbs.splice(ndx);
                         }
@@ -262,7 +271,7 @@
             async addFolder () {
                 let name = this.$refs.addFolderInput.value.trim();
                 if(name) {
-                    let response = await SimpleFetch(this.routes.addFolder, 'POST', {}, JSON.stringify({name: name, parent: this.currentFolder.id }));
+                    let response = await SimpleFetch(this.routes.addFolder, 'POST', {}, JSON.stringify({ name: name, parent: this.currentFolder }));
                     if(response.success) {
                         this.showAddFolderInput = false;
                     }
@@ -273,7 +282,7 @@
             },
             async getFolderTree (row) {
                 this.toMove = row;
-                let response = await SimpleFetch(this.routes.getFoldersTree + '?id=' + this.currentFolder.id);
+                let response = await SimpleFetch(UrlQuery.create(this.routes.getFoldersTree, { folder: this.currentFolder }));
                 this.showFolderTree = true;
                 this.root = response;
             },
@@ -313,7 +322,7 @@
                     this.progress.file = file.name;
                     try {
                         response = await PromisedXhr(
-                            this.routes.uploadFile + '?id=' + this.currentFolder.id,
+                            this.routes.uploadFile + '?folder=' + this.currentFolder,
                             'POST',
                             {
                                 'Content-type': file.type || 'application/octet-stream',
