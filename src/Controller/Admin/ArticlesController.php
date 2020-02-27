@@ -12,6 +12,7 @@ use vxPHP\Controller\Controller;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 
+use vxWeb\Model\MetaFile\Exception\MetaFileException;
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\Article\ArticleQuery;
 use vxWeb\Model\Article\Article;
@@ -298,6 +299,31 @@ class ArticlesController extends Controller {
         }
         $article->linkMetaFile($file)->save();
         return new JsonResponse(['success' => true, 'status' => 'linked']);
+    }
+
+    protected function getLinkedFiles (): JsonResponse
+    {
+        try {
+            $article = Article::getInstance($this->request->query->getInt('article'));
+        }
+        catch (MetaFileException $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $rows = [];
+
+        foreach($article->getLinkedMetaFiles() as $mf) {
+            $rows[] = [
+                'id' => $mf->getId(),
+                'folderid' => $mf->getMetaFolder()->getId(),
+                'filename' => $mf->getFilename(),
+                'isThumb' => $mf->isWebImage(),
+                'type' => $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
+                'path' => $mf->getMetaFolder()->getRelativePath()
+            ];
+        }
+
+        return new JsonResponse(['files' => $rows]);
     }
 
     protected function xhrExecute() {
