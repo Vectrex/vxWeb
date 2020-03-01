@@ -34,10 +34,10 @@
     </div>
 
     <message-toast
-            :message="toastProps.message"
-            :classname="toastProps.messageClass"
-            :active="toastProps.isActive"
-            ref="toast"
+        :message="toastProps.message"
+        :classname="toastProps.messageClass"
+        :active="toastProps.isActive"
+        ref="toast"
     ></message-toast>
 
     <tab :items="tabItems" :active-index="activeTabIndex" v-on:update:active-index="switchTabs"></tab>
@@ -51,6 +51,7 @@
             :routes="fmRoutes"
             :columns="fmProps.cols"
             :init-sort="fmProps.initSort"
+            :folder="fmProps.folder"
             ref="fm"
             @response-received="handleResponse"
             @after-sort="storeSort"
@@ -66,12 +67,12 @@
             <template v-slot:linked="slotProps">
                 <label class="form-checkbox" v-if="!slotProps.row.isFolder"><input type="checkbox" @click="handleLink(slotProps.row)" :checked="slotProps.row.linked"><i class="form-icon"></i></label>
             </template>
-            <template v-slot:linked-header="slotProps">&#128279;</template>
+            <template v-slot:linked-header="slotProps"><span class="webfont-icon-only">&#xe013;</span></template>
         </filemanager>
     </section>
 
     <section id="article-files-sort" v-if="activeTabIndex === 2">
-        <filesort-list v-model="linkedFiles" lock-axis="y" helper-class="slick-sort-helper" @input="saveSort">
+        <filesort-list v-model="linkedFiles" lock-axis="y" helper-class="slick-sort-helper" @input="saveSort" :use-drag-handle="true">
             <template v-slot:row="slotProps">
                 <div class="d-inline-block col-2">{{ slotProps.item.filename }}</div>
                 <div class="d-inline-block col-2">
@@ -81,7 +82,7 @@
                 <div class="d-inline-block col-1">
                     <button class="btn webfont-icon-only tooltip" data-tooltip="Verlinkung entfernen" type="button" @click="unlinkSort(slotProps.item)">&#xe014;</button>
                 </div>
-                <a class="d-inline-block col-3" :href="slotProps.item.folderid">{{ slotProps.item.path }}</a>
+                <a class="d-inline-block col-3" :href="'#' + slotProps.item.folderid" @click.prevent="gotoFolder(slotProps.item.folderid)">{{ slotProps.item.path }}</a>
             </template>
         </filesort-list>
     </section>
@@ -130,9 +131,9 @@
             linkedFiles: [],
             activeTabIndex: 0,
             tabItems: [
-                { name: 'Inhalt' },
-                { name: 'Dateien' },
-                { name: 'Sortierung' }
+                { name: 'Inhalt', disabled: true },
+                { name: 'Dateien', disabled: true },
+                { name: 'Sortierung', disabled: true }
             ],
             toastProps: {
                 message: "",
@@ -169,7 +170,8 @@
                     { label: "Erstellt", sortable: true, prop: "modified" },
                     { label: "", prop: "action" }
                 ],
-                initSort: {}
+                initSort: {},
+                folder: null
             },
             editorConfig: {
                 extraAllowedContent: "div(*)",
@@ -254,6 +256,10 @@
             unlinkSort (file) {
                 this.linkedFiles.splice(this.linkedFiles.indexOf(file), 1);
                 this.saveSort();
+            },
+            gotoFolder (folderId) {
+                this.fmProps.folder = folderId;
+                this.switchTabs(1);
             }
         }
     });

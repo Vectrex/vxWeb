@@ -5156,6 +5156,16 @@ a.text-error:visited
     font-family: icomoon; content: '\e023';
 }
 
+.tab-item a
+{
+    cursor: pointer;
+}
+
+.tab-item a.disabled
+{
+    cursor: not-allowed;
+}
+
 .pagination a
 {
     cursor: pointer;

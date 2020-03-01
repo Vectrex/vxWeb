@@ -1,0 +1,9 @@
+.tab-item {
+  a {
+    cursor: pointer;
+
+    &.disabled {
+      cursor: not-allowed;
+    }
+  }
+}

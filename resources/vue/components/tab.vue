@@ -1,13 +1,13 @@
 <template>
   <div>
-    <ul class="tab" :class="{'tab-block': block}" v-if="items.length">
+    <ul class="tab" :class="{ 'tab-block': block }" v-if="items.length">
       <li
         v-for="(item, ndx) in items"
         v-bind:key="ndx"
         class="tab-item"
         :class="{ active: activeIndex === ndx }"
       >
-        <z-link :badge="item.badge" :name="item.name" @click="itemOnClick(item)" :class="{ 'disabled': item.disabled }"/>
+        <z-link :badge="item.badge" :name="item.name" @click="itemOnClick(item)" :class="{ disabled: item.disabled }" />
       </li>
       <li v-if="hasActionSlot" class="tab-item tab-action">
           <slot name="action"/>
@@ -37,7 +37,7 @@ export default {
 
   data() {
     return {
-      activeTab: {},
+      activeTab: {}
     };
   },
 
