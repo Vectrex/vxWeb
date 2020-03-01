@@ -275,7 +275,11 @@ class FilesController extends Controller
                 }
             }
 
-            MetaFile::createMetaFile($file);
+            $mf = MetaFile::createMetaFile($file);
+
+            if($this->request->query->getInt('article')) {
+                Article::getInstance($this->request->query->getInt('article'))->linkMetaFile($mf)->save();
+            }
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
         }
@@ -642,7 +646,7 @@ class FilesController extends Controller
     {
         $route = Application::getInstance()->getCurrentRoute();
 
-        if(in_array($route->getRouteId(), ['article_files_init', 'article_folder_read']) && ($articleId = $this->request->query->getInt('article'))) {
+        if(in_array($route->getRouteId(), ['article_files_init', 'article_folder_read', 'article_file_upload']) && ($articleId = $this->request->query->getInt('article'))) {
             try {
                 $linkedFiles = Article::getInstance($articleId)->getLinkedMetaFiles();
             }

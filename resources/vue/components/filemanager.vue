@@ -324,7 +324,7 @@
                     this.progress.file = file.name;
                     try {
                         response = await PromisedXhr(
-                            this.routes.uploadFile + '?folder=' + this.currentFolder,
+                            UrlQuery.create(this.routes.uploadFile, { folder: this.currentFolder }),
                             'POST',
                             {
                                 'Content-type': file.type || 'application/octet-stream',

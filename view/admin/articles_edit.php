@@ -202,7 +202,6 @@
             link: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_link_file')->getUrl() ?>",
             getLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('get_linked_files')->getUrl() ?>",
             updateLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('update_linked_files')->getUrl() ?>"
-
         },
 
         async created () {
@@ -223,6 +222,7 @@
 
         methods: {
             handleResponse (response) {
+                this.instanceId = response.articleId || this.instanceId;
                 Object.assign(this.toastProps, {
                     message: response.message,
                     messageClass: response.success ? 'toast-success' : 'toast-error'

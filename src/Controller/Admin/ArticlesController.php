@@ -189,7 +189,7 @@ class ArticlesController extends Controller {
                 if (!$id) {
                     return new JsonResponse([
                         'success' => true,
-                        'id' => $article->getId(),
+                        'articleId' => $article->getId(),
                         'message' => 'Artikel angelegt.'
                     ]);
                 }
