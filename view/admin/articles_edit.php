@@ -40,7 +40,7 @@
             ref="toast"
     ></message-toast>
 
-    <tab :items="tabItems" :active-index.sync="activeTabIndex"></tab>
+    <tab :items="tabItems" :active-index="activeTabIndex" v-on:update:active-index="switchTabs"></tab>
 
     <section id="article-form" v-if="activeTabIndex === 0" class="form-content">
         <article-form :url="formProps.url" :options="formProps.options" :initial-data="formProps.form" :editor-config="editorConfig" @response-received="handleResponse"></article-form>
@@ -71,32 +71,28 @@
     </section>
 
     <section id="article-files-sort" v-if="activeTabIndex === 2">
-        <sortable-list v-model="fmProps.cols" lock-axis="y" helper-class="slick-sort-helper" press-delay="200">
-            <sortable-item v-for="(item, ndx) in fmProps.cols" :index="ndx" :key="ndx">
-                <span>{{ item.label }}</span> <a :href="'https://google.com'">Link</a>
-            </sortable-item>
-        </sortable-list>
+        <filesort-list v-model="linkedFiles" lock-axis="y" helper-class="slick-sort-helper" @input="saveSort">
+            <template v-slot:row="slotProps">
+                <div class="d-inline-block col-2">{{ slotProps.item.filename }}</div>
+                <div class="d-inline-block col-2">
+                    <img :src="slotProps.item.type" alt="" v-if="slotProps.item.isThumb" class="img-responsive">
+                    <div style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" v-else>{{ slotProps.item.type }}</div>
+                </div>
+                <div class="d-inline-block col-1">
+                    <button class="btn webfont-icon-only tooltip" data-tooltip="Verlinkung entfernen" type="button" @click="unlinkSort(slotProps.item)">&#xe014;</button>
+                </div>
+                <a class="d-inline-block col-3" :href="slotProps.item.folderid">{{ slotProps.item.path }}</a>
+            </template>
+        </filesort-list>
     </section>
 </div>
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-    const components = window.vxweb.Components, mixins = window.vxweb.Mixins;
-    const MessageToast = components.MessageToast;
-    const Tab = components.Tab;
-    const Filemanager = components.Filemanager;
-    const SimpleFetch =  components.SimpleFetch;
-    const ArticleForm = components.ArticleForm;
+    const { MessageToast, Tab, Filemanager, SimpleFetch, ArticleForm, FilesortList } = window.vxweb.Components;
 
-    const SortableList = {
-        mixins: [mixins.ContainerMixin], template: '<div><slot /></div>'
-    };
-
-    const SortableItem = {
-        mixins: [mixins.ElementMixin], props: ['item'], template: '<div class="slick-sort-item"><slot>{{ item }}</slot></div>'
-    };
-
-    Vue.component('z-link', components.ZLink);
+    Vue.directive('handle', window.vxweb.Directives.HandleDirective);
+    Vue.component('z-link', window.vxweb.Components.ZLink);
 
     const app = new Vue({
 
@@ -107,8 +103,7 @@
             "tab": Tab,
             "filemanager": Filemanager,
             "article-form": ArticleForm,
-            "sortable-list": SortableList,
-            "sortable-item": SortableItem
+            "filesort-list": FilesortList
         },
 
         computed: {
@@ -132,6 +127,7 @@
 
         data: {
             instanceId: <?= isset($this->article) ? $this->article->getId() : 'null' ?>,
+            linkedFiles: [],
             activeTabIndex: 0,
             tabItems: [
                 { name: 'Inhalt' },
@@ -201,7 +197,10 @@
 
         routes: {
             init: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_init')->getUrl() ?>",
-            link: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_link_file')->getUrl() ?>"
+            link: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_link_file')->getUrl() ?>",
+            getLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('get_linked_files')->getUrl() ?>",
+            updateLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('update_linked_files')->getUrl() ?>"
+
         },
 
         async created () {
@@ -236,6 +235,25 @@
             },
             storeSort (sort) {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: sort.sortColumn.prop, dir: sort.sortDir }));
+            },
+            async switchTabs (payload) {
+                this.activeTabIndex = payload;
+                if(payload === 2) {
+                    let id = this.instanceId;
+                    if (id) {
+                        let response = await SimpleFetch(this.$options.routes.getLinkedFiles + '?article=' + id);
+                        this.linkedFiles = response.files || [];
+                    }
+                }
+            },
+            async saveSort () {
+                let ids = [];
+                this.linkedFiles.forEach(f => ids.push(f.id));
+                let response = await SimpleFetch(this.$options.routes.updateLinkedFiles + '?article=' + this.instanceId, 'POST', {}, JSON.stringify({ fileIds: ids }));
+            },
+            unlinkSort (file) {
+                this.linkedFiles.splice(this.linkedFiles.indexOf(file), 1);
+                this.saveSort();
             }
         }
     });

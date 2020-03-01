@@ -8,8 +8,23 @@
   background: $bg-color-light;
   border-bottom: solid 1px $gray-color;
   user-select: none;
-}
+  display: flex;
+  align-items: center;
 
-.slick-sort-helper {
-  background: $secondary-color-light;
+  .handle {
+    display: inline-block;
+
+    &:before {
+      font-family: icomoon;
+      content: $icon-menu3;
+      padding: 1rem;
+    }
+  }
+
+  &.slick-sort-helper {
+    background: $secondary-color-light;
+    border: solid 1px $secondary-color-dark;
+    border-radius: $border-radius;
+  }
+
 }

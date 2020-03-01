@@ -36,6 +36,7 @@
 		<page id="article_publish" controller="admin/articles" method="publish" auth="superadmin" request_methods="POST" />
 		<page id="article_link_file" controller="admin/articles" method="fileLink" auth="privileged" request_methods="POST" />
 		<page id="get_linked_files" controller="admin/articles" method="getLinkedFiles" auth="privileged" />
+		<page id="update_linked_files" controller="admin/articles" method="updateLinkedFiles" auth="privileged" request_methods="POST" />
 
 		<page id="article_files_init" controller="admin/files" method="init" auth="privileged" />
 		<page id="article_file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />

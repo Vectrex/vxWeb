@@ -28,39 +28,41 @@
             </section>
             <section class="navbar-section">
                 <input
-                        v-if="showAddFolderInput"
-                        v-focus
-                        class="form-input"
-                        @keydown.enter="addFolder"
-                        @keydown.esc="showAddFolderInput = false"
-                        @blur="showAddFolderInput = false"
-                        ref="addFolderInput">
+                    v-if="showAddFolderInput"
+                    v-focus
+                    class="form-input"
+                    @keydown.enter="addFolder"
+                    @keydown.esc="showAddFolderInput = false"
+                    @blur="showAddFolderInput = false"
+                    ref="addFolderInput"
+                >
                 <button
-                        v-if="!showAddFolderInput"
-                        class="btn webfont-icon-only btn-primary tooltip"
-                        data-tooltip="Verzeichnis erstellen"
-                        type="button"
-                        @click="showAddFolderInput = true"></button>
+                    v-if="!showAddFolderInput"
+                    class="btn webfont-icon-only btn-primary tooltip"
+                    data-tooltip="Verzeichnis erstellen"
+                    type="button"
+                    @click="showAddFolderInput = true"
+                ></button>
             </section>
         </div>
         <sortable
-                :rows="directoryEntries"
-                :columns="columns"
-                :sort-prop="initSort.column"
-                :sort-direction="initSort.dir"
-                @after-sort="$emit('after-sort', { sortColumn: $refs.sortable.sortColumn, sortDir: $refs.sortable.sortDir })"
-                ref="sortable">
-
+            :rows="directoryEntries"
+            :columns="columns"
+            :sort-prop="initSort.column"
+            :sort-direction="initSort.dir"
+            @after-sort="$emit('after-sort', { sortColumn: $refs.sortable.sortColumn, sortDir: $refs.sortable.sortDir })"
+            ref="sortable"
+        >
             <template v-slot:name="slotProps">
                 <template v-if="slotProps.row.isFolder">
                     <input
-                            v-if="slotProps.row === toRename"
-                            v-focus
-                            class="form-input"
-                            :value="slotProps.row.name"
-                            @keydown.enter="renameFolder"
-                            @keydown.esc="toRename = null"
-                            @blur="toRename = null"
+                        v-if="slotProps.row === toRename"
+                        v-focus
+                        class="form-input"
+                        :value="slotProps.row.name"
+                        @keydown.enter="renameFolder"
+                        @keydown.esc="toRename = null"
+                        @blur="toRename = null"
                     >
                     <template v-else>
                         <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row.id)">{{ slotProps.row.name }}</a>
@@ -69,13 +71,13 @@
                 </template>
                 <template v-else>
                     <input
-                            v-if="slotProps.row === toRename"
-                            v-focus
-                            class="form-input"
-                            :value="slotProps.row.name"
-                            @keydown.enter="renameFile"
-                            @keydown.esc="toRename = null"
-                            @blur="toRename = null"
+                        v-if="slotProps.row === toRename"
+                        v-focus
+                        class="form-input"
+                        :value="slotProps.row.name"
+                        @keydown.enter="renameFile"
+                        @keydown.esc="toRename = null"
+                        @blur="toRename = null"
                     >
                     <template v-else>
                         <span>{{ slotProps.row.name }}</span>

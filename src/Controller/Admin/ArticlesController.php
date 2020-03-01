@@ -326,156 +326,26 @@ class ArticlesController extends Controller {
         return new JsonResponse(['files' => $rows]);
     }
 
-    protected function xhrExecute() {
+    protected function updateLinkedFiles (): JsonResponse
+    {
+        try {
+            $article = Article::getInstance($this->request->query->getInt('article'));
+        }
+        catch (MetaFileException $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
-		// id comes either via URL or as an extra form field
+        foreach($article->getLinkedMetaFiles() as $mf) {
+            $article->unlinkMetaFile($mf);
+        }
+        foreach(MetaFile::getInstancesByIds($bag->get('fileIds', [])) as $mf) {
+            $article->linkMetaFile($mf);
+        }
+        $article->save();
 
-		$id = $this->request->query->get('id', $this->request->request->get('id'));
-		$admin = Application::getInstance()->getCurrentUser();
-
-		if($id) {
-
-			try {
-				$article = Article::getInstance($id);
-			}
-			catch(ArticleException $e) {
-				return new JsonResponse();
-			}
-
-		}
-
-		else {
-			$article = new Article();
-		}
-
-		switch($this->request->request->get('httpRequest')) {
-
-			// check article data
-
-			case 'checkForm':
-
-				$form = $this->buildEditForm();
-						
-				// @todo allow CSRF token; currently the action mismatch between initial form and XHR form request prevents checking
-
-				$v = $form
-					->disableCsrfToken()
-					->bindRequestParameters($this->request->request)
-					->validate()
-					->getValidFormValues()
-                ;
-
-				if($v['article_date'] !== '') {
-					$article->setDate(new \DateTime(Util::unFormatDate($v['article_date'], 'de')));
-				}
-				else {
-					$article->setDate();
-				}
-
-				if($v['display_from'] !== '') {
-					$article->setDisplayFrom(new \DateTime(Util::unFormatDate($v['display_from'], 'de')));
-				}
-				else {
-					$article->setDisplayFrom();
-				}
-
-				if($v['display_until'] !== '') {
-					$article->setDisplayUntil(new \DateTime(Util::unFormatDate($v['display_until'], 'de')));
-				}
-				else {
-					$article->setDisplayUntil();
-				}
-
-				$errors	= $form->getFormErrors();
-
-				if(!empty($errors)) {
-					$response = [];
-                    foreach($errors as $element => $error) {
-                        $response[] = ['name' => $element, 'error' => 1, 'errorText' => $error->getErrorMessage()];
-                    }
-					return new JsonResponse(['elements' => $response]);
-				}
-
-				try {
-
-					// validate submitted category id - replacing default method allows user privilege considerations
-
-					$article
-                        ->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])))
-					    ->setHeadline($v['headline'])
-					    ->setData($v->all() /* content, teaser, subline */)
-                        ->setCustomSort($v->get('customsort'))
-                        ->setCustomFlags($v->get('customflags'))
-                    ;
-
-					$id = $article->getId();
-					
-					if(!$id) {
-						$article->setCreatedById($admin->getAttribute('id'));
-					}
-					else {
-						$article->setUpdatedById($admin->getAttribute('id'));
-					}
-
-					if($article->wasChanged()) {
-						$article->save();
-						if(!$id) {
-							return new JsonResponse([
-								'success' => true,
-								'id' => $article->getId()
-							]);
-						}
-						else {
-							return new JsonResponse(['success' => true]);
-						}
-					}
-
-					else {
-						return new JsonResponse(['success' => true, 'message' =>'Keine Änderung, nichts gespeichert!']);
-					}
-				}
-				catch(ArticleException $e) {
-					return new JsonResponse(['message' => 'Beim Anlegen/Aktualisieren des Artikels ist ein Fehler aufgetreten!']);
-				}
-				catch(ArticleCategoryException $e) {
-					return new JsonResponse(['message' => 'Beim Anlegen/Aktualisieren des Artikels ist ein Fehler aufgetreten!']);
-				}
-
-			case 'sortFiles':
-				
-				$article->setCustomSortOfMetaFile(
-					MetaFile::getInstance(null, $this->request->request->getInt('file')),
-					$this->request->request->getInt('to')
-				);
-				
-				$article->save();
-				break;
-				
-				
-			case 'getFiles':
-
-				$rows = [];
-
-				foreach(Article::getInstance($this->request->request->getInt('articlesId'))->getLinkedMetaFiles() as $mf) {
-					$rows[] = [
-						'id'		=> $mf->getId(),
-						'folderid'	=> $mf->getMetaFolder()->getId(),
-						'filename'	=> $mf->getFilename(),
-						'isThumb'	=> $mf->isWebImage(),
-						'type'		=> $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
-						'path'		=> $mf->getMetaFolder()->getRelativePath()
-					];
-				}
-
-				return new JsonResponse(['files' => $rows]);
-
-				break;
-				
-		}
-
-		return new JsonResponse();
-
-	}
+        return new JsonResponse(['success' => true]);
+    }
 
 	/**
 	 * @param ArticleCategory $cat

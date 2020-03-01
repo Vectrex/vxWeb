@@ -59,7 +59,7 @@ export default {
     itemOnClick(item) {
       if(!item.disabled) {
         this.activeTab = item;
-        this.$emit('update:activeIndex', this.items.indexOf(item));
+        this.$emit('update:active-index', this.items.indexOf(item));
       }
     }
   }

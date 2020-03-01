@@ -4,6 +4,7 @@ import DatePicker from './components/datepicker';
 import Sortable from './components/sortable';
 import SimpleTree from './components/simple-tree';
 import Filemanager from './components/filemanager';
+import FilesortList from './components/filesort-list';
 import Tab from './components/tab';
 
 import ZPagination from './components/zutre/pagination';
@@ -20,7 +21,7 @@ import ArticleForm from './components/forms/article-form';
 import { formatFilesize } from './filters';
 import { Focus, Bubble } from './directives';
 
-import { ContainerMixin, ElementMixin } from 'vue-slicksort';
+import { ContainerMixin, ElementMixin, HandleDirective } from 'vue-slicksort';
 
 const Components = {
     MessageToast,
@@ -29,6 +30,7 @@ const Components = {
     Sortable,
     SimpleTree,
     Filemanager,
+    FilesortList,
     Tab,
     ZPagination,
     ZLink,
@@ -46,7 +48,8 @@ const Filters = {
 
 const Directives = {
     Focus,
-    Bubble
+    Bubble,
+    HandleDirective
 };
 
 const Mixins = {

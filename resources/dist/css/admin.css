@@ -1,3 +1,4 @@
+@charset 'UTF-8';
 @CHARSET 'UTF-8';
 /* a power function for SCSS */
 /* calculates the luminance of a color */
@@ -49,12 +50,23 @@
 }
 
 .slick-sort-item
-{
-    padding: .4rem .8rem; -webkit-user-select: none;    -moz-user-select: none;     -ms-user-select: none;         user-select: none; border-bottom: solid 1px #adb5b9; background: #fff;
+{display: flex; 
+
+    padding: .4rem .8rem; -webkit-user-select: none;    -moz-user-select: none;     -ms-user-select: none;         user-select: none; border-bottom: solid 1px #adb5b9; background: #fff; align-items: center;
 }
 
-.slick-sort-helper
+.slick-sort-item .handle
 {
+    display: inline-block;
+}
+
+.slick-sort-item .handle:before
+{
+    font-family: icomoon; padding: 1rem; content: '';
+}
+
+.slick-sort-item.slick-sort-helper
+{border: solid 1px #97d5ff; border-radius: .1rem; 
     background: #b5e1ff;
 }
 
