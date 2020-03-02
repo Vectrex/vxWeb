@@ -51,40 +51,68 @@ class PagesController extends Controller
         return new JsonResponse(['pages' => $rows]);
     }
 
-    protected function editInit (): JsonResponse
-    {
-        if(!($id = $this->request->query->getInt('id'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
-    }
-
     protected function edit (): Response
     {
         if(($id = $this->request->query->getInt('id'))) {
 
             MenuGenerator::setForceActiveMenu(true);
 
-            try {
-                $page = Page::getInstance($id);
-                $revision = $page->getActiveRevision();
-                if (!$revision) {
-                    $revision = $page->getNewestRevision();
-                }
-            } catch (PageException $e) {
-                return $this->redirect(Application::getInstance()->getRouter()->getRoute('pages')->getUrl());
-            }
-
-            $form = $this->buildEditForm();
-
             return new Response(
                 SimpleTemplate::create('admin/page_edit.php')
-                    ->assign('form', $form->render())
-                    ->assign('allow_nice_edit', !$revision->containsPHP())
+                    ->assign('id', $id)
                     ->display()
             );
         }
 
         return new Response(null, Response::HTTP_NOT_FOUND);
+    }
+
+    protected function editInit (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $page = Page::getInstance($id);
+            $revision = $page->getActiveRevision();
+            if (!$revision) {
+                $revision = $page->getNewestRevision();
+            }
+        } catch (PageException $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $revisions = [];
+
+        foreach($page->getRevisions() as $revision) {
+            $revisions[] = [
+                'id' => $revision->getId(),
+                'active' => $revision->isActive(),
+                'locale' => (string) $revision->getLocale(),
+                'firstCreated' => $revision->getFirstCreated()->format(\DateTime::W3C)
+            ];
+        }
+
+        return new JsonResponse([
+            'form' => [
+                'alias' => $revision->getPage()->getAlias(),
+                'title' => $revision->getTitle(),
+                'markup' => $revision->getMarkup(),
+                'description' => $revision->getDescription(),
+                'keywords' => $revision->getKeywords()
+            ],
+            'revisions' => $revisions
+        ]);
+    }
+
+    protected function update (): JsonResponse
+    {
+        return new JsonResponse();
+    }
+    protected function activateRevision (): JsonResponse
+    {
+        return new JsonResponse();
     }
 
 	protected function xhrExecute() {

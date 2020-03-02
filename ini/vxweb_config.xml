@@ -13,7 +13,9 @@
 		<page id="pages" controller="admin/pages" auth="superadmin" />
 		<page id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
 		<page id="page_edit" controller="admin/pages" auth="superadmin" method="edit" />
-		<page id="page_init" controller="admin/users" auth="superadmin" method="editInit" />
+		<page id="page_init" controller="admin/pages" auth="superadmin" method="editInit" />
+		<page id="page_update" controller="admin/pages" auth="superadmin" method="update" request_methods="POST" />
+		<page id="page_revision_activate" controller="admin/pages" auth="superadmin" method="activateRevision" request_methods="POST" />
 
 		<page id="pagesXhr" controller="admin/pages" method="xhrExecute" auth="superadmin" />
         <page id="inlineEditXhr" controller="admin/pages" method="updateInlineEdit" path="pages/inline" auth="superadmin" />
@@ -58,7 +60,6 @@
 
 		<page id="filepicker" controller="admin/files" auth="privileged" />
 
-		<page id="filesXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
 		<page id="filepickerXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
 		<page id="fileincludeXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
 	</pages>

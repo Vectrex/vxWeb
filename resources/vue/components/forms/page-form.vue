@@ -25,34 +25,8 @@
                     <label class="form-label" for="description_input">Beschreibung</label>
                     <textarea id="description_input" class="form-input" rows="4" v-model="form.description"></textarea>
                 </div>
-                <div class="form-group">
-                    <label form-label>Revisions</label>
-                    <div style="max-height: 30em; overflow-y: auto;">
-                        <table id="revisions" class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Angelegt um</th>
-                                <th class="col-2">aktiv</th>
-                                <th class="col-2"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="revision in revisions" :key="revision.id">
-                                    <td>{{ revision.firstCreated }}</td>
-                                    <td>
-                                        <label class="form-switch">
-                                            <input type="checkbox" :checked="revision.active" disabled="revision.active" @click="$emit('activate-revision', revision.id)">
-                                            <i class="form-icon"></i>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-primary webfont-icon-only tooltip tooltip-left" type="button" data-tooltip="Löschen" @click="$emit('delete-revision', revision.id)" v-if="!revision.active">&#e011;</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <h2>Revisionen</h2>
+                <revision-table :revisions="revisions"></revision-table>
             </div>
         </div>
         <div class="divider"></div>
@@ -66,11 +40,13 @@
 
 <script>
     import SimpleFetch from "../../util/simple-fetch.js";
-    import Ckeditor from "../ckeditor";
+    import VueCkeditor from "../VueCkeditor";
+    import RevisionTable from "../revision-table";
 
     export default {
         components: {
-            'ckeditor': Ckeditor
+            'vue-ckeditor': VueCkeditor,
+            'revision-table': RevisionTable
         },
         props: {
             url: { type: String, required: true },

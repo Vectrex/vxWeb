@@ -16,7 +16,10 @@ export default {
             .replace(/\bmm\b/, ("0" + (date.getMonth() + 1)).slice(-2))
             .replace(/\bmmm\b/, monthNames[date.getMonth()].trim())
             .replace(/\by\b/, date.getFullYear())
-            .replace(/\bw\b/, dayNames[date.getDay()].trim());
+            .replace(/\bw\b/, dayNames[date.getDay()].trim())
+            .replace(/\bh\b/, ("0" + date.getHours()).slice(-2))
+            .replace(/\bi\b/, ("0" + date.getMinutes()).slice(-2))
+            .replace(/\bs\b/, ("0" + date.getSeconds()).slice(-2));
     },
 
     parseDate(dateString, format) {
