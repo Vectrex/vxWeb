@@ -1,117 +1,102 @@
 <!-- { extend: admin/layout_dialog.php @ content_block } -->
-<script type="text/javascript">
-    if(!this.vxWeb) {
-        this.vxWeb = {};
-    }
-</script>
 
-<script type="text/javascript" src="/js/admin/fileManager.js"></script>
+<div id="app" v-cloak>
+    <filemanager :routes="$options.routes" :columns="cols" :init-sort="initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
+        <template v-slot:action="slotProps">
+            <button v-if="slotProps.row.isFolder" class="btn webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
+            <template v-else>
+                <button class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFile(slotProps.row)">&#xe002;</button>
+                <button class="btn webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.getFolderTree(slotProps.row)">&#xe004;</button>
+                <button class="btn webfont-icon-only tooltip" data-tooltip="Löschen" type="button" @click="$refs.fm.delFile(slotProps.row)">&#xe011;</button>
+            </template>
+        </template>
+    </filemanager>
 
-<script type="text/javascript">
-    if(!this.vxWeb.routes) {
-        this.vxWeb.routes = {};
-    }
-
-    vxWeb.messageToast = function(selector) {
-
-        var mBox, lastAddedClass, timeoutId, button;
-
-        var hide = function() {
-            if(mBox) {
-                mBox.classList.remove("display");
-            }
-        };
-
-        var show = function(msg, className) {
-
-            if(mBox === undefined) {
-                mBox = document.querySelector(selector || "#messageBox");
-
-                if(mBox && (button = mBox.querySelector("button"))) {
-                    button.addEventListener("click", hide);
-                }
-            }
-
-            if(mBox) {
-                if(lastAddedClass) {
-                    mBox.classList.remove(lastAddedClass);
-                }
-                if(className) {
-                    mBox.classList.add(className);
-                }
-                lastAddedClass = className;
-            }
-
-            mBox.innerHTML = msg;
-            mBox.appendChild(button);
-            mBox.classList.add("display");
-
-            if(timeoutId) {
-                window.clearTimeout(timeoutId);
-            }
-            timeoutId = window.setTimeout(hide, 5000);
-
-        };
-
-        return {
-            show: show,
-            hide: hide
-        };
-    };
-
-	this.vxWeb.routes.files		= "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('filepickerXhr')->getUrl() ?>";
-	this.vxWeb.routes.upload	= "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('uploadXhr')->getUrl() ?>";
-
-	vxJS.event.addDomReadyListener(function() {
-		vxWeb.fileManager({
-			directoryBar:		document.getElementById("directoryBar"),
-			filesList:			document.getElementById("filesList"),
-			uploadMaxFilesize:	<?php echo $this->upload_max_filesize; ?>,
-			maxUploadTime:		<?php echo $this->max_execution_time_ms; ?>
-		});
-	});
-</script>
-
-<h1>Dateien</h1>
-
-<div class="navbar">
-    <div class="navbar-section">
-        <span class="btn-group" id="directoryBar"></span>
-    </div>
-
-    <div class="navbar-section">
-        <div id="uploadProgress" class="col-3 vx-progress-bar tooltip">
-            <div class="bar">
-                <div class="bar-item"></div>
-            </div>
-        </div>
-        <span id="activityIndicator" class="vx-activity-indicator"></span>
-        <input id="addFolderInput" class="form-input col-3" style="display: none;">
-        <button id="addFolder" class="btn with-webfont-icon-right btn-primary" type="button" data-icon="&#xe007;">Verzeichnis anlegen</button>
-        <button id="addFile" class="btn with-webfont-icon-right btn-primary" type="button" data-icon="&#xe00e;">Datei hinzufügen</button>
-    </div>
+    <message-toast
+        :message="toastProps.message"
+        :classname="toastProps.messageClass"
+        :active="toastProps.isActive"
+        ref="toast"
+    />
 </div>
+<?php $router = \vxPHP\Application\Application::getInstance()->getRouter() ?>
 
-<div id="filesList">
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th class="vx-sortable-header">Dateiname</th>
-            <th class="col-1 vx-sortable-header">Größe</th>
-            <th class="col-2 vx-sortable-header">Typ/Vorschau</th>
-            <th class="col-2 vx-sortable-header">Erstellt</th>
-            <th class="col-2"></th>
-        </tr>
-        </thead>
+<script src="/js/vue/vxweb.umd.min.js"></script>
+<script>
 
-        <tbody>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    const MessageToast = window.vxweb.Components.MessageToast;
+    const Filemanager = window.vxweb.Components.Filemanager;
+
+    let app = new Vue({
+
+        el: "#app",
+        components: { 'message-toast': MessageToast, 'filemanager': Filemanager },
+
+        routes: {
+            init: "<?= $router->getRoute('files_init')->getUrl() ?>",
+            readFolder: "<?= $router->getRoute('folder_read')->getUrl() ?>",
+            getFile: "<?= $router->getRoute('file_get')->getUrl() ?>",
+            updateFile: "<?= $router->getRoute('file_update')->getUrl() ?>",
+            uploadFile: "<?= $router->getRoute('file_upload')->getUrl() ?>",
+            delFile: "<?= $router->getRoute('file_del')->getUrl() ?>",
+            renameFile: "<?= $router->getRoute('file_rename')->getUrl() ?>",
+            moveFile: "<?= $router->getRoute('file_move')->getUrl() ?>",
+            getFoldersTree: "<?= $router->getRoute('folders_tree')->getUrl() ?>",
+            delFolder: "<?= $router->getRoute('folder_del')->getUrl() ?>",
+            renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
+            addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>"
+        },
+
+        data: {
+            cols: [
+                {
+                    label: "Dateiname",
+                    sortable: true,
+                    prop: "name",
+                    sortAscFunction: (a, b) => {
+                        if (a.isFolder && !b.isFolder) {
+                            return -1;
+                        }
+                        return a.name.toLowerCase() === b.name.toLowerCase() ? 0 : a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+                    },
+                    sortDescFunction: (a, b) => {
+                        if (a.isFolder && !b.isFolder) {
+                            return -1;
+                        }
+                        return a.name.toLowerCase() === b.name.toLowerCase() ? 0 : a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1;
+                    }
+                },
+                { label: "Größe", sortable: true, prop: "size" },
+                { label: "Typ/Vorschau", sortable: true, prop: "type" },
+                { label: "Erstellt", sortable: true, prop: "modified"},
+                { label: "", prop: "action" }
+            ],
+            initSort: {},
+            toastProps: {
+                message: "",
+                messageClass: "",
+                isActive: false
+            }
+        },
+
+        created () {
+            let lsValue = window.localStorage.getItem(window.location.origin + "/admin/files__sort__");
+            if(lsValue) {
+                this.initSort = JSON.parse(lsValue);
+            }
+        },
+
+        methods: {
+            handleResponse (response) {
+                Object.assign(this.toastProps, {
+                    message: response.message,
+                    messageClass: response.success ? 'toast-success' : 'toast-error'
+                });
+                this.$refs.toast.isActive = true;
+            },
+            storeSort (sort) {
+                window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: sort.sortColumn.prop, dir: sort.sortDir }));
+            }
+        }
+    });
+</script>

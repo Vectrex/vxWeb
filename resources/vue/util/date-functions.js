@@ -1,6 +1,3 @@
-const defaultMonthNames = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
-const defaultDayNames = "Sun Mon Tue Wed Thu Fri Sat".split(" ");
-
 export default {
 
     formatDate(date, format, options) {
@@ -9,8 +6,8 @@ export default {
             return "";
         }
 
-        let dayNames = options && options.dayNames ? options.dayNames : defaultDayNames;
-        let monthNames = options && options.monthNames ? options.monthNames : defaultMonthNames;
+        const dayNames = options && options.dayNames ? options.dayNames : "Sun Mon Tue Wed Thu Fri Sat".split(" ");
+        const monthNames = options && options.monthNames ? options.monthNames : "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
 
         return format
             .replace(/\bd\b/, date.getDate())

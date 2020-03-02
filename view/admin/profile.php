@@ -24,7 +24,7 @@
 
     const MessageToast = window.vxweb.Components.MessageToast;
     const ProfileForm =  window.vxweb.Components.ProfileForm;
-    const SimpleFetch =  window.vxweb.Components.SimpleFetch;
+    const SimpleFetch =  window.vxweb.Util.SimpleFetch;
 
     const app = new Vue({
 

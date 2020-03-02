@@ -1758,9 +1758,6 @@ var date_inputvue_type_template_id_8cc1cab0_staticRenderFns = []
 // CONCATENATED MODULE: ./vue/components/date-input.vue?vue&type=template&id=8cc1cab0&
 
 // CONCATENATED MODULE: ./vue/util/date-functions.js
-const defaultMonthNames = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
-const defaultDayNames = "Sun Mon Tue Wed Thu Fri Sat".split(" ");
-
 /* harmony default export */ var date_functions = ({
 
     formatDate(date, format, options) {
@@ -1769,8 +1766,8 @@ const defaultDayNames = "Sun Mon Tue Wed Thu Fri Sat".split(" ");
             return "";
         }
 
-        let dayNames = options && options.dayNames ? options.dayNames : defaultDayNames;
-        let monthNames = options && options.monthNames ? options.monthNames : defaultMonthNames;
+        const dayNames = options && options.dayNames ? options.dayNames : "Sun Mon Tue Wed Thu Fri Sat".split(" ");
+        const monthNames = options && options.monthNames ? options.monthNames : "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
 
         return format
             .replace(/\bd\b/, date.getDate())
@@ -4434,9 +4431,7 @@ const Components = {
     VueCkeditor: VueCkeditor,
     ProfileForm: profile_form,
     UserForm: user_form,
-    ArticleForm: article_form,
-    SimpleFetch: SimpleFetch,
-    PromisedXhr: PromisedXhr
+    ArticleForm: article_form
 };
 
 const Filters = {
@@ -4454,12 +4449,18 @@ const Mixins = {
     ElementMixin: vue_slicksort_umd["ElementMixin"]
 };
 
+const Util = {
+    SimpleFetch: SimpleFetch,
+    PromisedXhr: PromisedXhr
+};
+
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib-no-default.js
 /* concated harmony reexport Components */__webpack_require__.d(__webpack_exports__, "Components", function() { return Components; });
 /* concated harmony reexport Filters */__webpack_require__.d(__webpack_exports__, "Filters", function() { return Filters; });
 /* concated harmony reexport Directives */__webpack_require__.d(__webpack_exports__, "Directives", function() { return Directives; });
 /* concated harmony reexport Mixins */__webpack_require__.d(__webpack_exports__, "Mixins", function() { return Mixins; });
+/* concated harmony reexport Util */__webpack_require__.d(__webpack_exports__, "Util", function() { return Util; });
 
 
 

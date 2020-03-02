@@ -37,9 +37,7 @@ const Components = {
     VueCkeditor,
     ProfileForm,
     UserForm,
-    ArticleForm,
-    SimpleFetch,
-    PromisedXhr
+    ArticleForm
 };
 
 const Filters = {
@@ -57,4 +55,9 @@ const Mixins = {
     ElementMixin
 };
 
-export { Components, Filters, Directives, Mixins };
+const Util = {
+    SimpleFetch,
+    PromisedXhr
+};
+
+export { Components, Filters, Directives, Mixins, Util };

@@ -90,7 +90,8 @@
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-    const { MessageToast, Tab, Filemanager, SimpleFetch, ArticleForm, FilesortList } = window.vxweb.Components;
+    const { MessageToast, Tab, Filemanager, ArticleForm, FilesortList } = window.vxweb.Components;
+    const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
     Vue.directive('handle', window.vxweb.Directives.HandleDirective);
     Vue.component('z-link', window.vxweb.Components.ZLink);

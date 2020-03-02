@@ -44,7 +44,7 @@
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
     const Sortable = window.vxweb.Components.Sortable;
-    const SimpleFetch = window.vxweb.Components.SimpleFetch;
+    const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
     let app = new Vue({
 

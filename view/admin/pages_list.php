@@ -21,7 +21,7 @@
 <script>
 
     const Sortable = window.vxweb.Components.Sortable;
-    const SimpleFetch = window.vxweb.Components.SimpleFetch;
+    const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
     const app = new Vue({
 

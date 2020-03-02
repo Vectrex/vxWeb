@@ -39,7 +39,7 @@
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
     const MessageToast = window.vxweb.Components.MessageToast;
-    const SimpleFetch =  window.vxweb.Components.SimpleFetch;
+    const SimpleFetch =  window.vxweb.Util.SimpleFetch;
 
     const app = new Vue({
 
