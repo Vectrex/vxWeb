@@ -22,7 +22,7 @@
                 <template v-if="uploadInProgress">
                     <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Abbrechen" type="button" @click="cancelUpload">&#xe01d;</button>
                     <label class="d-inline-block mr-2">{{ progress.file }}</label>
-                    <progress class="progress" :value="progress.loaded" :max="progress.total"></progress>
+                    <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16"></circular-progress>
                 </template>
                 <strong class="text-primary d-block col-12 text-center" v-else>Uploads hierher ziehen</strong>
             </section>
@@ -131,6 +131,7 @@
 <script>
     import Sortable from './sortable';
     import SimpleTree from './simple-tree';
+    import CircularProgress from './circular-progress';
     import FileEditForm from './forms/file-edit-form';
     import SimpleFetch from "../util/simple-fetch";
     import PromisedXhr from "../util/promised-xhr";
@@ -140,7 +141,7 @@
 
     export default {
         components: {
-            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm
+            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress
         },
 
         data () {
@@ -315,6 +316,7 @@
 
                 if(!this.uploadInProgress) {
                     this.uploadInProgress = true;
+                    this.progress.loaded = 0;
                     this.handleUploads();
                 }
             },

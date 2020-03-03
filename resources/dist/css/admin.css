@@ -70,6 +70,11 @@
     background: #b5e1ff;
 }
 
+.circular-progress circle
+{transition: stroke-dashoffset .2s; 
+    transform: rotate(-90deg); transform-origin: 50% 50%; stroke: #0089cc;
+}
+
 /*! Spectre.css v0.5.8 | MIT License | github.com/picturepan2/spectre */
 /* Manually forked from Normalize.css */
 /* normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */

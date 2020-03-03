@@ -1,4 +1,5 @@
 import MessageToast from './components/message-toast';
+import CircularProgress from './components/circular-progress';
 import Autocomplete from './components/autocomplete';
 import DatePicker from './components/datepicker';
 import Sortable from './components/sortable';
@@ -26,6 +27,7 @@ import { ContainerMixin, ElementMixin, HandleDirective } from 'vue-slicksort';
 
 const Components = {
     MessageToast,
+    CircularProgress,
     Autocomplete,
     DatePicker,
     Sortable,

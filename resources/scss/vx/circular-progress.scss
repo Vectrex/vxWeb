@@ -1,0 +1,10 @@
+@import "../../node_modules/spectre.css/src/variables";
+
+.circular-progress {
+  circle {
+    transform: rotate(-90deg);
+    transition: stroke-dashoffset 0.2s;
+    transform-origin: 50% 50%;
+    stroke: $primary-color;
+  }
+}
