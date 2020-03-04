@@ -193,6 +193,11 @@ html, body {
   }
 }
 
+#revisionsContainer {
+  max-height: 16rem;
+  overflow: auto;
+}
+
 /*
   custom classes
  */

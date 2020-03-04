@@ -4468,19 +4468,19 @@ var article_form_component = normalizeComponent(
 )
 
 /* harmony default export */ var article_form = (article_form_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"606411c9-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/page-form.vue?vue&type=template&id=dca3ddf6&
-var page_formvue_type_template_id_dca3ddf6_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{attrs:{"action":"/"},on:{"submit":function($event){$event.preventDefault();}}},[_c('div',{staticClass:"columns"},[_c('div',{staticClass:"column col-8"},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label",attrs:{"for":"alias_input"}},[_vm._v("Eindeutiger Name (automatisch generiert)")]),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.alias),expression:"form.alias"}],staticClass:"form-input",attrs:{"id":"alias_input","disabled":"disabled","maxlength":"64"},domProps:{"value":(_vm.form.alias)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "alias", $event.target.value)}}})]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label",attrs:{"for":"title_input"}},[_vm._v("Titel")]),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.title),expression:"form.title"}],staticClass:"form-input",attrs:{"id":"title_input","maxlength":"128"},domProps:{"value":(_vm.form.title)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "title", $event.target.value)}}}),(_vm.errors.title)?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors.title))]):_vm._e()]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label"},[_vm._v("Inhalt")]),_c('vue-ckeditor',{attrs:{"config":_vm.editorConfig},model:{value:(_vm.form.markup),callback:function ($$v) {_vm.$set(_vm.form, "markup", $$v)},expression:"form.markup"}})],1)]),_c('div',{staticClass:"column col-4"},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label",attrs:{"for":"keywords_input"}},[_vm._v("Schlüsselwörter")]),_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.keywords),expression:"form.keywords"}],staticClass:"form-input",attrs:{"id":"keywords_input","rows":"4"},domProps:{"value":(_vm.form.keywords)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "keywords", $event.target.value)}}})]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label",attrs:{"for":"description_input"}},[_vm._v("Beschreibung")]),_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.description),expression:"form.description"}],staticClass:"form-input",attrs:{"id":"description_input","rows":"4"},domProps:{"value":(_vm.form.description)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "description", $event.target.value)}}})]),_c('h2',[_vm._v("Revisionen")]),_c('revision-table',{attrs:{"revisions":_vm.revisions}})],1)]),_c('div',{staticClass:"divider"}),_c('div',{staticClass:"form-base"},[_c('div',{staticClass:"form-group"},[_c('button',{staticClass:"btn btn-success",class:{'loading': _vm.loading},attrs:{"name":"submit_page","type":"button","disabled":_vm.loading},on:{"click":_vm.submit}},[_vm._v("Änderungen übernehmen und neue Revision erzeugen")])])])])}
-var page_formvue_type_template_id_dca3ddf6_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"606411c9-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/page-form.vue?vue&type=template&id=050e79ca&
+var page_formvue_type_template_id_050e79ca_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{attrs:{"action":"/"},on:{"submit":function($event){$event.preventDefault();}}},[_c('div',{staticClass:"columns"},[_c('div',{staticClass:"column col-8"},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label",attrs:{"for":"alias_input"}},[_vm._v("Eindeutiger Name (automatisch generiert)")]),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.alias),expression:"form.alias"}],staticClass:"form-input",attrs:{"id":"alias_input","disabled":"disabled","maxlength":"64"},domProps:{"value":(_vm.form.alias)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "alias", $event.target.value)}}})]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label",attrs:{"for":"title_input"}},[_vm._v("Titel")]),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.title),expression:"form.title"}],staticClass:"form-input",attrs:{"id":"title_input","maxlength":"128"},domProps:{"value":(_vm.form.title)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "title", $event.target.value)}}}),(_vm.errors.title)?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors.title))]):_vm._e()]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label"},[_vm._v("Inhalt")]),_c('vue-ckeditor',{attrs:{"config":_vm.editorConfig},model:{value:(_vm.form.markup),callback:function ($$v) {_vm.$set(_vm.form, "markup", $$v)},expression:"form.markup"}})],1)]),_c('div',{staticClass:"column col-4"},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label",attrs:{"for":"keywords_input"}},[_vm._v("Schlüsselwörter")]),_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.keywords),expression:"form.keywords"}],staticClass:"form-input",attrs:{"id":"keywords_input","rows":"4"},domProps:{"value":(_vm.form.keywords)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "keywords", $event.target.value)}}})]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label",attrs:{"for":"description_input"}},[_vm._v("Beschreibung")]),_c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.description),expression:"form.description"}],staticClass:"form-input",attrs:{"id":"description_input","rows":"4"},domProps:{"value":(_vm.form.description)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "description", $event.target.value)}}})]),_c('div',{staticClass:"divider",attrs:{"data-content":"Revisionen"}}),_c('div',{attrs:{"id":"revisionsContainer"}},[_c('revision-table',{attrs:{"revisions":_vm.revisions},on:{"activate-revision":function($event){return _vm.$emit('activate-revision', $event)},"delete-revision":function($event){return _vm.$emit('delete-revision', $event)}}})],1)])]),_c('div',{staticClass:"divider"}),_c('div',{staticClass:"form-base"},[_c('div',{staticClass:"form-group"},[_c('button',{staticClass:"btn btn-success",class:{'loading': _vm.loading},attrs:{"name":"submit_page","type":"button","disabled":_vm.loading},on:{"click":_vm.submit}},[_vm._v("Änderungen übernehmen und neue Revision erzeugen")])])])])}
+var page_formvue_type_template_id_050e79ca_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/forms/page-form.vue?vue&type=template&id=dca3ddf6&
+// CONCATENATED MODULE: ./vue/components/forms/page-form.vue?vue&type=template&id=050e79ca&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"606411c9-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/revision-table.vue?vue&type=template&id=ce155040&
-var revision_tablevue_type_template_id_ce155040_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('table',{staticClass:"table table-striped",attrs:{"id":"revisions"}},[_vm._m(0),_c('tbody',_vm._l((_vm.sortedRevisions),function(revision){return _c('tr',{key:revision.id},[_c('td',[_vm._v(_vm._s(_vm._f("formatDateTime")(revision.firstCreated)))]),_c('td',[_c('label',{staticClass:"form-switch"},[_c('input',{attrs:{"type":"checkbox","disabled":revision.active},domProps:{"checked":revision.active},on:{"click":function($event){return _vm.$emit('activate-revision', revision.id)}}}),_c('i',{staticClass:"form-icon"})])]),_c('td',[(!revision.active)?_c('button',{staticClass:"btn btn-primary webfont-icon-only tooltip tooltip-left",attrs:{"type":"button","data-tooltip":"Löschen"},on:{"click":function($event){return _vm.$emit('delete-revision', revision.id)}}},[_vm._v("")]):_vm._e()])])}),0)])}
-var revision_tablevue_type_template_id_ce155040_staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('thead',[_c('tr',[_c('th',[_vm._v("Angelegt um")]),_c('th',{staticClass:"col-2"},[_vm._v("aktiv")]),_c('th',{staticClass:"col-2"})])])}]
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"606411c9-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/revision-table.vue?vue&type=template&id=3f11a59a&
+var revision_tablevue_type_template_id_3f11a59a_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('table',{staticClass:"table table-striped",attrs:{"id":"revisions"}},[_vm._m(0),_c('tbody',_vm._l((_vm.sortedRevisions),function(revision){return _c('tr',{key:revision.id},[_c('td',[_vm._v(_vm._s(_vm._f("formatDateTime")(revision.firstCreated)))]),_c('td',[_c('label',{staticClass:"form-switch"},[_c('input',{attrs:{"type":"checkbox","disabled":revision.active},domProps:{"checked":revision.active},on:{"click":function($event){return _vm.$emit('activate-revision', revision)}}}),_c('i',{staticClass:"form-icon"})])]),_c('td',[(!revision.active)?_c('button',{staticClass:"btn btn-primary webfont-icon-only tooltip tooltip-left",attrs:{"type":"button","data-tooltip":"Löschen"},on:{"click":function($event){return _vm.$emit('delete-revision', revision)}}},[_vm._v("")]):_vm._e()])])}),0)])}
+var revision_tablevue_type_template_id_3f11a59a_staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('thead',[_c('tr',[_c('th',[_vm._v("Angelegt um")]),_c('th',{staticClass:"col-2"},[_vm._v("aktiv")]),_c('th',{staticClass:"col-2"})])])}]
 
 
-// CONCATENATED MODULE: ./vue/components/revision-table.vue?vue&type=template&id=ce155040&
+// CONCATENATED MODULE: ./vue/components/revision-table.vue?vue&type=template&id=3f11a59a&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/revision-table.vue?vue&type=script&lang=js&
 //
@@ -4539,8 +4539,8 @@ var revision_tablevue_type_template_id_ce155040_staticRenderFns = [function () {
 
 var revision_table_component = normalizeComponent(
   components_revision_tablevue_type_script_lang_js_,
-  revision_tablevue_type_template_id_ce155040_render,
-  revision_tablevue_type_template_id_ce155040_staticRenderFns,
+  revision_tablevue_type_template_id_3f11a59a_render,
+  revision_tablevue_type_template_id_3f11a59a_staticRenderFns,
   false,
   null,
   null,
@@ -4550,6 +4550,12 @@ var revision_table_component = normalizeComponent(
 
 /* harmony default export */ var revision_table = (revision_table_component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/page-form.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4676,8 +4682,8 @@ var revision_table_component = normalizeComponent(
 
 var page_form_component = normalizeComponent(
   forms_page_formvue_type_script_lang_js_,
-  page_formvue_type_template_id_dca3ddf6_render,
-  page_formvue_type_template_id_dca3ddf6_staticRenderFns,
+  page_formvue_type_template_id_050e79ca_render,
+  page_formvue_type_template_id_050e79ca_staticRenderFns,
   false,
   null,
   null,
@@ -4687,6 +4693,7 @@ var page_form_component = normalizeComponent(
 
 /* harmony default export */ var page_form = (page_form_component.exports);
 // CONCATENATED MODULE: ./vue/vxweb.js
+
 
 
 
@@ -4750,7 +4757,8 @@ const Mixins = {
 
 const Util = {
     SimpleFetch: SimpleFetch,
-    PromisedXhr: PromisedXhr
+    PromisedXhr: PromisedXhr,
+    UrlQuery: url_query
 };
 
 

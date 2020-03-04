@@ -19,6 +19,8 @@
             :initial-data="{ form: formProps.form, revisions: formProps.revisions }"
             :options="formProps.options"
             @response-received="responseReceived"
+            @activate-revision="activateRevision"
+            @delete-revision="deleteRevision"
             ref="form"
         ></page-form>
     </div>
@@ -29,6 +31,7 @@
     const MessageToast = window.vxweb.Components.MessageToast;
     const PageForm =  window.vxweb.Components.PageForm;
     const SimpleFetch =  window.vxweb.Util.SimpleFetch;
+    const UrlQuery = window.vxweb.Util.UrlQuery;
 
     const app = new Vue({
 
@@ -63,7 +66,8 @@
         routes: {
             init: "<?= $router->getRoute('page_init')->getUrl() ?>",
             update: "<?= $router->getRoute('page_update')->getUrl() ?>",
-            activate: "<?= $router->getRoute('page_revision_activate')->getUrl() ?>"
+            activate: "<?= $router->getRoute('page_revision_activate')->getUrl() ?>",
+            delete: "<?= $router->getRoute('page_revision_delete')->getUrl() ?>",
         },
 
         async created () {
@@ -85,6 +89,26 @@
                     messageClass: response.success ? 'toast-success' : 'toast-error',
                 };
                 this.$refs.toast.isActive = true;
+                if(response.success) {
+                    if (response.revisions) {
+                        this.formProps.revisions = response.revisions.map(item => { item.firstCreated = new Date(item.firstCreated); return item });
+                    }
+                }
+            },
+            async activateRevision (rev) {
+                let response = await SimpleFetch(UrlQuery.create(this.$options.routes.activate, { id: rev.id }), 'POST');
+                if(response.success) {
+                    this.formProps.revisions = (response.revisions || []).map(item => { item.firstCreated = new Date(item.firstCreated); return item }),
+                    this.formProps.form = response.form || {}
+                }
+            },
+            async deleteRevision (rev) {
+                if(window.confirm('Revision wirklich entfernen?')) {
+                    let response = await SimpleFetch(UrlQuery.create(this.$options.routes.delete, { id: rev.id }), 'DELETE');
+                    if(response.success) {
+                        this.formProps.revisions = response.revisions.map(item => { item.firstCreated = new Date(item.firstCreated); return item });
+                    }
+                }
             }
         }
     });

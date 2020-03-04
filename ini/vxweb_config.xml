@@ -16,6 +16,7 @@
 		<page id="page_init" controller="admin/pages" auth="superadmin" method="editInit" />
 		<page id="page_update" controller="admin/pages" auth="superadmin" method="update" request_methods="POST" />
 		<page id="page_revision_activate" controller="admin/pages" auth="superadmin" method="activateRevision" request_methods="POST" />
+		<page id="page_revision_delete" controller="admin/pages" auth="superadmin" method="deleteRevision" request_methods="DELETE" />
 
 		<page id="pagesXhr" controller="admin/pages" method="xhrExecute" auth="superadmin" />
         <page id="inlineEditXhr" controller="admin/pages" method="updateInlineEdit" path="pages/inline" auth="superadmin" />

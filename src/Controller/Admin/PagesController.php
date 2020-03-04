@@ -2,16 +2,14 @@
 
 namespace App\Controller\Admin;
 
+use vxPHP\Http\ParameterBag;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
-use vxPHP\Template\Filter\ShortenText;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
-use vxPHP\Routing\Router;
 use vxPHP\Webpage\MenuGenerator;
-use vxPHP\Application\Locale\Locale;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Util\Rex;
 use vxPHP\Application\Application;
@@ -23,8 +21,6 @@ use vxWeb\Model\Page\Revision;
 
 class PagesController extends Controller
 {
-	private $maxPageRevisions = 5;
-
 	protected function execute(): Response
     {
 		Template::syncTemplates();
@@ -83,6 +79,110 @@ class PagesController extends Controller
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
+        return new JsonResponse([
+            'form' => $this->getPageData($revision),
+            'revisions' => $this->getRevisions($page)
+        ]);
+    }
+
+    protected function update (): JsonResponse
+    {
+        try {
+            $page = Page::getInstance($this->request->query->getInt('id'));
+            $revision = $page->getActiveRevision();
+            if (!$revision) {
+                $revision = $page->getNewestRevision();
+            }
+        }
+        catch (PageException $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        $form = $this->buildEditForm();
+
+        $v = $form
+            ->disableCsrfToken()
+            ->bindRequestParameters($bag)
+            ->validate()
+            ->getValidFormValues()
+        ;
+        if(!($errors = $form->getFormErrors())) {
+
+            $revision
+                ->setTitle($v['title'])
+                ->setDescription($v['description'])
+                ->setKeywords($v['keywords'])
+                ->setMarkup($v['markup'])
+            ;
+
+            if($revision->wasChanged()) {
+
+                $revision->deactivate();
+
+                $revisionToAdd = clone $revision;
+                $revisionToAdd
+                    ->setActive(true)
+                    ->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
+                    ->save()
+                ;
+                $revisionToAdd->getPage()->exportActiveRevision();
+
+                return new JsonResponse(['success' => true, 'revisions' => $this->getRevisions($page), 'message' => 'Aktualisierte Revision gespeichert und aktiviert.']);
+            }
+            return new JsonResponse(['success' => true, 'revisions' => $this->getRevisions($page), 'message' => 'Keine Änderungen erkannt, keine aktualisierte Revision gespeichert.']);
+        }
+
+        $err = [];
+
+        foreach($errors as $element => $error) {
+            $err[$element] = $error->getErrorMessage();
+        }
+
+        return new JsonResponse(['success' => false, 'errors' => $err, 'message' => 'Formulardaten unvollständig oder fehlerhaft.']);
+    }
+
+    protected function activateRevision (): JsonResponse
+    {
+        try {
+            $revision = Revision::getInstance($this->request->query->getInt('id'));
+        }
+        catch(\Exception $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
+        }
+        if($revision->isActive()) {
+            return new JsonResponse(['success' => true]);
+        }
+
+        $revision->setActive(true);
+        $revision->getPage()->exportActiveRevision();
+
+        return new JsonResponse([
+            'success' => true,
+            'form' => $this->getPageData($revision),
+            'revisions' => $this->getRevisions($revision->getPage())
+        ]);
+    }
+
+    protected function deleteRevision (): JsonResponse
+    {
+        try {
+            $revision = Revision::getInstance($this->request->query->getInt('id'));
+            $page = $revision->getPage();
+        }
+        catch(\Exception $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        if($revision->isActive()) {
+            return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
+        }
+        $revision->delete();
+        return new JsonResponse(['success' => true, 'revisions' => $this->getRevisions($page)]);
+    }
+
+    private function getRevisions (Page $page): array
+    {
         $revisions = [];
 
         foreach($page->getRevisions() as $revision) {
@@ -94,206 +194,27 @@ class PagesController extends Controller
             ];
         }
 
-        return new JsonResponse([
-            'form' => [
-                'alias' => $revision->getPage()->getAlias(),
-                'title' => $revision->getTitle(),
-                'markup' => $revision->getMarkup(),
-                'description' => $revision->getDescription(),
-                'keywords' => $revision->getKeywords()
-            ],
-            'revisions' => $revisions
-        ]);
+        return $revisions;
     }
 
-    protected function update (): JsonResponse
+    private function getPageData (Revision $revision): array
     {
-        return new JsonResponse();
+        return [
+            'alias' => $revision->getPage()->getAlias(),
+            'title' => $revision->getTitle(),
+            'markup' => $revision->getMarkup(),
+            'description' => $revision->getDescription(),
+            'keywords' => $revision->getKeywords()
+        ];
     }
-    protected function activateRevision (): JsonResponse
-    {
-        return new JsonResponse();
-    }
-
-	protected function xhrExecute() {
-
-		try {
-			
-			if($revisionId = $this->request->request->getInt('revisionId')) {
-				
-				$form = $this->buildEditForm();
-
-				$form->bindRequestParameters();
-
-				if(!$form->getFormErrors()) {
-					$v = $form->getValidFormValues();
-
-					$revision = Revision::getInstance($revisionId);
-					$revision
-						->setTitle		($v['title'])
-						->setDescription($v['description'])
-						->setKeywords	($v['keywords'])
-						->setMarkup		($v['markup']);
-
-					if($revision->wasChanged()) {
-
-						$revision->deactivate();
-
-						$revisionToAdd = clone $revision;
-						$revisionToAdd
-							->setActive(TRUE)
-							->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
-							->save();
-
-						$revisionToAdd->getPage()->exportActiveRevision();
-
-						return new JsonResponse([
-							'data'		=> [
-								'id'			=> $revision->getId(),
-								'alias'			=> $revision->getPage()->getAlias(),
-								'title'			=> $revision->getTitle(),
-								'markup' 		=> $revision->getMarkup(),
-								'description'	=> $revision->getDescription(),
-								'keywords'		=> $revision->getKeywords()
-							],
-							'success'	=> TRUE,
-							'message'	=> 'Aktualisierte Revision gespeichert und aktiviert.'
-						]);
-					}
-					
-					return new JsonResponse([
-						'success' => FALSE,
-						'message' => 'Keine Änderungen erkannt, keine aktualisierte Revision gespeichert.'
-					]);
-
-				}
-				
-				// handle possible form errors
-			}
-			
-			$page = Page::getInstance($this->request->query->getInt('id'));
-
-			$request = $this->request->request;
-	
-			switch($request->get('httpRequest')) {
-	
-				case 'getRevisions':
-	
-					$revisions = [];
-	
-					foreach($page->getRevisions() as $revision) {
-						$revisions[] = [
-							'id'			=> $revision->getId(),
-							'active'		=> $revision->isActive(),
-							'locale'		=> (string) $revision->getLocale(),
-							'firstCreated'	=> $revision->getFirstCreated()->format(\DateTime::W3C)
-						];
-					}
-					return new JsonResponse(['revisions' => $revisions]);
-					
-				case 'getRevisionData':
-	
-					$id			= $request->getInt('id');
-					$revision	= Revision::getInstance($id);
-
-					return new JsonResponse([
-						'id'			=> $id,
-						'alias'			=> $page->getAlias(),
-						'title'			=> $revision->getTitle(),
-						'markup' 		=> $revision->getMarkup(),
-						'description'	=> $revision->getDescription(),
-						'keywords'		=> $revision->getKeywords()
-					]);
-					
-				case 'changeActivationOfRevision':
-					
-					$revision = Revision::getInstance($request->getInt('id'));
-					$activate = (boolean) $request->getInt('activate');
-
-					if($activate === $revision->isActive()) {
-						return new JsonResponse(['success' => TRUE]);
-					}
-
-					$revision->setActive($activate);
-
-					if($activate) {
-						$page->exportActiveRevision();
-					}
-
-					return new JsonResponse(['success' => TRUE]);
-						
-				case 'deleteRevision':
-
-					$revision = Revision::getInstance($request->getInt('id'))->delete();
-					return new JsonResponse(['success' => TRUE]);
-
-			}
-		}
-			
-		catch (PageException $e) {
-			return new JsonResponse(['success' => FALSE, 'message' => $e->getMessage()]);
-		}
-
-	}
-
-	protected function updateInlineEdit() {
-
-	    try {
-            $post = json_decode($this->request->getContent(), true);
-            $revision = Page::getInstance($post['page'])->getActiveRevision();
-        }
-        catch (\Exception $e) {
-	        return new JsonResponse(['error' => $e->getMessage()]);
-        }
-
-        $revision->setMarkup($post['data']);
-
-        if($revision->wasChanged()) {
-
-            $revision->deactivate();
-
-            $revisionToAdd = clone $revision;
-            $revisionToAdd
-                ->setActive(true)
-                ->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
-                ->save()
-            ;
-
-            $revisionToAdd->getPage()->exportActiveRevision();
-
-            return new JsonResponse(['success' => true, 'message' => 'Aktualisierte Revision gespeichert und aktiviert.']);
-        }
-
-        return new JsonResponse(['success' => true, 'message' => 'Keine Änderungen erkannt, keine aktualisierte Revision gespeichert.']);
-
-    }
-
-
-	/**
-	 * purge old revisions
-	 * currently not used
-	 * 
-	 * @param Page $page
-	 * @param Locale $locale
-	 */
-	private function purgeRevision(Page $page, Locale $locale = NULL) {
-
-		if(count($page->getRevisions()) > $this->maxPageRevisions) {
-			
-			$page->getOldestRevision()->delete();
-			
-		}
-	}
 
 	private function buildEditForm() {
-		
 		return HtmlForm::create('admin_edit_page.htm')
-			->addElement(FormElementFactory::create('input',	'title',		NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-			->addElement(FormElementFactory::create('input',	'alias',		NULL, [], [], FALSE, ['trim', 'uppercase']))
-			->addElement(FormElementFactory::create('textarea', 'keywords',		NULL, [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('textarea', 'description',	NULL, [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('textarea', 'markup',		NULL, [], [], FALSE, ['trim']))
-			->addElement(FormElementFactory::create('button', 'submit_page')->setInnerHTML('Änderungen übernehmen und neue Revision erzeugen'));
-
+			->addElement(FormElementFactory::create('input', 'title', null, [], [], false, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+			->addElement(FormElementFactory::create('input', 'alias', null, [], [], false, ['trim', 'uppercase']))
+			->addElement(FormElementFactory::create('textarea', 'keywords', null, [], [], false, ['trim']))
+			->addElement(FormElementFactory::create('textarea', 'description', null, [], [], false, ['trim']))
+			->addElement(FormElementFactory::create('textarea', 'markup', null, [], [], false, ['trim']))
+        ;
 	}
 }

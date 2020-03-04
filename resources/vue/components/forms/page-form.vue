@@ -25,8 +25,14 @@
                     <label class="form-label" for="description_input">Beschreibung</label>
                     <textarea id="description_input" class="form-input" rows="4" v-model="form.description"></textarea>
                 </div>
-                <h2>Revisionen</h2>
-                <revision-table :revisions="revisions"></revision-table>
+                <div class="divider" data-content="Revisionen"></div>
+                <div id="revisionsContainer">
+                    <revision-table
+                        :revisions="revisions"
+                        @activate-revision="$emit('activate-revision', $event)"
+                        @delete-revision="$emit('delete-revision', $event)"
+                    ></revision-table>
+                </div>
             </div>
         </div>
         <div class="divider"></div>

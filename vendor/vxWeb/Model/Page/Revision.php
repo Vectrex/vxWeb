@@ -366,9 +366,7 @@ class Revision {
 		$toSave = [];
 
 		foreach($this->monitoredAttributes as $attr) {
-			
 			$toSave[$attr] = $this->$attr;
-			
 		}
 
 		// save by inserting new revision record
@@ -394,7 +392,6 @@ class Revision {
 		}
 
 		return $this;
-
 	}
 	
 	/**

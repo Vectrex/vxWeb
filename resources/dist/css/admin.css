@@ -5363,6 +5363,12 @@ body
     top: 0; opacity: 1;
 }
 
+#revisionsContainer
+{overflow: auto; 
+
+    max-height: 16rem;
+}
+
 /* custom classes */
 .vx-navbar
 {
