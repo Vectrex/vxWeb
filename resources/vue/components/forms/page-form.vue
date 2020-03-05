@@ -30,6 +30,7 @@
                     <revision-table
                         :revisions="revisions"
                         @activate-revision="$emit('activate-revision', $event)"
+                        @load-revision="$emit('load-revision', $event)"
                         @delete-revision="$emit('delete-revision', $event)"
                     ></revision-table>
                 </div>

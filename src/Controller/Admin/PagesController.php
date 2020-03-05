@@ -143,6 +143,17 @@ class PagesController extends Controller
         return new JsonResponse(['success' => false, 'errors' => $err, 'message' => 'Formulardaten unvollständig oder fehlerhaft.']);
     }
 
+    protected function loadRevision (): JsonResponse
+    {
+        try {
+            $revision = Revision::getInstance($this->request->query->getInt('id'));
+        }
+        catch(\Exception $e) {
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
+        }
+        return new JsonResponse(['success' => true, 'form' => $this->getPageData($revision)]);
+    }
+
     protected function activateRevision (): JsonResponse
     {
         try {

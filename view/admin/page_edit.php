@@ -20,6 +20,7 @@
             :options="formProps.options"
             @response-received="responseReceived"
             @activate-revision="activateRevision"
+            @load-revision="loadRevision"
             @delete-revision="deleteRevision"
             ref="form"
         ></page-form>
@@ -66,6 +67,7 @@
         routes: {
             init: "<?= $router->getRoute('page_init')->getUrl() ?>",
             update: "<?= $router->getRoute('page_update')->getUrl() ?>",
+            load: "<?= $router->getRoute('page_revision_load')->getUrl() ?>",
             activate: "<?= $router->getRoute('page_revision_activate')->getUrl() ?>",
             delete: "<?= $router->getRoute('page_revision_delete')->getUrl() ?>",
         },
@@ -99,6 +101,12 @@
                 let response = await SimpleFetch(UrlQuery.create(this.$options.routes.activate, { id: rev.id }), 'POST');
                 if(response.success) {
                     this.formProps.revisions = (response.revisions || []).map(item => { item.firstCreated = new Date(item.firstCreated); return item }),
+                    this.formProps.form = response.form || {}
+                }
+            },
+            async loadRevision (rev) {
+                let response = await SimpleFetch(UrlQuery.create(this.$options.routes.load, { id: rev.id }));
+                if(response.success) {
                     this.formProps.form = response.form || {}
                 }
             },

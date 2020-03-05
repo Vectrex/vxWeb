@@ -12,7 +12,7 @@
         <tr v-for="revision in sortedRevisions" :key="revision.id">
             <td>{{ revision.firstCreated | formatDateTime }}</td>
             <td>
-                <button class="btn btn-link webfont-icon-only tooltip" type="button" data-tooltip="Ansicht" @click="$emit('load-revision')">&#xe015;</button>
+                <button class="btn btn-link webfont-icon-only tooltip" type="button" data-tooltip="Ansicht" @click="$emit('load-revision', revision)">&#xe015;</button>
             </td>
             <td>
                 <label class="form-switch">
