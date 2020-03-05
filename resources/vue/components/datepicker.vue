@@ -8,7 +8,7 @@
             v-bind="inputProps"
             ref="input"
         ></date-input>
-        <div class="calendar" v-bind="calendarProps">
+        <div class="calendar" v-bind="calendarProps" ref="calendar" :class="align === 'left' ? 'align-left' : 'align-right'">
             <div class="calendar-nav navbar">
                 <button class="btn btn-action btn-link btn-large prvMon" @click.stop="previousMonth"></button>
                 <div class="month navbar-primary">{{ monthLabel }} {{ year }}</div>
@@ -48,7 +48,8 @@
                 month: null,
                 day: null,
                 selectedDate: null,
-                expanded: !this.hasInput
+                expanded: !this.hasInput,
+                align: 'left'
             };
         },
 
@@ -58,6 +59,11 @@
                 this.month = (newValue || this.today).getMonth();
                 this.dateDay = (newValue || this.today).getDate();
                 this.selectedDate = newValue || null;
+            },
+            expanded (newValue) {
+                if(newValue && this.hasInput) {
+                    this.$nextTick(() => this.align = this.$refs.calendar.getBoundingClientRect().right > window.innerWidth ? 'right' : 'left');
+                }
             }
         },
 

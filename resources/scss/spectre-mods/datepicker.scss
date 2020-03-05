@@ -4,6 +4,13 @@
   @include shadow-variant(.05rem);
   background: white;
 
+  &.align-right {
+    right: 0;
+  }
+  &.align-left {
+    left: 0;
+  }
+
   &.cw {
     .calendar-body,
     .calendar-header {

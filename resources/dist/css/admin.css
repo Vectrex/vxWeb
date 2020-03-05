@@ -5132,6 +5132,16 @@ a.text-error:visited
     box-shadow: 0 .05rem .2rem rgba(36, 40, 42, .3);
 }
 
+.calendar.align-right
+{
+    right: 0;
+}
+
+.calendar.align-left
+{
+    left: 0;
+}
+
 .calendar.cw .calendar-body .calendar-date,
 .calendar.cw .calendar-header .calendar-date
 {
