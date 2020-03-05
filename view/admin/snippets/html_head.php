@@ -7,4 +7,8 @@
 <meta name="csrf-token" content="<?= (new \vxPHP\Security\Csrf\CsrfTokenManager())->refreshToken('admin') ?>">
 <link rel='icon' type='image/x-icon' href='/favicon.ico'>
 <link type='text/css' rel='stylesheet' href='<?= \vxPHP\Application\Application::getInstance()->asset('css/admin.min.css') ?>'>
-<script type="text/javascript" src="<?= \vxPHP\Application\Application::getInstance()->asset('js/admin/vxjs.js') ?>"></script>
+<?php if(\vxPHP\Application\Application::getInstance()->runsLocally()): ?>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<?php else: ?>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<?php endif; ?>
