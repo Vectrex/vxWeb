@@ -19,13 +19,16 @@
                     <div v-for="weekday in weekdays" class="calendar-date">{{ weekday }}</div>
                 </div>
                 <div class="calendar-body">
-                    <div v-for="day in days" class="calendar-date text-center" :class="getCellClass(day)">
+                    <div v-for="day in days" class="calendar-date text-center" :class="['prev-month', '', 'next-month'][day.getMonth() - month + 1]" :key="day.getTime()">
                         <button
                             type="button"
                             class="date-item"
-                            :class="getButtonClass(day)"
-                            :disabled="isDisabled(day)"
-                            @click.stop="isDisabled(day) ? null : selectDate(day)"
+                            :class="{
+                                'active': selectedDate && day.getTime() === selectedDate.getTime(),
+                                'date-today': day.getTime() === today.getTime()
+                            }"
+                            :disabled="(validFrom && validFrom) > day || (validUntil && validUntil < day)"
+                            @click.stop="(validFrom && validFrom) > day || (validUntil && validUntil < day) ? null : selectDate(day)"
                         >{{ day.getDate() }}</button>
                     </div>
                 </div>
@@ -46,7 +49,7 @@
             return {
                 year: null,
                 month: null,
-                day: null,
+                dateDay: null,
                 selectedDate: null,
                 expanded: !this.hasInput,
                 align: 'left'
@@ -62,7 +65,9 @@
             },
             expanded (newValue) {
                 if(newValue && this.hasInput) {
-                    this.$nextTick(() => this.align = this.$refs.calendar.getBoundingClientRect().right > window.innerWidth ? 'right' : 'left');
+                    this.$nextTick(() =>
+                         this.align = this.$refs.input.$el.getBoundingClientRect().left + this.$refs.calendar.getBoundingClientRect().width > window.innerWidth ? 'right' : 'left'
+                    );
                 }
             }
         },
@@ -161,22 +166,6 @@
         },
 
         methods: {
-            isDisabled(day) {
-                return (this.validFrom && this.validFrom > day) || (this.validUntil && this.validUntil < day)
-            },
-            getCellClass(day) {
-                return ['prev-month', '', 'next-month'][day.getMonth() - this.month + 1];
-            },
-            getButtonClass(day) {
-                const classes = [];
-                if(this.today.getTime() === day.getTime()) {
-                    classes.push('date-today');
-                }
-                if(this.selectedDate && this.selectedDate.getTime() === day.getTime()) {
-                    classes.push('active');
-                }
-                return classes;
-            },
             previousMonth() {
                 const d = new Date(this.year, this.month - 1, this.dateDay);
                 this.month = d.getMonth();

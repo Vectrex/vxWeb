@@ -1,6 +1,6 @@
 
     export default {
-		template: '<table class="table table-striped"><thead><tr><th v-for="column in columns" :class="[&#39;vx-sortable-header&#39;,column.cssClass,sortColumn === column ? sortDir : null,column.width]" @click="column.sortable ? clickSort(column) : null"><slot :name="column.prop + &#39;-header&#39;" :column="column">{{ column.label }}</slot></th></tr></thead><tbody><tr v-for="row in rows" :key="row.key" :class="row.cssClass"><td v-for="column in columns" :class="{ &#39;active&#39;: sortColumn === column }"><slot :name="column.prop" :row="row">{{ row[column.prop] }}</slot></td></tr></tbody></table>',
+		template: '<table class="table table-striped"><thead><tr><th v-for="column in columns" :class="[&#39;vx-sortable-header&#39;,column.cssClass,sortColumn === column ? sortDir : null,column.width]" @click="column.sortable ? clickSort(column) : null"><slot :name="column.prop + &#39;-header&#39;" :column="column">{{ column.label }}</slot></th></tr></thead><tbody><tr v-for="row in sortedRows" :key="row.key" :class="row.cssClass"><td v-for="column in columns" :class="{ &#39;active&#39;: sortColumn === column }"><slot :name="column.prop" :row="row">{{ row[column.prop] }}</slot></td></tr></tbody></table>',
         name: 'sortable',
 
         props: {
@@ -38,34 +38,39 @@
             };
         },
 
-        watch: {
-            sortColumn (newVal) {
-                this.doSort(newVal, this.sortDir);
-            },
-            sortDir (newVal) {
-                this.doSort(this.sortColumn, newVal);
+        computed: {
+            sortedRows () {
+                if(!this.sortColumn) {
+                    return this.rows;
+                }
+                return this.doSort(this.sortColumn, this.sortDir);
             }
         },
 
         methods: {
             clickSort (column) {
+                this.$emit('before-sort');
                 if(this.sortColumn === column) {
                     this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
                 }
                 else {
                     this.sortColumn = column;
                 }
+                this.$nextTick( () => this.$emit('after-sort') );
             },
             doSort (column, dir) {
-                this.$emit('before-sort');
+                let rows = this.rows;
 
-                if (column.sortFunction) {
-                    this.rows.sort (column.sortFunction);
+                if (dir === 'asc' && column.sortAscFunction) {
+                    rows.sort (column.sortAscFunction);
+                }
+                else if (dir === 'desc' && column.sortDescFunction) {
+                    rows.sort (column.sortDescFunction);
                 }
                 else {
                     let prop = column.prop;
 
-                    this.rows.sort((a, b) => {
+                    rows.sort((a, b) => {
                         if (a[prop] < b[prop]) {
                             return dir === "asc" ? -1 : 1;
                         }
@@ -76,7 +81,7 @@
                     });
                 }
 
-                this.$emit('after-sort');
+                return rows;
             }
         }
     }
