@@ -23,7 +23,7 @@
                 this.year = (newValue || this.today).getFullYear();
                 this.month = (newValue || this.today).getMonth();
                 this.dateDay = (newValue || this.today).getDate();
-                this.selectedDate = newValue || null;
+                this.selectedDate = newValue ? new Date(newValue.getFullYear(), newValue.getMonth(), newValue.getDate()) : null;
             },
             expanded (newValue) {
                 if(newValue && this.hasInput) {
@@ -119,7 +119,7 @@
             this.year = (this.value || this.today).getFullYear();
             this.month = (this.value || this.today).getMonth();
             this.dateDay = (this.value || this.today).getDate();
-            this.selectedDate = this.value || null;
+            this.selectedDate = this.value ? new Date(this.value.getFullYear(), this.value.getMonth(), this.value.getDate()) : null;
         },
         beforeDestroy() {
             if(this.hasInput) {
