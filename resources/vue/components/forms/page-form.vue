@@ -67,27 +67,24 @@
                 response: {},
                 loading: false,
                 editorConfig: {
+                    allowedContent: true,
+                    autoParagraph: false,
+                    customConfig: "",
                     toolbar:
                         [
-                            ['Maximize', '-', 'Source', '-', 'Undo', 'Redo'],
-                            ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'],
-                            ['Bold', 'Italic', 'Superscript', 'Subscript', '-', 'CopyFormatting', 'RemoveFormat'],
-                            ['NumberedList', 'BulletedList'],
-                            ['Link', 'Unlink'], ['Format'],
+                            ['Maximize', '-', 'Source'],
+                            ['Undo', 'Redo', '-', 'Cut','Copy','Paste','PasteText','PasteFromWord'],
+                            [ 'Find', 'Replace'],
+                            [ 'Bold', 'Italic', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat', '-', 'TextColor', 'BGColor'],
+                            ['NumberedList','BulletedList','-','Blockquote'],
+                            ['Link','Unlink'],
+                            ['Image','Table','SpecialChar'],
+                            ['Styles', 'Format'],
                             ['ShowBlocks']
                         ],
-                    height: "20rem",
-                    format_tags: "h1;h2;p",
-                    format_p: {element: "p"},
-                    format_h1: {element: "h2"},
-                    format_h2: {element: "h3"},
-                    heading: {
-                        options: [
-                            {model: 'paragraph', title: 'Absatz'},
-                            {model: 'heading1', view: 'h3', title: 'Überschrift 1', class: 'h3'},
-                            {model: 'heading2', view: 'h4', title: 'Überschrift 2', class: 'h4'}
-                        ]
-                    }
+                    height: "24rem", contentsCss: ['/css/site.css', '/css/site_edit.css'],
+                    filebrowserBrowseUrl: null,
+                    filebrowserImageBrowseUrl: null + "?filter=image"
                 }
             }
         },
