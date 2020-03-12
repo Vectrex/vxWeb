@@ -125,7 +125,7 @@
             </div>
         </div>
 
-        <confirm ref="confirm"></confirm>
+        <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
     </div>
 </template>
 
@@ -230,7 +230,7 @@
                 this.editFormData.id = row.id;
             },
             async delFile (row) {
-                if(await this.$refs.confirm.open('', "Datei '" + row.name + "' wirklich löschen?", { cancelLabel: "Abbrechen" })) {
+                if(await this.$refs.confirm.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
                     let response = await SimpleFetch(UrlQuery.create(this.routes.delFile, { id: row.id }), 'DELETE');
                     if(response.success) {
                         this.files.splice(this.files.findIndex(item => row === item), 1);
@@ -262,7 +262,7 @@
                 }
             },
             async delFolder (row) {
-                if(await this.$refs.confirm.open('', "Ordner und Inhalt von '" + row.name + "' wirklich löschen?", { cancelLabel: "Abbrechen" })) {
+                if(await this.$refs.confirm.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?", { cancelLabel: "Abbrechen" })) {
                     let response = await SimpleFetch(UrlQuery.create(this.routes.delFolder, { folder: row.id }), 'DELETE');
                     if(response.success) {
                         this.folders.splice(this.folders.findIndex(item => row === item), 1);

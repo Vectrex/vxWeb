@@ -1,6 +1,6 @@
 <template>
     <div ref="container" class="modal modal-sm" :class="{ active: show }">
-        <a href="#close" class="modal-overlay"></a>
+        <a href="#close" class="modal-overlay" @click.prevent="cancel"></a>
         <div class="modal-container">
             <div class="modal-header" v-if="title">
                 <div class="modal-title h5">{{ title }}</div>
@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" @click.stop="ok" v-focus>{{ options.okLabel }}</button>
+                <button class="btn mr-2" :class="options.okClass" @click.stop="ok" ref="okButton">{{ options.okLabel }}</button>
                 <button class="btn btn-link" @click.stop="cancel">{{ options.cancelLabel }}</button>
             </div>
         </div>
@@ -21,10 +21,14 @@
 <script>
     /* heavily inspired by https://gist.github.com/eolant/ba0f8a5c9135d1a146e1db575276177d */
 
-    import { Focus } from "../directives";
-
     export default {
         name: 'confirm',
+
+        props: {
+            config: {
+                type: Object
+            }
+        },
 
         data () { return {
             title: "",
@@ -34,15 +38,27 @@
             reject: null,
             options: {
                 okLabel: "Ok",
-                cancelLabel: "Cancel"
+                cancelLabel: "Cancel",
+                okClass: "btn-success"
             }
         }},
+
+        watch: {
+            config() {
+                this.options = Object.assign({}, this.options, this.config);
+            }
+        },
+
+        created() {
+            this.options = Object.assign({}, this.options, this.config);
+        },
 
         methods: {
             open (title, message, options) {
                 this.title = title;
                 this.message = message;
                 this.show = true;
+                this.$nextTick(() => this.$refs.okButton.focus());
                 this.options = Object.assign(this.options, options || {});
                 return new Promise((resolve, reject) => {
                     this.resolve = resolve;
@@ -57,10 +73,6 @@
                 this.show = false;
                 this.resolve(false);
             }
-        },
-
-        directives: {
-            focus: Focus
         }
     }
 </script>
