@@ -125,6 +125,7 @@
             </div>
         </div>
 
+        <confirm ref="confirm"></confirm>
     </div>
 </template>
 
@@ -132,6 +133,7 @@
     import Sortable from './sortable';
     import SimpleTree from './simple-tree';
     import CircularProgress from './circular-progress';
+    import Confirm from './confirm';
     import FileEditForm from './forms/file-edit-form';
     import SimpleFetch from "../util/simple-fetch";
     import PromisedXhr from "../util/promised-xhr";
@@ -141,7 +143,7 @@
 
     export default {
         components: {
-            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress
+            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress, 'confirm': Confirm
         },
 
         data () {
@@ -228,7 +230,7 @@
                 this.editFormData.id = row.id;
             },
             async delFile (row) {
-                if(window.confirm("Datei '" + row.name + "' wirklich löschen?")) {
+                if(await this.$refs.confirm.open('', "Datei '" + row.name + "' wirklich löschen?", { cancelLabel: "Abbrechen" })) {
                     let response = await SimpleFetch(UrlQuery.create(this.routes.delFile, { id: row.id }), 'DELETE');
                     if(response.success) {
                         this.files.splice(this.files.findIndex(item => row === item), 1);
@@ -260,7 +262,7 @@
                 }
             },
             async delFolder (row) {
-                if(window.confirm("Ordner und Inhalt von '" + row.name + "' wirklich löschen?")) {
+                if(await this.$refs.confirm.open('', "Ordner und Inhalt von '" + row.name + "' wirklich löschen?", { cancelLabel: "Abbrechen" })) {
                     let response = await SimpleFetch(UrlQuery.create(this.routes.delFolder, { folder: row.id }), 'DELETE');
                     if(response.success) {
                         this.folders.splice(this.folders.findIndex(item => row === item), 1);

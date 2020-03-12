@@ -7,6 +7,7 @@ import SimpleTree from './components/simple-tree';
 import Filemanager from './components/filemanager';
 import FilesortList from './components/filesort-list';
 import Tab from './components/tab';
+import Confirm from './components/confirm';
 
 import ZPagination from './components/zutre/pagination';
 import ZLink from './components/zutre/link';
@@ -36,6 +37,7 @@ const Components = {
     Filemanager,
     FilesortList,
     Tab,
+    Confirm,
     ZPagination,
     ZLink,
     VueCkeditor,
