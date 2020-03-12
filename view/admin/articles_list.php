@@ -6,15 +6,24 @@
 
     <div class="vx-button-bar">
         <a class="btn with-webfont-icon-right btn-primary" data-icon="&#xe018;" href="<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_add')->getUrl() ?>">Artikel anlegen</a>
+
         <select v-model="filter.cat" class="form-select col-2 mx-2">
             <option value="">(Alle Kategorien)</option>
             <option v-for="cat in categories" :value="cat.id">{{ cat.label }}</option>
         </select>
         <input v-model="filter.title" class="form-input col-2 mx-2" placeholder="Titel filtern...">
+
+        <z-pagination
+            :page.sync="currentPage"
+            :items="filteredArticles"
+            :per-page="entriesPerPage"
+            prev-text="vorherige Seite"
+            next-text="nächste Seite"
+        />
     </div>
 
     <sortable
-        :rows="filteredArticles"
+        :rows="paginatedArticles"
         :columns="cols"
         :sort-prop="initSort.column"
         :sort-direction="initSort.dir"
@@ -43,13 +52,15 @@
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-    const { Sortable, Confirm } = window.vxweb.Components;
+    const { Sortable, Confirm, ZPagination, ZLink } = window.vxweb.Components;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;
+
+    Vue.component('z-link', ZLink);
 
     let app = new Vue({
 
         el: "#app",
-        components: { 'sortable': Sortable, 'confirm': Confirm },
+        components: { 'sortable': Sortable, 'confirm': Confirm, 'z-pagination': ZPagination },
 
         routes: {
             init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articles_init')->getUrl() ?>",
@@ -76,11 +87,17 @@
             filter: {
                 cat: '',
                 title: ''
-            }
+            },
+            entriesPerPage: 20,
+            currentPage: 1
         },
 
         computed: {
-            filteredArticles() {
+            paginatedArticles () {
+                return this.filteredArticles.slice((this.currentPage - 1) * this.entriesPerPage, this.currentPage * this.entriesPerPage);
+            },
+
+            filteredArticles () {
                 const titleFilter = this.filter.title.toLowerCase();
                 return this.articles.filter(item => (!this.filter.cat || this.filter.cat === item.catId) && (!this.filter.title || item.title.toLowerCase().indexOf(titleFilter) !== -1));
             }
