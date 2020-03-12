@@ -2,7 +2,7 @@
     <div ref="container" class="modal modal-sm" :class="{ active: show }">
         <a href="#close" class="modal-overlay" @click.prevent="cancel"></a>
         <div class="modal-container">
-            <div class="modal-header" v-if="title">
+            <div class="modal-header bg-error text-light" v-if="title">
                 <div class="modal-title h5">{{ title }}</div>
             </div>
             <div class="modal-body">

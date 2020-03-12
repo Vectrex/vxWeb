@@ -5186,6 +5186,11 @@ a.text-error:visited
     cursor: pointer;
 }
 
+.modal-container .modal-header
+{
+    margin: 0 -.4rem; padding: .8rem 1.2rem;
+}
+
 @font-face
 {
     font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2');
