@@ -47,6 +47,14 @@
                 type: Array,
                 required: true
             },
+            offset: {
+                type: Number,
+                default: null
+            },
+            count: {
+                type: Number,
+                default: null
+            },
             sortProp: {
                 type: String
             },
@@ -67,10 +75,33 @@
 
         computed: {
             sortedRows () {
-                if(!this.sortColumn) {
-                    return this.rows;
+                let rows = this.rows.slice();
+
+                if(this.sortColumn) {
+                    if (this.sortDir === 'asc' && this.sortColumn.sortAscFunction) {
+                        rows.sort (this.sortColumn.sortAscFunction);
+                    }
+                    else if (this.sortDir === 'desc' && this.sortColumn.sortDescFunction) {
+                        rows.sort (this.sortColumn.sortDescFunction);
+                    }
+                    else {
+                        let prop = this.sortColumn.prop;
+
+                        rows.sort((a, b) => {
+                            if (a[prop] < b[prop]) {
+                                return this.sortDir === "asc" ? -1 : 1;
+                            }
+                            if (a[prop] > b[prop]) {
+                                return this.sortDir === "asc" ? 1 : -1;
+                            }
+                            return 0;
+                        });
+                    }
                 }
-                return this.doSort(this.sortColumn, this.sortDir);
+
+                let offset = this.offset || 0, count = this.count || rows.length;
+
+                return rows.slice(offset, offset + count);
             }
         },
 
@@ -84,31 +115,6 @@
                     this.sortColumn = column;
                 }
                 this.$nextTick( () => this.$emit('after-sort') );
-            },
-            doSort (column, dir) {
-                let rows = this.rows;
-
-                if (dir === 'asc' && column.sortAscFunction) {
-                    rows.sort (column.sortAscFunction);
-                }
-                else if (dir === 'desc' && column.sortDescFunction) {
-                    rows.sort (column.sortDescFunction);
-                }
-                else {
-                    let prop = column.prop;
-
-                    rows.sort((a, b) => {
-                        if (a[prop] < b[prop]) {
-                            return dir === "asc" ? -1 : 1;
-                        }
-                        if (a[prop] > b[prop]) {
-                            return dir === "asc" ? 1 : -1;
-                        }
-                        return 0;
-                    });
-                }
-
-                return rows;
             }
         }
     }

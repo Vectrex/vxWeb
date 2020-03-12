@@ -23,10 +23,12 @@
     </div>
 
     <sortable
-        :rows="paginatedArticles"
+        :rows="filteredArticles"
         :columns="cols"
         :sort-prop="initSort.column"
         :sort-direction="initSort.dir"
+        :offset="(currentPage - 1) * entriesPerPage"
+        :count="entriesPerPage"
         @after-sort="storeSort"
         ref="sortable"
     >
@@ -93,10 +95,6 @@
         },
 
         computed: {
-            paginatedArticles () {
-                return this.filteredArticles.slice((this.currentPage - 1) * this.entriesPerPage, this.currentPage * this.entriesPerPage);
-            },
-
             filteredArticles () {
                 const titleFilter = this.filter.title.toLowerCase();
                 return this.articles.filter(item => (!this.filter.cat || this.filter.cat === item.catId) && (!this.filter.title || item.title.toLowerCase().indexOf(titleFilter) !== -1));
