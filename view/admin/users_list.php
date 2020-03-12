@@ -21,18 +21,19 @@
             <a v-if="currentUser.username !== slotProps.row.username" class="btn webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" href="#" @click.prevent="del(slotProps.row)">&#xe011;</a>
         </template>
     </sortable>
+    <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
 </div>
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
 
-    const Sortable = window.vxweb.Components.Sortable;
+    const { Sortable, Confirm } = window.vxweb.Components;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
     const app = new Vue({
 
         el: "#app",
-        components: { "sortable": Sortable },
+        components: { "sortable": Sortable, "confirm": Confirm },
 
         routes: {
             init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('users_init')->getUrl() ?>",
@@ -67,7 +68,7 @@
 
         methods: {
             async del (row) {
-                if(window.confirm('Wirklich löschen?')) {
+                if(await this.$refs.confirm.open('Benutzer löschen', "Soll der Benutzer wirklich gelöscht werden?")) {
                     let response = await SimpleFetch(this.$options.routes.delete + '?id=' + row.key, 'DELETE');
                     if(response.success) {
                         this.users.splice(this.users.findIndex(item => row === item), 1);

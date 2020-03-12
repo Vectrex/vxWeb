@@ -7,39 +7,33 @@
     <div class="vx-button-bar">
         <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="<?= $router->getRoute('pages')->getUrl() ?>">Zurück zur Übersicht</a>
     </div>
-    <div>
-        <message-toast
-            :message="toastProps.message"
-            :classname="toastProps.messageClass"
-            :active="toastProps.isActive"
-            ref="toast"
-        ></message-toast>
-        <page-form
-            :url="formUrl"
-            :initial-data="{ form: formProps.form, revisions: formProps.revisions }"
-            :options="formProps.options"
-            @response-received="responseReceived"
-            @activate-revision="activateRevision"
-            @load-revision="loadRevision"
-            @delete-revision="deleteRevision"
-            ref="form"
-        ></page-form>
-    </div>
+    <message-toast
+        :message="toastProps.message"
+        :classname="toastProps.messageClass"
+        :active="toastProps.isActive"
+        ref="toast"
+    ></message-toast>
+    <page-form
+        :url="formUrl"
+        :initial-data="{ form: formProps.form, revisions: formProps.revisions }"
+        :options="formProps.options"
+        @response-received="responseReceived"
+        @activate-revision="activateRevision"
+        @load-revision="loadRevision"
+        @delete-revision="deleteRevision"
+        ref="form"
+    ></page-form>
+    <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
 </div>
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-    const MessageToast = window.vxweb.Components.MessageToast;
-    const PageForm =  window.vxweb.Components.PageForm;
-    const SimpleFetch =  window.vxweb.Util.SimpleFetch;
-    const UrlQuery = window.vxweb.Util.UrlQuery;
+    const { MessageToast, PageForm, Confirm } = window.vxweb.Components;
+    const { SimpleFetch, UrlQuery } =  window.vxweb.Util;
 
     const app = new Vue({
 
-        components: {
-            "message-toast": MessageToast,
-            "page-form": PageForm
-        },
+        components: { "message-toast": MessageToast, "page-form": PageForm, "confirm": Confirm },
 
         el: "#vue-root",
 
@@ -111,7 +105,7 @@
                 }
             },
             async deleteRevision (rev) {
-                if(window.confirm('Revision wirklich entfernen?')) {
+                if(await this.$refs.confirm.open('Revision löschen', "Soll die Revision wirklich gelöscht werden?")) {
                     let response = await SimpleFetch(UrlQuery.create(this.$options.routes.delete, { id: rev.id }), 'DELETE');
                     if(response.success) {
                         this.formProps.revisions = response.revisions.map(item => { item.firstCreated = new Date(item.firstCreated); return item });

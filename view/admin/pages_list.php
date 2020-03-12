@@ -57,15 +57,6 @@
         },
 
         methods: {
-            async del (row) {
-                if(window.confirm('Wirklich löschen?')) {
-                    let response = await SimpleFetch(this.$options.routes.delete + '?id=' + row.key, 'DELETE');
-                    if(response.success) {
-                        this.users.splice(this.users.findIndex(item => row === item), 1);
-                    }
-                }
-            },
-
             storeSort () {
                 window.localStorage.setItem(window.location.origin + "/admin/pages__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
             }
