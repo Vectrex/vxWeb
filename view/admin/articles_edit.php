@@ -72,7 +72,7 @@
     </section>
 
     <section id="article-files-sort" v-if="activeTabIndex === 2">
-        <filesort-list v-model="linkedFiles" lock-axis="y" helper-class="slick-sort-helper" @input="saveSort" :use-drag-handle="true">
+        <slicksort-list v-model="linkedFiles" lock-axis="y" helper-class="slick-sort-helper" @input="saveSort" :use-drag-handle="true">
             <template v-slot:row="slotProps">
                 <div class="d-inline-block col-2">{{ slotProps.item.filename }}</div>
                 <div class="d-inline-block col-2">
@@ -84,13 +84,13 @@
                 </div>
                 <a class="d-inline-block col-3" :href="'#' + slotProps.item.folderid" @click.prevent="gotoFolder(slotProps.item.folderid)">{{ slotProps.item.path }}</a>
             </template>
-        </filesort-list>
+        </slicksort-list>
     </section>
 </div>
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-    const { MessageToast, Tab, Filemanager, ArticleForm, FilesortList } = window.vxweb.Components;
+    const { MessageToast, Tab, Filemanager, ArticleForm, SlicksortList } = window.vxweb.Components;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
     Vue.directive('handle', window.vxweb.Directives.HandleDirective);
@@ -105,7 +105,7 @@
             "tab": Tab,
             "filemanager": Filemanager,
             "article-form": ArticleForm,
-            "filesort-list": FilesortList
+            "slicksort-list": SlicksortList
         },
 
         computed: {

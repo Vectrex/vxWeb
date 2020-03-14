@@ -1,0 +1,16 @@
+.popover {
+  &.static {
+    &.active {
+      .popover-container {
+        display: block !important;
+        opacity: 1;
+        transform: translate(-50%, -100%) scale(1);
+      }
+    }
+
+    *:focus + .popover-container,
+    &:hover .popover-container {
+      display: none;
+    }
+  }
+}

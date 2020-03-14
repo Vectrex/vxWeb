@@ -5191,6 +5191,17 @@ a.text-error:visited
     margin: 0 -.4rem; padding: .8rem 1.2rem;
 }
 
+.popover.static.active .popover-container
+{
+    display: block !important; transform: translate(-50%, -100%) scale(1); opacity: 1;
+}
+
+.popover.static *:focus + .popover-container,
+.popover.static:hover .popover-container
+{
+    display: none;
+}
+
 @font-face
 {
     font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2');

@@ -3317,24 +3317,24 @@ var filemanager_component = normalizeComponent(
 )
 
 /* harmony default export */ var filemanager = (filemanager_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"606411c9-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filesort-list.vue?vue&type=template&id=58103984&
-var filesort_listvue_type_template_id_58103984_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"use-drag-handle":true}},_vm._l((_vm.value),function(item,ndx){return _c('filesort-item',{key:ndx,attrs:{"index":ndx,"item":item},scopedSlots:_vm._u([_vm._l((_vm.$scopedSlots),function(_,name){return {key:name,fn:function(slotData){return [_vm._t(name,null,null,slotData)]}}})],null,true)})}),1)}
-var filesort_listvue_type_template_id_58103984_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"606411c9-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/slicksort-list.vue?vue&type=template&id=1adab988&
+var slicksort_listvue_type_template_id_1adab988_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"use-drag-handle":true}},_vm._l((_vm.value),function(item,ndx){return _c('slicksort-item',{key:ndx,attrs:{"index":ndx,"item":item},scopedSlots:_vm._u([_vm._l((_vm.$scopedSlots),function(_,name){return {key:name,fn:function(slotData){return [_vm._t(name,null,null,slotData)]}}})],null,true)})}),1)}
+var slicksort_listvue_type_template_id_1adab988_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/filesort-list.vue?vue&type=template&id=58103984&
+// CONCATENATED MODULE: ./vue/components/slicksort-list.vue?vue&type=template&id=1adab988&
 
 // EXTERNAL MODULE: ./node_modules/vue-slicksort/dist/vue-slicksort.umd.js
 var vue_slicksort_umd = __webpack_require__("11b0");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"606411c9-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filesort-item.vue?vue&type=template&id=4d4ea906&
-var filesort_itemvue_type_template_id_4d4ea906_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"slick-sort-item"},[_c('div',{directives:[{name:"handle",rawName:"v-handle"}],staticClass:"handle"}),_vm._t("row",[_vm._v(_vm._s(_vm.item))],{"item":_vm.item})],2)}
-var filesort_itemvue_type_template_id_4d4ea906_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"606411c9-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/slicksort-item.vue?vue&type=template&id=73718a44&
+var slicksort_itemvue_type_template_id_73718a44_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"slick-sort-item"},[_c('div',{directives:[{name:"handle",rawName:"v-handle"}],staticClass:"handle"}),_vm._t("row",[_vm._v(_vm._s(_vm.item))],{"item":_vm.item})],2)}
+var slicksort_itemvue_type_template_id_73718a44_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/filesort-item.vue?vue&type=template&id=4d4ea906&
+// CONCATENATED MODULE: ./vue/components/slicksort-item.vue?vue&type=template&id=73718a44&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filesort-item.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/slicksort-item.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -3345,14 +3345,14 @@ var filesort_itemvue_type_template_id_4d4ea906_staticRenderFns = []
 
 
 
-/* harmony default export */ var filesort_itemvue_type_script_lang_js_ = ({
+/* harmony default export */ var slicksort_itemvue_type_script_lang_js_ = ({
     mixins: [vue_slicksort_umd["ElementMixin"]],
     props: ['item']
 });
 
-// CONCATENATED MODULE: ./vue/components/filesort-item.vue?vue&type=script&lang=js&
- /* harmony default export */ var components_filesort_itemvue_type_script_lang_js_ = (filesort_itemvue_type_script_lang_js_); 
-// CONCATENATED MODULE: ./vue/components/filesort-item.vue
+// CONCATENATED MODULE: ./vue/components/slicksort-item.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_slicksort_itemvue_type_script_lang_js_ = (slicksort_itemvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./vue/components/slicksort-item.vue
 
 
 
@@ -3360,10 +3360,10 @@ var filesort_itemvue_type_template_id_4d4ea906_staticRenderFns = []
 
 /* normalize component */
 
-var filesort_item_component = normalizeComponent(
-  components_filesort_itemvue_type_script_lang_js_,
-  filesort_itemvue_type_template_id_4d4ea906_render,
-  filesort_itemvue_type_template_id_4d4ea906_staticRenderFns,
+var slicksort_item_component = normalizeComponent(
+  components_slicksort_itemvue_type_script_lang_js_,
+  slicksort_itemvue_type_template_id_73718a44_render,
+  slicksort_itemvue_type_template_id_73718a44_staticRenderFns,
   false,
   null,
   null,
@@ -3371,8 +3371,8 @@ var filesort_item_component = normalizeComponent(
   
 )
 
-/* harmony default export */ var filesort_item = (filesort_item_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filesort-list.vue?vue&type=script&lang=js&
+/* harmony default export */ var slicksort_item = (slicksort_item_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/slicksort-list.vue?vue&type=script&lang=js&
 //
 //
 //
@@ -3388,9 +3388,9 @@ var filesort_item_component = normalizeComponent(
 
 
 
-/* harmony default export */ var filesort_listvue_type_script_lang_js_ = ({
+/* harmony default export */ var slicksort_listvue_type_script_lang_js_ = ({
     mixins: [vue_slicksort_umd["ContainerMixin"]],
-    components: { FilesortItem: filesort_item },
+    components: { SlicksortItem: slicksort_item },
     props: {
         value: {
             type: Array,
@@ -3399,9 +3399,9 @@ var filesort_item_component = normalizeComponent(
     }
 });
 
-// CONCATENATED MODULE: ./vue/components/filesort-list.vue?vue&type=script&lang=js&
- /* harmony default export */ var components_filesort_listvue_type_script_lang_js_ = (filesort_listvue_type_script_lang_js_); 
-// CONCATENATED MODULE: ./vue/components/filesort-list.vue
+// CONCATENATED MODULE: ./vue/components/slicksort-list.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_slicksort_listvue_type_script_lang_js_ = (slicksort_listvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./vue/components/slicksort-list.vue
 
 
 
@@ -3409,10 +3409,10 @@ var filesort_item_component = normalizeComponent(
 
 /* normalize component */
 
-var filesort_list_component = normalizeComponent(
-  components_filesort_listvue_type_script_lang_js_,
-  filesort_listvue_type_template_id_58103984_render,
-  filesort_listvue_type_template_id_58103984_staticRenderFns,
+var slicksort_list_component = normalizeComponent(
+  components_slicksort_listvue_type_script_lang_js_,
+  slicksort_listvue_type_template_id_1adab988_render,
+  slicksort_listvue_type_template_id_1adab988_staticRenderFns,
   false,
   null,
   null,
@@ -3420,7 +3420,7 @@ var filesort_list_component = normalizeComponent(
   
 )
 
-/* harmony default export */ var filesort_list = (filesort_list_component.exports);
+/* harmony default export */ var slicksort_list = (slicksort_list_component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"606411c9-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/tab.vue?vue&type=template&id=5ba42c1e&
 var tabvue_type_template_id_5ba42c1e_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(_vm.items.length)?_c('ul',{staticClass:"tab",class:{ 'tab-block': _vm.block }},[_vm._l((_vm.items),function(item,ndx){return _c('li',{key:ndx,staticClass:"tab-item",class:{ active: _vm.activeIndex === ndx }},[_c('z-link',{class:{ disabled: item.disabled },attrs:{"badge":item.badge,"name":item.name},on:{"click":function($event){return _vm.itemOnClick(item)}}})],1)}),(_vm.hasActionSlot)?_c('li',{staticClass:"tab-item tab-action"},[_vm._t("action")],2):_vm._e()],2):_vm._e()])}
 var tabvue_type_template_id_5ba42c1e_staticRenderFns = []
@@ -4856,7 +4856,7 @@ const Components = {
     Sortable: sortable,
     SimpleTree: simple_tree,
     Filemanager: filemanager,
-    FilesortList: filesort_list,
+    SlicksortList: slicksort_list,
     Tab: tab,
     Confirm: components_confirm,
     ZPagination: pagination,

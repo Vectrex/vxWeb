@@ -5,7 +5,7 @@ import DatePicker from './components/datepicker';
 import Sortable from './components/sortable';
 import SimpleTree from './components/simple-tree';
 import Filemanager from './components/filemanager';
-import FilesortList from './components/filesort-list';
+import SlicksortList from './components/slicksort-list';
 import Tab from './components/tab';
 import Confirm from './components/confirm';
 
@@ -35,7 +35,7 @@ const Components = {
     Sortable,
     SimpleTree,
     Filemanager,
-    FilesortList,
+    SlicksortList,
     Tab,
     Confirm,
     ZPagination,
