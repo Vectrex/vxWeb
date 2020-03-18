@@ -5191,9 +5191,14 @@ a.text-error:visited
     margin: 0 -.4rem; padding: .8rem 1.2rem;
 }
 
+.popover.static .popover-container
+{
+    width: auto;
+}
+
 .popover.static.active .popover-container
 {
-    display: block !important; transform: translate(-50%, -100%) scale(1); opacity: 1;
+    display: block !important;
 }
 
 .popover.static *:focus + .popover-container,

@@ -1,7 +1,7 @@
 <template>
     <div
         v-cloak
-        @drop.prevent="uploadFile"
+        @drop.prevent="uploadDraggedFiles"
         @dragover.prevent="indicateDrag = true"
         @dragleave.prevent="indicateDrag = false"
         :class="{'dragged-over': indicateDrag}"
@@ -17,6 +17,19 @@
                     @click="readFolder(breadcrumb.folder)">{{ breadcrumb.name }}
                 </button>
             </span>
+            <div class="popover popover-bottom static ml-1" :class="{ active: showAddActivities }">
+                <button class="btn webfont-icon-only" type="button" @click.stop="showAddActivities = !showAddActivities">&#xe020;</button>
+                <div class="popover-container" style="min-width: 12rem;">
+                    <div class="card">
+                        <div class="card-body">
+                            <filemanager-add
+                                @upload="uploadInputFiles"
+                                @create-folder="createFolder"
+                            ></filemanager-add>
+                        </div>
+                    </div>
+                </div>
+            </div>
             </section>
             <section class="navbar-section">
                 <template v-if="uploadInProgress">
@@ -24,25 +37,9 @@
                     <label class="d-inline-block mr-2">{{ progress.file }}</label>
                     <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16"></circular-progress>
                 </template>
-                <strong class="text-primary d-block col-12 text-center" v-else>Uploads hierher ziehen</strong>
+                <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
             </section>
             <section class="navbar-section">
-                <input
-                    v-if="showAddFolderInput"
-                    v-focus
-                    class="form-input"
-                    @keydown.enter="addFolder"
-                    @keydown.esc="showAddFolderInput = false"
-                    @blur="showAddFolderInput = false"
-                    ref="addFolderInput"
-                >
-                <button
-                    v-if="!showAddFolderInput"
-                    class="btn webfont-icon-only btn-primary tooltip"
-                    data-tooltip="Verzeichnis erstellen"
-                    type="button"
-                    @click="showAddFolderInput = true"
-                ></button>
             </section>
         </div>
         <sortable
@@ -130,6 +127,7 @@
 </template>
 
 <script>
+    import FilemanagerAdd  from './filemanager-add';
     import Sortable from './sortable';
     import SimpleTree from './simple-tree';
     import CircularProgress from './circular-progress';
@@ -143,7 +141,7 @@
 
     export default {
         components: {
-            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress, 'confirm': Confirm
+            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress, 'confirm': Confirm, 'filemanager-add': FilemanagerAdd
         },
 
         data () {
@@ -155,9 +153,9 @@
                 breadcrumbs: [],
                 toRename: null,
                 toMove: null,
-                showAddFolderInput: false,
                 showEditForm: false,
                 showFolderTree: false,
+                showAddActivities: false,
                 indicateDrag: false,
                 uploads: [],
                 uploadInProgress: false,
@@ -202,8 +200,17 @@
             this.folders = response.folders || [];
             this.currentFolder = response.currentFolder || null;
         },
+        mounted () {
+            document.body.addEventListener('click', this.handleBodyClick);
+        },
+        beforeDestroy () {
+            document.body.removeEventListener('click', this.handleBodyClick);
+        },
 
         methods: {
+            handleBodyClick () {
+                this.showAddActivities = false;
+            },
             async readFolder (id) {
                 let response = await SimpleFetch(UrlQuery.create(this.routes.readFolder, { folder: id }));
 
@@ -273,16 +280,12 @@
                     }
                 }
             },
-            async addFolder () {
-                let name = this.$refs.addFolderInput.value.trim();
-                if(name) {
-                    let response = await SimpleFetch(this.routes.addFolder, 'POST', {}, JSON.stringify({ name: name, parent: this.currentFolder }));
-                    if(response.success) {
-                        this.showAddFolderInput = false;
-                    }
-                    if(response.folder) {
-                        this.folders.push(response.folder);
-                    }
+            async createFolder (name) {
+                this.showAddActivities = false;
+
+                let response = await SimpleFetch(this.routes.addFolder, 'POST', {}, JSON.stringify({ name: name, parent: this.currentFolder }));
+                if(response.folder) {
+                    this.folders.push(response.folder);
                 }
             },
             async getFolderTree (row) {
@@ -307,15 +310,20 @@
                     }
                 }
             },
-            uploadFile (event) {
+            uploadDraggedFiles (event) {
                 this.indicateDrag = false;
-                let droppedFiles = event.dataTransfer.files;
+                let files = event.dataTransfer.files;
 
-                if (!droppedFiles) {
+                if (!files) {
                     return;
                 }
-                [...droppedFiles].forEach(f => this.uploads.push(f));
 
+                this.uploadInputFiles(files);
+            },
+            uploadInputFiles (files) {
+                this.showAddActivities = false;
+
+                [...files].forEach(f => this.uploads.push(f));
                 if(!this.uploadInProgress) {
                     this.uploadInProgress = true;
                     this.progress.loaded = 0;

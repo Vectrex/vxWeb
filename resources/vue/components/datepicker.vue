@@ -152,7 +152,7 @@
 
         mounted () {
             if(this.hasInput) {
-                document.body.addEventListener('click', this.handleDocumentClick);
+                document.body.addEventListener('click', this.handleBodyClick);
             }
             this.year = (this.value || this.today).getFullYear();
             this.month = (this.value || this.today).getMonth();
@@ -161,7 +161,7 @@
         },
         beforeDestroy() {
             if(this.hasInput) {
-                document.body.removeEventListener('click', this.handleDocumentClick);
+                document.body.removeEventListener('click', this.handleBodyClick);
             }
         },
 
@@ -186,7 +186,7 @@
             toggleDatepicker() {
                 this.expanded = !this.expanded;
             },
-            handleDocumentClick() {
+            handleBodyClick() {
                 this.expanded = false;
             },
             handleInput (date) {
