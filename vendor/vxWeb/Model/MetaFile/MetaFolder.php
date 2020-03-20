@@ -22,7 +22,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.6.2 2020-01-13
+ * @version 1.7.0 2020-03-20
  *
  * @todo compatibility checks on windows systems
  */
@@ -502,11 +502,12 @@ class MetaFolder {
      * main purpose is reduction of db queries
      *
      * @param boolean $force forces re-reading of metafolders
+     * @return array|MetaFolder[]
      * @throws MetaFolderException
      * @throws \vxPHP\Application\Exception\ApplicationException
      * @throws FilesystemFolderException
      */
-	public static function instantiateAllExistingMetaFolders($force = false)
+	public static function instantiateAllExistingMetaFolders($force = false): array
     {
 		foreach(
 			Application::getInstance()->getDb()->doPreparedQuery(
@@ -521,6 +522,8 @@ class MetaFolder {
 				self::$instancesById[$r['foldersid']] = $f;
 			}
 		}
+
+		return array_values(self::$instancesById);
 	}
 
     /**
