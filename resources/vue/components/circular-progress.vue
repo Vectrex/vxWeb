@@ -1,6 +1,14 @@
 <template>
     <svg :height="size" :width="size" class="circular-progress">
         <circle
+            stroke="white"
+            fill="transparent"
+            :stroke-width="strokeWidth"
+            :r="normalizedRadius"
+            :cx="radius"
+            :cy="radius"
+        />
+        <circle
             :stroke="color"
             fill="transparent"
             :stroke-dasharray="circumference + ' ' + circumference"

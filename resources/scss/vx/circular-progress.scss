@@ -1,7 +1,10 @@
 @import "../../node_modules/spectre.css/src/variables";
 
 .circular-progress {
-  circle {
+  circle:first-child {
+    stroke: rgba(255, 255, 255, 0.5);
+  }
+  circle:last-child {
     transform: rotate(-90deg);
     transition: stroke-dashoffset 0.2s;
     transform-origin: 50% 50%;

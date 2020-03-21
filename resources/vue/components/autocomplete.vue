@@ -31,9 +31,6 @@
 </template>
 
 <script>
-
-  import Closest from "../util/closest-polyfill.js";
-
   let uniqueId = function() {
     let counter = 0;
     return function(prefix) {
@@ -272,7 +269,7 @@
         this.hideResults();
       },
 
-      updateResults: function (value) {
+      updateResults (value) {
 
         const search = this.search(value);
 

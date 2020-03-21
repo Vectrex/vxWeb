@@ -1,0 +1,59 @@
+@import "../../node_modules/spectre.css/src/variables";
+
+.popup {
+  display: inline-block;
+  position: relative;
+
+  .popup-container {
+    left: 50%;
+    opacity: 0;
+    padding: $layout-spacing;
+    position: absolute;
+    top: 0;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform .2s;
+    min-width: $control-width-xs;
+    z-index: $zindex-3;
+  }
+
+  &.active .popup-container {
+    display: block;
+    opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
+  }
+
+  &.popup-right {
+    .popup-container {
+      left: 100%;
+      top: 50%;
+    }
+    &.active .popup-container {
+      transform: translate(0, -50%) scale(1);
+    }
+  }
+
+  &.popup-bottom {
+    .popup-container {
+      left: 50%;
+      top: 100%;
+    }
+    &.active .popup-container {
+      transform: translate(-50%, 0) scale(1);
+    }
+  }
+
+  &.popup-left {
+    .popup-container {
+      left: 0;
+      top: 50%;
+    }
+    &.active .popup-container {
+      transform: translate(-100%, -50%) scale(1);
+    }
+  }
+
+  .card {
+    @include shadow-variant(.2rem);
+    border: 0;
+  }
+}

@@ -45,7 +45,8 @@
             getFoldersTree: "<?= $router->getRoute('folders_tree')->getUrl() ?>",
             delFolder: "<?= $router->getRoute('folder_del')->getUrl() ?>",
             renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
-            addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>"
+            addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>",
+            search:  "<?= $router->getRoute('files_search')->getUrl() ?>"
         },
 
         data: {

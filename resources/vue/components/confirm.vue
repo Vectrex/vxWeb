@@ -1,5 +1,5 @@
 <template>
-    <div ref="container" class="modal modal-sm" :class="{ active: show }">
+    <div ref="container" class="modal modal-sm" :class="{ active: show }" @keydown.esc.stop="cancel">
         <a href="#close" class="modal-overlay" @click.prevent="cancel"></a>
         <div class="modal-container">
             <div class="modal-header bg-error text-light" v-if="title">

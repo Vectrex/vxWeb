@@ -93,6 +93,43 @@ class FilesController extends Controller
         }
     }
 
+    protected function search (): JsonResponse
+    {
+        $search = $this->request->query->get('search');
+        if(!trim($search)) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $allFolders = MetaFolder::instantiateAllExistingMetaFolders();
+
+        $folders = [];
+
+        foreach ($allFolders as $f) {
+            if(mb_stripos($f->getName(), $search) !== false) {
+                $folders[] = [
+                    'id' => $f->getId(),
+                    'name' => $f->getName(),
+                    'path' => $f->getParentMetafolder() ? $f->getParentMetafolder()->getRelativePath() : '/'
+                ];
+            }
+        }
+
+        $files = [];
+
+        $rows = Application::getInstance()->getVxPDO()->doPreparedQuery("SELECT filesid FROM files WHERE file LIKE ?", ['%' . $search . '%']);
+        foreach(MetaFile::getInstancesByIds(array_column((array) $rows, 'filesid')) as $f) {
+            $files[] = [
+                'id' => $f->getId(),
+                'name' => $f->getMetaFilename(),
+                'path' => $f->getMetaFolder()->getRelativePath(),
+                'folder' => $f->getMetaFolder()->getId(),
+                'type' => $f->getFilesystemFile()->getMimetype()
+            ];
+        }
+
+        return new JsonResponse(['folders' => $folders, 'files' => $files]);
+    }
+
     protected function fileGet (): JsonResponse
     {
         if(!($id = $this->request->query->getInt('id'))) {
@@ -562,69 +599,6 @@ class FilesController extends Controller
             'files' => $files,
             'fileFunctions' => $fileFunctions
         ];
-    }
-
-    private function getAddForm()
-    {
-
-        return HtmlForm::create('admin_file.htm')
-            ->initVar('add', 1)
-            ->setEncType('multipart/form-data')
-            ->setAttribute('class', 'editFileForm')
-            ->addElement(FormElementFactory::create('input', 'title', '', [], [], false, ['trim']))
-            ->addElement(FormElementFactory::create('input', 'subtitle', '', [], [], false, ['trim']))
-            ->addElement(FormElementFactory::create('input', 'customsort', '', [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
-            ->addElement(FormElementFactory::create('file', 'File', '', [], [], true))
-            ->addElement(FormElementFactory::create('checkbox', 'unpack_archives', 1))
-            ->addElement(FormElementFactory::create('textarea', 'description'))
-            ->addElement(FormElementFactory::create('button', 'submit_add')->setInnerHTML('Speichern'))
-        ;
-    }
-
-    private function getEditForm(MetaFile $file)
-    {
-
-        $data = array_change_key_case($file->getData(), CASE_LOWER);
-        $assetsPath = Application::getInstance()->getRelativeAssetsPath();
-
-        if (($cacheInfo = $file->getFilesystemFile()->getCacheInfo())) {
-            $cacheText = sprintf(', Cache: %d Files/gesamt %skB', $cacheInfo['count'], number_format($cacheInfo['totalSize'] / 1024, 1, ',', '.'));
-        } else {
-            $cacheText = '';
-        }
-
-        if (!preg_match('~^image/(png|gif|jpeg)$~', $file->getMimeType())) {
-            $infoHtml = sprintf(
-                '<strong>%s</strong> <em>(%s%s)</em><br /><span class="smaller"><a href="/%s" target="_blank">/%s%s</a></span>',
-                $data['file'],
-                $file->getMimetype(),
-                $cacheText,
-                $file->getRelativePath(),
-                $assetsPath,
-                $file->getRelativePath()
-            );
-        } else {
-            $infoHtml = sprintf(
-                '<strong>%s</strong> <em>(%s%s)</em><br /><span class="smaller"><a href="/%s" target="_blank">/%s%s</a></span><br /><img class="thumb" src="/%s#resize 0 80" alt="">',
-                $data['file'],
-                $file->getMimetype(),
-                $cacheText,
-                $file->getRelativePath(),
-                $assetsPath,
-                $file->getRelativePath(),
-                $file->getRelativePath()
-            );
-        }
-
-        return HtmlForm::create('admin_file.htm')
-            ->setAttribute('class', 'editFileForm')
-            ->addElement(FormElementFactory::create('input', 'title', NULL, [], [], FALSE, ['trim']))
-            ->addElement(FormElementFactory::create('input', 'subtitle', NULL, [], [], FALSE, ['trim']))
-            ->addElement(FormElementFactory::create('input', 'customsort', NULL, [], [], FALSE, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)]))
-            ->addElement(FormElementFactory::create('textarea', 'description'))
-            ->addElement(FormElementFactory::create('button', 'submit_edit')->setInnerHTML('Speichern'))
-            ->addMiscHtml('Fileinfo', $infoHtml)
-            ->setInitFormValues($data);
     }
 
     private function getFolderList(MetaFolder $folder)

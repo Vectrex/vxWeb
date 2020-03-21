@@ -17,9 +17,9 @@
                     @click="readFolder(breadcrumb.folder)">{{ breadcrumb.name }}
                 </button>
             </span>
-            <div class="popover popover-bottom static ml-1" :class="{ active: showAddActivities }">
+            <div class="popup popup-bottom ml-1" :class="{ active: showAddActivities }">
                 <button class="btn webfont-icon-only" type="button" @click.stop="showAddActivities = !showAddActivities">&#xe020;</button>
-                <div class="popover-container" style="min-width: 12rem;">
+                <div class="popup-container">
                     <div class="card">
                         <div class="card-body">
                             <filemanager-add
@@ -31,15 +31,20 @@
                 </div>
             </div>
             </section>
+
             <section class="navbar-section">
-                <template v-if="uploadInProgress">
+                <template v-if="upload.progressing">
                     <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Abbrechen" type="button" @click="cancelUpload">&#xe01d;</button>
                     <label class="d-inline-block mr-2">{{ progress.file }}</label>
                     <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16"></circular-progress>
                 </template>
                 <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
             </section>
+
             <section class="navbar-section">
+                <filemanager-search
+                    :search="doSearch"
+                ></filemanager-search>
             </section>
         </div>
         <sortable
@@ -100,11 +105,11 @@
                 </div>
                 <div class="modal-body">
                     <file-edit-form
-                            :initial-data="editFormData"
-                            :file-info="editFileInfo"
-                            :url="routes.updateFile"
-                            @response-received="(response) => $emit('response-received', response)"
-                            ref="editForm"
+                        :initial-data="editFormData"
+                        :file-info="editFileInfo"
+                        :url="routes.updateFile"
+                        @response-received="(response) => $emit('response-received', response)"
+                        ref="editForm"
                     />
                 </div>
             </div>
@@ -128,6 +133,7 @@
 
 <script>
     import FilemanagerAdd  from './filemanager-add';
+    import FilemanagerSearch  from './filemanager-search';
     import Sortable from './sortable';
     import SimpleTree from './simple-tree';
     import CircularProgress from './circular-progress';
@@ -141,7 +147,7 @@
 
     export default {
         components: {
-            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress, 'confirm': Confirm, 'filemanager-add': FilemanagerAdd
+            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress, 'confirm': Confirm, 'filemanager-add': FilemanagerAdd, 'filemanager-search': FilemanagerSearch
         },
 
         data () {
@@ -157,8 +163,11 @@
                 showFolderTree: false,
                 showAddActivities: false,
                 indicateDrag: false,
-                uploads: [],
-                uploadInProgress: false,
+                upload: {
+                    files: [],
+                    progressing: false,
+                    cancelToken: {}
+                },
                 cancelUploadToken: {},
                 progress: { total: null, loaded: null, file: null },
                 editFormData: {},
@@ -323,16 +332,16 @@
             uploadInputFiles (files) {
                 this.showAddActivities = false;
 
-                [...files].forEach(f => this.uploads.push(f));
-                if(!this.uploadInProgress) {
-                    this.uploadInProgress = true;
+                [...files].forEach(f => this.upload.files.push(f));
+                if(!this.upload.progressing) {
+                    this.upload.progressing = true;
                     this.progress.loaded = 0;
                     this.handleUploads();
                 }
             },
             async handleUploads () {
                 let file = null, response = null;
-                while((file = this.uploads.shift()) !== undefined) {
+                while((file = this.upload.files.shift()) !== undefined) {
                     this.progress.file = file.name;
                     try {
                         response = await PromisedXhr(
@@ -350,30 +359,36 @@
                                 this.progress.total = e.total;
                                 this.progress.loaded = e.loaded;
                             },
-                            this.cancelUploadToken
+                            this.upload.cancelToken
                         );
                         this.files = response.files || [];
                     } catch(err) {
-                        this.uploads = [];
-                        this.uploadInProgress = false;
+                        this.upload.files = [];
+                        this.upload.progressing = false;
                         return;
                     }
 
                     if(!response.success) {
                         this.$emit('response-received', response);
-                        this.uploads = [];
-                        this.uploadInProgress = false;
+                        this.upload.files = [];
+                        this.upload.progressing = false;
                         return;
                     }
                 }
                 this.$emit('response-received', { success: true, message: response.message || 'File upload successful' });
-                this.uploadInProgress = false;
+                this.upload.progressing = false;
             },
             cancelUpload () {
-                if(this.cancelUploadToken.cancel) {
-                    this.cancelUploadToken.cancel();
-                    this.cancelUploadToken = {};
+                if(this.upload.cancelToken.cancel) {
+                    this.upload.cancelToken.cancel();
+                    this.upload.cancelToken = {};
                 }
+            },
+            doSearch (term) {
+                if(term.trim().length > 2) {
+                    return SimpleFetch(UrlQuery.create(this.routes.search, { search: term }));
+                }
+                return { files: [], folders: [] };
             }
         },
 
