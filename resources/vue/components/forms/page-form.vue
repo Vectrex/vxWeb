@@ -84,7 +84,7 @@
                         ],
                     height: "24rem", contentsCss: ['/css/site.css', '/css/site_edit.css'],
                     filebrowserBrowseUrl: null,
-                    filebrowserImageBrowseUrl: null + "?filter=image"
+                    filebrowserImageBrowseUrl: null
                 }
             }
         },
@@ -103,6 +103,11 @@
                 this.form = newValue.form || this.form;
                 this.revisions = newValue.revisions || this.revisions;
             }
+        },
+
+        created () {
+            this.editorConfig.filebrowserBrowseUrl = this.$parent.$options.routes.fileBrowse;
+            this.editorConfig.filebrowserImageBrowseUrl = this.$parent.$options.routes.fileBrowse + "?filter=image";
         },
 
         methods: {

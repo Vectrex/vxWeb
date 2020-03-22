@@ -64,6 +64,7 @@
             load: "<?= $router->getRoute('page_revision_load')->getUrl() ?>",
             activate: "<?= $router->getRoute('page_revision_activate')->getUrl() ?>",
             delete: "<?= $router->getRoute('page_revision_delete')->getUrl() ?>",
+            fileBrowse: "<?= $router->getRoute('filepicker')->getUrl() ?>"
         },
 
         async created () {

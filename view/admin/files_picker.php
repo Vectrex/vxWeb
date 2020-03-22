@@ -8,6 +8,7 @@
                 <button class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFile(slotProps.row)">&#xe002;</button>
                 <button class="btn webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.getFolderTree(slotProps.row)">&#xe004;</button>
                 <button class="btn webfont-icon-only tooltip" data-tooltip="Löschen" type="button" @click="$refs.fm.delFile(slotProps.row)">&#xe011;</button>
+                <button class="btn webfont-icon-only tooltip" data-tooltip="Übernehmen" type="button" @click="forward(slotProps.row)">&#xe01e;</button>
             </template>
         </template>
     </filemanager>
@@ -19,7 +20,10 @@
         ref="toast"
     />
 </div>
-<?php $router = \vxPHP\Application\Application::getInstance()->getRouter() ?>
+
+<?php $router = \vxPHP\Application\Application::getInstance()->getRouter(); ?>
+<?php $filter = \vxPHP\Http\Request::createFromGlobals()->query->get('filter'); ?>
+<?php $ckFuncNum = \vxPHP\Http\Request::createFromGlobals()->query->get('CKEditorFuncNum'); ?>
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
@@ -33,8 +37,8 @@
         components: { 'message-toast': MessageToast, 'filemanager': Filemanager },
 
         routes: {
-            init: "<?= $router->getRoute('files_init')->getUrl() ?>",
-            readFolder: "<?= $router->getRoute('folder_read')->getUrl() ?>",
+            init: "<?= $router->getRoute('files_init')->getUrl() ?>?filter=<?= $filter ?>",
+            readFolder: "<?= $router->getRoute('folder_read')->getUrl() ?>?filter=<?= $filter ?>",
             getFile: "<?= $router->getRoute('file_get')->getUrl() ?>",
             updateFile: "<?= $router->getRoute('file_update')->getUrl() ?>",
             uploadFile: "<?= $router->getRoute('file_upload')->getUrl() ?>",
@@ -96,6 +100,10 @@
             },
             storeSort (sort) {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: sort.sortColumn.prop, dir: sort.sortDir }));
+            },
+            forward (row) {
+                window.opener.CKEDITOR.tools.callFunction(<?= $ckFuncNum ?>, row.path);
+                window.close();
             }
         }
     });

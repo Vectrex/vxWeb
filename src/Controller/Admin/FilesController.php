@@ -44,7 +44,7 @@ class FilesController extends Controller
      * (non-PHPdoc)
      * @see \vxPHP\Controller\Controller::execute()
      */
-    protected function execute()
+    protected function execute(): Response
     {
         $uploadMaxFilesize = min(
             $this->toBytes(ini_get('upload_max_filesize')),
@@ -82,7 +82,7 @@ class FilesController extends Controller
             File::cleanupMetaFolder($folder);
 
             return new JsonResponse([
-                'files' => $this->getFileRows($folder),
+                'files' => $this->getFileRows($folder, $this->request->query->get('filter')),
                 'folders' => $this->getFolderRows($folder),
                 'breadcrumbs' => $this->getBreadcrumbs($folder),
                 'currentFolder' => $folder->getId()
@@ -215,7 +215,7 @@ class FilesController extends Controller
 
         return new JsonResponse([
             'success' => true,
-            'files' => $this->getFileRows($folder),
+            'files' => $this->getFileRows($folder, $this->request->query->get('filter')),
             'folders' => $this->getFolderRows($folder),
             'breadcrumbs' => $this->getBreadcrumbs($folder),
             'currentFolder' => ['key' => $id, 'name' => $folder->getName()]
@@ -443,180 +443,27 @@ class FilesController extends Controller
      * simple helper function to convert ini values like 10M or 256K to integer
      *
      * @param string $val
-     * @return string
+     * @return int
      */
-    private function toBytes($val)
+    private function toBytes($val): int
     {
 
         $suffix = strtolower(substr(trim($val), -1));
 
-        $val = (int)$val;
+        $v = (int) $val;
 
         switch ($suffix) {
             case 'g':
-                $val *= 1024;
+                $v *= 1024;
             case 'm':
-                $val *= 1024;
+                $v *= 1024;
             case 'k':
-                $val *= 1024;
+                $v *= 1024;
         }
-        return $val;
+        return $v;
     }
 
-    private function renameFile()
-    {
-
-        try {
-            $file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
-            $user = Application::getInstance()->getCurrentUser();
-
-            if ($user->hasRole('superadmin') || $user->getAttribute('id') == $file->getData('createdby')) {
-
-                $file->rename(trim($this->request->request->get('filename')));
-
-                $metaData = $file->getData();
-
-                return [
-                    'filename' => $file->getMetaFilename(),
-                    'elements' => ['html' => sprintf("<span title='%s'>%s</span>", $metaData['title'], $file->getMetaFilename())]
-                ];
-            }
-        } catch (MetaFileException $e) {
-            return ['error' => $e->getMessage()];
-        }
-    }
-
-    private function delFile()
-    {
-
-        try {
-            $file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
-            $user = Application::getInstance()->getCurrentUser();
-
-            if ($user->hasRole('superadmin') || $user->getAttribute('id') == $file->getData('createdby')) {
-
-                $folder = $file->getMetaFolder();
-                $file->delete();
-
-                return $this->getFiles($folder);
-            }
-        } catch (MetaFileException $e) {
-            return ['error' => $e->getMessage()];
-        }
-    }
-
-    private function moveFile()
-    {
-
-        try {
-
-            $file = MetaFile::getInstance(NULL, $this->request->request->getInt('file'));
-            $user = Application::getInstance()->getCurrentUser();
-
-            if ($user->hasRole('superadmin') || $user->getAttribute('id') == $file->getData('createdby')) {
-
-                $folder = $file->getMetafolder();
-                $file->move(MetaFolder::getInstance(NULL, $this->request->request->getInt('destination')));
-
-                return $this->getFiles($folder);
-            }
-        } catch (\Exception $e) {
-            return ['error' => $e->getMessage()];
-        }
-    }
-
-    private function addFolder(MetaFolder $folder)
-    {
-
-        $folderName = preg_replace('~[^a-z0-9_-]~i', '_', $this->request->request->get('folderName'));
-
-        foreach ($folder->getMetaFolders() as $subFolder) {
-
-            if ($subFolder->getName() === $folderName) {
-                return ['error' => sprintf("Verzeichnis '%s' existiert bereits.", $folderName)];
-            }
-
-        }
-
-        try {
-            $folder->createFolder($folderName);
-            return $this->getFiles($folder);
-        } catch (\Exception $e) {
-            return ['error' => $e->getMessage()];
-        }
-    }
-
-    private function delFolder()
-    {
-
-        try {
-            if (($id = $this->request->request->getInt('del'))) {
-
-                $folder = MetaFolder::getInstance(NULL, $id);
-
-                if (($parent = $folder->getParentMetafolder())) {
-
-                    $folder->delete();
-                    return $this->getFiles($parent);
-                }
-            }
-        } catch (\Exception $e) {
-            return ['error' => $e->getMessage()];
-        }
-    }
-
-    private function getFiles(MetaFolder $mf, array $fileColumns = NULL)
-    {
-
-        File::cleanupMetaFolder($mf);
-
-        if (!$fileColumns) {
-            $fileColumns = $this->request->request->get('fileColumns', ['name', 'size', 'mime', 'mTime']);
-        }
-
-        $folders = $this->getFolderList($mf);
-        $files = $this->getFileList($mf, $fileColumns);
-
-        $pathSegments = [['name' => $mf->getName(), 'id' => $mf->getId()]];
-
-        while (($mf = $mf->getParentMetafolder())) {
-            array_unshift($pathSegments, ['name' => $mf->getName(), 'id' => $mf->getId()]);
-        }
-
-        switch ($this->route->getRouteId()) {
-
-            case 'filepickerXhr':
-                $fileFunctions = ['rename', 'edit', 'move', 'del', 'forward'];
-                break;
-
-            default:
-                $fileFunctions = ['rename', 'edit', 'move', 'del'];
-        }
-
-        return [
-            'pathSegments' => $pathSegments,
-            'folders' => $folders,
-            'files' => $files,
-            'fileFunctions' => $fileFunctions
-        ];
-    }
-
-    private function getFolderList(MetaFolder $folder)
-    {
-
-        $folders = [];
-
-        foreach ($folder->getMetaFolders() as $f) {
-            $folders[] = [
-                'id' => $f->getId(),
-                'name' => $f->getName()
-            ];
-        }
-
-        return $folders;
-    }
-
-    private function getFileRows (MetaFolder $folder): array
+    private function getFileRows (MetaFolder $folder, $filter = ''): array
     {
         $route = Application::getInstance()->getCurrentRoute();
 
@@ -635,6 +482,9 @@ class FilesController extends Controller
         $files = [];
 
         foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
+            if ($filter === 'image' && !$f->isWebImage()) {
+                continue;
+            }
             $metaData = $f->getData();
             $row = [
                 'id' => $f->getId(),
@@ -644,6 +494,7 @@ class FilesController extends Controller
                 'size' => $f->getFileInfo()->getSize(),
                 'modified' => (new \DateTime())->setTimestamp($f->getFileInfo()->getMTime())->format('Y-m-d H:i:s'),
                 'type' => $f->getMimetype(),
+                'path' => '/'. $f->getRelativePath(),
                 'linked' => in_array($f, $linkedFiles)
             ];
 
@@ -704,169 +555,4 @@ class FilesController extends Controller
 
         return $breadcrumbs;
     }
-
-    private function getFileList(MetaFolder $folder, array $columns)
-    {
-
-        $files = [];
-        $assetsPath = Application::getInstance()->getRelativeAssetsPath();
-
-        if ($articlesId = $this->request->query->get('articlesId', $this->request->request->get('articlesId'))) {
-            $linkedFiles = Article::getInstance($articlesId)->getLinkedMetaFiles();
-        }
-
-        foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
-
-            $isImage = $f->isWebImage();
-            $metaData = $f->getData();
-            $file = ['columns' => [], 'id' => $f->getId(), 'filename' => $f->getMetaFilename()];
-
-            foreach ($columns as $c) {
-
-                switch ($c) {
-                    case 'name':
-                        $file['columns'][] = ['html' => sprintf('<span title="%s">%s</span>', $metaData['title'], $f->getMetaFilename())];
-                        break;
-
-                    case 'size':
-                        $file['columns'][] = number_format($f->getFileInfo()->getSize(), 0, ',', '.');
-                        break;
-
-                    case 'mTime':
-                        $file['columns'][] = date('Y-m-d H:i:s', $f->getFileInfo()->getMTime());
-                        break;
-
-                    case 'mime':
-                        if ($isImage) {
-
-                            // check and - if required - generate thumbnail
-
-                            $fi = $f->getFileInfo();
-                            $actions = ['crop 1', 'resize 0 40'];
-                            $dest =
-                                $folder->getFilesystemFolder()->createCache() .
-                                "{$fi->getFilename()}@" .
-                                implode('|', $actions) .
-                                '.' .
-                                pathinfo($fi->getFilename(), PATHINFO_EXTENSION);
-
-                            if (!file_exists($dest)) {
-                                $imgEdit = ImageModifierFactory::create($f->getFilesystemFile()->getPath());
-
-                                foreach ($actions as $a) {
-                                    $params = preg_split('~\s+~', $a);
-
-                                    $method = array_shift($params);
-                                    if (method_exists($imgEdit, $method)) {
-                                        call_user_func_array([$imgEdit, $method], $params);
-                                    }
-                                }
-                                $imgEdit->export($dest);
-                            }
-
-                            $file['columns'][] = ['html' => '<img class="thumb" src="' . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) . '" alt="" />'];
-                        } else {
-                            $file['columns'][] = $f->getMimetype();
-                        }
-                        break;
-
-                    case 'linked':
-                        if (isset($linkedFiles) && in_array($f, $linkedFiles, TRUE)) {
-                            $file['columns'][] = ['html' => '<label class="form-switch"><input type="checkbox" class="link" checked="checked"><i class="form-icon"></i></label>'];
-                            $file['linked'] = TRUE;
-                        } else {
-                            $file['columns'][] = ['html' => '<label class="form-switch"><input type="checkbox" class="link"><i class="form-icon"></i></label>'];
-                            $file['linked'] = FALSE;
-                        }
-                        break;
-                }
-            }
-
-            if (
-                $this->route->getRouteId() === 'filepickerXhr' && (
-                    is_null($this->request->query->get('filter')) ||
-                    $this->request->query->get('filter') != 'image' ||
-                    $isImage
-                )) {
-                $file['forward'] = ['filename' => '/' . $assetsPath . $f->getRelativePath(), 'ckEditorFuncNum' => (int)$this->request->query->get('CKEditorFuncNum')];
-            }
-
-            $files[] = $file;
-        }
-
-        return $files;
-    }
-
-    private function getFolderTree(MetaFolder $currentFolder = null)
-    {
-        $parseFolder = function (MetaFolder $f) use (&$parseFolder, $currentFolder) {
-
-            $subTrees = $f->getMetaFolders();
-
-            $branches = [];
-
-            if (count($subTrees)) {
-                foreach ($subTrees as $s) {
-                    $branches[] = $parseFolder($s);
-                }
-            }
-
-            $pathSegs = explode(DIRECTORY_SEPARATOR, trim($f->getRelativePath(), DIRECTORY_SEPARATOR));
-
-            return [
-                'id' => $f->getId(),
-                'label' => end($pathSegs),
-                'branches' => $branches,
-                'current' => $f === $currentFolder,
-                'path' => $f->getRelativePath()
-            ];
-        };
-
-        $trees = [];
-
-        foreach (MetaFolder::getRootFolders() as $f) {
-            $trees[] = $parseFolder($f);
-        }
-
-        return $trees;
-    }
-
-    private function renderFolderTree($tree)
-    {
-        $markup = '';
-
-        $renderTree = function ($treeData) use (&$markup, &$renderTree) {
-
-            $className = $treeData['current'] ? 'current' : '';
-            $className .= empty($treeData['branches']) ? ' terminates' : '';
-
-            $markup .= sprintf(
-                '<li class="%s"><input type="checkbox" id="treeBranch_%d"><label for="treeBranch_%d"></label><span id="folder_%d">%s</span>',
-                trim($className),
-                $treeData['key'],
-                $treeData['key'],
-                $treeData['key'],
-                $treeData['label']
-            );
-
-            if (!empty($treeData['branches'])) {
-                $markup .= '<ul>';
-
-                foreach ($treeData['branches'] as $branch) {
-                    $markup .= $renderTree($branch);
-                }
-
-                $markup .= '</ul>';
-            }
-
-            $markup .= '</li>';
-
-        };
-
-        $renderTree($tree);
-
-        return '<ul class="vx-tree">' . $markup . '</ul>';
-
-    }
-
 }
