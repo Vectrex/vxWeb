@@ -8,28 +8,28 @@
     >
         <div class="vx-button-bar navbar">
             <section class="navbar-section">
-            <span class="btn-group">
-                <button
-                    v-for="(breadcrumb, ndx) in breadcrumbs"
-                    class="btn"
-                    :key="ndx"
-                    :class="{'active': breadcrumb.folder === currentFolder }"
-                    @click="readFolder(breadcrumb.folder)">{{ breadcrumb.name }}
-                </button>
-            </span>
-            <div class="popup popup-bottom ml-1" :class="{ active: showAddActivities }">
-                <button class="btn webfont-icon-only" type="button" @click.stop="showAddActivities = !showAddActivities">&#xe020;</button>
-                <div class="popup-container">
-                    <div class="card">
-                        <div class="card-body">
-                            <filemanager-add
-                                @upload="uploadInputFiles"
-                                @create-folder="createFolder"
-                            ></filemanager-add>
+                <span class="btn-group">
+                    <button
+                        v-for="(breadcrumb, ndx) in breadcrumbs"
+                        class="btn"
+                        :key="ndx"
+                        :class="{'active': breadcrumb.folder === currentFolder }"
+                        @click="readFolder(breadcrumb.folder)">{{ breadcrumb.name }}
+                    </button>
+                </span>
+                <div class="popup popup-bottom ml-1" :class="{ active: showAddActivities }">
+                    <button class="btn webfont-icon-only" type="button" @click.stop="showAddActivities = !showAddActivities">&#xe020;</button>
+                    <div class="popup-container">
+                        <div class="card">
+                            <div class="card-body">
+                                <filemanager-add
+                                    @upload="uploadInputFiles"
+                                    @create-folder="createFolder"
+                                ></filemanager-add>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </section>
 
             <section class="navbar-section">
@@ -44,7 +44,16 @@
             <section class="navbar-section">
                 <filemanager-search
                     :search="doSearch"
-                ></filemanager-search>
+                >
+                    <template v-slot:folder="slotProps">
+                        <span class="with-webfont-icon-left" data-icon=""><a :href="'#' + slotProps.folder.id" @click.prevent="readFolder(slotProps.folder.id)">{{ slotProps.folder.name }}</a></span>
+                    </template>
+                    <template v-slot:file="slotProps">
+                        <span class="with-webfont-icon-left" data-icon="">{{ slotProps.file.name }} ({{ slotProps.file.type }})</span><br>
+                        <a :href="'#' + slotProps.file.folder" @click.prevent="readFolder(slotProps.file.folder)">{{ slotProps.file.path }}</a>
+                    </template>
+
+                </filemanager-search>
             </section>
         </div>
         <sortable

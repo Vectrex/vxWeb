@@ -4,21 +4,23 @@
             <input class="text-input" @keydown.esc="handleEsc" @input="handleInput" @focus="handleInput" v-bind="inputProps">
             <i class="form-icon loading" v-if="loading"></i>
         </div>
-        <div class="modal active" v-if="showResults">
-            <div class="modal-container">
-                <div class="modal-header">
-                    <a href="#close" class="btn btn-clear float-right" aria-label="Close" @click.prevent="showResults = false"></a>
-                    <div class="modal-title h5">Gefundene Dateien und Ordner&hellip;</div>
-                </div>
-                <div class="modal-body">
-                    <div v-for="result in (results.folders || [])" :key="result.id">
+        <div class="modal-container" v-if="showResults" style="position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+            <div class="modal-header">
+                <a href="#close" class="btn btn-clear float-right" aria-label="Close" @click.prevent="showResults = false"></a>
+                <div class="modal-title h5">Gefundene Dateien und Ordner&hellip;</div>
+            </div>
+            <div class="modal-body">
+                <div v-for="result in (results.folders || [])" :key="result.id">
+                    <slot name="folder" :folder="result">
                         {{ result.name }}
-                    </div>
-                    <div class="divider" v-if="results.folders.length && results.files.length"></div>
-                    <div v-for="result in (results.files || [])" :key="result.id">
+                    </slot>
+                </div>
+                <div class="divider" v-if="results.folders.length && results.files.length"></div>
+                <div v-for="result in (results.files || [])" :key="result.id">
+                    <slot name="file" :file="result">
                         {{ result.name }} ({{ result.type }})<br>
                         <span class="text-gray">{{ result.path }}</span>
-                    </div>
+                    </slot>
                 </div>
             </div>
         </div>
