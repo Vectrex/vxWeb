@@ -288,7 +288,7 @@ class FilesController extends Controller
         $expectedSize = (int) $this->request->headers->get('x-file-size', 0);
 
         if($expectedSize !== strlen($contents)) {
-            return new JsonResponse(['error' => 1, 'message' => sprintf("Submitted filesize %d doesn't match binary file size %d.", $expectedSize, strlen($contents))]);
+            return new JsonResponse(['error' => 1, 'message' => sprintf("Mitgeteilte Dateigröße %d stimmt nicht mit jener der Datei überein (%d).", $expectedSize, strlen($contents))]);
         }
 
         try {
@@ -311,7 +311,7 @@ class FilesController extends Controller
             return new JsonResponse(['error' => 1, 'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
         }
 
-        return new JsonResponse(['success' => true, 'files' => $this->getFileRows(MetaFolder::getInstance(null, $id))]);
+        return new JsonResponse(['success' => true, 'message' => 'Upload erfolgreich.', 'files' => $this->getFileRows(MetaFolder::getInstance(null, $id))]);
     }
 
     protected function folderDel (): JsonResponse
