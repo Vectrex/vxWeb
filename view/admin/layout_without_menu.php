@@ -6,8 +6,6 @@
     </head>
 
 	<body>
-		<div id="page" class="single-column">
-			<!-- { block: content_block } -->
-		</div>
+        <!-- { block: content_block } -->
     </body>
 </html>
