@@ -49,7 +49,7 @@ class FilesController extends Controller
                 break;
 
             default:
-                $tpl = 'admin/files_js.php';
+                $tpl = 'admin/files.php';
         }
 
         return new Response(

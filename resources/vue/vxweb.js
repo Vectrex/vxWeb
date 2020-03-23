@@ -8,6 +8,7 @@ import Filemanager from './components/filemanager';
 import SlicksortList from './components/slicksort-list';
 import Tab from './components/tab';
 import Confirm from './components/confirm';
+import Alert from './components/alert';
 
 import ZPagination from './components/zutre/pagination';
 import ZLink from './components/zutre/link';
@@ -38,6 +39,7 @@ const Components = {
     SlicksortList,
     Tab,
     Confirm,
+    Alert,
     ZPagination,
     ZLink,
     VueCkeditor,

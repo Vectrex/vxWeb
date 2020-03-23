@@ -137,6 +137,7 @@
         </div>
 
         <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
+        <alert ref="alert" :config="{ label: 'Ok', buttonClass: 'btn-error' }"></alert>
     </div>
 </template>
 
@@ -147,6 +148,7 @@
     import SimpleTree from './simple-tree';
     import CircularProgress from './circular-progress';
     import Confirm from './confirm';
+    import Alert from './alert';
     import FileEditForm from './forms/file-edit-form';
     import SimpleFetch from "../util/simple-fetch";
     import PromisedXhr from "../util/promised-xhr";
@@ -156,7 +158,7 @@
 
     export default {
         components: {
-            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress, 'confirm': Confirm, 'filemanager-add': FilemanagerAdd, 'filemanager-search': FilemanagerSearch
+            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress, 'confirm': Confirm, 'alert': Alert, 'filemanager-add': FilemanagerAdd, 'filemanager-search': FilemanagerSearch
         },
 
         data () {
@@ -199,6 +201,7 @@
 
         props: {
             routes: { type: Object, required: true },
+            limits: { type: Object, default: {} },
             columns: { type: Array, required: true },
             folder: { type: String, default: '' },
             initSort: { type: Object }
@@ -351,6 +354,11 @@
             async handleUploads () {
                 let file = null, response = null;
                 while((file = this.upload.files.shift()) !== undefined) {
+
+                    if(this.limits.maxUploadFilesize && this.limits.maxUploadFilesize < file.size) {
+                        await this.$refs.alert.open('Datei zu groß', "'" + file.name + "' übersteigt die maximale Uploadgröße.");
+                        continue;
+                    }
                     this.progress.file = file.name;
                     try {
                         response = await PromisedXhr(
@@ -384,8 +392,10 @@
                         return;
                     }
                 }
-                this.$emit('response-received', { success: true, message: response.message || 'File upload successful' });
                 this.upload.progressing = false;
+                if(response) {
+                    this.$emit('response-received', { success: true, message: response.message || 'File upload successful' });
+                }
             },
             cancelUpload () {
                 if(this.upload.cancelToken.cancel) {

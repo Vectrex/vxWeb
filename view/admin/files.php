@@ -2,7 +2,7 @@
 <h1>Dateien</h1>
 
 <div id="app" v-cloak>
-    <filemanager :routes="$options.routes" :columns="cols" :init-sort="initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
+    <filemanager :limits="$options.limits" :routes="$options.routes" :columns="cols" :init-sort="initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
         <template v-slot:action="slotProps">
             <button v-if="slotProps.row.isFolder" class="btn webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
             <template v-else>
@@ -47,6 +47,10 @@
             renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
             addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>",
             search:  "<?= $router->getRoute('files_search')->getUrl() ?>"
+        },
+        limits: {
+            maxExecutionTime: <?= $this->max_execution_time_ms ?>,
+            maxUploadFilesize:  <?= $this->upload_max_filesize ?>
         },
 
         data: {
