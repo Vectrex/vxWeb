@@ -284,42 +284,75 @@ td:hover .display-only-on-hover {
   margin: -$unit-1;
 }
 
-#linkedFilesTable {
+/* column widths and text alignment for various tables */
+
+table#articles-list {
+  $widths: 15% 24% 5% 5% 8% 8% 8% 8% 12% 7%;
+  $alignments: left, left, left, left, right, right, right, center, right, right;
 
   tr {
-    td:first-child {
-      vertical-align: middle;
-      text-align: center;
-      cursor: move;
-
-      &:before {
-        visibility: hidden;
-        font-family: icomoon;
-        content: "\e03a";
-        font-size: 200%;
-        color: $primary-color-dark;
+    @for $i from 1 through length($widths) {
+      th:nth-child(#{$i}) {
+        text-align: nth($alignments, $i);
+        width: nth($widths, $i);
       }
-    }
-
-    &:hover {
-      td:first-child:before {
-        visibility: visible;
+      td:nth-child(#{$i}) {
+        text-align: nth($alignments, $i);
       }
-    }
-
-    &.dragged {
-      background: $accent-color;
-      td:first-child {
-        visibility: visible;
-      }
-    }
-
-    &.insertAbove {
-      border-top: solid $unit-1 $accent-color;
-    }
-
-    &.insertBelow {
-      border-bottom: solid $unit-1 $accent-color;
     }
   }
+}
+
+table#users-list {
+  $widths: 20% 20% 25% 20% 15%;
+  $alignments: left, left, left, left, right;
+
+  tr {
+    @for $i from 1 through length($widths) {
+      th:nth-child(#{$i}) {
+        text-align: nth($alignments, $i);
+        width: nth($widths, $i);
+      }
+      td:nth-child(#{$i}) {
+        text-align: nth($alignments, $i);
+      }
+    }
+  }
+}
+
+table#files-list {
+  $widths: 45% 10% 15% 15% 15%;
+  $alignments: left, right, center, right, right;
+
+  tr {
+    @for $i from 1 through length($widths) {
+      th:nth-child(#{$i}) {
+        text-align: nth($alignments, $i);
+        width: nth($widths, $i);
+      }
+      td:nth-child(#{$i}) {
+        text-align: nth($alignments, $i);
+      }
+    }
+  }
+}
+
+#article-files {
+  table#files-list {
+    $widths: 40% 5% 10% 15% 15% 15%;
+    $alignments: left, left, right, center, right, right;
+
+    tr {
+      @for $i from 1 through length($widths) {
+        th:nth-child(#{$i}) {
+          text-align: nth($alignments, $i);
+          width: nth($widths, $i);
+        }
+        td:nth-child(#{$i}) {
+          text-align: nth($alignments, $i);
+        }
+      }
+    }
+  }
+
 }

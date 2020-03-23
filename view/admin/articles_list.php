@@ -31,6 +31,7 @@
         :count="entriesPerPage"
         @after-sort="storeSort"
         ref="sortable"
+        id="articles-list"
     >
         <template v-slot:pub="slotProps">
             <label class="form-switch">

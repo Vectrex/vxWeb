@@ -15,6 +15,7 @@
             :sort-direction="initSort.dir"
             ref="sortable"
             @after-sort="storeSort"
+            id="users-list"
     >
         <template v-slot:action="slotProps">
             <a v-if="currentUser.username !== slotProps.row.username" class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" :href="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_edit')->getUrl()?>?id=' + slotProps.row.key">&#xe002;</a>

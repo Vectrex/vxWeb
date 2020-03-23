@@ -63,6 +63,7 @@
             :sort-direction="initSort.dir"
             @after-sort="$emit('after-sort', { sortColumn: $refs.sortable.sortColumn, sortDir: $refs.sortable.sortDir })"
             ref="sortable"
+            id="files-list"
         >
             <template v-slot:name="slotProps">
                 <template v-if="slotProps.row.isFolder">

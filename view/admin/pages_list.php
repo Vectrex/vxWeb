@@ -10,6 +10,7 @@
         :sort-direction="initSort.dir"
         ref="sortable"
         @after-sort="storeSort"
+        id="pages-list"
     >
         <template v-slot:action="slotProps">
             <a class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" :href="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('page_edit')->getUrl()?>?id=' + slotProps.row.key">&#xe002;</a>
