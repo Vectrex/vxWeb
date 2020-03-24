@@ -33,12 +33,12 @@ use vxWeb\Model\ArticleCategory\ArticleCategoryQuery;
 
 class ArticlesController extends Controller {
 
-	protected function execute()
+	protected function execute(): Response
     {
 		return new Response(SimpleTemplate::create('admin/articles_list.php')->display());
 	}
 
-	protected function init()
+	protected function init(): JsonResponse
     {
         $categories = [];
         $articles = [];
@@ -72,7 +72,7 @@ class ArticlesController extends Controller {
         ]);
     }
 
-    protected function edit ()
+    protected function edit (): Response
     {
         if(!($id = $this->request->query->getInt('id'))) {
             return new Response('', Response::HTTP_NOT_FOUND);
@@ -101,7 +101,7 @@ class ArticlesController extends Controller {
         );
     }
 
-    protected function editInit()
+    protected function editInit(): JsonResponse
     {
         $db = Application::getInstance()->getVxPDO();
 
@@ -134,7 +134,7 @@ class ArticlesController extends Controller {
         ]);
     }
 
-    protected function update ()
+    protected function update (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
         $id = $bag->getInt('id');
@@ -211,7 +211,7 @@ class ArticlesController extends Controller {
         return new JsonResponse(['success' => false, 'errors' => $response, 'message' => 'Formulardaten unvollständig oder fehlerhaft.']);
     }
 
-	protected function publish ()
+	protected function publish (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 		$id = $bag->getInt('id');
@@ -219,13 +219,13 @@ class ArticlesController extends Controller {
 		$admin = Application::getInstance()->getCurrentUser();
 
         if(!$id) {
-            return new Response('', Response::HTTP_NOT_FOUND);
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         try {
             $article = Article::getInstance($id);
         }
         catch(ArticleException $e) {
-            return new Response('', Response::HTTP_NOT_FOUND);
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         if($state) {
 
@@ -243,18 +243,18 @@ class ArticlesController extends Controller {
         return new JsonResponse(['success' => true]);
 	}
 
-	protected function del ()
+	protected function del (): JsonResponse
     {
         $id = $this->request->query->get('id');
 
         if(!$id) {
-            return new Response('', Response::HTTP_NOT_FOUND);
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         try {
             $article = Article::getInstance($id);
         }
         catch(ArticleException $e) {
-            return new Response('', Response::HTTP_NOT_FOUND);
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
         // check permission of non superadmin
@@ -262,20 +262,20 @@ class ArticlesController extends Controller {
         $admin = Application::getInstance()->getCurrentUser();
 
         if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
-            return new Response('', Response::HTTP_FORBIDDEN);
+            return new JsonResponse(null, Response::HTTP_FORBIDDEN);
         }
 
         try {
             $article->delete();
         }
         catch(ArticleException $e) {
-            return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new JsonResponse(['success' => true]);
     }
 
-    protected function add ()
+    protected function add (): Response
     {
         MenuGenerator::setForceActiveMenu(true);
 
@@ -351,7 +351,8 @@ class ArticlesController extends Controller {
 	 * @param ArticleCategory $cat
 	 * @return ArticleCategory
 	 */
-	private function validateArticleCategory(ArticleCategory $cat) {
+	private function validateArticleCategory(ArticleCategory $cat): ArticleCategory
+    {
 		return $cat;
 	}
 
@@ -364,7 +365,7 @@ class ArticlesController extends Controller {
      * @throws \vxPHP\Form\Exception\FormElementFactoryException
      * @throws \vxPHP\Form\Exception\HtmlFormException
      */
-	private function buildEditForm()
+	private function buildEditForm(): HtmlForm
     {
 		return HtmlForm::create()
 			->addElement(FormElementFactory::create('select', 'articlecategoriesid', null, [], [], true, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Es muss eine Artikelkategorie gewählt werden.'))
@@ -385,8 +386,8 @@ class ArticlesController extends Controller {
      * @return string
      * @throws \vxPHP\File\Exception\FilesystemFolderException
      */
-	private function getThumbPath(MetaFile $f) {
-
+	private function getThumbPath(MetaFile $f): string
+    {
 		// check and - if required - generate thumbnail
 
 		$fi			= $f->getFileInfo();

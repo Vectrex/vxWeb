@@ -24,7 +24,7 @@ use vxWeb\User\Notification\Notification;
 
 class ProfileController extends Controller {
 
-	public function execute()
+	public function execute(): Response
     {
         return new Response(
             SimpleTemplate::create('admin/profile.php')
@@ -32,7 +32,7 @@ class ProfileController extends Controller {
         );
 	}
 
-    protected function get()
+    protected function get(): JsonResponse
     {
         $admin = Application::getInstance()->getCurrentUser();
         $notifications = array_filter(
@@ -75,7 +75,7 @@ class ProfileController extends Controller {
         ]);
     }
 
-    protected function post()
+    protected function post(): JsonResponse
     {
         $request = new ParameterBag(json_decode($this->request->getContent(), true));
         $admin = Application::getInstance()->getCurrentUser();
@@ -170,6 +170,5 @@ class ProfileController extends Controller {
         }
 
         return new JsonResponse(['success' => false, 'errors' => $response, 'message' => 'Formulardaten unvollständig oder fehlerhaft.']);
-
     }
 }

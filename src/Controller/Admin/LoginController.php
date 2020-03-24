@@ -17,8 +17,8 @@ use vxWeb\User\SessionUserProvider;
 
 class LoginController extends Controller {
 
-    protected function execute() {
-
+    protected function execute()
+    {
         $app = Application::getInstance();
 		$admin = $app->getCurrentUser();
 
@@ -83,13 +83,8 @@ class LoginController extends Controller {
             }
 
 			return new JsonResponse(['error' => true, 'message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);
-
 		}
 
-		else {
-
-			return new Response(SimpleTemplate::create('admin/login.php')->assign('csrf_token', (new CsrfTokenManager())->refreshToken('login'))->display());
-
-		}
+        return new Response(SimpleTemplate::create('admin/login.php')->assign('csrf_token', (new CsrfTokenManager())->refreshToken('login'))->display());
 	}
 }

@@ -220,7 +220,7 @@ class PagesController extends Controller
     }
 
 	private function buildEditForm() {
-		return HtmlForm::create('admin_edit_page.htm')
+		return HtmlForm::create()
 			->addElement(FormElementFactory::create('input', 'title', null, [], [], false, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
 			->addElement(FormElementFactory::create('input', 'alias', null, [], [], false, ['trim', 'uppercase']))
 			->addElement(FormElementFactory::create('textarea', 'keywords', null, [], [], false, ['trim']))

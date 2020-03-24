@@ -20,31 +20,31 @@ use vxWeb\User\Util;
 
 class UsersController extends Controller {
 
-	protected function execute()
+	protected function execute(): Response
     {
 		return new Response(SimpleTemplate::create('admin/users_list.php')->display());
 	}
 
-    protected function del ()
+    protected function del (): JsonResponse
     {
         if(!($id = $this->request->query->getInt('id'))) {
-            return new Response('', Response::HTTP_NOT_FOUND);
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
         try {
             if(Application::getInstance()->getCurrentUser()->getAttribute('adminid') === $id) {
-                return new Response('', Response::HTTP_FORBIDDEN);
+                return new JsonResponse(null, Response::HTTP_FORBIDDEN);
             }
             Application::getInstance()->getDb()->deleteRecord('admin', $id);
         }
         catch(ArticleException $e) {
-            return new Response('', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new JsonResponse(['success' => true]);
     }
 
-    protected function edit ()
+    protected function edit (): Response
     {
         if(!($id = $this->request->query->getInt('id'))) {
             return new Response('', Response::HTTP_NOT_FOUND);
@@ -73,7 +73,7 @@ class UsersController extends Controller {
         return new Response(SimpleTemplate::create('admin/users_edit.php')->assign('user', [])->display());
     }
 
-    protected function editInit ()
+    protected function editInit (): JsonResponse
     {
         $db = Application::getInstance()->getVxPDO();
 
@@ -89,7 +89,7 @@ class UsersController extends Controller {
         ]);
     }
 
-    protected function init ()
+    protected function init (): JsonResponse
     {
         $app = Application::getInstance();
         $admin = $app->getCurrentUser();
@@ -100,7 +100,7 @@ class UsersController extends Controller {
         return new JsonResponse(['users' => (array) $users, 'currentUser' => ['username' => $admin->getUsername()]]);
     }
 
-    protected function update ()
+    protected function update (): JsonResponse
     {
         $request = new ParameterBag(json_decode($this->request->getContent(), true));
         $id = $request->get('id');

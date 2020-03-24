@@ -1,1 +1,0 @@
-/var/www/vxWeb/resources/dist/js/vxjs.js
