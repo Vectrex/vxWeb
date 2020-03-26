@@ -59,9 +59,6 @@
 		<page id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
 
 		<page id="filepicker" controller="admin/files" auth="privileged" />
-
-		<page id="filepickerXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
-		<page id="fileincludeXhr" controller="admin/files" method="xhrExecute" auth="privileged" />
 	</pages>
 
 	<pages script="installer.php">
