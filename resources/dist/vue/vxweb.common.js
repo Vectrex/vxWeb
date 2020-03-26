@@ -5190,6 +5190,7 @@ var page_form_component = normalizeComponent(
 
 
 
+
 const Components = {
     MessageToast: message_toast,
     CircularProgress: circular_progress,
@@ -5229,7 +5230,8 @@ const Mixins = {
 const Util = {
     SimpleFetch: SimpleFetch,
     PromisedXhr: PromisedXhr,
-    UrlQuery: url_query
+    UrlQuery: url_query,
+    DateFunctions: date_functions
 };
 
 

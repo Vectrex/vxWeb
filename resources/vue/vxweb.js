@@ -17,6 +17,7 @@ import VueCkeditor from "./components/VueCkeditor";
 import SimpleFetch from './util/simple-fetch';
 import PromisedXhr from './util/promised-xhr';
 import UrlQuery from './util/url-query';
+import DateFunctions from './util/date-functions';
 
 import ProfileForm from './components/forms/profile-form';
 import UserForm from './components/forms/user-form';
@@ -67,7 +68,8 @@ const Mixins = {
 const Util = {
     SimpleFetch,
     PromisedXhr,
-    UrlQuery
+    UrlQuery,
+    DateFunctions
 };
 
 export { Components, Filters, Directives, Mixins, Util };
