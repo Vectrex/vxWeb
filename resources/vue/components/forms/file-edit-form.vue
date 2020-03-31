@@ -35,10 +35,8 @@
             <textarea rows="2" id="description_input" class="form-input" v-model="form.description" :class="{'is-error': errors.description}"></textarea>
         </div>
         <div class="divider" data-content="Erweiterte Einstellungen"></div>
-
-        <div class="divider"></div>
         <div class="form-group">
-            <label for="customsort_input">Untertitel</label>
+            <label for="customsort_input">Sortierziffer</label>
             <input id="customsort_input" class="form-input col-4" v-model="form.customsort" autocomplete="off" :class="{'is-error': errors.customsort}">
         </div>
         <div class="form-group">

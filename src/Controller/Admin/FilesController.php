@@ -159,7 +159,7 @@ class FilesController extends Controller
                     'mimetype' => $mf->getMimetype(),
                     'path' => $mf->getRelativePath(),
                     'name' => $mf->getFilename(),
-                    'thumb' => $dest ? htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) : null,
+                    'thumb' => isset($dest) ? htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) : null,
                     'cache' => $mf->getFilesystemFile()->getCacheInfo()
                 ]
             ]);
