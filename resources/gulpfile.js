@@ -6,7 +6,6 @@ let rename = require('gulp-rename');
 let autoprefixer = require('gulp-autoprefixer');
 let uglify = require('gulp-uglify');
 let concat = require('gulp-concat');
-let vueComponent = require('gulp-vue-single-file-component');
 
 let scssPaths = {
     src: "./scss/*.scss",
@@ -51,11 +50,4 @@ gulp.task('jsBuild', () => {
         .pipe(concat("vxjs.js"))
         .pipe(uglify())
         .pipe(gulp.dest(jsPaths.dest));
-});
-
-gulp.task('vue', () => {
-   return gulp.src("./vue/**/*.vue")
-       .pipe(vueComponent())
-       .pipe(rename({ extname: ".js" }))
-       .pipe(gulp.dest("./dist/js/vue"));
 });
