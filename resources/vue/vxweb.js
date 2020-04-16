@@ -9,6 +9,8 @@ import SlicksortList from './components/slicksort-list';
 import Tab from './components/tab';
 import Confirm from './components/confirm';
 import Alert from './components/alert';
+import PasswordInput from './components/password-input';
+import CookieConsent from './components/cookie-consent';
 
 import ZPagination from './components/zutre/pagination';
 import ZLink from './components/zutre/link';
@@ -41,6 +43,8 @@ const Components = {
     Tab,
     Confirm,
     Alert,
+    PasswordInput,
+    CookieConsent,
     ZPagination,
     ZLink,
     VueCkeditor,

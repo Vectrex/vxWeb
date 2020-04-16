@@ -1,0 +1,28 @@
+.is-password {
+  @extend.has-icon-right;
+
+  a.visibility-switch {
+    &:focus {
+      box-shadow: none;
+      text-decoration: none;
+    }
+  }
+  .visibility-switch:after {
+    height: $control-icon-size;
+    margin: 0 $control-padding-y;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: $control-icon-size;
+    z-index: $zindex-0 + 1;
+    line-height: 100%;
+    right: $border-width;
+    font-family: icomoon;
+    content: '\e015';
+  }
+  &.show {
+    .visibility-switch:after {
+      content: '\e016';
+    }
+  }
+}

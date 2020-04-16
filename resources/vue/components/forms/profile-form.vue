@@ -29,7 +29,7 @@
             <div class="form-group">
                 <label class="form-label col-3" for="pwd_input">Neues Passwort</label>
                 <div class="col-9">
-                    <input name="new_PWD" id="pwd_input" class="form-input" autocomplete="off" maxlength="128" type="password" v-model="form.new_PWD">
+                    <password-input autocomplete="off" maxlength="128" v-model="form.new_PWD" id="pwd_input"></password-input>
                     <p v-if="errors.new_PWD" class="form-input-hint vx-error-box error">{{ errors.new_PWD }}</p>
                 </div>
             </div>
@@ -37,7 +37,7 @@
             <div class="form-group">
                 <label class="form-label col-3" for="pwd2_input">Passwort wiederholen</label>
                 <div class="col-9">
-                    <input name="new_PWD_verify" id="pwd2_input" class="form-input" autocomplete="off" maxlength="128" type="password" v-model="form.new_PWD_verify">
+                    <password-input autocomplete="off" maxlength="128" v-model="form.new_PWD_verify" id="pwd2_input"></password-input>
                     <p v-if="errors.new_PWD_verify" class="form-input-hint vx-error-box error">{{ errors.new_PWD_verify }}</p>
                 </div>
             </div>
@@ -67,9 +67,12 @@
 <script>
 
     import SimpleFetch from "../../util/simple-fetch.js";
+    import PasswordInput from "../password-input";
 
     export default {
-
+        components: {
+            'password-input': PasswordInput
+        },
         props: {
             url: { type: String, required: true },
             initialData: { type: Object, default: () => { return {} } },

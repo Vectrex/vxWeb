@@ -664,178 +664,321 @@ html:lang(ko),
     border-bottom-width: .1rem;
 }
 
-.btn
+.btn,
+.cookie-consent .btn-accept,
+.cookie-consent .btn-decline,
+.cookie-consent .btn-link
 {font-size: .8rem; line-height: 1.2rem; display: inline-block; height: 1.8rem; padding: .25rem .4rem; cursor: pointer; -webkit-user-select: none;    -moz-user-select: none;     -ms-user-select: none;         user-select: none; transition: background .2s, border .2s, box-shadow .2s, color .2s; text-align: center; vertical-align: middle; white-space: nowrap; text-decoration: none; color: #0089cc; border: .05rem solid #0089cc; border-radius: .1rem; outline: none; background: #fff; 
 
     -webkit-appearance: none;       -moz-appearance: none;            appearance: none;
 }
 
-.btn:focus
+.btn:focus,
+.cookie-consent .btn-accept:focus,
+.cookie-consent .btn-decline:focus,
+.cookie-consent .btn-link:focus
 {
     box-shadow: 0 0 0 .1rem rgba(0, 137, 204, .2);
 }
 
 .btn:focus,
-.btn:hover
+.cookie-consent .btn-accept:focus,
+.cookie-consent .btn-decline:focus,
+.cookie-consent .btn-link:focus,
+.btn:hover,
+.cookie-consent .btn-accept:hover,
+.cookie-consent .btn-decline:hover,
+.cookie-consent .btn-link:hover
 {text-decoration: none; border-color: #007fbd; 
     background: #a6dbff;
 }
 
 .btn:active,
-.btn.active
+.cookie-consent .btn-accept:active,
+.cookie-consent .btn-decline:active,
+.cookie-consent .btn-link:active,
+.btn.active,
+.cookie-consent .active.btn-accept,
+.cookie-consent .active.btn-decline,
+.cookie-consent .active.btn-link
 {text-decoration: none; color: #fff; border-color: #006ea3; 
     background: #007fbd;
 }
 
 .btn:active.loading::after,
 .btn.form-autocomplete:active[data-loading='true']::after,
+.cookie-consent .form-autocomplete.btn-accept:active[data-loading='true']::after,
+.cookie-consent .form-autocomplete.btn-decline:active[data-loading='true']::after,
+.cookie-consent .form-autocomplete.btn-link:active[data-loading='true']::after,
+.cookie-consent .btn-accept:active.loading::after,
+.cookie-consent .btn-decline:active.loading::after,
+.cookie-consent .btn-link:active.loading::after,
 .btn.active.loading::after,
-.btn.active.form-autocomplete[data-loading='true']::after
+.btn.active.form-autocomplete[data-loading='true']::after,
+.cookie-consent .active.form-autocomplete.btn-accept[data-loading='true']::after,
+.cookie-consent .active.form-autocomplete.btn-decline[data-loading='true']::after,
+.cookie-consent .active.form-autocomplete.btn-link[data-loading='true']::after,
+.cookie-consent .active.loading.btn-accept::after,
+.cookie-consent .active.loading.btn-decline::after,
+.cookie-consent .active.loading.btn-link::after
 {
     border-bottom-color: #fff; border-left-color: #fff;
 }
 
 .btn[disabled],
+.cookie-consent .btn-accept[disabled],
+.cookie-consent .btn-decline[disabled],
+.cookie-consent .btn-link[disabled],
 .btn:disabled,
-.btn.disabled
+.cookie-consent .btn-accept:disabled,
+.cookie-consent .btn-decline:disabled,
+.cookie-consent .btn-link:disabled,
+.btn.disabled,
+.cookie-consent .disabled.btn-accept,
+.cookie-consent .disabled.btn-decline,
+.cookie-consent .disabled.btn-link
 {
     cursor: default; pointer-events: none; opacity: .5;
 }
 
-.btn.btn-primary
+.btn.btn-primary,
+.cookie-consent .btn-primary.btn-accept,
+.cookie-consent .btn-primary.btn-decline,
+.cookie-consent .btn-primary.btn-link
 {color: #fff; border-color: #007fbd; 
     background: #0089cc;
 }
 
 .btn.btn-primary:focus,
-.btn.btn-primary:hover
+.cookie-consent .btn-primary.btn-accept:focus,
+.cookie-consent .btn-primary.btn-decline:focus,
+.cookie-consent .btn-primary.btn-link:focus,
+.btn.btn-primary:hover,
+.cookie-consent .btn-primary.btn-accept:hover,
+.cookie-consent .btn-primary.btn-decline:hover,
+.cookie-consent .btn-primary.btn-link:hover
 {color: #fff; border-color: #006ea3; 
     background: #0078b3;
 }
 
 .btn.btn-primary:active,
-.btn.btn-primary.active
+.cookie-consent .btn-primary.btn-accept:active,
+.cookie-consent .btn-primary.btn-decline:active,
+.cookie-consent .btn-primary.btn-link:active,
+.btn.btn-primary.active,
+.cookie-consent .btn-primary.active.btn-accept,
+.cookie-consent .btn-primary.active.btn-decline,
+.cookie-consent .btn-primary.active.btn-link
 {color: #fff; border-color: #006799; 
     background: #0071a8;
 }
 
 .btn.btn-primary.loading::after,
-.btn.btn-primary.form-autocomplete[data-loading='true']::after
+.btn.btn-primary.form-autocomplete[data-loading='true']::after,
+.cookie-consent .btn-primary.form-autocomplete.btn-accept[data-loading='true']::after,
+.cookie-consent .btn-primary.form-autocomplete.btn-decline[data-loading='true']::after,
+.cookie-consent .btn-primary.form-autocomplete.btn-link[data-loading='true']::after,
+.cookie-consent .btn-primary.loading.btn-accept::after,
+.cookie-consent .btn-primary.loading.btn-decline::after,
+.cookie-consent .btn-primary.loading.btn-link::after
 {
     border-bottom-color: #fff; border-left-color: #fff;
 }
 
-.btn.btn-success
+.btn.btn-success,
+.cookie-consent .btn-success.btn-accept,
+.cookie-consent .btn-success.btn-decline,
+.cookie-consent .btn-success.btn-link
 {color: #fff; border-color: #2faa3f; 
     background: #32b643;
 }
 
-.btn.btn-success:focus
+.btn.btn-success:focus,
+.cookie-consent .btn-success.btn-accept:focus,
+.cookie-consent .btn-success.btn-decline:focus,
+.cookie-consent .btn-success.btn-link:focus
 {
     box-shadow: 0 0 0 .1rem rgba(50, 182, 67, .2);
 }
 
 .btn.btn-success:focus,
-.btn.btn-success:hover
+.cookie-consent .btn-success.btn-accept:focus,
+.cookie-consent .btn-success.btn-decline:focus,
+.cookie-consent .btn-success.btn-link:focus,
+.btn.btn-success:hover,
+.cookie-consent .btn-success.btn-accept:hover,
+.cookie-consent .btn-success.btn-decline:hover,
+.cookie-consent .btn-success.btn-link:hover
 {color: #fff; border-color: #2da23c; 
     background: #30ae40;
 }
 
 .btn.btn-success:active,
-.btn.btn-success.active
+.cookie-consent .btn-success.btn-accept:active,
+.cookie-consent .btn-success.btn-decline:active,
+.cookie-consent .btn-success.btn-link:active,
+.btn.btn-success.active,
+.cookie-consent .btn-success.active.btn-accept,
+.cookie-consent .btn-success.active.btn-decline,
+.cookie-consent .btn-success.active.btn-link
 {color: #fff; border-color: #278e34; 
     background: #2a9a39;
 }
 
 .btn.btn-success.loading::after,
-.btn.btn-success.form-autocomplete[data-loading='true']::after
+.btn.btn-success.form-autocomplete[data-loading='true']::after,
+.cookie-consent .btn-success.form-autocomplete.btn-accept[data-loading='true']::after,
+.cookie-consent .btn-success.form-autocomplete.btn-decline[data-loading='true']::after,
+.cookie-consent .btn-success.form-autocomplete.btn-link[data-loading='true']::after,
+.cookie-consent .btn-success.loading.btn-accept::after,
+.cookie-consent .btn-success.loading.btn-decline::after,
+.cookie-consent .btn-success.loading.btn-link::after
 {
     border-bottom-color: #fff; border-left-color: #fff;
 }
 
-.btn.btn-error
+.btn.btn-error,
+.cookie-consent .btn-error.btn-accept,
+.cookie-consent .btn-error.btn-decline,
+.cookie-consent .btn-error.btn-link
 {color: #fff; border-color: #d95000; 
     background: #e85600;
 }
 
-.btn.btn-error:focus
+.btn.btn-error:focus,
+.cookie-consent .btn-error.btn-accept:focus,
+.cookie-consent .btn-error.btn-decline:focus,
+.cookie-consent .btn-error.btn-link:focus
 {
     box-shadow: 0 0 0 .1rem rgba(232, 86, 0, .2);
 }
 
 .btn.btn-error:focus,
-.btn.btn-error:hover
+.cookie-consent .btn-error.btn-accept:focus,
+.cookie-consent .btn-error.btn-decline:focus,
+.cookie-consent .btn-error.btn-link:focus,
+.btn.btn-error:hover,
+.cookie-consent .btn-error.btn-accept:hover,
+.cookie-consent .btn-error.btn-decline:hover,
+.cookie-consent .btn-error.btn-link:hover
 {color: #fff; border-color: #cf4d00; 
     background: #de5200;
 }
 
 .btn.btn-error:active,
-.btn.btn-error.active
+.cookie-consent .btn-error.btn-accept:active,
+.cookie-consent .btn-error.btn-decline:active,
+.cookie-consent .btn-error.btn-link:active,
+.btn.btn-error.active,
+.cookie-consent .btn-error.active.btn-accept,
+.cookie-consent .btn-error.active.btn-decline,
+.cookie-consent .btn-error.active.btn-link
 {color: #fff; border-color: #b54300; 
     background: #c44900;
 }
 
 .btn.btn-error.loading::after,
-.btn.btn-error.form-autocomplete[data-loading='true']::after
+.btn.btn-error.form-autocomplete[data-loading='true']::after,
+.cookie-consent .btn-error.form-autocomplete.btn-accept[data-loading='true']::after,
+.cookie-consent .btn-error.form-autocomplete.btn-decline[data-loading='true']::after,
+.cookie-consent .btn-error.form-autocomplete.btn-link[data-loading='true']::after,
+.cookie-consent .btn-error.loading.btn-accept::after,
+.cookie-consent .btn-error.loading.btn-decline::after,
+.cookie-consent .btn-error.loading.btn-link::after
 {
     border-bottom-color: #fff; border-left-color: #fff;
 }
 
-.btn.btn-link
+.btn.btn-link,
+.cookie-consent .btn-link
 {color: #0089cc; border-color: transparent; 
     background: transparent;
 }
 
 .btn.btn-link:focus,
+.cookie-consent .btn-link:focus,
 .btn.btn-link:hover,
+.cookie-consent .btn-link:hover,
 .btn.btn-link:active,
-.btn.btn-link.active
+.cookie-consent .btn-link:active,
+.btn.btn-link.active,
+.cookie-consent .btn-link.active
 {
     color: #006799;
 }
 
-.btn.btn-sm
+.btn.btn-sm,
+.cookie-consent .btn-sm.btn-accept,
+.cookie-consent .btn-sm.btn-decline,
+.cookie-consent .btn-sm.btn-link
 {
     font-size: .7rem; height: 1.4rem; padding: .05rem .3rem;
 }
 
-.btn.btn-lg
+.btn.btn-lg,
+.cookie-consent .btn-lg.btn-accept,
+.cookie-consent .btn-lg.btn-decline,
+.cookie-consent .btn-lg.btn-link
 {
     font-size: .9rem; height: 2rem; padding: .35rem .6rem;
 }
 
-.btn.btn-block
+.btn.btn-block,
+.cookie-consent .btn-block.btn-accept,
+.cookie-consent .btn-block.btn-decline,
+.cookie-consent .btn-block.btn-link
 {
     display: block; width: 100%;
 }
 
-.btn.btn-action
+.btn.btn-action,
+.cookie-consent .btn-action.btn-accept,
+.cookie-consent .btn-action.btn-decline,
+.cookie-consent .btn-action.btn-link
 {
     width: 1.8rem; padding-right: 0; padding-left: 0;
 }
 
-.btn.btn-action.btn-sm
+.btn.btn-action.btn-sm,
+.cookie-consent .btn-action.btn-sm.btn-accept,
+.cookie-consent .btn-action.btn-sm.btn-decline,
+.cookie-consent .btn-action.btn-sm.btn-link
 {
     width: 1.4rem;
 }
 
-.btn.btn-action.btn-lg
+.btn.btn-action.btn-lg,
+.cookie-consent .btn-action.btn-lg.btn-accept,
+.cookie-consent .btn-action.btn-lg.btn-decline,
+.cookie-consent .btn-action.btn-lg.btn-link
 {
     width: 2rem;
 }
 
-.btn.btn-clear
+.btn.btn-clear,
+.cookie-consent .btn-clear.btn-accept,
+.cookie-consent .btn-clear.btn-decline,
+.cookie-consent .btn-clear.btn-link
 {line-height: .8rem; width: 1rem; height: 1rem; margin-right: -2px; margin-left: .2rem; padding: .1rem; text-decoration: none; opacity: 1; color: currentColor; border: 0; 
     background: transparent;
 }
 
 .btn.btn-clear:focus,
-.btn.btn-clear:hover
+.cookie-consent .btn-clear.btn-accept:focus,
+.cookie-consent .btn-clear.btn-decline:focus,
+.cookie-consent .btn-clear.btn-link:focus,
+.btn.btn-clear:hover,
+.cookie-consent .btn-clear.btn-accept:hover,
+.cookie-consent .btn-clear.btn-decline:hover,
+.cookie-consent .btn-clear.btn-link:hover
 {opacity: .95; 
     background: rgba(228, 231, 232, .5);
 }
 
-.btn.btn-clear::before
+.btn.btn-clear::before,
+.cookie-consent .btn-clear.btn-accept::before,
+.cookie-consent .btn-clear.btn-decline::before,
+.cookie-consent .btn-clear.btn-link::before
 {
     content: '\2715';
 }
@@ -845,31 +988,79 @@ html:lang(ko),
     display: inline-flex; flex-wrap: wrap;
 }
 
-.btn-group .btn
+.btn-group .btn,
+.btn-group .cookie-consent .btn-accept,
+.cookie-consent .btn-group .btn-accept,
+.btn-group .cookie-consent .btn-decline,
+.cookie-consent .btn-group .btn-decline,
+.btn-group .cookie-consent .btn-link,
+.cookie-consent .btn-group .btn-link
 {
     flex: 1 0 auto;
 }
 
-.btn-group .btn:first-child:not(:last-child)
+.btn-group .btn:first-child:not(:last-child),
+.btn-group .cookie-consent .btn-accept:first-child:not(:last-child),
+.cookie-consent .btn-group .btn-accept:first-child:not(:last-child),
+.btn-group .cookie-consent .btn-decline:first-child:not(:last-child),
+.cookie-consent .btn-group .btn-decline:first-child:not(:last-child),
+.btn-group .cookie-consent .btn-link:first-child:not(:last-child),
+.cookie-consent .btn-group .btn-link:first-child:not(:last-child)
 {border-top-right-radius: 0; 
     border-bottom-right-radius: 0;
 }
 
-.btn-group .btn:not(:first-child):not(:last-child)
+.btn-group .btn:not(:first-child):not(:last-child),
+.btn-group .cookie-consent .btn-accept:not(:first-child):not(:last-child),
+.cookie-consent .btn-group .btn-accept:not(:first-child):not(:last-child),
+.btn-group .cookie-consent .btn-decline:not(:first-child):not(:last-child),
+.cookie-consent .btn-group .btn-decline:not(:first-child):not(:last-child),
+.btn-group .cookie-consent .btn-link:not(:first-child):not(:last-child),
+.cookie-consent .btn-group .btn-link:not(:first-child):not(:last-child)
 {margin-left: -.05rem; 
 
     border-radius: 0;
 }
 
-.btn-group .btn:last-child:not(:first-child)
+.btn-group .btn:last-child:not(:first-child),
+.btn-group .cookie-consent .btn-accept:last-child:not(:first-child),
+.cookie-consent .btn-group .btn-accept:last-child:not(:first-child),
+.btn-group .cookie-consent .btn-decline:last-child:not(:first-child),
+.cookie-consent .btn-group .btn-decline:last-child:not(:first-child),
+.btn-group .cookie-consent .btn-link:last-child:not(:first-child),
+.cookie-consent .btn-group .btn-link:last-child:not(:first-child)
 {margin-left: -.05rem; border-top-left-radius: 0; 
     border-bottom-left-radius: 0;
 }
 
 .btn-group .btn:focus,
+.btn-group .cookie-consent .btn-accept:focus,
+.cookie-consent .btn-group .btn-accept:focus,
+.btn-group .cookie-consent .btn-decline:focus,
+.cookie-consent .btn-group .btn-decline:focus,
+.btn-group .cookie-consent .btn-link:focus,
+.cookie-consent .btn-group .btn-link:focus,
 .btn-group .btn:hover,
+.btn-group .cookie-consent .btn-accept:hover,
+.cookie-consent .btn-group .btn-accept:hover,
+.btn-group .cookie-consent .btn-decline:hover,
+.cookie-consent .btn-group .btn-decline:hover,
+.btn-group .cookie-consent .btn-link:hover,
+.cookie-consent .btn-group .btn-link:hover,
 .btn-group .btn:active,
-.btn-group .btn.active
+.btn-group .cookie-consent .btn-accept:active,
+.cookie-consent .btn-group .btn-accept:active,
+.btn-group .cookie-consent .btn-decline:active,
+.cookie-consent .btn-group .btn-decline:active,
+.btn-group .cookie-consent .btn-link:active,
+.cookie-consent .btn-group .btn-link:active,
+.btn-group .btn.active,
+.btn-group .cookie-consent .active.btn-accept,
+.cookie-consent .btn-group .active.btn-accept,
+.btn-group .cookie-consent .active.btn-decline,
+.cookie-consent .btn-group .active.btn-decline,
+.btn-group .cookie-consent .active.btn-link,
+.cookie-consent .btn-group .active.btn-link
 {
     z-index: 1;
 }
@@ -879,7 +1070,13 @@ html:lang(ko),
     display: flex;
 }
 
-.btn-group.btn-group-block .btn
+.btn-group.btn-group-block .btn,
+.btn-group.btn-group-block .cookie-consent .btn-accept,
+.cookie-consent .btn-group.btn-group-block .btn-accept,
+.btn-group.btn-group-block .cookie-consent .btn-decline,
+.cookie-consent .btn-group.btn-group-block .btn-decline,
+.btn-group.btn-group-block .cookie-consent .btn-link,
+.cookie-consent .btn-group.btn-group-block .btn-link
 {
     flex: 1 0 0;
 }
@@ -1027,13 +1224,15 @@ textarea.form-input.input-sm
 }
 
 .has-icon-left,
-.has-icon-right
+.has-icon-right,
+.is-password
 {
     position: relative;
 }
 
 .has-icon-left .form-icon,
-.has-icon-right .form-icon
+.has-icon-right .form-icon,
+.is-password .form-icon
 {position: absolute; z-index: 2; top: 50%; width: .8rem; 
     height: .8rem; margin: 0 .25rem; transform: translateY(-50%);
 }
@@ -1048,12 +1247,14 @@ textarea.form-input.input-sm
     padding-left: 1.3rem;
 }
 
-.has-icon-right .form-icon
+.has-icon-right .form-icon,
+.is-password .form-icon
 {
     right: .05rem;
 }
 
-.has-icon-right .form-input
+.has-icon-right .form-input,
+.is-password .form-input
 {
     padding-right: 1.3rem;
 }
@@ -2248,7 +2449,10 @@ summary.accordion-header::-webkit-details-marker
     height: 6px; padding: 0;
 }
 
-.badge.btn::after
+.badge.btn::after,
+.cookie-consent .badge.btn-accept::after,
+.cookie-consent .badge.btn-decline::after,
+.cookie-consent .badge.btn-link::after
 {
     position: absolute; top: 0; right: 0; transform: translate(50%, -50%);
 }
@@ -5085,6 +5289,22 @@ a.text-error:visited
     }
 }
 
+.is-password a.visibility-switch:focus
+{text-decoration: none; 
+
+    box-shadow: none;
+}
+
+.is-password .visibility-switch:after
+{font-family: icomoon; line-height: 100%; position: absolute; z-index: 2; top: 50%; right: .05rem; width: .8rem; 
+    height: .8rem; margin: 0 .25rem; content: '\e015'; transform: translateY(-50%);
+}
+
+.is-password.show .visibility-switch:after
+{
+    content: '\e016';
+}
+
 .form-autocomplete[data-loading='true']::after
 {right: .8rem; 
     left: auto;
@@ -5252,6 +5472,126 @@ a.text-error:visited
     box-shadow: 0 .2rem .5rem rgba(36, 40, 42, .3);
 }
 
+.cookie-consent
+{position: fixed; z-index: 9999; right: 0; left: 0; display: flex; overflow: hidden; box-sizing: border-box; width: 100%; padding: .4rem; background: #fff; 
+    box-shadow: 0 .05rem .2rem rgba(36, 40, 42, .3); justify-content: space-between; align-items: center;
+}
+
+.cookie-consent.top
+{
+    top: 0;
+}
+
+.cookie-consent.bottom
+{
+    bottom: 0;
+}
+
+.cookie-consent .buttons
+{
+    display: flex;
+}
+
+.cookie-consent .btn-decline
+{margin-right: .2rem; color: #fff; border-color: #d95000; 
+    background: #e85600;
+}
+
+.cookie-consent .btn-decline:focus
+{
+    box-shadow: 0 0 0 .1rem rgba(232, 86, 0, .2);
+}
+
+.cookie-consent .btn-decline:focus,
+.cookie-consent .btn-decline:hover
+{color: #fff; border-color: #cf4d00; 
+    background: #de5200;
+}
+
+.cookie-consent .btn-decline:active,
+.cookie-consent .btn-decline.active
+{color: #fff; border-color: #b54300; 
+    background: #c44900;
+}
+
+.cookie-consent .btn-decline.loading::after,
+.cookie-consent .btn-decline.form-autocomplete[data-loading='true']::after
+{
+    border-bottom-color: #fff; border-left-color: #fff;
+}
+
+.cookie-consent .btn-accept
+{color: #fff; border-color: #2faa3f; 
+    background: #32b643;
+}
+
+.cookie-consent .btn-accept:focus
+{
+    box-shadow: 0 0 0 .1rem rgba(50, 182, 67, .2);
+}
+
+.cookie-consent .btn-accept:focus,
+.cookie-consent .btn-accept:hover
+{color: #fff; border-color: #2da23c; 
+    background: #30ae40;
+}
+
+.cookie-consent .btn-accept:active,
+.cookie-consent .btn-accept.active
+{color: #fff; border-color: #278e34; 
+    background: #2a9a39;
+}
+
+.cookie-consent .btn-accept.loading::after,
+.cookie-consent .btn-accept.form-autocomplete[data-loading='true']::after
+{
+    border-bottom-color: #fff; border-left-color: #fff;
+}
+
+.slideFromTop-enter,
+.slideFromTop-leave-to
+{
+    transform: translate(0px, -12.5em);
+}
+
+.slideFromTop-enter-to,
+.slideFromTop-leave
+{
+    transform: translate(0px, 0px);
+}
+
+.slideFromBottom-enter,
+.slideFromBottom-leave-to
+{
+    transform: translate(0px, 12.5em);
+}
+
+.slideFromBottom-enter-to,
+.slideFromBottom-leave
+{
+    transform: translate(0px, 0px);
+}
+
+.slideFromBottom-enter-active,
+.slideFromBottom-leave-active,
+.slideFromTop-enter-active,
+.slideFromTop-leave-active
+{
+    transition: transform .4s ease-in;
+}
+
+.fade-enter-active,
+.fade-leave-active
+{
+    transition: opacity .5s;
+}
+
+.fade-enter,
+.fade-leave-to
+{
+    opacity: 0;
+}
+
 @font-face
 {
     font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2');
@@ -5321,13 +5661,37 @@ a.text-error:visited
 }
 
 .navbar .navbar-section:first-child > .btn,
-.vx-navbar .navbar-section:first-child > .btn
+.vx-navbar .navbar-section:first-child > .btn,
+.navbar .cookie-consent .navbar-section:first-child > .btn-accept,
+.cookie-consent .navbar .navbar-section:first-child > .btn-accept,
+.vx-navbar .cookie-consent .navbar-section:first-child > .btn-accept,
+.cookie-consent .vx-navbar .navbar-section:first-child > .btn-accept,
+.navbar .cookie-consent .navbar-section:first-child > .btn-decline,
+.cookie-consent .navbar .navbar-section:first-child > .btn-decline,
+.vx-navbar .cookie-consent .navbar-section:first-child > .btn-decline,
+.cookie-consent .vx-navbar .navbar-section:first-child > .btn-decline,
+.navbar .cookie-consent .navbar-section:first-child > .btn-link,
+.cookie-consent .navbar .navbar-section:first-child > .btn-link,
+.vx-navbar .cookie-consent .navbar-section:first-child > .btn-link,
+.cookie-consent .vx-navbar .navbar-section:first-child > .btn-link
 {
     margin-right: .4rem;
 }
 
 .navbar .navbar-section:last-child > .btn,
-.vx-navbar .navbar-section:last-child > .btn
+.vx-navbar .navbar-section:last-child > .btn,
+.navbar .cookie-consent .navbar-section:last-child > .btn-accept,
+.cookie-consent .navbar .navbar-section:last-child > .btn-accept,
+.vx-navbar .cookie-consent .navbar-section:last-child > .btn-accept,
+.cookie-consent .vx-navbar .navbar-section:last-child > .btn-accept,
+.navbar .cookie-consent .navbar-section:last-child > .btn-decline,
+.cookie-consent .navbar .navbar-section:last-child > .btn-decline,
+.vx-navbar .cookie-consent .navbar-section:last-child > .btn-decline,
+.cookie-consent .vx-navbar .navbar-section:last-child > .btn-decline,
+.navbar .cookie-consent .navbar-section:last-child > .btn-link,
+.cookie-consent .navbar .navbar-section:last-child > .btn-link,
+.vx-navbar .cookie-consent .navbar-section:last-child > .btn-link,
+.cookie-consent .vx-navbar .navbar-section:last-child > .btn-link
 {
     margin-left: .4rem;
 }

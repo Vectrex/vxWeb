@@ -11,19 +11,18 @@
         <div class="modal-body">
             <form action="/admin/login" method="post" @submit.prevent="submit">
                 <div class="form-group">
-                    <input name="username" value="" maxlength="128" class="form-input input-lg" type="text" v-model="form.username" placeholder="Username">
+                    <input name="username" maxlength="128" class="form-input input-lg" type="text" v-model="form.username" placeholder="Username">
                 </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <input name="pwd" value="" maxlength="128" class="form-input input-lg" type="password" v-model="form.pwd" placeholder="Passwort">
-                        <button name="submit_login" value="" type='submit' class='btn btn-success input-group-btn btn-lg' :disabled="status === 'loading'" :class="{ 'loading': status === 'loading' }">Login</button>
+                <password-input v-model="form.pwd" placeholder="Passwort" maxlength="128"></password-input>
+                <div class="d-flex" style="align-items: center">
+                    <div class="col-4">
+                        <button name="submit_login" value="" type='submit' class='btn btn-success btn-lg col-12' :disabled="status === 'loading'" :class="{ 'loading': status === 'loading' }">Login</button>
+                    </div>
+                    <div class="col-8 text-right">
+                        <a href="/" class="with-webfont-icon-left" data-icon="&#xe000;"><?= $_SERVER['HTTP_HOST'] ?></a>
                     </div>
                 </div>
             </form>
-        </div>
-        <div class="modal-footer">
-            <a href="/" class="with-webfont-icon-left" data-icon="&#xe000;"><?= $_SERVER['HTTP_HOST'] ?></a>
         </div>
     </div>
     <message-toast
@@ -36,13 +35,14 @@
 
 <script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-    const MessageToast = window.vxweb.Components.MessageToast;
+    const { MessageToast, PasswordInput } = window.vxweb.Components;
     const SimpleFetch =  window.vxweb.Util.SimpleFetch;
 
     const app = new Vue({
 
         components: {
-            "message-toast": MessageToast
+            "message-toast": MessageToast,
+            "password-input": PasswordInput
         },
 
         el: "#login",

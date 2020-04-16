@@ -20,6 +20,7 @@ $sidebar-width: 10rem;
 @import "../node_modules/spectre.css/src/spectre";
 @import "../node_modules/spectre.css/src/spectre-exp";
 @import "spectre-mods/spectre-mods";
+@import "vx/cookie-consent";
 
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
 
