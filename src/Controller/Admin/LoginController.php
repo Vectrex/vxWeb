@@ -65,18 +65,20 @@ class LoginController extends Controller {
 
 			try {
 				$admin = $userProvider->instanceUserByUsername($username);
-
-				if($admin && $admin->authenticate($password)->isAuthenticated()) {
-
-				    if($throttler) {
-                        $throttler->clearAttempts($this->request->getClientIp(), 'admin_login');
-                    }
-
-					return new JsonResponse(['locationHref' => $this->request->getSchemeAndHttpHost() . $app->getRouter()->getRoute('profile')->getUrl()]);
-
-				}
 			}
-			catch(UserException $e) {}
+			catch(UserException $e) {
+			    try {
+                    $admin = $userProvider->instanceUserByEmail($username);
+                }
+                catch(UserException $e) {}
+            }
+
+            if($admin && $admin->authenticate($password)->isAuthenticated()) {
+                if($throttler) {
+                    $throttler->clearAttempts($this->request->getClientIp(), 'admin_login');
+                }
+                return new JsonResponse(['locationHref' => $this->request->getSchemeAndHttpHost() . $app->getRouter()->getRoute('profile')->getUrl()]);
+            }
 
 			if($throttler) {
                 $throttler->registerAttempt($this->request->getClientIp(), [$username, $password])->throttle($this->request->getClientIp(), 'admin_login');

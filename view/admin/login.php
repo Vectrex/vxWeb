@@ -11,7 +11,7 @@
         <div class="modal-body">
             <form action="/admin/login" method="post" @submit.prevent="submit">
                 <div class="form-group">
-                    <input name="username" maxlength="128" class="form-input input-lg" type="text" v-model="form.username" placeholder="Username">
+                    <input name="username" maxlength="128" class="form-input input-lg" type="text" v-model="form.username" placeholder="Username/E-Mail">
                 </div>
                 <password-input v-model="form.pwd" placeholder="Passwort" maxlength="128"></password-input>
                 <div class="d-flex" style="align-items: center">

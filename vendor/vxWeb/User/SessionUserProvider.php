@@ -10,10 +10,10 @@
 
 namespace vxWeb\User;
 
-use vxPHP\Database\DatabaseInterface;
 use vxPHP\Application\Application;
+use vxPHP\Database\DatabaseInterface;
+use vxPHP\Database\RecordsetIteratorInterface;
 use vxPHP\User\Exception\UserException;
-use vxPHP\Session\Session;
 use vxPHP\User\UserProviderInterface;
 use vxPHP\User\SessionUser;
 use vxPHP\User\Role;
@@ -25,7 +25,7 @@ use vxPHP\User\SimpleSessionUserProvider;
  * session after initialization
  * 
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.4.0, 2018-07-14
+ * @version 0.5.0, 2020-04-17
  *        
  */
 class SessionUserProvider extends SimpleSessionUserProvider implements UserProviderInterface {
@@ -34,15 +34,22 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 	 * @var DatabaseInterface
 	 */
 	private $db;
-	
-	/**
-	 *
+
+    /**
+     * constructor
+     */
+    public function __construct()
+    {
+        $this->db = Application::getInstance()->getVxPDO();
+    }
+
+    /**
 	 * {@inheritdoc}
 	 *
 	 * @see \vxPHP\User\UserProviderInterface::refreshUser()
 	 */
-	public function refreshUser(UserInterface $user) {
-
+	public function refreshUser(UserInterface $user)
+    {
 	    $u = $this->getUserRow($user->getUsername());
 
 		if(!$u) {
@@ -63,7 +70,6 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 		;
 
 		return $user;
-
 	}
 	
 	/**
@@ -72,73 +78,81 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 	 *
 	 * @see \vxPHP\User\UserProviderInterface::instanceUserByUsername()
 	 */
-	public function instanceUserByUsername($username) {
+	public function instanceUserByUsername($username): SessionUser
+    {
+        $rows = $this->getUserRow($username, 'username');
 
-		$user = $this->getUserRow($username);
+        if(count($rows) !== 1) {
+            throw new UserException(sprintf("User identified by username '%s' not found or not unique.", $username));
+        }
 
-		if(!$user) {
-			throw new UserException(sprintf("User '%s' not found or not unique.", $username));
-		}
-
-		$user = new SessionUser(
-			$username,
-			$user['pwd'],
-			[
-				new Role($user['group_alias'])
-			],
-			[
-				'email' => $user['email'],
-				'name' => $user['name'],
-				'misc_data' => $user['misc_data'],
-				'table_access' => $user['table_access'],
-				'row_access' => $user['row_access'],
-				'id' => $user['adminid'],
-			]
-		);
-		
-		return $user;
-
-	}
-	
-	/**
-	 * constructor
-	 */
-	public function __construct() {
-
-		$this->db = Application::getInstance()->getDb();
-
-	}
+        return $this->createUser($rows->current());
+    }
 
     /**
-     * returns data row of user identified by $username
+     * @param $email
+     * @return SessionUser
+     * @throws UserException
+     */
+	public function instanceUserByEmail (string $email): SessionUser
+    {
+        $rows = $this->getUserRow($email, 'email');
+
+        if(count($rows) !== 1) {
+            throw new UserException(sprintf("User identified by e-mail '%s' not found or not unique.", $email));
+        }
+
+        return $this->createUser($rows->current());
+    }
+
+    /**
+     * returns data row of user identified by $value in $column
      * false if no user is found
      *
-     * @param $username
-     * @return array|bool
+     * @param string $value
+     * @param string $column
+     * @return RecordsetIteratorInterface
      */
-	private function getUserRow($username) {
-
-        $rows = $this->db->doPreparedQuery("
+	private function getUserRow(string $value, string $column = 'username'): RecordsetIteratorInterface
+    {
+        $rows = $this->db->doPreparedQuery(sprintf("
 			SELECT
 				a.*,
 				ag.privilege_Level,
 				ag.admingroupsID as groupid,
 				LOWER(ag.alias) as group_alias
-		
 			FROM
 				" . $this->db->quoteIdentifier('admin') . " a
 				LEFT JOIN admingroups ag on a.admingroupsID = ag.admingroupsID
 		
 			WHERE
-				username = ?", [$username]
+				%s = ?", $this->db->quoteIdentifier($column)), [$value]
         );
 
-        if(count($rows) === 1) {
-            return $rows->current();
-        }
-
-        return false;
-
+        return $rows;
     }
 
+    /**
+     * @param array $row
+     * @return SessionUser
+     * @throws \Exception
+     */
+    private function createUser (array $row): SessionUser
+    {
+        return new SessionUser(
+            $row['username'],
+            $row['pwd'],
+            [
+                new Role($row['group_alias'])
+            ],
+            [
+                'email' => $row['email'],
+                'name' => $row['name'],
+                'misc_data' => $row['misc_data'],
+                'table_access' => $row['table_access'],
+                'row_access' => $row['row_access'],
+                'id' => $row['adminid'],
+            ]
+        );
+    }
 }
