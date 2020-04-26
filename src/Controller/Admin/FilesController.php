@@ -288,7 +288,21 @@ class FilesController extends Controller
         $expectedSize = (int) $this->request->headers->get('x-file-size', 0);
 
         if($expectedSize !== strlen($contents)) {
-            return new JsonResponse(['error' => 1, 'message' => sprintf("Mitgeteilte Dateigröße %d stimmt nicht mit jener der Datei überein (%d).", $expectedSize, strlen($contents))]);
+            return new JsonResponse([
+                'error' => 1,
+                'message' => sprintf("Mitgeteilte Dateigröße %d stimmt nicht mit jener der Datei überein (%d).", $expectedSize, strlen($contents)),
+            ]);
+        }
+
+        // check content for possibly malicious PHP
+
+        if (strtolower(pathinfo($filename)['extension']) === 'php') {
+            if($this->checkForPHP($contents)) {
+                return new JsonResponse([
+                    'error' => 1,
+                    'message' => 'Datei enthält möglicherweise bösartigen ausführbaren PHP Code.',
+                ]);
+            }
         }
 
         try {
@@ -308,10 +322,17 @@ class FilesController extends Controller
                 Article::getInstance($this->request->query->getInt('article'))->linkMetaFile($mf)->save();
             }
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 1, 'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage())]);
+            return new JsonResponse([
+                'error' => 1,
+                'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage()),
+            ]);
         }
 
-        return new JsonResponse(['success' => true, 'message' => 'Upload erfolgreich.', 'files' => $this->getFileRows(MetaFolder::getInstance(null, $id))]);
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Upload erfolgreich.',
+            'files' => $this->getFileRows(MetaFolder::getInstance(null, $id))
+        ]);
     }
 
     protected function folderDel (): JsonResponse
@@ -427,6 +448,17 @@ class FilesController extends Controller
         }
 
         return new JsonResponse($trees[0]);
+    }
+
+    /**
+     * checks whether a string contains (opening) PHP tags
+     *
+     * @param $string
+     * @return bool
+     */
+    private function checkForPHP ($string): bool
+    {
+        return preg_match('/<\?(?:php|=)/i', $string) === 1;
     }
 
     /**

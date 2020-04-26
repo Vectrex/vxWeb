@@ -379,7 +379,7 @@
                             },
                             this.upload.cancelToken
                         );
-                        this.files = response.files || [];
+                        this.files = response.files || this.files;
                     } catch(err) {
                         this.upload.files = [];
                         this.upload.progressing = false;
