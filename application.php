@@ -60,10 +60,13 @@ $application->setCurrentRoute($route);
 // render output
 
 try {
-    Controller::createControllerFromRoute($route)->renderResponse();
+    Controller::createControllerFromRoute(
+        $route,
+        $application->getApplicationNamespace(),
+        \vxPHP\Http\Request::createFromGlobals()
+    )->renderResponse();
 }
 catch(HttpException $e) {
-
     try {
         $tpl = SimpleTemplate::create('errordocs/' . $e->getStatusCode() . '.php');
     }
@@ -72,7 +75,6 @@ catch(HttpException $e) {
     }
 
     (new Response($tpl->display(), $e->getStatusCode()))->send();
-
 }
 catch(\Exception $e) {
     (new Response(

@@ -1,6 +1,6 @@
 <?php
 
-// register autoloaders
+// enable error reporting (might be disabled at end of bootstrap)
 
 ini_set('display_errors', true);
 error_reporting(E_ALL & ~(E_STRICT|E_DEPRECATED));
@@ -8,28 +8,24 @@ error_reporting(E_ALL & ~(E_STRICT|E_DEPRECATED));
 // package was installed with composer?
 
 if(file_exists($rootPath . '/vendor/autoload.php')) {
-
 	require_once $rootPath . '/vendor/autoload.php';
-
 }
 
 // if not set up own autoloaders
 
 else {
-
 	require_once $rootPath . '/vendor/vxPHP/Autoload/Psr4.php';
 	
 	$loader = new vxPHP\Autoload\Psr4();
 	$loader->register();
 	
 	$loader->addPrefix('vxPHP', $rootPath . '/vendor/vxPHP');
-
 }
 
-$iniPath				= $rootPath . DIRECTORY_SEPARATOR . 'ini' . DIRECTORY_SEPARATOR;
-$configFilename			= $iniPath . 'site.ini.xml';
-$cachedConfigPath		= $iniPath . '.cache' . DIRECTORY_SEPARATOR;
-$cachedConfigFilename	= $cachedConfigPath . 'app_config';
+$iniPath = $rootPath . DIRECTORY_SEPARATOR . 'ini' . DIRECTORY_SEPARATOR;
+$configFilename = $iniPath . 'site.ini.xml';
+$cachedConfigPath = $iniPath . '.cache' . DIRECTORY_SEPARATOR;
+$cachedConfigFilename = $cachedConfigPath . 'app_config';
 
 // read configuration and cache if necessary
 
@@ -46,7 +42,6 @@ if(file_exists($cachedConfigFilename)) {
 	 * does not consider any included XML files outside the ini folder
 	 */
 
-	
 	$cachedFileTimestamp = filemtime($cachedConfigFilename);
 	$cachedIsValid = true;
 
@@ -91,7 +86,6 @@ if(!isset($config)) {
 	try {
 		$config = new vxPHP\Application\Config($configFilename);
 	}
-	
 	catch(\vxPHP\Application\Exception\ConfigException $e) {
 		die('<h1>Cannot create Config instance</h1><pre>' . $e->getMessage() . '</pre>');
 	}
@@ -111,10 +105,10 @@ $application = vxPHP\Application\Application::getInstance($config);
 // set path information
 
 $application
-	->setRootPath			($rootPath)
-	->setAbsoluteAssetsPath	($assetsPath)
+	->setRootPath ($rootPath)
+	->setAbsoluteAssetsPath ($assetsPath)
     ->setRelativeAssetsPath (dirname($_SERVER['SCRIPT_NAME']))
-	->registerPlugins		()
+	->registerPlugins ()
 ;
 
 // set debugging and error reporting level depending on environment

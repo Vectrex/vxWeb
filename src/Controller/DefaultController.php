@@ -17,7 +17,7 @@ use IvoPetkov\HTML5DOMDocument;
 
 class DefaultController extends Controller
 {
-	protected function execute()
+	protected function execute(): Response
     {
 		try {
 			
@@ -32,11 +32,28 @@ class DefaultController extends Controller
 
 			else {
 
+			    $app = Application::getInstance();
+
 			    // pick page from the end of the segments sequence
-		
-				if(count($this->pathSegments)) {
-					$pageAlias = array_pop($this->pathSegments);
+
+                $pathSegments = explode('/', trim($this->request->getPathInfo(), '/'));
+
+                // skip script name
+
+                if($app->getRouter()->getServerSideRewrite() && 'index.php' !== basename($this->request->getScriptName())) {
+                    array_shift($pathSegments);
+                }
+
+                // skip locale if one found
+
+                if(count($pathSegments) && $app->hasLocale($pathSegments[0])) {
+                    array_shift($pathSegments);
+                }
+
+                if(count($pathSegments)) {
+					$pageAlias = array_pop($pathSegments);
 				}
+
 				// alternatively fall back to the route id (for example on splash pages)
 		
 				else {
@@ -99,7 +116,7 @@ class DefaultController extends Controller
 		}
 	}
 
-	private function insertInlineEditor(SimpleTemplate $include, array $parameters)
+	private function insertInlineEditor(SimpleTemplate $include, array $parameters): string
     {
 	    $parentTemplate = SimpleTemplate::create($include->getParentTemplateFilename() ?? 'layout.php');
 
