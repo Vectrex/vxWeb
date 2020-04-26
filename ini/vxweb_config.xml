@@ -19,6 +19,8 @@
 		<page id="page_revision_activate" controller="admin/pages" auth="superadmin" method="activateRevision" request_methods="POST" />
 		<page id="page_revision_delete" controller="admin/pages" auth="superadmin" method="deleteRevision" request_methods="DELETE" />
 
+		<page id="inline_edit" controller="admin/pages" method="inlineEdit" path="pages/inline" auth="superadmin" request_methods="POST"/>
+
 		<page id="users" controller="admin/users" path="users" auth="superadmin" />
 		<page id="users_init" controller="admin/users" auth="superadmin" method="init" />
 		<page id="user_init" controller="admin/users" auth="superadmin" method="editInit" />

@@ -17,13 +17,12 @@
 	"license": "MIT",
 	"name": "vectrex/vxweb",
 	"require": {
-		"php": ">=7.1.0",
+		"php": ">=7.2.0",
 		"ext-pdo": "*",
 		"ext-zip": "*",
 		"ext-gd": "*",
-		"vectrex/vxphp": "~2.0",
-		"ivopetkov/html5-dom-document-php": "^0.6.0",
-		"vectrex/vxjs": "dev-master",
+		"vectrex/vxphp": "^2.1.0",
+		"ivopetkov/html5-dom-document-php": "^2.0.0",
 		"ckeditor/ckeditor": "dev-full/stable"
 	},
 	"require-dev": {

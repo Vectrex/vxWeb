@@ -192,6 +192,37 @@ class PagesController extends Controller
         return new JsonResponse(['success' => true, 'revisions' => $this->getRevisions($page)]);
     }
 
+    protected function inlineEdit()
+    {
+        try {
+            $post = json_decode($this->request->getContent(), true);
+            $revision = Page::getInstance($post['page'])->getActiveRevision();
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()]);
+        }
+
+        $revision->setMarkup($post['data']);
+
+        if($revision->wasChanged()) {
+
+            $revision->deactivate();
+
+            $revisionToAdd = clone $revision;
+            $revisionToAdd
+                ->setActive(true)
+                ->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
+                ->save()
+            ;
+
+            $revisionToAdd->getPage()->exportActiveRevision();
+
+            return new JsonResponse(['success' => true, 'message' => 'Aktualisierte Revision gespeichert und aktiviert.']);
+        }
+
+        return new JsonResponse(['success' => true, 'message' => 'Keine Änderungen erkannt, keine aktualisierte Revision gespeichert.']);
+    }
+
     private function getRevisions (Page $page): array
     {
         $revisions = [];

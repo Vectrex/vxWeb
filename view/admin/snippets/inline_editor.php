@@ -2,25 +2,14 @@
 
 // we need the admin routes
 $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance()->getConfig()->routes['admin.php']);
+$filePickerUrl = $router->getRoute('filepicker')->getUrl();
+$updateUrl =  $router->getRoute('inline_edit')->getUrl();
 
 ?>
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 <link rel="stylesheet" type="text/css" href="/css/inline.min.css">
 
 <script>
-
-    "use strict";
-
-    if(!self.vxWeb) {
-        self.vxWeb = {};
-    }
-    if(!self.vxWeb.routes) {
-        self.vxWeb.routes = {};
-    }
-
-    self.vxWeb.routes.filePicker = "<?= $router->getRoute('filepicker')->getUrl() ?>";
-    self.vxWeb.routes.inlineUpdate = "<?= $router->getRoute('inlineEditXhr')->getUrl() ?>";
-
     CKEDITOR.disableAutoInline = true;
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -41,8 +30,8 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
                 ],
 
                 customConfig: "",
-                filebrowserBrowseUrl: vxWeb.routes.filePicker,
-                filebrowserImageBrowseUrl: vxWeb.routes.filePicker + "?filter=image"
+                filebrowserBrowseUrl: "<?= $filePickerUrl ?>",
+                filebrowserImageBrowseUrl: "<?= $filePickerUrl ?>?filter=image"
             }),
             lastData;
 
@@ -125,7 +114,7 @@ $router = new \vxPHP\Routing\Router(\vxPHP\Application\Application::getInstance(
 
             timeout(
                 5000,
-                fetch(vxWeb.routes.inlineUpdate, {
+                fetch("<?= $updateUrl ?>", {
                     body: JSON.stringify({ data: inlineEditor.getData(), page: page }),
                     credentials: "same-origin",
                     headers: {
