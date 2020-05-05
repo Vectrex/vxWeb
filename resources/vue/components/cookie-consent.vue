@@ -7,8 +7,8 @@
                 </div>
                 <div class="buttons">
                     <a :target="target" :href="buttonLink" v-if="buttonLink" class="btn-link">{{ buttonLinkText }}</a>
-                    <button v-if="buttonDecline" @click="decline" class="btn-decline">{{ buttonDeclineText }}</button>
                     <button @click="accept" class="btn-accept">{{ buttonText }}</button>
+                    <button v-if="buttonDecline" @click="decline" class="btn-decline">{{ buttonDeclineText }}</button>
                 </div>
             </slot>
         </div>

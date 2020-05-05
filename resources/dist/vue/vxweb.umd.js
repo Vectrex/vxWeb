@@ -3920,12 +3920,12 @@ var password_input_component = normalizeComponent(
 )
 
 /* harmony default export */ var password_input = (password_input_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"159d86f4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/cookie-consent.vue?vue&type=template&id=dead55ba&
-var cookie_consentvue_type_template_id_dead55ba_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('transition',{attrs:{"appear":"","name":_vm.transitionName}},[(_vm.isOpen)?_c('div',{staticClass:"cookie-consent",class:_vm.containerPosition},[_vm._t("default",[_c('div',{staticClass:"content"},[_vm._t("message",[_vm._v(_vm._s(_vm.message))])],2),_c('div',{staticClass:"buttons"},[(_vm.buttonLink)?_c('a',{staticClass:"btn-link",attrs:{"target":_vm.target,"href":_vm.buttonLink}},[_vm._v(_vm._s(_vm.buttonLinkText))]):_vm._e(),(_vm.buttonDecline)?_c('button',{staticClass:"btn-decline",on:{"click":_vm.decline}},[_vm._v(_vm._s(_vm.buttonDeclineText))]):_vm._e(),_c('button',{staticClass:"btn-accept",on:{"click":_vm.accept}},[_vm._v(_vm._s(_vm.buttonText))])])],{"accept":_vm.accept,"close":_vm.close,"decline":_vm.decline,"open":_vm.open})],2):_vm._e()])}
-var cookie_consentvue_type_template_id_dead55ba_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"159d86f4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/cookie-consent.vue?vue&type=template&id=7b9bf9ae&
+var cookie_consentvue_type_template_id_7b9bf9ae_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('transition',{attrs:{"appear":"","name":_vm.transitionName}},[(_vm.isOpen)?_c('div',{staticClass:"cookie-consent",class:_vm.containerPosition},[_vm._t("default",[_c('div',{staticClass:"content"},[_vm._t("message",[_vm._v(_vm._s(_vm.message))])],2),_c('div',{staticClass:"buttons"},[(_vm.buttonLink)?_c('a',{staticClass:"btn-link",attrs:{"target":_vm.target,"href":_vm.buttonLink}},[_vm._v(_vm._s(_vm.buttonLinkText))]):_vm._e(),_c('button',{staticClass:"btn-accept",on:{"click":_vm.accept}},[_vm._v(_vm._s(_vm.buttonText))]),(_vm.buttonDecline)?_c('button',{staticClass:"btn-decline",on:{"click":_vm.decline}},[_vm._v(_vm._s(_vm.buttonDeclineText))]):_vm._e()])],{"accept":_vm.accept,"close":_vm.close,"decline":_vm.decline,"open":_vm.open})],2):_vm._e()])}
+var cookie_consentvue_type_template_id_7b9bf9ae_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/cookie-consent.vue?vue&type=template&id=dead55ba&
+// CONCATENATED MODULE: ./vue/components/cookie-consent.vue?vue&type=template&id=7b9bf9ae&
 
 // CONCATENATED MODULE: ./vue/util/cookie.js
 function _computeExpires(str) {
@@ -4191,8 +4191,8 @@ function getRaw (key) {
 
 var cookie_consent_component = normalizeComponent(
   components_cookie_consentvue_type_script_lang_js_,
-  cookie_consentvue_type_template_id_dead55ba_render,
-  cookie_consentvue_type_template_id_dead55ba_staticRenderFns,
+  cookie_consentvue_type_template_id_7b9bf9ae_render,
+  cookie_consentvue_type_template_id_7b9bf9ae_staticRenderFns,
   false,
   null,
   null,

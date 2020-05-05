@@ -33,10 +33,10 @@
   }
   .btn-decline {
     @include button-variant($error-color);
-    margin-right: $unit-1;
   }
   .btn-accept {
     @include button-variant($success-color);
+    margin-right: $unit-1;
   }
 }
 
