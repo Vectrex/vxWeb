@@ -71,7 +71,7 @@
             id="files-list"
         >
             <template v-slot:checked-header>
-                <label class="form-checkbox"><input type="checkbox" @click="toggleAll"><i class="form-icon"></i></label>
+                <label class="form-checkbox"><input type="checkbox" @click="toggleAll" v-check-indeterminate><i class="form-icon"></i></label>
             </template>
 
             <template v-slot:checked="slotProps">
@@ -448,7 +448,13 @@
         },
 
         directives: {
-            focus: Focus
+            focus: Focus,
+            checkIndeterminate: {
+                update (el, binding, vnode) {
+                    let rows = [...vnode.context.folders, ...vnode.context.files], filtered = rows.filter(item => item.checked);
+                    el.indeterminate = filtered.length && filtered.length !== rows.length;
+                }
+            }
         },
 
         filters: {
