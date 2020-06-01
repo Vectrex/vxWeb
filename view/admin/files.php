@@ -56,6 +56,10 @@
         data: {
             cols: [
                 {
+                    label: "",
+                    prop: "checked"
+                },
+                {
                     label: "Dateiname",
                     sortable: true,
                     prop: "name",

@@ -322,8 +322,8 @@ table#users-list {
 }
 
 table#files-list {
-  $widths: 45% 10% 15% 15% 15%;
-  $alignments: left, right, center, right, right;
+  $widths: 0% 45% 10% 15% 15% 15%;
+  $alignments: center, left, right, center, right, right;
 
   tr {
     @for $i from 1 through length($widths) {

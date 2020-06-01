@@ -30,6 +30,11 @@
                         </div>
                     </div>
                 </div>
+                <filemanager-actions
+                    v-if="someChecked"
+                    @delete-selection="delSelection"
+                    @move-selection="moveSelection"
+                ></filemanager-actions>
             </section>
 
             <section class="navbar-section">
@@ -65,6 +70,14 @@
             ref="sortable"
             id="files-list"
         >
+            <template v-slot:checked-header>
+                <label class="form-checkbox"><input type="checkbox" @click="toggleAll"><i class="form-icon"></i></label>
+            </template>
+
+            <template v-slot:checked="slotProps">
+                <label class="form-checkbox"><input type="checkbox" v-model="slotProps.row.checked"><i class="form-icon"></i></label>
+            </template>
+
             <template v-slot:name="slotProps">
                 <template v-if="slotProps.row.isFolder">
                     <input
@@ -144,6 +157,7 @@
 
 <script>
     import FilemanagerAdd  from './filemanager-add';
+    import FilemanagerActions  from './filemanager-actions';
     import FilemanagerSearch  from './filemanager-search';
     import Sortable from './sortable';
     import SimpleTree from './simple-tree';
@@ -159,7 +173,15 @@
 
     export default {
         components: {
-            'sortable': Sortable, 'simple-tree': SimpleTree, 'file-edit-form': FileEditForm, 'circular-progress': CircularProgress, 'confirm': Confirm, 'alert': Alert, 'filemanager-add': FilemanagerAdd, 'filemanager-search': FilemanagerSearch
+            'sortable': Sortable,
+            'simple-tree': SimpleTree,
+            'circular-progress': CircularProgress,
+            'confirm': Confirm,
+            'alert': Alert,
+            'file-edit-form': FileEditForm,
+            'filemanager-add': FilemanagerAdd,
+            'filemanager-search': FilemanagerSearch,
+            'filemanager-actions': FilemanagerActions
         },
 
         data () {
@@ -188,7 +210,7 @@
         },
 
         computed: {
-            directoryEntries() {
+            directoryEntries () {
                 let folders = this.folders;
                 let files = this.files;
                 folders.forEach(item => {
@@ -197,6 +219,9 @@
                 });
                 files.forEach(item => item.key = item.id);
                 return [...folders, ...files];
+            },
+            someChecked () {
+                return [...this.folders, ...this.files].some(item => item.checked);
             }
         },
 
@@ -233,6 +258,9 @@
             handleBodyClick () {
                 this.showAddActivities = false;
             },
+            toggleAll (event) {
+                [...this.folders, ...this.files].forEach(item => this.$set(item, 'checked', event.target.checked));
+            },
             async readFolder (id) {
                 let response = await SimpleFetch(UrlQuery.create(this.routes.readFolder, { folder: id }));
 
@@ -250,6 +278,13 @@
                         this.breadcrumbs = response.breadcrumbs;
                     }
                 }
+            },
+            async delSelection () {
+                if(await this.$refs.confirm.open('Auswahl löschen', "Selektierte Dateien/Ordner wirklich löschen?")) {
+                    console.log([...this.folders, ...this.files].filter(item => item.checked));
+                }
+            },
+            moveSelection () {
             },
             async editFile (row) {
                 this.showEditForm = true;
