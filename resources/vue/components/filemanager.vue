@@ -31,9 +31,10 @@
                     </div>
                 </div>
                 <filemanager-actions
-                    v-if="someChecked"
                     @delete-selection="delSelection"
                     @move-selection="moveSelection"
+                    :files="checkedFiles"
+                    :folders="checkedFolders"
                 ></filemanager-actions>
             </section>
 
@@ -220,8 +221,11 @@
                 files.forEach(item => item.key = item.id);
                 return [...folders, ...files];
             },
-            someChecked () {
-                return [...this.folders, ...this.files].some(item => item.checked);
+            checkedFiles () {
+                return this.files.filter(item => item.checked);
+            },
+            checkedFolders () {
+                return this.folders.filter(item => item.checked);
             }
         },
 
@@ -280,8 +284,9 @@
                 }
             },
             async delSelection () {
-                if(await this.$refs.confirm.open('Auswahl löschen', "Selektierte Dateien/Ordner wirklich löschen?")) {
-                    console.log([...this.folders, ...this.files].filter(item => item.checked));
+                let response = await SimpleFetch(UrlQuery.create(this.routes.delSelection, { files: this.checkedFiles.map(item => item.id).join(","), folders: this.checkedFolders.map(item => item.id).join(",") }), 'DELETE');
+                if(response.success) {
+//                        this.files.splice(this.files.findIndex(item => row === item), 1);
                 }
             },
             moveSelection () {
@@ -451,11 +456,11 @@
             focus: Focus,
             checkIndeterminate: {
                 update (el, binding, vnode) {
-                    let rows = [...vnode.context.folders, ...vnode.context.files], filtered = rows.filter(item => item.checked);
-                    if (!filtered.length) {
+                    let filteredLength = vnode.context.checkedFolders.length + vnode.context.checkedFiles.length;
+                    if (!filteredLength) {
                         el.checked = false;
                     }
-                    el.indeterminate = filtered.length && filtered.length !== rows.length;
+                    el.indeterminate = filteredLength && filteredLength !== vnode.context.folders.length + vnode.context.files.length;
                 }
             }
         },

@@ -59,6 +59,7 @@
 		<page id="folder_add" controller="admin/files" method="folderAdd" auth="privileged" request_methods="POST" />
 		<page id="folder_rename" controller="admin/files" method="folderRename" auth="privileged" request_methods="POST" />
 		<page id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
+		<page id="selection_del" controller="admin/files" method="selectionDel" auth="privileged" request_methods="DELETE" />
 
 		<page id="filepicker" controller="admin/files" auth="privileged" />
 	</pages>

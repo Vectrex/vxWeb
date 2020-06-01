@@ -418,7 +418,7 @@ class FilesController extends Controller
             $currentFolder = null;
         }
 
-        $parseFolder = function (MetaFolder $f) use (&$parseFolder, $currentFolder) {
+        $parseFolder = static function (MetaFolder $f) use (&$parseFolder, $currentFolder) {
 
             $subTrees = $f->getMetaFolders();
 
@@ -448,6 +448,13 @@ class FilesController extends Controller
         }
 
         return new JsonResponse($trees[0]);
+    }
+
+    protected function selectionDel (): JsonResponse
+    {
+        $files = explode(',', $this->request->query->get('files', ''));
+        $folders = explode(',', $this->request->query->get('folders', ''));
+        return new JsonResponse(['files' => $files, 'folders' => $folders]);
     }
 
     /**
