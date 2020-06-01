@@ -452,6 +452,9 @@
             checkIndeterminate: {
                 update (el, binding, vnode) {
                     let rows = [...vnode.context.folders, ...vnode.context.files], filtered = rows.filter(item => item.checked);
+                    if (!filtered.length) {
+                        el.checked = false;
+                    }
                     el.indeterminate = filtered.length && filtered.length !== rows.length;
                 }
             }
