@@ -14,6 +14,7 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxWeb\Model\Article\Article;
 use vxWeb\Model\Article\Exception\ArticleException;
+use vxWeb\Model\MetaFile\Exception\MetaFileException;
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\MetaFile\MetaFolder;
 use vxWeb\Model\MetaFile\Exception\MetaFolderException;
@@ -452,9 +453,48 @@ class FilesController extends Controller
 
     protected function selectionDel (): JsonResponse
     {
-        $files = explode(',', $this->request->query->get('files', ''));
-        $folders = explode(',', $this->request->query->get('folders', ''));
-        return new JsonResponse(['files' => $files, 'folders' => $folders]);
+        $files = $this->request->query->get('files');
+        $folders = $this->request->query->get('folders');
+
+        $files = $files ? explode(',', $files) : [];
+        $folders = $folders ? explode(',', $folders) : [];
+
+        $errors = [];
+        $parent = null;
+
+        foreach($files as $id) {
+            try {
+                if(!$parent) {
+                    $parent = MetaFile::getInstance(null, $id)->getMetaFolder();
+                }
+                MetaFile::getInstance(null, $id)->delete();
+            } catch (MetaFileException $e) {
+                $errors[] = $e->getMessage();
+            }
+        }
+        foreach($folders as $id) {
+            try {
+                if(!$parent) {
+                    $parent = MetaFolder::getInstance(null, $id)->getParentMetafolder();
+                }
+                MetaFolder::getInstance(null, $id)->delete();
+            } catch (MetaFileException $e) {
+                $errors[] = $e->getMessage();
+            }
+        }
+
+        if ($parent) {
+            $files = $this->getFileRows($parent);
+            $folders = $this->getFolderRows($parent);
+        }
+        if(count($errors)) {
+            return new JsonResponse([
+                'error' => 1, 'message' => $errors, 'files' => $files ?? [], 'folders' => $folders
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true, 'files' => $files ?? [], 'folders' => $folders
+        ]);
     }
 
     /**

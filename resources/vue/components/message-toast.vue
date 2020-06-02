@@ -1,7 +1,7 @@
 <template>
     <div id="messageBox" :class="[{ 'display': isActive }, classname, 'toast']">
-        {{ message }}
         <button class="btn btn-clear float-right" @click="isActive = false"></button>
+        <div v-for="line in lines">{{ line }}</div>
     </div>
 </template>
 
@@ -14,7 +14,7 @@
         }),
 
         props: {
-            message: String,
+            message: [String, Array],
             classname: String,
             timeout: {
                 type: Number,
@@ -23,6 +23,12 @@
             active: {
                 type: Boolean,
                 default: false
+            }
+        },
+
+        computed: {
+            lines () {
+                return typeof this.message === 'string' ? [this.message] : this.message;
             }
         },
 

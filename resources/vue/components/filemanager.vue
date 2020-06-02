@@ -286,7 +286,13 @@
             async delSelection () {
                 let response = await SimpleFetch(UrlQuery.create(this.routes.delSelection, { files: this.checkedFiles.map(item => item.id).join(","), folders: this.checkedFolders.map(item => item.id).join(",") }), 'DELETE');
                 if(response.success) {
-//                        this.files.splice(this.files.findIndex(item => row === item), 1);
+                    this.files = response.files || [];
+                    this.folders = response.folders || [];
+                }
+                else if(response.error) {
+                    this.$emit('response-received', response);
+                    this.files = response.files || this.files;
+                    this.folders = response.folders || this.folders;
                 }
             },
             moveSelection () {
