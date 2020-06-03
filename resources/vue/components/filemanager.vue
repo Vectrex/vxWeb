@@ -266,13 +266,7 @@
                     this.files = response.files || [];
                     this.folders = response.folders || [];
                     this.currentFolder = id;
-                    if(!this.breadcrumbs) {
-                        return;
-                    }
-                    if(
-                        response.breadcrumbs.length >= this.breadcrumbs.length ||
-                        this.breadcrumbs.map(item => item.folder).join().indexOf(response.breadcrumbs.map(item => item.folder).join()) !== 0
-                    ) {
+                    if(response.breadcrumbs) {
                         this.breadcrumbs = response.breadcrumbs;
                     }
                 }

@@ -22,7 +22,12 @@
         },
         watch: {
             breadcrumbs (newValue) {
-                this.items = newValue;
+                if (
+                    newValue.length >= this.items.length ||
+                    this.items.map(item => item.folder).join().indexOf(newValue.map(item => item.folder).join()) !== 0
+                ) {
+                    this.items = newValue;
+                }
             },
             folders: {
                 deep: true,
