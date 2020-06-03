@@ -225,7 +225,7 @@
 
         props: {
             routes: { type: Object, required: true },
-            limits: { type: Object, default: {} },
+            limits: { type: Object, default: () => {} },
             columns: { type: Array, required: true },
             folder: { type: String, default: '' },
             initSort: { type: Object }
