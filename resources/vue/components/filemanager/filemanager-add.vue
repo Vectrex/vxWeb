@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import { Focus } from "../directives";
+    import { Focus } from "../../directives";
 
     export default {
         data() {

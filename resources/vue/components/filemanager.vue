@@ -8,15 +8,7 @@
     >
         <div class="vx-button-bar navbar">
             <section class="navbar-section">
-                <span class="btn-group">
-                    <button
-                        v-for="(breadcrumb, ndx) in breadcrumbs"
-                        class="btn"
-                        :key="ndx"
-                        :class="{'active': breadcrumb.folder === currentFolder }"
-                        @click="readFolder(breadcrumb.folder)">{{ breadcrumb.name }}
-                    </button>
-                </span>
+                <filemanager-breadcrumbs :breadcrumbs="breadcrumbs" :current-folder="currentFolder" :folders="folders" @breadcrumb-clicked="readFolder"></filemanager-breadcrumbs>
                 <div class="popup popup-bottom ml-1" :class="{ active: showAddActivities }">
                     <button class="btn webfont-icon-only" type="button" @click.stop="showAddActivities = !showAddActivities">&#xe020;</button>
                     <div class="popup-container">
@@ -157,9 +149,10 @@
 </template>
 
 <script>
-    import FilemanagerAdd  from './filemanager-add';
-    import FilemanagerActions  from './filemanager-actions';
-    import FilemanagerSearch  from './filemanager-search';
+    import FilemanagerAdd  from './filemanager/filemanager-add';
+    import FilemanagerActions  from './filemanager/filemanager-actions';
+    import FilemanagerSearch  from './filemanager/filemanager-search';
+    import FilemanagerBreadcrumbs  from './filemanager/filemanager-breadcrumbs';
     import Sortable from './sortable';
     import SimpleTree from './simple-tree';
     import CircularProgress from './circular-progress';
@@ -182,7 +175,8 @@
             'file-edit-form': FileEditForm,
             'filemanager-add': FilemanagerAdd,
             'filemanager-search': FilemanagerSearch,
-            'filemanager-actions': FilemanagerActions
+            'filemanager-actions': FilemanagerActions,
+            'filemanager-breadcrumbs': FilemanagerBreadcrumbs
         },
 
         data () {
@@ -327,10 +321,6 @@
                 if(name && this.toRename) {
                     let response = await SimpleFetch(this.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, folder: this.toRename.id }));
                     if(response.success) {
-                        let ndx = this.breadcrumbs.findIndex(item => item.folder === this.toRename.id);
-                        if (ndx !== -1) {
-                            this.breadcrumbs[ndx].name = response.name;
-                        }
                         this.toRename.name = response.name || name;
                         this.toRename = null;
                     }
@@ -341,10 +331,6 @@
                     let response = await SimpleFetch(UrlQuery.create(this.routes.delFolder, { folder: row.id }), 'DELETE');
                     if(response.success) {
                         this.folders.splice(this.folders.findIndex(item => row === item), 1);
-                        let ndx = this.breadcrumbs.findIndex(item => item.folder === row.id);
-                        if (ndx !== -1) {
-                            this.breadcrumbs.splice(ndx);
-                        }
                     }
                 }
             },
