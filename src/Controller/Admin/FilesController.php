@@ -27,6 +27,8 @@ use vxWeb\Util\File;
  */
 class FilesController extends Controller
 {
+    use AdminControllerTrait;
+
     private const FILE_ATTRIBUTES = ['title', 'subtitle', 'description', 'customsort'];
 
     /**
@@ -41,16 +43,13 @@ class FilesController extends Controller
             $this->toBytes(ini_get('upload_max_filesize')),
             $this->toBytes(ini_get('post_max_size'))
         );
-
         $maxExecutionTime = ini_get('max_execution_time');
 
-        switch ($this->route->getRouteId()) {
-            case 'filepicker':
-                $tpl = 'admin/files_picker.php';
-                break;
-
-            default:
-                $tpl = 'admin/files.php';
+        if ($this->route->getRouteId() === 'filepicker') {
+            $tpl = 'admin/files_picker.php';
+        }
+        else {
+            $tpl = 'admin/files.php';
         }
 
         return new Response(
@@ -506,30 +505,6 @@ class FilesController extends Controller
     private function checkForPHP ($string): bool
     {
         return preg_match('/<\?(?:php|=)/i', $string) === 1;
-    }
-
-    /**
-     * simple helper function to convert ini values like 10M or 256K to integer
-     *
-     * @param string $val
-     * @return int
-     */
-    private function toBytes($val): int
-    {
-
-        $suffix = strtolower(substr(trim($val), -1));
-
-        $v = (int) $val;
-
-        switch ($suffix) {
-            case 'g':
-                $v *= 1024;
-            case 'm':
-                $v *= 1024;
-            case 'k':
-                $v *= 1024;
-        }
-        return $v;
     }
 
     private function getFileRows (MetaFolder $folder, $filter = ''): array

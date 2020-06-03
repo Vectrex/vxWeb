@@ -37,7 +37,7 @@
         components: { 'message-toast': MessageToast, 'filemanager': Filemanager },
 
         routes: {
-            init: "<?= $router->getRoute('files_init')->getUrl() ?>?filter=<?= $filter ?>",
+            init: "<?= $router->getRoute('files_init')->getUrl() ?>",
             readFolder: "<?= $router->getRoute('folder_read')->getUrl() ?>?filter=<?= $filter ?>",
             getFile: "<?= $router->getRoute('file_get')->getUrl() ?>",
             updateFile: "<?= $router->getRoute('file_update')->getUrl() ?>",
@@ -48,11 +48,21 @@
             getFoldersTree: "<?= $router->getRoute('folders_tree')->getUrl() ?>",
             delFolder: "<?= $router->getRoute('folder_del')->getUrl() ?>",
             renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
-            addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>"
+            addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>",
+            search:  "<?= $router->getRoute('files_search')->getUrl() ?>",
+            delSelection: "<?= $router->getRoute('selection_del')->getUrl() ?>"
+        },
+        limits: {
+            maxExecutionTime: <?= $this->max_execution_time_ms ?>,
+            maxUploadFilesize:  <?= $this->upload_max_filesize ?>
         },
 
         data: {
             cols: [
+                {
+                    label: "",
+                    prop: "checked"
+                },
                 {
                     label: "Dateiname",
                     sortable: true,

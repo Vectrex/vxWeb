@@ -52,16 +52,17 @@
             :columns="fmProps.cols"
             :init-sort="fmProps.initSort"
             :folder="fmProps.folder"
+            :limits="$options.limits"
             ref="fm"
             @response-received="handleResponse"
             @after-sort="storeSort"
         >
             <template v-slot:action="slotProps">
-                <button v-if="slotProps.row.isFolder" class="btn webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
+                <button v-if="slotProps.row.isFolder" class="btn btn-link webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
                 <template v-else>
-                    <button class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFile(slotProps.row)">&#xe002;</button>
-                    <button class="btn webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.getFolderTree(slotProps.row)">&#xe004;</button>
-                    <button class="btn webfont-icon-only tooltip" data-tooltip="Löschen" type="button" @click="$refs.fm.delFile(slotProps.row)">&#xe011;</button>
+                    <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFile(slotProps.row)">&#xe002;</button>
+                    <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.getFolderTree(slotProps.row)">&#xe004;</button>
+                    <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Löschen" type="button" @click="$refs.fm.delFile(slotProps.row)">&#xe011;</button>
                 </template>
             </template>
             <template v-slot:linked="slotProps">
@@ -203,6 +204,11 @@
             link: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_link_file')->getUrl() ?>",
             getLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('get_linked_files')->getUrl() ?>",
             updateLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('update_linked_files')->getUrl() ?>"
+        },
+
+        limits: {
+            maxExecutionTime: <?= $this->max_execution_time_ms ?>,
+            maxUploadFilesize:  <?= $this->upload_max_filesize ?>
         },
 
         async created () {
