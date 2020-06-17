@@ -173,6 +173,9 @@
                     }
                 });
                 this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(payload));
+                if(this.response.id) {
+                    this.$set(this.form, 'id', this.response.id);
+                }
                 this.$emit("response-received", this.response);
                 this.loading = false;
             },
