@@ -49,7 +49,6 @@
             return {
                 year: null,
                 month: null,
-                dateDay: null,
                 selectedDate: null,
                 expanded: !this.hasInput,
                 align: 'left'
@@ -60,7 +59,6 @@
             value (newValue) {
                 this.year = (newValue || this.today).getFullYear();
                 this.month = (newValue || this.today).getMonth();
-                this.dateDay = (newValue || this.today).getDate();
                 this.selectedDate = newValue ? new Date(newValue.getFullYear(), newValue.getMonth(), newValue.getDate()) : null;
             },
             expanded (newValue) {
@@ -156,7 +154,6 @@
             }
             this.year = (this.value || this.today).getFullYear();
             this.month = (this.value || this.today).getMonth();
-            this.dateDay = (this.value || this.today).getDate();
             this.selectedDate = this.value ? new Date(this.value.getFullYear(), this.value.getMonth(), this.value.getDate()) : null;
         },
         beforeDestroy() {
@@ -167,13 +164,13 @@
 
         methods: {
             previousMonth() {
-                const d = new Date(this.year, this.month - 1, this.dateDay);
+                const d = new Date(this.year, this.month - 1, 1);
                 this.month = d.getMonth();
                 this.year = d.getFullYear();
                 this.$emit("month-change");
             },
             nextMonth() {
-                const d = new Date(this.year, this.month + 1, this.dateDay);
+                const d = new Date(this.year, this.month + 1, 1);
                 this.month = d.getMonth();
                 this.year = d.getFullYear();
                 this.$emit("month-change");
