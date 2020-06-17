@@ -288,8 +288,17 @@ class ArticlesController extends Controller {
     {
         MenuGenerator::setForceActiveMenu(true);
 
+        $uploadMaxFilesize = min(
+            $this->toBytes(ini_get('upload_max_filesize')),
+            $this->toBytes(ini_get('post_max_size'))
+        );
+        $maxExecutionTime = ini_get('max_execution_time');
+
         return new Response(
-            SimpleTemplate::create('admin/articles_edit.php')->display()
+            SimpleTemplate::create('admin/articles_edit.php')
+                ->assign('upload_max_filesize', $uploadMaxFilesize)
+                ->assign('max_execution_time_ms', $maxExecutionTime * 900)// 10pct "safety margin"
+                ->display()
         );
     }
 
