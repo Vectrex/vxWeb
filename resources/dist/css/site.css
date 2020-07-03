@@ -1,7 +1,7 @@
 /* a power function for SCSS */
 /* calculates the luminance of a color */
 /* depending on the the luminance of $color either white or a semi-opaque black is returned lifted from Bulma https://github.com/jgthms/bulma/blob/master/sass/utilities/functions.sass */
-/*! Spectre.css v0.5.8 | MIT License | github.com/picturepan2/spectre */
+/*! Spectre.css v0.5.9 | MIT License | github.com/picturepan2/spectre */
 /* Manually forked from Normalize.css */
 /* normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 /** 1. Change the default font family in all browsers (opinionated). 2. Correct the line height in all browsers. 3. Prevent adjustments of font size after orientation changes in IE on Windows Phone and in iOS. */
@@ -1453,33 +1453,51 @@ video.video-responsive::before
     display: none !important;
 }
 
+.cols,
 .columns
 {
     display: flex; margin-right: -.4rem; margin-left: -.4rem; flex-wrap: wrap;
 }
 
+.cols.col-gapless,
 .columns.col-gapless
 {margin-right: 0; 
     margin-left: 0;
 }
 
+.cols.col-gapless > .column,
 .columns.col-gapless > .column
 {padding-right: 0; 
     padding-left: 0;
 }
 
+.cols.col-oneline,
 .columns.col-oneline
 {overflow-x: auto; 
 
     flex-wrap: nowrap;
 }
 
+[class~='col-'],
 .column
 {max-width: 100%; padding-right: .4rem; padding-left: .4rem; 
 
     flex: 1;
 }
 
+[class~='col-'].col-12,
+[class~='col-'].col-11,
+[class~='col-'].col-10,
+[class~='col-'].col-9,
+[class~='col-'].col-8,
+[class~='col-'].col-7,
+[class~='col-'].col-6,
+[class~='col-'].col-5,
+[class~='col-'].col-4,
+[class~='col-'].col-3,
+[class~='col-'].col-2,
+[class~='col-'].col-1,
+[class~='col-'].col-auto,
 .column.col-12,
 .column.col-11,
 .column.col-10,
@@ -2026,8 +2044,8 @@ video.video-responsive::before
     font-size: .9rem; text-decoration: none;
 }
 
-.accordion input:checked ~ .accordion-header .icon,
-.accordion[open] .accordion-header .icon
+.accordion input:checked ~ .accordion-header > .icon:first-child,
+.accordion[open] .accordion-header > .icon:first-child
 {
     transform: rotate(90deg);
 }
@@ -3229,8 +3247,8 @@ a.text-error:visited
 }
 
 .loading::after
-{position: absolute; z-index: 1; top: 50%; left: 50%; display: block; width: .8rem; height: .8rem; margin-top: -.4rem; margin-left: -.4rem; content: ''; 
-    animation: loading 500ms infinite linear; border: .1rem solid #5755d9; border-top-color: transparent; border-right-color: transparent; border-radius: 50%;
+{position: absolute; z-index: 1; top: 50%; left: 50%; display: block; width: .8rem; height: .8rem; margin-top: -.4rem; margin-left: -.4rem; padding: 0; content: ''; 
+    animation: loading 500ms infinite linear; opacity: 1; border: .1rem solid #5755d9; border-top-color: transparent; border-right-color: transparent; border-radius: 50%; background: transparent;
 }
 
 .loading.loading-lg
@@ -3562,6 +3580,21 @@ a.text-error:visited
 .text-large
 {
     font-size: 1.2em;
+}
+
+.text-small
+{
+    font-size: .9em;
+}
+
+.text-tiny
+{
+    font-size: .8em;
+}
+
+.text-muted
+{
+    opacity: .8;
 }
 
 .text-ellipsis

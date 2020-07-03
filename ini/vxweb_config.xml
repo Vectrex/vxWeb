@@ -2,7 +2,9 @@
 
 <config>
 
-	<pages script="admin.php" default_redirect="login">
+	<pages script="admin.php" default_redirect="auth_violation">
+		<page id="auth_violation" controller="admin/authViolation" />
+
 		<page id="login" controller="admin/login" />
 		<page id="logout" controller="admin/logout" />
 

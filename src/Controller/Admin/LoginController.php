@@ -15,8 +15,8 @@ use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
 use vxWeb\User\SessionUserProvider;
 
-class LoginController extends Controller {
-
+class LoginController extends Controller
+{
     protected function execute()
     {
         $app = Application::getInstance();
