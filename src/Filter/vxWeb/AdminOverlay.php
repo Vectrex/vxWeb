@@ -25,9 +25,8 @@ EOD;
      * @throws \vxPHP\Application\Exception\ApplicationException
      * @throws \vxPHP\Template\Exception\SimpleTemplateException
      */
-    public function apply(&$templateString)
+    public function apply(&$templateString): void
     {
-
         $app = Application::getInstance();
         $user = $app->getCurrentUser();
 
@@ -59,9 +58,6 @@ EOD;
                 $tpl->display() . '</body>',
                 $templateString
             );
-
         }
-
     }
-
 }
