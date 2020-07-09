@@ -21,7 +21,7 @@ class InstallerController extends Controller {
 
 	    if(!is_null($this->request->query->get('delete'))) {
 
-	        if(!is_writeable($installerFile)) {
+	        if(!is_writable($installerFile)) {
 	            die(sprintf("Kann Datei '%s' nicht löschen.", $installerFile));
             }
 
