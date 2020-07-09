@@ -12,3 +12,4 @@
 <?php else: ?>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
 <?php endif; ?>
+<script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/vxweb.umd.min.js') ?>"></script>

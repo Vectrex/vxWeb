@@ -53,7 +53,6 @@
     <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
 </div>
 
-<script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
     const { Sortable, Confirm, ZPagination, ZLink } = window.vxweb.Components;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;

@@ -33,7 +33,6 @@
     ></message-toast>
 </div>
 
-<script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
     const { MessageToast, PasswordInput } = window.vxweb.Components;
     const SimpleFetch =  window.vxweb.Util.SimpleFetch;
