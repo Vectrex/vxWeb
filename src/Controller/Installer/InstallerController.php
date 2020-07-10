@@ -2,7 +2,9 @@
 
 namespace App\Controller\Installer;
 
+use DOMDocument;
 use vxPHP\Application\Application;
+use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\HtmlForm;
@@ -15,8 +17,8 @@ use vxPHP\Util\Rex;
 
 class InstallerController extends Controller {
 
-	protected function execute() {
-
+	protected function execute(): Response
+    {
 	    $installerFile = Application::getInstance()->getRootPath() . 'web/installer.php';
 
 	    if(!is_null($this->request->query->get('delete'))) {
@@ -40,7 +42,7 @@ class InstallerController extends Controller {
             ];
         }
 
-        $pathsOk = count(array_filter($pathChecks, function($p) { return $p['writable']; })) === count($paths);
+        $pathsOk = count(array_filter($pathChecks, static function($p) { return $p['writable']; })) === count($paths);
 
         if($pathsOk) {
 
@@ -88,11 +90,8 @@ class InstallerController extends Controller {
                     } catch (\Exception $e) {
                         $miscError = $e->getMessage();
                     }
-
-
                 }
             }
-
         }
 
         return new Response(
@@ -105,15 +104,14 @@ class InstallerController extends Controller {
                 ->assign('success', $success ?? '')
                 ->assign('password', isset($success) ? $adminPassword : '')
                 ->assign('admin_url', isset($success) ? ($this->request->getSchemeAndHttpHost() . rtrim(dirname($this->request->getScriptName()), '/') . (Application::getInstance()->getRouter()->getServerSideRewrite() ? '/admin' : '/admin.php')) : '')
-                ->assign('installer_is_deletable', is_writeable($installerFile))
+                ->assign('installer_is_deletable', is_writable($installerFile))
                 ->assign('installer_file', $installerFile)
                 ->display()
         );
-
 	}
 
-	private function checkWritable($dir) {
-
+	private function checkWritable($dir): bool
+    {
         if (is_dir($dir)) {
             if(is_writable($dir)) {
                 $objects = scandir($dir);
@@ -142,22 +140,21 @@ class InstallerController extends Controller {
      * execute queries to create database structure
      *
      * @param \PDO $connection
-     * @throws \Exception
+     * @throws \RuntimeException
      */
-    private function writeDbStructure(\PDO $connection) {
-
+    private function writeDbStructure(\PDO $connection): void
+    {
 	    $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
 	    $path = Application::getInstance()->getRootPath() . 'resources' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR;
         $dump = @file_get_contents( $path . $drivername . '_structure.sql');
 
         if(false === $dump) {
-            throw new \Exception($drivername . '_structure.sql not found.');
+            throw new \RuntimeException($drivername . '_structure.sql not found.');
         }
 
         $connection->beginTransaction();
         $connection->exec($dump);
         $connection->commit();
-
     }
 
     /**
@@ -165,16 +162,16 @@ class InstallerController extends Controller {
      *
      * @param \PDO $connection
      * @param $adminPassword
-     * @throws \Exception
+     * @throws \RuntimeException|ApplicationException
      */
-    private function writeDbData(\PDO $connection, $adminPassword) {
-
+    private function writeDbData(\PDO $connection, $adminPassword): void
+    {
         $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
         $path = Application::getInstance()->getRootPath() . 'resources' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR;
         $dump = @file_get_contents( $path . $drivername . '_data.sql');
 
         if(false === $dump) {
-            throw new \Exception($drivername . '_data.sql not found.');
+            throw new \RuntimeException($drivername . '_data.sql not found.');
         }
 
         $connection->beginTransaction();
@@ -184,18 +181,17 @@ class InstallerController extends Controller {
         $hashedPassword = (new PasswordEncrypter())->hashPassword($adminPassword);
         $stmt = $connection->prepare('UPDATE admin SET pwd = ? WHERE username = ?');
         $stmt->execute([$hashedPassword, 'admin']);
-
     }
 
     /**
      * turn config data into XML format
      *
      * @param array $config
-     * @return \DOMDocument
+     * @return DOMDocument
      */
-    private function createDbConfiguration(array $config) {
-
-	    $xmlDoc = new \DOMDocument();
+    private function createDbConfiguration(array $config): DOMDocument
+    {
+	    $xmlDoc = new DOMDocument();
 	    $vxpdo = $xmlDoc->appendChild($xmlDoc->createElement('vxpdo'));
 	    $datasource = $vxpdo->appendChild($xmlDoc->createElement('datasource'));
 	    $datasource->setAttribute('name', 'default');
@@ -211,12 +207,11 @@ class InstallerController extends Controller {
     /**
      * write XML configuration
      *
-     * @param \DOMDocument $xml
+     * @param DOMDocument $xml
      * @param $filename
      */
-    private function writeDbConfiguration(\DOMDocument $xml, $filename) {
-
+    private function writeDbConfiguration(DOMDocument $xml, $filename): void
+    {
         file_put_contents($filename, $xml->saveXML());
-
     }
 }

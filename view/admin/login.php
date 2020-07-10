@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="modal-body">
-            <form action="/admin/login" method="post" @submit.prevent="submit">
+            <form action="<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('login')->getUrl() ?>" method="post" @submit.prevent="submit">
                 <div class="form-group">
                     <input name="username" maxlength="128" class="form-input input-lg" type="text" v-model="form.username" placeholder="Username/E-Mail">
                 </div>
@@ -47,7 +47,7 @@
         el: "#login",
 
         routes: {
-            loginUrl: "/admin/login"
+            loginUrl: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('login')->getUrl() ?>"
         },
 
         data: {
