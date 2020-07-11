@@ -95,7 +95,7 @@ class UsersController extends Controller {
         $admin = $app->getCurrentUser();
         $db = $app->getDb();
 
-        $users = $db->doPreparedQuery("SELECT a.*, ag.alias, a.adminid AS `key` FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
+        $users = $db->doPreparedQuery("SELECT a.*, ag.alias, a.adminid AS " . $db->quoteIdentifier('key') . " FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
 
         return new JsonResponse(['users' => (array) $users, 'currentUser' => ['username' => $admin->getUsername()]]);
     }
