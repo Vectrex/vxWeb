@@ -3,6 +3,7 @@
 namespace App\Filter\vxWeb;
 
 use vxPHP\Application\Application;
+use vxPHP\Http\Request;
 use vxPHP\Routing\Router;
 use vxPHP\Template\Filter\SimpleTemplateFilter;
 use vxPHP\Template\Filter\SimpleTemplateFilterInterface;
@@ -48,7 +49,7 @@ EOD;
             );
 
             $tpl = SimpleTemplate::create('admin/snippets/admin_overlay.php')
-                ->assign('logout_route', $router->getRoute('logout')->getUrl())
+                ->assign('logout_route', $router->getRoute('logout')->getUrl() . '?goto=' . urlencode(Request::createFromGlobals()->getBaseUrl()))
                 ->assign('admin_route', $router->getRoute('pages')->getUrl())
                 ->blockFilter('admin_overlay')
             ;

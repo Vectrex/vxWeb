@@ -9,10 +9,12 @@ use vxWeb\User\SessionUserProvider;
 
 class LogoutController extends Controller {
 
-	protected function execute() {
-
+	protected function execute()
+    {
 		(new SessionUserProvider())->unsetSessionUser();
-		
-		return $this->redirect(Application::getInstance()->getRouter()->getRoute('login')->getUrl());
+		return $this->redirect(
+            urldecode($this->getRequest()->query->get('goto')) ?:
+            Application::getInstance()->getRouter()->getRoute('login')->getUrl()
+        );
 	}
 }
