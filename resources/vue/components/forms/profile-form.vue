@@ -67,7 +67,7 @@
 <script>
 
     import SimpleFetch from "../../util/simple-fetch.js";
-    import PasswordInput from "../password-input";
+    import PasswordInput from "../formelements/password-input";
 
     export default {
         components: {

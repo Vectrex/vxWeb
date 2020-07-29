@@ -5,14 +5,8 @@
             <div v-for="element in elements" class="form-group">
                 <label class="form-label col-3" :for="element.model + '_' + element.type" :class=" { required: element.required }">{{ element.label }}</label>
                 <div class="col-9">
-                    <input v-if="element.type === 'input'"
-                       :id="element.model + '_' + element.type"
-                       :name="element.model"
-                       v-model="form[element.model]"
-                       v-bind="element.attrs"
-                    >
-                    <component v-else
-                        :is="element.type || 'input'"
+                    <component
+                        :is="element.type || 'text-input'"
                         :id="element.model + '_' + element.type"
                         :name="element.model"
                         v-model="form[element.model]"
@@ -48,11 +42,13 @@
 <script>
 
     import SimpleFetch from "../../util/simple-fetch.js";
-    import PasswordInput from "../password-input";
+    import PasswordInput from "../formelements/password-input";
+    import Input from "../formelements/input";
 
     export default {
         components: {
-            'password-input': PasswordInput
+            'password-input': PasswordInput,
+            'text-input': Input
         },
 
         props: {
@@ -67,9 +63,9 @@
                 response: {},
                 loading: false,
                 elements: [
-                    { type: 'input', model: 'username', label: 'Username', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
-                    { type: 'input', model: 'email', label: 'Name', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
-                    { type: 'input', model: 'name', label: 'E-Mail', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
+                    { model: 'username', label: 'Username', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
+                    { model: 'email', label: 'Name', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
+                    { model: 'name', label: 'E-Mail', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
                     { type: 'password-input', model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
                     { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
                 ]

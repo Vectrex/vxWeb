@@ -119,7 +119,7 @@
 
     import SimpleFetch from "../../util/simple-fetch.js";
     import VueCkeditor from "../VueCkeditor";
-    import Datepicker from "../datepicker";
+    import Datepicker from "../formelements/datepicker";
 
     export default {
         components: {
