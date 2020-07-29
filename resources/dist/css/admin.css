@@ -5338,6 +5338,16 @@ a.text-error:visited
     content: '\e016';
 }
 
+.required
+{
+    font-weight: bold;
+}
+
+.required:after
+{
+    content: '*';
+}
+
 .form-autocomplete[data-loading='true']::after
 {right: .8rem; 
     left: auto;

@@ -2,30 +2,26 @@
     <form action="/" class="form-horizontal" @submit.prevent>
 
         <div class="form-sect">
-            <div class="form-group">
-                <label class="form-label col-3" for="username_input"><strong>Username*</strong></label>
+            <div v-for="element in elements" class="form-group">
+                <label class="form-label col-3" :for="element.model + '_' + element.type" :class=" { required: element.required }">{{ element.label }}</label>
                 <div class="col-9">
-                    <input name="username" id="username_input" class="form-input" autocomplete="off" maxlength="128" type="text" v-model="form.username">
-                    <p v-if="errors.username" class="form-input-hint vx-error-box error">{{ errors.username }}</p>
+                    <input v-if="element.type === 'input'"
+                       :id="element.model + '_' + element.type"
+                       :name="element.model"
+                       v-model="form[element.model]"
+                       v-bind="element.attrs"
+                    >
+                    <component v-else
+                        :is="element.type || 'input'"
+                        :id="element.model + '_' + element.type"
+                        :name="element.model"
+                        v-model="form[element.model]"
+                        v-bind="element.attrs"
+                    >
+                    </component>
+                    <p v-if="errors[element.model]" class="form-input-hint vx-error-box error">{{ errors[element.model] }}</p>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label class="form-label col-3" for="email_input"><strong>Email*</strong></label>
-                <div class="col-9">
-                    <input name="email" id="email_input" class="form-input" autocomplete="off" maxlength="128" type="text" v-model="form.email">
-                    <p v-if="errors.email" class="form-input-hint vx-error-box error">{{ errors.email }}</p>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label col-3" for="name_input"><strong>Name*</strong></label>
-                <div class="col-9">
-                    <input name="name" id="name_input" class="form-input" autocomplete="off" maxlength="128" type="text" v-model="form.name">
-                    <p v-if="errors.name" class="form-input-hint vx-error-box error">{{ errors.name }}</p>
-                </div>
-            </div>
-
             <div class="form-group">
                 <label class="form-label col-3" for="admingroupsid_select"><strong>Gruppe*</strong></label>
                 <div class="col-9">
@@ -37,27 +33,13 @@
                     <p v-if="errors.admingroupsid" class="form-input-hint vx-error-box error">{{ errors.admingroupsid }}</p>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="form-label col-3" for="pwd_input">Neues Passwort</label>
-                <div class="col-9">
-                    <password-input autocomplete="off" maxlength="128" v-model="form.new_PWD" id="pwd_input"></password-input>
-                    <p v-if="errors.new_PWD" class="form-input-hint vx-error-box error">{{ errors.new_PWD }}</p>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label col-3" for="pwd2_input">Passwort wiederholen</label>
-                <div class="col-9">
-                    <password-input autocomplete="off" maxlength="128" v-model="form.new_PWD_verify" id="pwd2_input"></password-input>
-                    <p v-if="errors.new_PWD_verify" class="form-input-hint vx-error-box error">{{ errors.new_PWD_verify }}</p>
-                </div>
-            </div>
         </div>
 
         <div class="divider"></div>
 
         <div class="form-base">
             <div class="form-group off-3">
-                <button name="submit_user" value="" type='button' class='btn btn-success' :class="{'loading': loading}" :disabled="loading" @click="submit">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</button>
+                <button name="submit_user" type='button' class='btn btn-success' :class="{'loading': loading}" :disabled="loading" @click="submit">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</button>
             </div>
         </div>
 
@@ -83,7 +65,14 @@
             return {
                 form: {},
                 response: {},
-                loading: false
+                loading: false,
+                elements: [
+                    { type: 'input', model: 'username', label: 'Username', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
+                    { type: 'input', model: 'email', label: 'Name', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
+                    { type: 'input', model: 'name', label: 'E-Mail', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
+                    { type: 'password-input', model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
+                    { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
+                ]
             }
         },
 
