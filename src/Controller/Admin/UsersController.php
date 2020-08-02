@@ -84,7 +84,7 @@ class UsersController extends Controller {
         return new JsonResponse([
             'form' => $formData ?? null,
             'options' => [
-                'admingroups' => (array) $db->doPreparedQuery("SELECT admingroupsid, name FROM admingroups ORDER BY privilege_level")
+                'admingroups' => (array) $db->doPreparedQuery("SELECT admingroupsid AS " . $db->quoteIdentifier('key') . ", name AS label FROM admingroups ORDER BY privilege_level")
             ]
         ]);
     }

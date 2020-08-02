@@ -3,28 +3,16 @@
 
         <div class="form-sect">
             <div v-for="element in elements" class="form-group">
-                <label class="form-label col-3" :for="element.model + '_' + element.type" :class=" { required: element.required }">{{ element.label }}</label>
+                <label class="form-label col-3" :for="element.model + '_' + element.type" :class=" { required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
                 <div class="col-9">
                     <component
-                        :is="element.type || 'text-input'"
+                        :is="element.type || 'form-input'"
                         :id="element.model + '_' + element.type"
                         :name="element.model"
                         v-model="form[element.model]"
-                        v-bind="element.attrs"
                     >
                     </component>
                     <p v-if="errors[element.model]" class="form-input-hint vx-error-box error">{{ errors[element.model] }}</p>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label col-3" for="admingroupsid_select"><strong>Gruppe*</strong></label>
-                <div class="col-9">
-                    <select name="admingroupsid" id="admingroupsID_select" class="form-select" v-model="form.admingroupsid">
-                        <option v-for="option in options.admingroups" :value="option.admingroupsid">
-                            {{ option.name }}
-                        </option>
-                    </select>
-                    <p v-if="errors.admingroupsid" class="form-input-hint vx-error-box error">{{ errors.admingroupsid }}</p>
                 </div>
             </div>
         </div>
@@ -43,12 +31,16 @@
 
     import SimpleFetch from "../../util/simple-fetch.js";
     import PasswordInput from "../formelements/password-input";
-    import Input from "../formelements/input";
+    import FormInput from "../formelements/form-input";
+    import FormTextarea from "../formelements/form-textarea";
+    import FormSelect from "../formelements/form-select";
 
     export default {
         components: {
             'password-input': PasswordInput,
-            'text-input': Input
+            'form-input': FormInput,
+            'form-textarea': FormTextarea,
+            'form-select': FormSelect
         },
 
         props: {
@@ -63,11 +55,12 @@
                 response: {},
                 loading: false,
                 elements: [
-                    { model: 'username', label: 'Username', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
-                    { model: 'email', label: 'Name', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
-                    { model: 'name', label: 'E-Mail', attrs: { 'class': 'form-input', type: "text", maxlength: 128, autocomplete: "off" }, required: true },
+                    { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
+                    { model: 'email', label: 'E-Mail', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
+                    { model: 'name', label: 'Name', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
                     { type: 'password-input', model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
-                    { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
+                    { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } },
+                    { type: 'form-select', model: 'admingroupsid', label: 'Gruppe', required: true, attrs: { options: [] } }
                 ]
             }
         },
@@ -84,6 +77,9 @@
         watch: {
             initialData (newValue) {
                 this.form = newValue;
+            },
+            options (newValue) {
+              this.elements[this.elements.findIndex(item => item.model === 'admingroupsid')].attrs.options = newValue.admingroups;
             }
         },
 
