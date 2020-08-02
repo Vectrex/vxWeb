@@ -39,7 +39,6 @@
         components: {
             'password-input': PasswordInput,
             'form-input': FormInput,
-            'form-textarea': FormTextarea,
             'form-select': FormSelect
         },
 

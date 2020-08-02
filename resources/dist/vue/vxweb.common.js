@@ -4953,13 +4953,39 @@ var VueCkeditor_component = normalizeComponent(
 )
 
 /* harmony default export */ var VueCkeditor = (VueCkeditor_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/profile-form.vue?vue&type=template&id=059827e7&
-var profile_formvue_type_template_id_059827e7_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{staticClass:"form-horizontal",attrs:{"action":"/"},on:{"submit":function($event){$event.preventDefault();}}},[_c('div',{staticClass:"form-sect"},[_c('div',{staticClass:"form-group"},[_vm._m(0),_c('div',{staticClass:"col-9"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.username),expression:"form.username"}],staticClass:"form-input",attrs:{"name":"username","maxlength":"128","autocomplete":"off","id":"username_input","type":"text"},domProps:{"value":(_vm.form.username)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "username", $event.target.value)}}}),(_vm.errors.username)?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors.username))]):_vm._e()])]),_c('div',{staticClass:"form-group"},[_vm._m(1),_c('div',{staticClass:"col-9"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.email),expression:"form.email"}],staticClass:"form-input",attrs:{"name":"email","id":"email_input","autocomplete":"off","maxlength":"128","type":"text"},domProps:{"value":(_vm.form.email)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "email", $event.target.value)}}}),(_vm.errors.email)?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors.email))]):_vm._e()])]),_c('div',{staticClass:"form-group"},[_vm._m(2),_c('div',{staticClass:"col-9"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.name),expression:"form.name"}],staticClass:"form-input",attrs:{"name":"name","id":"name_input","autocomplete":"off","maxlength":"128","type":"text"},domProps:{"value":(_vm.form.name)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.form, "name", $event.target.value)}}}),(_vm.errors.name)?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors.name))]):_vm._e()])]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label col-3",attrs:{"for":"pwd_input"}},[_vm._v("Neues Passwort")]),_c('div',{staticClass:"col-9"},[_c('password-input',{attrs:{"autocomplete":"off","maxlength":"128","id":"pwd_input"},model:{value:(_vm.form.new_PWD),callback:function ($$v) {_vm.$set(_vm.form, "new_PWD", $$v)},expression:"form.new_PWD"}}),(_vm.errors.new_PWD)?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors.new_PWD))]):_vm._e()],1)]),_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label col-3",attrs:{"for":"pwd2_input"}},[_vm._v("Passwort wiederholen")]),_c('div',{staticClass:"col-9"},[_c('password-input',{attrs:{"autocomplete":"off","maxlength":"128","id":"pwd2_input"},model:{value:(_vm.form.new_PWD_verify),callback:function ($$v) {_vm.$set(_vm.form, "new_PWD_verify", $$v)},expression:"form.new_PWD_verify"}}),(_vm.errors.new_PWD_verify)?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors.new_PWD_verify))]):_vm._e()],1)])]),(_vm.notifications.length)?[_c('div',{staticClass:"divider text-center",attrs:{"data-content":"Benachrichtigungen"}}),_c('div',{staticClass:"form-sect off-3"},_vm._l((_vm.notifications),function(notification){return _c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-switch"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.notifications),expression:"form.notifications"}],attrs:{"name":"notification[]","type":"checkbox"},domProps:{"value":notification.alias,"checked":Array.isArray(_vm.form.notifications)?_vm._i(_vm.form.notifications,notification.alias)>-1:(_vm.form.notifications)},on:{"change":function($event){var $$a=_vm.form.notifications,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=notification.alias,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(_vm.form, "notifications", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(_vm.form, "notifications", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(_vm.form, "notifications", $$c)}}}}),_c('i',{staticClass:"form-icon"}),_vm._v(_vm._s(notification.label))])])}),0)]:_vm._e(),_c('div',{staticClass:"divider"}),_c('div',{staticClass:"form-base"},[_c('div',{staticClass:"form-group off-3"},[_c('button',{staticClass:"btn btn-success",class:{'loading': _vm.loading},attrs:{"name":"submit_profile","type":"button","disabled":_vm.loading},on:{"click":_vm.submit}},[_vm._v("Änderungen speichern")])])])],2)}
-var profile_formvue_type_template_id_059827e7_staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('label',{staticClass:"form-label col-3",attrs:{"for":"username_input"}},[_c('strong',[_vm._v("Username*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('label',{staticClass:"form-label col-3",attrs:{"for":"email_input"}},[_c('strong',[_vm._v("Email*")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('label',{staticClass:"form-label col-3",attrs:{"for":"name_input"}},[_c('strong',[_vm._v("Name*")])])}]
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/profile-form.vue?vue&type=template&id=dc2462e2&
+var profile_formvue_type_template_id_dc2462e2_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{staticClass:"form-horizontal",attrs:{"action":"/"},on:{"submit":function($event){$event.preventDefault();}}},[_c('div',{staticClass:"form-sect"},[_c('div',{staticClass:"form-sect"},_vm._l((_vm.elements),function(element){return _c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label col-3",class:{ required: element.required, 'text-error': _vm.errors[element.model] },attrs:{"for":element.model + '_' + element.type}},[_vm._v(_vm._s(element.label))]),_c('div',{staticClass:"col-9"},[_c(element.type || 'form-input',{tag:"component",attrs:{"id":element.model + '_' + element.type,"name":element.model},model:{value:(_vm.form[element.model]),callback:function ($$v) {_vm.$set(_vm.form, element.model, $$v)},expression:"form[element.model]"}}),(_vm.errors[element.model])?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors[element.model]))]):_vm._e()],1)])}),0)]),(_vm.notifications.length)?[_c('div',{staticClass:"divider text-center",attrs:{"data-content":"Benachrichtigungen"}}),_c('div',{staticClass:"form-sect off-3"},_vm._l((_vm.notifications),function(notification){return _c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-switch"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.form.notifications),expression:"form.notifications"}],attrs:{"name":"notification[]","type":"checkbox"},domProps:{"value":notification.alias,"checked":Array.isArray(_vm.form.notifications)?_vm._i(_vm.form.notifications,notification.alias)>-1:(_vm.form.notifications)},on:{"change":function($event){var $$a=_vm.form.notifications,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=notification.alias,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(_vm.form, "notifications", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(_vm.form, "notifications", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(_vm.form, "notifications", $$c)}}}}),_c('i',{staticClass:"form-icon"}),_vm._v(_vm._s(notification.label))])])}),0)]:_vm._e(),_c('div',{staticClass:"divider"}),_c('div',{staticClass:"form-base"},[_c('div',{staticClass:"form-group off-3"},[_c('button',{staticClass:"btn btn-success",class:{'loading': _vm.loading},attrs:{"name":"submit_profile","type":"button","disabled":_vm.loading},on:{"click":_vm.submit}},[_vm._v("Änderungen speichern")])])])],2)}
+var profile_formvue_type_template_id_dc2462e2_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/forms/profile-form.vue?vue&type=template&id=059827e7&
+// CONCATENATED MODULE: ./vue/components/forms/profile-form.vue?vue&type=template&id=dc2462e2&
 
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/formelements/form-input.vue?vue&type=template&id=4421e4ca&
+var form_inputvue_type_template_id_4421e4ca_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('input',_vm._b({staticClass:"form-input",on:{"input":function($event){return _vm.$emit('input', $event.target.value)}}},'input',_vm.$attrs,false))}
+var form_inputvue_type_template_id_4421e4ca_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./vue/components/formelements/form-input.vue?vue&type=template&id=4421e4ca&
+
+// CONCATENATED MODULE: ./vue/components/formelements/form-input.vue
+
+var script = {}
+
+
+/* normalize component */
+
+var form_input_component = normalizeComponent(
+  script,
+  form_inputvue_type_template_id_4421e4ca_render,
+  form_inputvue_type_template_id_4421e4ca_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var form_input = (form_input_component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/profile-form.vue?vue&type=script&lang=js&
 //
 //
@@ -5003,77 +5029,62 @@ var profile_formvue_type_template_id_059827e7_staticRenderFns = [function () {va
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 
 
 
 
 
 /* harmony default export */ var profile_formvue_type_script_lang_js_ = ({
-    components: {
-        'password-input': password_input
-    },
-    props: {
-        url: { type: String, required: true },
-        initialData: { type: Object, default: () => { return {} } },
-        notifications: { type: Array }
-    },
+  components: {
+    'password-input': password_input,
+    'form-input': form_input
+  },
+  props: {
+    url: { type: String, required: true },
+    initialData: { type: Object, default: () => { return {} } },
+    notifications: { type: Array }
+  },
 
-    data() {
-        return {
-            form: {},
-            response: {},
-            loading: false
-        }
-    },
-
-    computed: {
-        errors () {
-            return this.response ? (this.response.errors || {}) : {};
-        },
-        message () {
-            return this.response ? this.response.message : "";
-        }
-    },
-
-    watch: {
-        initialData (newValue) {
-            this.form = newValue;
-        }
-    },
-
-    methods: {
-        async submit() {
-            this.loading = true;
-            this.$emit("request-sent");
-            this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(this.form));
-            this.loading = false;
-            this.$emit("response-received");
-        }
+  data() {
+    return {
+      form: {},
+      response: {},
+      loading: false,
+      elements: [
+        { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
+        { model: 'email', label: 'E-Mail', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
+        { model: 'name', label: 'Name', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
+        { type: 'password-input', model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
+        { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
+      ]
     }
+  },
+
+  computed: {
+    errors () {
+      return this.response ? (this.response.errors || {}) : {};
+    },
+    message () {
+      return this.response ? this.response.message : "";
+    }
+  },
+
+  watch: {
+    initialData (newValue) {
+      this.form = newValue;
+    }
+  },
+
+  methods: {
+    async submit() {
+      this.loading = true;
+      this.$emit("request-sent");
+      this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(this.form));
+      this.loading = false;
+      this.$emit("response-received");
+    }
+  }
 });
 
 // CONCATENATED MODULE: ./vue/components/forms/profile-form.vue?vue&type=script&lang=js&
@@ -5088,8 +5099,8 @@ var profile_formvue_type_template_id_059827e7_staticRenderFns = [function () {va
 
 var profile_form_component = normalizeComponent(
   forms_profile_formvue_type_script_lang_js_,
-  profile_formvue_type_template_id_059827e7_render,
-  profile_formvue_type_template_id_059827e7_staticRenderFns,
+  profile_formvue_type_template_id_dc2462e2_render,
+  profile_formvue_type_template_id_dc2462e2_staticRenderFns,
   false,
   null,
   null,
@@ -5098,39 +5109,13 @@ var profile_form_component = normalizeComponent(
 )
 
 /* harmony default export */ var profile_form = (profile_form_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/user-form.vue?vue&type=template&id=f5aa0aa0&
-var user_formvue_type_template_id_f5aa0aa0_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{staticClass:"form-horizontal",attrs:{"action":"/"},on:{"submit":function($event){$event.preventDefault();}}},[_c('div',{staticClass:"form-sect"},_vm._l((_vm.elements),function(element){return _c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label col-3",class:{ required: element.required, 'text-error': _vm.errors[element.model] },attrs:{"for":element.model + '_' + element.type}},[_vm._v(_vm._s(element.label))]),_c('div',{staticClass:"col-9"},[_c(element.type || 'form-input',{tag:"component",attrs:{"id":element.model + '_' + element.type,"name":element.model},model:{value:(_vm.form[element.model]),callback:function ($$v) {_vm.$set(_vm.form, element.model, $$v)},expression:"form[element.model]"}}),(_vm.errors[element.model])?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors[element.model]))]):_vm._e()],1)])}),0),_c('div',{staticClass:"divider"}),_c('div',{staticClass:"form-base"},[_c('div',{staticClass:"form-group off-3"},[_c('button',{staticClass:"btn btn-success",class:{'loading': _vm.loading},attrs:{"name":"submit_user","type":"button","disabled":_vm.loading},on:{"click":_vm.submit}},[_vm._v(_vm._s(_vm.form.id ? 'Daten übernehmen' : 'User anlegen'))])])])])}
-var user_formvue_type_template_id_f5aa0aa0_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/user-form.vue?vue&type=template&id=64c126d1&
+var user_formvue_type_template_id_64c126d1_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{staticClass:"form-horizontal",attrs:{"action":"/"},on:{"submit":function($event){$event.preventDefault();}}},[_c('div',{staticClass:"form-sect"},_vm._l((_vm.elements),function(element){return _c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-label col-3",class:{ required: element.required, 'text-error': _vm.errors[element.model] },attrs:{"for":element.model + '_' + element.type}},[_vm._v(_vm._s(element.label))]),_c('div',{staticClass:"col-9"},[_c(element.type || 'form-input',{tag:"component",attrs:{"id":element.model + '_' + element.type,"name":element.model},model:{value:(_vm.form[element.model]),callback:function ($$v) {_vm.$set(_vm.form, element.model, $$v)},expression:"form[element.model]"}}),(_vm.errors[element.model])?_c('p',{staticClass:"form-input-hint vx-error-box error"},[_vm._v(_vm._s(_vm.errors[element.model]))]):_vm._e()],1)])}),0),_c('div',{staticClass:"divider"}),_c('div',{staticClass:"form-base"},[_c('div',{staticClass:"form-group off-3"},[_c('button',{staticClass:"btn btn-success",class:{'loading': _vm.loading},attrs:{"name":"submit_user","type":"button","disabled":_vm.loading},on:{"click":_vm.submit}},[_vm._v(_vm._s(_vm.form.id ? 'Daten übernehmen' : 'User anlegen'))])])])])}
+var user_formvue_type_template_id_64c126d1_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/forms/user-form.vue?vue&type=template&id=f5aa0aa0&
+// CONCATENATED MODULE: ./vue/components/forms/user-form.vue?vue&type=template&id=64c126d1&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/formelements/form-input.vue?vue&type=template&id=4421e4ca&
-var form_inputvue_type_template_id_4421e4ca_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('input',_vm._b({staticClass:"form-input",on:{"input":function($event){return _vm.$emit('input', $event.target.value)}}},'input',_vm.$attrs,false))}
-var form_inputvue_type_template_id_4421e4ca_staticRenderFns = []
-
-
-// CONCATENATED MODULE: ./vue/components/formelements/form-input.vue?vue&type=template&id=4421e4ca&
-
-// CONCATENATED MODULE: ./vue/components/formelements/form-input.vue
-
-var script = {}
-
-
-/* normalize component */
-
-var form_input_component = normalizeComponent(
-  script,
-  form_inputvue_type_template_id_4421e4ca_render,
-  form_inputvue_type_template_id_4421e4ca_staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* harmony default export */ var form_input = (form_input_component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/formelements/form-textarea.vue?vue&type=template&id=325c0f08&
 var form_textareavue_type_template_id_325c0f08_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('textarea',_vm._b({staticClass:"form-input",domProps:{"value":_vm.value},on:{"input":function($event){return _vm.$emit('input', $event.target.value)}}},'textarea',_vm.$attrs,false))}
 var form_textareavue_type_template_id_325c0f08_staticRenderFns = []
@@ -5268,7 +5253,6 @@ var form_select_component = normalizeComponent(
     components: {
         'password-input': password_input,
         'form-input': form_input,
-        'form-textarea': form_textarea,
         'form-select': form_select
     },
 
@@ -5335,8 +5319,8 @@ var form_select_component = normalizeComponent(
 
 var user_form_component = normalizeComponent(
   forms_user_formvue_type_script_lang_js_,
-  user_formvue_type_template_id_f5aa0aa0_render,
-  user_formvue_type_template_id_f5aa0aa0_staticRenderFns,
+  user_formvue_type_template_id_64c126d1_render,
+  user_formvue_type_template_id_64c126d1_staticRenderFns,
   false,
   null,
   null,
