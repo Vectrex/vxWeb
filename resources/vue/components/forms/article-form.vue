@@ -7,6 +7,7 @@
             :is="element.type || 'form-input'"
             :id="element.model + '_' + element.type"
             :name="element.model"
+            :options="element.options"
             v-model="form[element.model]"
             v-bind="element.attrs"
         >
@@ -29,7 +30,7 @@ import Datepicker from "../formelements/datepicker";
 import FormInput from "../formelements/form-input";
 import FormTextarea from "../formelements/form-textarea";
 import FormSelect from "../formelements/form-select";
-import FormSwitch from "../formelements/form-switch";
+import FormCheckbox from "../formelements/form-checkbox";
 
 export default {
   components: {
@@ -38,7 +39,7 @@ export default {
     'form-input': FormInput,
     'form-textarea': FormTextarea,
     'form-select': FormSelect,
-    'form-switch': FormSwitch
+    'form-checkbox': FormCheckbox
   },
 
   props: {
@@ -69,8 +70,8 @@ export default {
             'month-names': 'Jan Feb Mär Apr Mai Jun Jul Aug Sep Okt Nov Dez'.split(' '),
             'valid-from': new Date() }},
         { model: 'customsort', label: 'generische Sortierung', attrs: { 'class': 'col-2', maxlength: 4 } },
-        { type: 'form-switch', model: 'customflags', label: 'Markiert' },
-        { type: 'form-select', model: 'articlecategoriesid', label: 'Kategorie', required: true, attrs: { options: [] } },
+        { type: 'form-checkbox', model: 'customflags', label: 'Markiert' },
+        { type: 'form-select', model: 'articlecategoriesid', label: 'Kategorie', required: true, options: [] },
         { model: 'headline', label: 'Überschrift/Titel', required: true },
         { model: 'subline', label: 'Unterüberschrift' },
         { type: 'form-textarea', model: 'teaser', label: 'Anrisstext' },
@@ -97,7 +98,7 @@ export default {
       this.setDates();
     },
     options (newValue) {
-      this.elements[this.elements.findIndex(item => item.model === 'articlecategoriesid')].attrs.options = newValue.categories;
+      this.elements[this.elements.findIndex(item => item.model === 'articlecategoriesid')].options = newValue.categories;
     }
   },
 

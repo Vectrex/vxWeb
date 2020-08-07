@@ -10,6 +10,7 @@
                         :id="element.model + '_' + element.type"
                         :name="element.model"
                         v-model="form[element.model]"
+                        :options="element.options"
                     >
                     </component>
                     <p v-if="errors[element.model]" class="form-input-hint vx-error-box error">{{ errors[element.model] }}</p>
@@ -32,7 +33,6 @@
     import SimpleFetch from "../../util/simple-fetch.js";
     import PasswordInput from "../formelements/password-input";
     import FormInput from "../formelements/form-input";
-    import FormTextarea from "../formelements/form-textarea";
     import FormSelect from "../formelements/form-select";
 
     export default {
@@ -57,9 +57,9 @@
                     { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
                     { model: 'email', label: 'E-Mail', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
                     { model: 'name', label: 'Name', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
+                    { type: 'form-select', model: 'admingroupsid', label: 'Gruppe', required: true, options: [] },
                     { type: 'password-input', model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
-                    { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } },
-                    { type: 'form-select', model: 'admingroupsid', label: 'Gruppe', required: true, attrs: { options: [] } }
+                    { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
                 ]
             }
         },
@@ -78,7 +78,7 @@
                 this.form = newValue;
             },
             options (newValue) {
-              this.elements[this.elements.findIndex(item => item.model === 'admingroupsid')].attrs.options = newValue.admingroups;
+              this.elements[this.elements.findIndex(item => item.model === 'admingroupsid')].options = newValue.admingroups;
             }
         },
 

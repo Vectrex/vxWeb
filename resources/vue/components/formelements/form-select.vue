@@ -8,7 +8,7 @@
       <option
           v-for="option in options"
           :value="option.key || option.label || option"
-          :selected="(option.key || option.label || option) === value"
+          :selected="(option.key || option.label || option) == value"
       >{{ option.label || option }}
       </option>
     </select>
