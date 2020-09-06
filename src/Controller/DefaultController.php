@@ -19,19 +19,19 @@ class DefaultController extends Controller
 {
 	protected function execute(): Response
     {
+        if(stripos($this->getRequest()->headers->get('accept'), 'text/html') !== 0) {
+            throw new HttpException(Response::HTTP_NOT_FOUND);
+        }
+
 		try {
 			
 			// check for markup in parameters
 			
 			if(isset($this->parameters['markup'])) {
-
 				$include = SimpleTemplate::create()->setRawContents($this->parameters['markup']);
 				$page = null;
-				
 			}
-
 			else {
-
 			    $app = Application::getInstance();
 
 			    // pick page from the end of the segments sequence
