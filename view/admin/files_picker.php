@@ -25,9 +25,7 @@
 <?php $filter = \vxPHP\Http\Request::createFromGlobals()->query->get('filter'); ?>
 <?php $ckFuncNum = \vxPHP\Http\Request::createFromGlobals()->query->get('CKEditorFuncNum'); ?>
 
-<script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-
     const MessageToast = window.vxweb.Components.MessageToast;
     const Filemanager = window.vxweb.Components.Filemanager;
 

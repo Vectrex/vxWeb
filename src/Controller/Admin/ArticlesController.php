@@ -138,7 +138,7 @@ class ArticlesController extends Controller {
         return new JsonResponse([
             'form' => $formData ?? null,
             'options' => [
-                'categories' => (array) $db->doPreparedQuery("SELECT articlecategoriesid AS id, title FROM articlecategories ORDER BY title")
+                'categories' => (array) $db->doPreparedQuery("SELECT articlecategoriesid AS " . $db->quoteIdentifier('key') . ", title AS label FROM articlecategories ORDER BY title")
             ]
         ]);
     }

@@ -3,6 +3,7 @@
 namespace App\Filter\vxWeb;
 
 use vxPHP\Application\Application;
+use vxPHP\Http\Request;
 use vxPHP\Routing\Router;
 use vxPHP\Template\Filter\SimpleTemplateFilter;
 use vxPHP\Template\Filter\SimpleTemplateFilterInterface;
@@ -25,9 +26,8 @@ EOD;
      * @throws \vxPHP\Application\Exception\ApplicationException
      * @throws \vxPHP\Template\Exception\SimpleTemplateException
      */
-    public function apply(&$templateString)
+    public function apply(&$templateString): void
     {
-
         $app = Application::getInstance();
         $user = $app->getCurrentUser();
 
@@ -49,7 +49,7 @@ EOD;
             );
 
             $tpl = SimpleTemplate::create('admin/snippets/admin_overlay.php')
-                ->assign('logout_route', $router->getRoute('logout')->getUrl())
+                ->assign('logout_route', $router->getRoute('logout')->getUrl() . '?goto=' . urlencode(Request::createFromGlobals()->getBaseUrl()))
                 ->assign('admin_route', $router->getRoute('pages')->getUrl())
                 ->blockFilter('admin_overlay')
             ;
@@ -59,9 +59,6 @@ EOD;
                 $tpl->display() . '</body>',
                 $templateString
             );
-
         }
-
     }
-
 }

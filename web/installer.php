@@ -81,4 +81,8 @@ $app->setCurrentRoute($route);
 
 // render output
 
-\vxPHP\Controller\Controller::createControllerFromRoute($route)->renderResponse();
+\vxPHP\Controller\Controller::createControllerFromRoute(
+    $route,
+    $app->getApplicationNamespace(),
+    \vxPHP\Http\Request::createFromGlobals()
+)->renderResponse();

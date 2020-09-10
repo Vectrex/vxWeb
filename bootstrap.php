@@ -54,14 +54,14 @@ if(file_exists($cachedConfigFilename)) {
 			\RecursiveIteratorIterator::CHILD_FIRST
 		) as $f) {
 		
-		if(strtolower($f->getExtension()) === 'xml' && $f->getMTime() > $cachedFileTimestamp) {
+		if($f->getMTime() > $cachedFileTimestamp && strtolower($f->getExtension()) === 'xml') {
 			$cachedIsValid = false;
 			break;
 		}
 	}
 	
 	if($cachedIsValid) {
-		$config = unserialize(file_get_contents($cachedConfigFilename));
+		$config = unserialize(file_get_contents($cachedConfigFilename), ['allowed_classes' => true]);
 	}
 
 }
@@ -75,7 +75,7 @@ if(!isset($config)) {
 	if(!isset($cachedFileTimestamp)) {
 
 		if(!file_exists($cachedConfigPath)) {
-			if(!mkdir($cachedConfigPath, 0777, true)) {
+			if(!mkdir($cachedConfigPath, 0777, true) && !is_dir($cachedConfigPath)) {
 				die ('Cannot create directory ' . $cachedConfigPath);
 			}
 		}
@@ -113,6 +113,6 @@ $application
 
 // set debugging and error reporting level depending on environment
 
-if(!$application->runsLocally()) {
+if(!$application::runsLocally()) {
 	vxPHP\Debug\Debug::enable(E_ALL, false);
 }

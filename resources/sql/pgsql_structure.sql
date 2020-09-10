@@ -8,7 +8,6 @@ CREATE SEQUENCE "admin_adminid_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-SELECT setval('"public"."admin_adminid_seq"', 13, true);
 
 -- ----------------------------
 -- Sequence structure for admingroups_admingroupsid_seq
@@ -31,7 +30,6 @@ CREATE SEQUENCE "articlecategories_articlecategoriesid_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-SELECT setval('"public"."articlecategories_articlecategoriesid_seq"', 1, true);
 
 -- ----------------------------
 -- Sequence structure for articles_articlesid_seq
@@ -43,7 +41,6 @@ CREATE SEQUENCE "articles_articlesid_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-SELECT setval('"public"."articles_articlesid_seq"', 3, true);
 
 -- ----------------------------
 -- Sequence structure for files_filesid_seq
@@ -55,7 +52,6 @@ CREATE SEQUENCE "files_filesid_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-SELECT setval('"public"."files_filesid_seq"', 4, true);
 
 -- ----------------------------
 -- Sequence structure for folders_foldersid_seq
@@ -67,7 +63,6 @@ CREATE SEQUENCE "folders_foldersid_seq"
  MAXVALUE 9223372036854775807
  START 2
  CACHE 1;
-SELECT setval('"public"."folders_foldersid_seq"', 6, true);
 
 -- ----------------------------
 -- Sequence structure for notifications_notificationsid_seq
@@ -90,7 +85,6 @@ CREATE SEQUENCE "pages_pagesid_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-SELECT setval('"public"."pages_pagesid_seq"', 4, true);
 
 -- ----------------------------
 -- Sequence structure for revisions_revisionsid_seq
@@ -102,7 +96,6 @@ CREATE SEQUENCE "revisions_revisionsid_seq"
  MAXVALUE 9223372036854775807
  START 1
  CACHE 1;
-SELECT setval('"public"."revisions_revisionsid_seq"', 4, true);
 
 -- ----------------------------
 -- Sequence structure for bruteforce_attempts_id_seq
@@ -114,7 +107,6 @@ MINVALUE 1
 MAXVALUE 9223372036854775807
 START 1
 CACHE 1;
-SELECT setval('"public"."bruteforce_attempts_id_seq"', 4, true);
 
 -- ----------------------------
 -- Table structure for admin
@@ -133,9 +125,7 @@ CREATE TABLE "admin" (
 "lastupdated" timestamp(6) DEFAULT now() NOT NULL,
 "firstcreated" timestamp(6)
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for admin_notifications
@@ -147,9 +137,7 @@ CREATE TABLE "admin_notifications" (
 "lastupdated" timestamp(6),
 "firstcreated" timestamp(6)
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for admingroups
@@ -161,9 +149,7 @@ CREATE TABLE "admingroups" (
 "name" varchar(128) COLLATE "default" DEFAULT NULL::character varying,
 "privilege_level" int4
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for articlecategories
@@ -180,9 +166,7 @@ CREATE TABLE "articlecategories" (
 "lastupdated" timestamp(6),
 "firstcreated" timestamp(6)
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for articles
@@ -208,9 +192,7 @@ CREATE TABLE "articles" (
 "lastupdated" timestamp(6) DEFAULT now() NOT NULL,
 "firstcreated" timestamp(6)
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for articles_files
@@ -219,15 +201,14 @@ DROP TABLE IF EXISTS "articles_files";
 CREATE TABLE "articles_files" (
 "filesid" int4 NOT NULL,
 "articlesid" int4 NOT NULL,
+"hidden" int2,
 "customsort" int2,
 "updatedby" int4,
 "createdby" int4,
 "lastupdated" timestamp(6),
 "firstcreated" timestamp(6)
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for files
@@ -249,9 +230,7 @@ CREATE TABLE "files" (
 "lastupdated" timestamp(6),
 "firstcreated" timestamp(6)
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for folders
@@ -274,9 +253,7 @@ CREATE TABLE "folders" (
 "lastupdated" timestamp(6),
 "firstcreated" timestamp(6)
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for notifications
@@ -293,9 +270,7 @@ CREATE TABLE "notifications" (
 "signature" varchar(255) COLLATE "default",
 "attachment" varchar(255) COLLATE "default"
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for pages
@@ -312,9 +287,7 @@ CREATE TABLE "pages" (
 "lastupdated" timestamp(6) DEFAULT now() NOT NULL,
 "firstcreated" timestamp(6) NOT NULL
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for revisions
@@ -335,9 +308,7 @@ CREATE TABLE "revisions" (
 "lastupdated" timestamp(6) DEFAULT now() NOT NULL,
 "firstcreated" timestamp(6)
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Table structure for bruteforce_attempts
@@ -350,9 +321,7 @@ CREATE TABLE "bruteforce_attempts" (
  "when" int4,
  "data" varchar(512) COLLATE "default"
 )
-WITH (OIDS=FALSE)
-
-;
+WITH (OIDS=FALSE);
 
 -- ----------------------------
 -- Alter Sequences Owned By 

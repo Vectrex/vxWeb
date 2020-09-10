@@ -4,6 +4,7 @@ export default function PromisedXhr(url, method = 'GET', headers = {}, payload =
         headers['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     }
     headers['Content-type'] = headers['Content-type'] || 'application/x-www-form-urlencoded';
+    headers['X-Requested-With'] = 'XMLHttpRequest';
 
     let xhr = new XMLHttpRequest();
 

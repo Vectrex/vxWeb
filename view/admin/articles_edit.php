@@ -89,7 +89,6 @@
     </section>
 </div>
 
-<script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
     const { MessageToast, Tab, Filemanager, ArticleForm, SlicksortList } = window.vxweb.Components;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;

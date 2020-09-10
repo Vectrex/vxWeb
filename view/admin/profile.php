@@ -19,9 +19,7 @@
     ></profile-form>
 </div>
 
-<script src="/js/vue/vxweb.umd.min.js"></script>
 <script>
-
     const MessageToast = window.vxweb.Components.MessageToast;
     const ProfileForm =  window.vxweb.Components.ProfileForm;
     const SimpleFetch =  window.vxweb.Util.SimpleFetch;
@@ -65,5 +63,4 @@
             }
         }
     });
-
 </script>
