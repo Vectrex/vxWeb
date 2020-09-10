@@ -28,10 +28,10 @@ use vxWeb\Model\Article\ArticleQuery;
  *
  * @author Gregor Kofler
  *
- * @version 1.5.0 2019-12-08
+ * @version 1.6.0 2020-09-10
  *
  * @todo merge rename() with commit()
- * @todo cleanup getImagesForReference()
+ * @todo cleanup getImagesForArticle()
  * @todo allow update of createdBy user
  */
 class MetaFile implements PublisherInterface
@@ -302,21 +302,23 @@ class MetaFile implements PublisherInterface
 
     /**
      * return all metafile instances linked to an article
+     * with additional information stored in the relation
      *
      * @param Article $article
      * @param callback $callBackSort
-     * @return array:\vxPHP\File\MetaFile
+     * @return array
      * @throws Exception\MetaFolderException
      * @throws MetaFileException
      * @throws ApplicationException
      */
-	public static function getFilesForArticle(Article $article, $callBackSort = null)
+	public static function getFilesForArticle(Article $article, $callBackSort = null): array
     {
 		$result = [];
 		
 		$files = Application::getInstance()->getDb()->doPreparedQuery("
 			SELECT
 				f.*,
+				af.hidden,
 				CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) AS fullpath
 			FROM
 				files f
@@ -337,7 +339,12 @@ class MetaFile implements PublisherInterface
 				self::$instancesById[$f['filesid']] = $file;
 				self::$instancesByPath[$file->filesystemFile->getPath()] = $file;
 			}
-			$result[] = $file;
+			$result[] = [
+			    'file' => $file,
+                'rel' => [
+                    'hidden' => (boolean) $f['hidden']
+                ]
+            ];
 		}
 		
 		if(is_null($callBackSort)) {
@@ -354,15 +361,15 @@ class MetaFile implements PublisherInterface
 		else {
 			throw new MetaFileException(sprintf("'%s' is not callable.", $callBackSort));
 		}
-		
 	}
 
     /**
-     * return all metafile instances linked to an article with mimetype 'image/jpeg', 'image/png', 'image/gif'
+     * return all metafile instances linked to an article with mimetype listed in FilesystemFile::WEBIMAGE_MIMETYPES
+     * @deprecated use MetaFile::getLinkedWebImages()
      *
      * @param Article $article
      * @param callback $callBackSort
-     * @return array:\vxPHP\File\MetaFile
+     * @return array
      * @throws Exception\MetaFolderException
      * @throws MetaFileException
      * @throws ApplicationException
@@ -374,6 +381,7 @@ class MetaFile implements PublisherInterface
 		$files = Application::getInstance()->getDb()->doPreparedQuery("
 			SELECT
 				f.*,
+				af.hidden,
 				CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath
 			FROM
 				files f
@@ -395,7 +403,13 @@ class MetaFile implements PublisherInterface
 				self::$instancesById[$f['filesid']] = $file;
 				self::$instancesByPath[$file->filesystemFile->getPath()] = $file;
 			}
-			$result[] = $file;
+
+            $result[] = [
+                'file' => $file,
+                'rel' => [
+                    'hidden' => (boolean) $f['hidden']
+                ]
+            ];
 		}
 
 		if(is_null($callBackSort)) {
@@ -624,7 +638,7 @@ class MetaFile implements PublisherInterface
 	/**
 	 * check whether mime type indicates web image
 	 * (i.e. image/jpeg, image/gif, image/png)
-	 *
+     *
 	 * @param bool $force forces re-read of mime type
 	 * @return boolean
 	 */

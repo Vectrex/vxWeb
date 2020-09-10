@@ -17,6 +17,7 @@ use vxWeb\Model\MetaFile\MetaFile;
 use vxPHP\Application\Application;
 use vxPHP\Observer\PublisherInterface;
 use vxPHP\Database\Util;
+use vxPHP\File\FilesystemFile;
 
 /**
  * Mapper class for articles, stored in table articles
@@ -908,14 +909,37 @@ class Article implements PublisherInterface {
      * @throws \vxWeb\Model\MetaFile\Exception\MetaFileException
      * @throws \vxWeb\Model\MetaFile\Exception\MetaFolderException
      */
-	public function getLinkedMetaFiles() {
-
+	public function getLinkedMetaFiles(bool $includeHidden = false): array
+    {
 		if(!is_null($this->id) && is_null($this->linkedFiles)) {
 			$this->linkedFiles = MetaFile::getFilesForArticle($this);
 		}
 
-		return $this->linkedFiles;
+		if ($includeHidden) {
+            return array_column($this->linkedFiles, 'file');
+        }
+		return array_column(array_filter($this->linkedFiles, static function($item) {
+		    return !empty($item['rel']['hidden']);
+		}), 'file');
 	}
+
+	public function getLinkedWebImages(bool $includeHidden = false): array
+    {
+        if(!is_null($this->id) && is_null($this->linkedFiles)) {
+            $this->linkedFiles = MetaFile::getFilesForArticle($this);
+        }
+
+        // mimetype relies on database entry to speed up execution
+
+        if ($includeHidden) {
+            return array_column(array_filter($this->linkedFiles, static function ($item) {
+                return $item['file']->isWebImage();
+            }), 'file');
+        }
+        return array_column(array_filter($this->linkedFiles, static function($item) {
+            return empty($item['rel']['hidden']) && $item['file']->isWebImage();
+        }), 'file');
+    }
 
 	/**
 	 * set 'published' attribute and store user id
@@ -923,13 +947,12 @@ class Article implements PublisherInterface {
 	 * @param integer $userId
 	 * @return self
 	 */
-	public function publish($userId = null) {
-
+	public function publish($userId = null): Article
+    {
 		$this->publishedById = (int) $userId ?: null;
 		$this->published = true;
 
 		return $this;
-
 	}
 
 	/**
