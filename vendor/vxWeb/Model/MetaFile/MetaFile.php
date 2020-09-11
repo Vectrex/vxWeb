@@ -12,14 +12,13 @@ namespace vxWeb\Model\MetaFile;
 
 use SplFileInfo;
 use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\File\FilesystemFile;
 use vxPHP\Application\Application;
 use vxPHP\Observer\PublisherInterface;
 use vxPHP\File\Exception\FilesystemFileException;
 
 use vxWeb\Model\MetaFile\Exception\MetaFileException;
-use vxWeb\Model\Article\Article;
-use vxWeb\Model\Article\ArticleQuery;
 
 /**
  * mapper for metafiles
@@ -28,10 +27,9 @@ use vxWeb\Model\Article\ArticleQuery;
  *
  * @author Gregor Kofler
  *
- * @version 1.6.0 2020-09-10
+ * @version 1.7.0 2020-09-11
  *
  * @todo merge rename() with commit()
- * @todo cleanup getImagesForArticle()
  * @todo allow update of createdBy user
  */
 class MetaFile implements PublisherInterface
@@ -41,61 +39,58 @@ class MetaFile implements PublisherInterface
 	 * 
 	 * @var MetaFile[]
 	 */
-	private static $instancesById = [];
+	protected static $instancesById = [];
 
 	/**
 	 * retrieved instances accessible by their path
 	 *
 	 * @var MetaFile[]
 	 */
-	private static $instancesByPath = [];
+    protected static $instancesByPath = [];
 
 	/**
 	 * @var FilesystemFile
 	 */
-	private $filesystemFile;
+    protected $filesystemFile;
 
     /**
      * @var string
      */
-    private $mimetype;
+    protected $mimetype;
 
 	/**
 	 * @var MetaFolder
 	 */
-	private	$metaFolder;
+    protected $metaFolder;
 
 	/**
 	 * @var integer
 	 */
-	private	$id;
+    protected $id;
 	
 	/**
 	 * @var boolean
 	 */
-	private	$isObscured;
+    protected $isObscured;
 
 	/**
 	 * @var array
 	 */
-	private	$data;
-
-	/**
-	 * @var Article[]
-	 */
-	private	$linkedArticles;
+    protected $data;
 
     /**
      * returns MetaFile instance alternatively identified by its path or its primary key in the database
      *
-     * @param string $path
-     * @param integer $id
+     * @param string|null $path
+     * @param int|null $id
      * @return MetaFile
-     * @throws MetaFileException
      * @throws ApplicationException
      * @throws Exception\MetaFolderException
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     * @throws MetaFileException
      */
-	public static function getInstance($path = null, $id = null)
+	public static function getInstance(string $path = null, int $id = null): self
     {
 		if(isset($path)) {
 
@@ -110,7 +105,7 @@ class MetaFile implements PublisherInterface
 
 		}
 
-		else if(isset($id)) {
+		if(isset($id)) {
 
 			if(!isset(self::$instancesById[$id])) {
 				$mf = new self(NULL, $id);
@@ -120,9 +115,7 @@ class MetaFile implements PublisherInterface
 			return self::$instancesById[$id];
 		}
 
-		else {
-			throw new MetaFileException("Either file id or path required.");
-		}
+        throw new MetaFileException("Either file id or path required.");
 	}
 
     /**
@@ -130,12 +123,14 @@ class MetaFile implements PublisherInterface
      *
      * @param array $ids
      *
-     * @return array
-     * @throws Exception\MetaFolderException
-     * @throws MetaFileException
+     * @return MetaFile[]
      * @throws ApplicationException
+     * @throws Exception\MetaFolderException
+     * @throws FilesystemFileException
+     * @throws MetaFileException
+     * @throws FilesystemFolderException
      */
-	public static function getInstancesByIds(array $ids)
+	public static function getInstancesByIds(array $ids): array
     {
 		$toRetrieveById = [];
 
@@ -185,12 +180,14 @@ class MetaFile implements PublisherInterface
      *
      * @param array $paths
      *
-     * @return array
-     * @throws Exception\MetaFolderException
-     * @throws MetaFileException
+     * @return MetaFile[]
      * @throws ApplicationException
+     * @throws Exception\MetaFolderException
+     * @throws FilesystemFileException
+     * @throws MetaFileException
+     * @throws FilesystemFolderException
      */
-	public static function getInstancesByPaths(array $paths)
+	public static function getInstancesByPaths(array $paths): array
     {
 		$toRetrieveByPath = [];
 
@@ -256,13 +253,15 @@ class MetaFile implements PublisherInterface
      * faster than Metafolder::getMetafiles()
      *
      * @param MetaFolder $folder
-     * @param callback $callBackSort
+     * @param callable|null $callBackSort
      * @return MetaFile[]
-     * @throws Exception\MetaFolderException
-     * @throws MetaFileException
      * @throws ApplicationException
+     * @throws Exception\MetaFolderException
+     * @throws FilesystemFileException
+     * @throws MetaFileException
+     * @throws FilesystemFolderException
      */
-	public static function getMetaFilesInFolder(MetaFolder $folder, $callBackSort = null)
+	public static function getMetaFilesInFolder(MetaFolder $folder, callable $callBackSort = null): array
     {
 		// instance all filesystem files in folder, to speed up things
 
@@ -287,145 +286,15 @@ class MetaFile implements PublisherInterface
 		if(is_null($callBackSort)) {
 			return $result;
 		}
-		else if(is_callable($callBackSort)) {
+		if(is_callable($callBackSort)) {
 			usort($result, $callBackSort);
 			return $result;
 		}
-		else if(is_callable("self::$callBackSort")) {
+		if(is_callable("self::$callBackSort")) {
 			usort($result, "self::$callBackSort");
 			return $result;
 		}
-		else {
-			throw new MetaFileException(sprintf("'%s' is not callable.", $callBackSort));
-		}
-	}
-
-    /**
-     * return all metafile instances linked to an article
-     * with additional information stored in the relation
-     *
-     * @param Article $article
-     * @param callback $callBackSort
-     * @return array
-     * @throws Exception\MetaFolderException
-     * @throws MetaFileException
-     * @throws ApplicationException
-     */
-	public static function getFilesForArticle(Article $article, $callBackSort = null): array
-    {
-		$result = [];
-		
-		$files = Application::getInstance()->getDb()->doPreparedQuery("
-			SELECT
-				f.*,
-				af.hidden,
-				CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) AS fullpath
-			FROM
-				files f
-				INNER JOIN folders fo ON f.foldersid = fo.foldersid
-				INNER JOIN articles_files af ON af.filesid = f.filesid
-			WHERE
-				af.articlesid = ?
-			ORDER BY
-				af.customsort
-			", [$article->getId()]);
-		
-		foreach($files as &$f) {
-			if(isset(self::$instancesById[$f['filesid']])) {
-				$file = self::$instancesById[$f['filesid']];
-			}
-			else {
-				$file = new self(null, null, $f);
-				self::$instancesById[$f['filesid']] = $file;
-				self::$instancesByPath[$file->filesystemFile->getPath()] = $file;
-			}
-			$result[] = [
-			    'file' => $file,
-                'rel' => [
-                    'hidden' => (boolean) $f['hidden']
-                ]
-            ];
-		}
-		
-		if(is_null($callBackSort)) {
-			return $result;
-		}
-		else if(is_callable($callBackSort)) {
-			usort($result, $callBackSort);
-			return $result;
-		}
-		else if(is_callable("self::$callBackSort")) {
-			usort($result, "self::$callBackSort");
-			return $result;
-		}
-		else {
-			throw new MetaFileException(sprintf("'%s' is not callable.", $callBackSort));
-		}
-	}
-
-    /**
-     * return all metafile instances linked to an article with mimetype listed in FilesystemFile::WEBIMAGE_MIMETYPES
-     * @deprecated use MetaFile::getLinkedWebImages()
-     *
-     * @param Article $article
-     * @param callback $callBackSort
-     * @return array
-     * @throws Exception\MetaFolderException
-     * @throws MetaFileException
-     * @throws ApplicationException
-     */
-	public static function getImagesForArticle(Article $article, $callBackSort = null)
-    {
-        $result = [];
-
-		$files = Application::getInstance()->getDb()->doPreparedQuery("
-			SELECT
-				f.*,
-				af.hidden,
-				CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath
-			FROM
-				files f
-				INNER JOIN folders fo ON f.foldersid = fo.foldersid
-				INNER JOIN articles_files af ON af.filesid = f.filesid
-			WHERE
-				af.articlesid = ?
-				AND f.Mimetype IN (" . implode(',', array_fill(0, count(FilesystemFile::WEBIMAGE_MIMETYPES), '?')) . ")
-			ORDER BY
-				af.customsort
-			", array_merge([$article->getId()], FilesystemFile::WEBIMAGE_MIMETYPES));
-				
-		foreach($files as &$f) {
-			if(isset(self::$instancesById[$f['filesid']])) {
-				$file = self::$instancesById[$f['filesid']];
-			}
-			else {
-				$file = new self(NULL, NULL, $f);
-				self::$instancesById[$f['filesid']] = $file;
-				self::$instancesByPath[$file->filesystemFile->getPath()] = $file;
-			}
-
-            $result[] = [
-                'file' => $file,
-                'rel' => [
-                    'hidden' => (boolean) $f['hidden']
-                ]
-            ];
-		}
-
-		if(is_null($callBackSort)) {
-			return $result;
-		}
-		else if(is_callable($callBackSort)) {
-			usort($result, $callBackSort);
-			return $result;
-		}
-		else if(is_callable("self::$callBackSort")) {
-			usort($result, "self::$callBackSort");
-			return $result;
-		}
-		else {
-			throw new MetaFileException(sprintf("'%s' is not callable.", $callBackSort));
-		}
+        throw new MetaFileException(sprintf("'%s' is not callable.", $callBackSort));
 	}
 
     /**
@@ -436,7 +305,7 @@ class MetaFile implements PublisherInterface
      * @return boolean is_available
      * @throws ApplicationException
      */
-	public static function isFilenameAvailable($filename, MetaFolder $f)
+	public static function isFilenameAvailable(string $filename, MetaFolder $f): bool
     {
 		// $filename is not available, if metafile with $filename is already instantiated
 
@@ -469,14 +338,16 @@ class MetaFile implements PublisherInterface
      * when an array is passed to constructor
      * it sets MetaFile::data directly; used internally to avoid extra db queries
      *
-     * @param string $path of metafile
-     * @param integer $id of metafile
+     * @param string|null $path of metafile
+     * @param int|null $id of metafile
      * @param array|null $dbEntry
-     * @throws Exception\MetaFolderException
-     * @throws MetaFileException
      * @throws ApplicationException
+     * @throws Exception\MetaFolderException
+     * @throws FilesystemFileException
+     * @throws MetaFileException
+     * @throws FilesystemFolderException
      */
-	private function __construct($path = null, $id = null, array $dbEntry = null)
+	private function __construct(string $path = null, int $id = null, array $dbEntry = null)
     {
 		if(isset($path)) {
 			$this->data = $this->getDbEntryByPath($path);
@@ -511,7 +382,7 @@ class MetaFile implements PublisherInterface
      * @throws MetaFileException
      * @throws ApplicationException
      */
-	private function getDbEntryByPath($path): array
+	private function getDbEntryByPath(string $path): array
     {
 		$pathinfo = pathinfo($path);
 
@@ -539,7 +410,7 @@ class MetaFile implements PublisherInterface
      * @throws MetaFileException
      * @throws ApplicationException
      */
-	private function getDbEntryById($id): array
+	private function getDbEntryById(int $id): array
     {
 		$rows = Application::getInstance()->getDb()->doPreparedQuery(
 			"SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON fo.foldersid = f.foldersid WHERE f.filesid = ?",
@@ -562,63 +433,21 @@ class MetaFile implements PublisherInterface
 		return $this->id;
 	}
 
-	/**
-	 * get any data stored with metafile in database entry
-	 *
-	* @param string $ndx
-	* @return mixed
-	*/
-	public function getData($ndx = null) {
-		
+    /**
+     * get any data stored with metafile in database entry
+     *
+     * @param string|null $ndx
+     * @return mixed
+     */
+	public function getData(string $ndx = null)
+    {
 		if(is_null($ndx)) {
 			return $this->data;
 		}
 		
 		$ndx = strtolower($ndx);
-		
-		if(isset($this->data[$ndx])) {
-			return $this->data[$ndx];
-		}
 
-	}
-
-	/**
-	 * stub, might be dropped entirely
-	 * 
-	 * @param Article $article
-	 */
-	public function linkArticle(Article $article) {
-		
-	}
-
-	/**
-	 * stub, might be dropped entirely
-	 *
-	 * @param Article $article
-	 */
-	public function unlinkArticle(Article $article) {
-	
-	}
-
-    /**
-     * get all articles linked to a file
-     *
-     * @return Article[]
-     * @throws ApplicationException
-     */
-	public function getLinkedArticles() {
-
-		if(is_null($this->linkedArticles)) {
-
-			$this->linkedArticles = ArticleQuery::create(Application::getInstance()->getDb())
-				->innerJoin('articles_files af', 'a.articlesid = af.articlesid')
-				->where('af.filesid = ?', [$this->id])
-				->select();
-
-		}
-
-		return $this->linkedArticles;
-
+        return $this->data[$ndx] ?? null;
 	}
 
 	/**
@@ -665,18 +494,19 @@ class MetaFile implements PublisherInterface
 	 *
 	 * @return string
 	 */
-	public function getPath()
+	public function getPath(): string
     {
 		return $this->filesystemFile->getPath();
 	}
 
-	/**
-	 * returns path relative to assets path root
-	 * NULL if file is outside assets path
-	 *
-	 * @param boolean $force
-	 * @return string
-	 */
+    /**
+     * returns path relative to assets path root
+     * NULL if file is outside assets path
+     *
+     * @param boolean $force
+     * @return string
+     * @throws ApplicationException
+     */
 	public function getRelativePath($force = false): string
     {
 		return $this->filesystemFile->getRelativePath($force);
@@ -687,10 +517,9 @@ class MetaFile implements PublisherInterface
 	 *
 	 * @return string
 	 */
-	public function getFilename() {
-
+	public function getFilename(): string
+    {
 		return $this->filesystemFile->getFilename();
-
 	}
 
 	/**
@@ -699,10 +528,9 @@ class MetaFile implements PublisherInterface
 	 *
 	 * @return string
 	 */
-	public function getMetaFilename() {
-		
+	public function getMetaFilename(): string
+    {
 		return $this->getData('file');
-
 	}
 
 	/**
@@ -710,10 +538,9 @@ class MetaFile implements PublisherInterface
 	 *
 	 * @return MetaFolder
 	 */
-	public function getMetaFolder() {
-
+	public function getMetaFolder(): MetaFolder
+    {
 		return $this->metaFolder;
-
 	}
 
 	/**
@@ -721,10 +548,9 @@ class MetaFile implements PublisherInterface
 	 *
 	 * @return FilesystemFile
 	 */
-	public function getFilesystemFile() {
-
+	public function getFilesystemFile(): FilesystemFile
+    {
 		return $this->filesystemFile;
-
 	}
 
     /**
@@ -736,8 +562,8 @@ class MetaFile implements PublisherInterface
      * @param string $to new filename
      * @throws MetaFileException
      */
-	public function rename($to)	{
-
+	public function rename(string $to): void
+    {
 		// obscured files only need to rename the metadata
 
 		$oldpath = $this->filesystemFile->getPath();
@@ -803,7 +629,6 @@ class MetaFile implements PublisherInterface
 		unset(self::$instancesByPath[$this->getPath()]);
 		$this->metaFolder = $destination;
 		self::$instancesByPath[$this->getPath()] = $this;
-
 	}
 
     /**
@@ -816,8 +641,8 @@ class MetaFile implements PublisherInterface
      * @throws MetaFileException
      * @throws ApplicationException
      */
-	public function delete($keepFilesystemFile = FALSE) {
-		
+	public function delete($keepFilesystemFile = false): void
+    {
 		MetaFileEvent::create(MetaFileEvent::BEFORE_METAFILE_DELETE, $this)->trigger();
 
 		if(Application::getInstance()->getDb()->deleteRecord('files', $this->id)) {
@@ -831,7 +656,6 @@ class MetaFile implements PublisherInterface
 		else {
 			throw new MetaFileException(sprintf("Delete of metafile '%s' failed.", $this->filesystemFile->getPath()));
 		}
-
 	}
 
     /**
@@ -842,17 +666,19 @@ class MetaFile implements PublisherInterface
      * @throws FilesystemFileException
      * @throws MetaFileException
      */
-	public function obscureTo($obscuredFilename) {
-
+	public function obscureTo(string $obscuredFilename): void
+    {
 		// rename filesystem file
 
 		$this->filesystemFile->rename($obscuredFilename);
 
 		// set metafile db attributes
-		$this->setMetaData(array('Obscured_Filename' => $obscuredFilename));
+
+		$this->setMetaData(['Obscured_Filename' => $obscuredFilename]);
 
 		// set isObscured flag
-		$this->isObscured = TRUE;
+
+		$this->isObscured = true;
 	}
 
     /**
@@ -861,8 +687,8 @@ class MetaFile implements PublisherInterface
      * @param array $data new data
      * @throws MetaFileException
      */
-	public function setMetaData($data) {
-
+	public function setMetaData(array $data): void
+    {
 		$data = array_change_key_case($data, CASE_LOWER);
 
 		/*
@@ -873,18 +699,17 @@ class MetaFile implements PublisherInterface
 			$data['customsort'] = NULL;
 		}
 
-		unset($data['file']);
-		unset($data['filesid']);
-		
-		$this->data = $data + $this->data;
-		$this->commit();
+        unset($data['file'], $data['filesid']);
 
+        $this->data = $data + $this->data;
+		$this->commit();
 	}
 
 	/**
 	 * commit changes to metadata by writing data to database
 	 */
-	private function commit() {
+	private function commit(): void
+    {
 		try {
 			Application::getInstance()->getDb()->updateRecord('files', $this->id, $this->data);
 		}
@@ -898,12 +723,13 @@ class MetaFile implements PublisherInterface
      *
      * @param FilesystemFile $file
      * @return MetaFile
+     * @throws ApplicationException
      * @throws Exception\MetaFolderException
      * @throws FilesystemFileException
+     * @throws FilesystemFolderException
      * @throws MetaFileException
-     * @throws ApplicationException
      */
-	public static function createMetaFile(FilesystemFile $file)
+	public static function createMetaFile(FilesystemFile $file): MetaFile
     {
 		$db = Application::getInstance()->getDb();
 	
@@ -943,11 +769,9 @@ class MetaFile implements PublisherInterface
 		]))) {
 			throw new FilesystemFileException(sprintf("Could not create metafile for '%s'.", $file->getFilename()), FilesystemFileException::METAFILE_CREATION_FAILED);
 		}
-		else {
-			$mfile = MetaFile::getInstance(NULL, $filesid);
-			MetaFileEvent::create(MetaFileEvent::AFTER_METAFILE_CREATE, $mfile)->trigger();
 
-			return $mfile;
-		}
+        $mfile = self::getInstance(NULL, $filesid);
+        MetaFileEvent::create(MetaFileEvent::AFTER_METAFILE_CREATE, $mfile)->trigger();
+        return $mfile;
 	}
 }
