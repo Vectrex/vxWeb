@@ -418,7 +418,7 @@ class Article implements PublisherInterface {
 					'articlesid' => $this->id,
 					'filesid' => $item['file']->getId(),
 					'customsort' => $ndx,
-                    'hidden' => $item['rel']['hidden']
+                    'hidden' => $item['rel']['hidden'] ? 1 : null
 				];
 			}
 

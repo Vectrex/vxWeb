@@ -330,14 +330,17 @@ class ArticlesController extends Controller {
 
         $rows = [];
 
-        foreach($article->getLinkedMetaFiles() as $mf) {
+        $visibleFiles = $article->getLinkedMetaFiles();
+
+        foreach($article->getLinkedMetaFiles(true) as $mf) {
             $rows[] = [
                 'id' => $mf->getId(),
                 'folderid' => $mf->getMetaFolder()->getId(),
                 'filename' => $mf->getFilename(),
                 'isThumb' => $mf->isWebImage(),
                 'type' => $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
-                'path' => $mf->getMetaFolder()->getRelativePath()
+                'path' => $mf->getMetaFolder()->getRelativePath(),
+                'hidden' => !in_array($mf, $visibleFiles)
             ];
         }
 
@@ -354,11 +357,8 @@ class ArticlesController extends Controller {
         }
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
-        foreach($article->getLinkedMetaFiles() as $mf) {
-            $article->unlinkMetaFile($mf);
-        }
-        foreach(MetaFile::getInstancesByIds($bag->get('fileIds', [])) as $mf) {
-            $article->linkMetaFile($mf);
+        foreach(MetaFile::getInstancesByIds($bag->get('fileIds', [])) as $ndx => $mf) {
+            $article->setCustomSortOfMetaFile($mf, $ndx);
         }
         $article->save();
 
