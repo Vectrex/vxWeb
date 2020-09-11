@@ -11,7 +11,7 @@ INSERT INTO `admingroups` (admingroupsid, alias, `name`, privilege_level) VALUES
 -- Records of articlecategories
 -- ----------------------------
 
-INSERT INTO `articlecategories` (articlecategoriesid, r, l, `level`, alias, title) VALUES (1, 0, 1, 1, 'articles', 'Articles');
+INSERT INTO `articlecategories` (articlecategoriesid, l, r, `level`, alias, title) VALUES (1, 0, 1, 0, 'articles', 'Articles');
 
 -- ----------------------------
 -- Records of folders
