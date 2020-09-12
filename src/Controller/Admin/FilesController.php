@@ -513,7 +513,7 @@ class FilesController extends Controller
 
         if(in_array($route->getRouteId(), ['article_files_init', 'article_folder_read', 'article_file_upload']) && ($articleId = $this->request->query->getInt('article'))) {
             try {
-                $linkedFiles = Article::getInstance($articleId)->getLinkedMetaFiles();
+                $linkedFiles = Article::getInstance($articleId)->getLinkedMetaFiles(true);
             }
             catch (ArticleException $e) {
                 $linkedFiles = [];

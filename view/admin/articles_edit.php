@@ -133,9 +133,9 @@
             linkedFiles: [],
             activeTabIndex: 0,
             tabItems: [
-                { name: 'Inhalt', disabled: true },
-                { name: 'Dateien', disabled: true },
-                { name: 'Sortierung', disabled: true }
+                { name: 'Artikelinhalt', disabled: true },
+                { name: 'Verlinkte Dateien', disabled: true },
+                { name: 'Sortierung und Sichtbarkeit verlinkter Dateien', disabled: true }
             ],
             toastProps: {
                 message: "",
