@@ -28,7 +28,7 @@ use vxPHP\Database\Util;
  * Mapper class for articles, stored in table articles
  *
  * @author Gregor Kofler
- * @version 1.0.0 2020-09-11
+ * @version 1.1.0 2020-09-12
  */
 
 class Article implements PublisherInterface {
@@ -590,10 +590,9 @@ class Article implements PublisherInterface {
 	 *
 	 * @return string
 	 */
-	public function getAlias() {
-
+	public function getAlias(): string
+    {
 		return $this->alias;
-
 	}
 
 	/**
@@ -603,13 +602,12 @@ class Article implements PublisherInterface {
 	 * @param integer $userId
 	 * @return Article
 	 */
-	public function setCreatedById($userId) {
-
+	public function setCreatedById($userId): self
+    {
 		if(is_null($this->createdById)) {
 			$this->createdById = (int) $userId ?: null;
 		}
 		return $this;
-
 	}
 
 	/**
@@ -617,10 +615,9 @@ class Article implements PublisherInterface {
 	 *
 	 * @return integer
 	 */
-	public function getCreatedById() {
-
+	public function getCreatedById(): ?int
+    {
 		return $this->createdById;
-
 	}
 
 	/**
@@ -629,11 +626,10 @@ class Article implements PublisherInterface {
 	 * @param integer $userId
 	 * @return Article
 	 */
-	public function setUpdatedById($userId) {
-	
+	public function setUpdatedById($userId): self
+    {
 		$this->updatedById = (int) $userId ?: null;
 		return $this;
-	
 	}
 	
 	/**
@@ -641,10 +637,9 @@ class Article implements PublisherInterface {
 	 *
 	 * @return integer
 	 */
-	public function getUpdatedById() {
-
+	public function getUpdatedById(): int
+    {
 		return $this->updatedById;
-
 	}
 
 	/**
@@ -652,10 +647,9 @@ class Article implements PublisherInterface {
 	 *
 	 * @return int
 	 */
-	public function getPublishedById() {
-
+	public function getPublishedById(): ?int
+    {
 		return $this->publishedById;
-
 	}
 
 	/**
@@ -663,10 +657,9 @@ class Article implements PublisherInterface {
 	 *
 	 *  @return \DateTime
 	 */
-	public function getFirstCreated() {
-
+	public function getFirstCreated(): ?\DateTime
+    {
 		return $this->firstCreated;
-
 	}
 
 	/**
@@ -674,10 +667,9 @@ class Article implements PublisherInterface {
 	 *
 	 *  @return \DateTime
 	 */
-	public function getLastUpdated() {
-
+	public function getLastUpdated(): ?\DateTime
+    {
 		return $this->lastUpdated;
-
 	}
 
 	/**
@@ -685,10 +677,9 @@ class Article implements PublisherInterface {
 	 *
 	 * @return int
 	 */
-	public function getCustomSort() {
-
+	public function getCustomSort(): ?int
+    {
 		return $this->customSort;
-
 	}
 
 	/**
@@ -697,8 +688,8 @@ class Article implements PublisherInterface {
 	 * @param mixed $ndx
 	 * @return self
 	 */
-	public function setCustomSort($ndx) {
-
+	public function setCustomSort($ndx): self
+    {
 		if(is_numeric($ndx)) {
 			$this->customSort = (int) $ndx;
 		}
@@ -706,7 +697,6 @@ class Article implements PublisherInterface {
 			$this->customSort = null;
 		}
 		return $this;
-
 	}
 
     /**
@@ -714,7 +704,7 @@ class Article implements PublisherInterface {
      *
      * @return int
      */
-    public function getCustomFlags()
+    public function getCustomFlags(): ?int
     {
         return $this->customFlags;
     }
@@ -722,10 +712,10 @@ class Article implements PublisherInterface {
     /**
      * set custom flags of article
      *
-     * @param int $customFlags
+     * @param int|null $customFlags
      * @return Article
      */
-    public function setCustomFlags(int $customFlags = null)
+    public function setCustomFlags(int $customFlags = null): self
     {
         $this->customFlags = $customFlags;
         return $this;
@@ -736,23 +726,21 @@ class Article implements PublisherInterface {
 	 *
 	 * @return \DateTime
 	 */
-	public function getDate() {
-
+	public function getDate(): ?\DateTime
+    {
 		return $this->articleDate;
-
 	}
 
-	/**
-	 * set article date, omitting argument deletes date value
-	 *
-	 * @param \DateTime $articleDate
-	 * @return Article
-	 */
-	public function setDate(\DateTime $articleDate = null) {
-
+    /**
+     * set article date, omitting argument deletes date value
+     *
+     * @param \DateTime|null $articleDate
+     * @return Article
+     */
+	public function setDate(\DateTime $articleDate = null): self
+    {
 		$this->articleDate = $articleDate;
 		return $this;
-
 	}
 
 	/**
@@ -760,23 +748,21 @@ class Article implements PublisherInterface {
 	 *
 	 * @return \DateTime
 	 */
-	public function getDisplayFrom() {
-
+	public function getDisplayFrom(): ?\DateTime
+    {
 		return $this->displayFrom;
-
 	}
 
-	/**
-	 * set displayFrom date, omitting argument deletes date value
-	 *
-	 * @param \DateTime $displayFrom
-	 * @return Article
-	 */
-	public function setDisplayFrom(\DateTime $displayFrom = null) {
-
+    /**
+     * set displayFrom date, omitting argument deletes date value
+     *
+     * @param \DateTime|null $displayFrom
+     * @return Article
+     */
+	public function setDisplayFrom(\DateTime $displayFrom = null): self
+    {
 		$this->displayFrom = $displayFrom;
 		return $this;
-
 	}
 
 	/**
@@ -784,23 +770,21 @@ class Article implements PublisherInterface {
 	 *
 	 * @return \DateTime
 	 */
-	public function getDisplayUntil() {
-
+	public function getDisplayUntil(): ?\DateTime
+    {
 		return $this->displayUntil;
-
 	}
 
-	/**
-	 * set displayUntil date, omitting argument deletes date value
-	 *
-	 * @param \DateTime $displayUntil
-	 * @return Article
-	 */
-	public function setDisplayUntil(\DateTime $displayUntil = null) {
-
+    /**
+     * set displayUntil date, omitting argument deletes date value
+     *
+     * @param \DateTime|null $displayUntil
+     * @return Article
+     */
+	public function setDisplayUntil(\DateTime $displayUntil = null): self
+    {
 		$this->displayUntil = $displayUntil;
 		return $this;
-
 	}
 
 	/**
@@ -810,11 +794,10 @@ class Article implements PublisherInterface {
 	 * @return Article
 	 */
 	
-	public function setCategory(ArticleCategory $category) {
-
+	public function setCategory(ArticleCategory $category): self
+    {
 		$this->category = $category;
 		return $this;
-
 	}
 
 	/**
@@ -822,10 +805,9 @@ class Article implements PublisherInterface {
 	 *
 	 * @return ArticleCategory
 	 */
-	public function getCategory() {
-
+	public function getCategory(): ?ArticleCategory
+    {
 		return $this->category;
-
 	}
 
     /**
@@ -834,11 +816,10 @@ class Article implements PublisherInterface {
      * @param string $headline
      * @return Article
      */
-	public function setHeadline($headline) {
-
+	public function setHeadline(string $headline): self
+    {
 		$this->headline = trim($headline);
 		return $this;
-
 	}
 
 	/**
@@ -846,31 +827,27 @@ class Article implements PublisherInterface {
 	 *
 	 * @return string
 	 */
-	public function getHeadline() {
-
+	public function getHeadline(): string
+    {
 		return $this->headline;
-
 	}
 
-	/**
-	 * get misc article data
-	 * when $ndx is omitted all misc data is returned in an associative array
-	 *
-	 * @param string $ndx
-	 * @return mixed
-	 */
-	public function getData($ndx = null) {
-
+    /**
+     * get misc article data
+     * when $ndx is omitted all misc data is returned in an associative array
+     *
+     * @param string|null $ndx
+     * @return mixed
+     */
+	public function getData(string $ndx = null)
+    {
 		if(is_null($ndx)) {
 			return $this->data;
 		}
 
 		$ndx = strtolower($ndx);
 
-		if(isset($this->data[$ndx])) {
-			return $this->data[$ndx];
-		}
-
+        return $this->data[$ndx] ?? null;
 	}
 
 	/**
@@ -879,8 +856,8 @@ class Article implements PublisherInterface {
 	 * @param array $data
 	 * @return self
 	 */
-	public function setData(array $data) {
-
+	public function setData(array $data): self
+    {
 		$data = array_change_key_case($data, CASE_LOWER);
 
 		foreach($this->dataCols as $c) {
@@ -890,7 +867,6 @@ class Article implements PublisherInterface {
 		}
 		
 		return $this;
-
 	}
 
     /**
@@ -916,6 +892,45 @@ class Article implements PublisherInterface {
 		    return empty($item['rel']['hidden']);
 		}), 'file');
 	}
+
+    /**
+     * get the visibility of a linked file
+     * returns true when file is visible, false when file is hidden
+     *
+     * @param MetaFile $file
+     * @return bool
+     * @throws ArticleException
+     */
+	public function getLinkedFileVisibility (MetaFile $file): bool
+    {
+        if (($ndx = array_search($file, array_column($this->linkedFiles, 'file'), true)) === false ) {
+            throw new ArticleException("File '%s' not linked to article.", $file->getFilename());
+        }
+
+        return !$this->linkedFiles[$ndx]['rel']['hidden'];
+    }
+
+    /**
+     * set the visibilty of a linked file
+     *
+     * @param MetaFile $file
+     * @param bool $visibility
+     * @return $this
+     * @throws ArticleException
+     */
+    public function setLinkedFileVisibility (MetaFile $file, bool $visibility): self
+    {
+        if (($ndx = array_search($file, array_column($this->linkedFiles, 'file'), true)) === false ) {
+            throw new ArticleException("File '%s' not linked to article.", $file->getFilename());
+        }
+
+        if ($this->linkedFiles[$ndx]['rel']['hidden'] === $visibility) {
+            $this->linkedFiles[$ndx]['rel']['hidden'] = !$visibility;
+            $this->updateLinkedFiles = true;
+        }
+
+        return $this;
+    }
 
     /**
      * returns array of MetaFile instances with web image mimetype linked to the article
@@ -991,7 +1006,7 @@ class Article implements PublisherInterface {
      * @return Article
      * @throws ArticleCategoryException
      */
-	private static function createInstance(array $articleData)
+	private static function createInstance(array $articleData): Article
     {
 		$article = new self();
 		

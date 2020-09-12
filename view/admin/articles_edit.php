@@ -80,8 +80,9 @@
                     <img :src="slotProps.item.type" alt="" v-if="slotProps.item.isThumb" class="img-responsive">
                     <div style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" v-else>{{ slotProps.item.type }}</div>
                 </div>
-                <div class="d-inline-block col-1">
+                <div class="d-inline-block col-2">
                     <button class="btn webfont-icon-only tooltip" data-tooltip="Verlinkung entfernen" type="button" @click="unlinkSort(slotProps.item)">&#xe014;</button>
+                    <button class="btn webfont-icon-only tooltip" :data-tooltip="slotProps.item.hidden ? 'Anzeigen' : 'Verstecken'" type="button" @click="toggleVisibility(slotProps.item)">{{ slotProps.item.hidden ? '&#xe015;' : '&#xe016;' }}</button>
                 </div>
                 <a class="d-inline-block col-3" :href="'#' + slotProps.item.folderid" @click.prevent="gotoFolder(slotProps.item.folderid)">{{ slotProps.item.path }}</a>
             </template>
@@ -202,7 +203,8 @@
             init: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_init')->getUrl() ?>",
             link: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_link_file')->getUrl() ?>",
             getLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('get_linked_files')->getUrl() ?>",
-            updateLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('update_linked_files')->getUrl() ?>"
+            updateLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('update_linked_files')->getUrl() ?>",
+            toggleLinkedFile: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('toggle_linked_files')->getUrl() ?>"
         },
 
         limits: {
@@ -262,6 +264,12 @@
             unlinkSort (file) {
                 this.linkedFiles.splice(this.linkedFiles.indexOf(file), 1);
                 this.saveSort();
+            },
+            async toggleVisibility (file) {
+                let response = await SimpleFetch(this.$options.routes.toggleLinkedFile + '?article=' + this.instanceId, 'POST', {}, JSON.stringify({ fileId: file.id }));
+                if (response.success) {
+                    file.hidden = !!response.hidden;
+                }
             },
             gotoFolder (folderId) {
                 this.fmProps.folder = folderId;
