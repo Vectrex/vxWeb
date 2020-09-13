@@ -488,12 +488,17 @@ class FilesController extends Controller
         }
         if(count($errors)) {
             return new JsonResponse([
-                'error' => 1, 'message' => $errors, 'files' => $files ?? [], 'folders' => $folders
+                'error' => 1, 'message' => $errors, 'files' => $files, 'folders' => $folders
             ]);
         }
         return new JsonResponse([
-            'success' => true, 'files' => $files ?? [], 'folders' => $folders
+            'success' => true, 'files' => $files, 'folders' => $folders
         ]);
+    }
+
+    protected function selectionMove (): JsonResponse
+    {
+        return new JsonResponse();
     }
 
     /**

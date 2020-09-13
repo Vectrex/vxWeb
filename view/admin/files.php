@@ -45,7 +45,8 @@
             renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
             addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>",
             search:  "<?= $router->getRoute('files_search')->getUrl() ?>",
-            delSelection: "<?= $router->getRoute('selection_del')->getUrl() ?>"
+            delSelection: "<?= $router->getRoute('selection_del')->getUrl() ?>",
+            moveSelection: "<?= $router->getRoute('selection_move')->getUrl() ?>"
         },
         limits: {
             maxExecutionTime: <?= $this->max_execution_time_ms ?>,
