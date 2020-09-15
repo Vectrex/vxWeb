@@ -31,7 +31,7 @@
         }
     },
     props: {
-      title: { type: String, default: 'Zielordner wählen&hellip;' }
+      title: { type: String, default: 'Zielordner wählen' }
     },
     methods: {
       async open (route, currentFolder) {

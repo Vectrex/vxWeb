@@ -2581,12 +2581,12 @@ var simple_tree_component = normalizeComponent(
 )
 
 /* harmony default export */ var simple_tree = (simple_tree_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager.vue?vue&type=template&id=6c2bf96e&
-var filemanagervue_type_template_id_6c2bf96e_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:{'dragged-over': _vm.indicateDrag},on:{"drop":function($event){$event.preventDefault();return _vm.uploadDraggedFiles($event)},"dragover":function($event){$event.preventDefault();_vm.indicateDrag = true},"dragleave":function($event){$event.preventDefault();_vm.indicateDrag = false}}},[_c('div',{staticClass:"vx-button-bar navbar"},[_c('section',{staticClass:"navbar-section"},[_c('filemanager-breadcrumbs',{attrs:{"breadcrumbs":_vm.breadcrumbs,"current-folder":_vm.currentFolder,"folders":_vm.folders},on:{"breadcrumb-clicked":_vm.readFolder}}),_c('div',{staticClass:"popup popup-bottom ml-1",class:{ active: _vm.showAddActivities }},[_c('button',{staticClass:"btn webfont-icon-only",attrs:{"type":"button"},on:{"click":function($event){$event.stopPropagation();_vm.showAddActivities = !_vm.showAddActivities}}},[_vm._v("")]),_c('div',{staticClass:"popup-container"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('filemanager-add',{on:{"upload":_vm.uploadInputFiles,"create-folder":_vm.createFolder}})],1)])])]),_c('filemanager-actions',{attrs:{"files":_vm.checkedFiles,"folders":_vm.checkedFolders},on:{"delete-selection":_vm.delSelection,"move-selection":_vm.moveSelection}})],1),_c('section',{staticClass:"navbar-section"},[(_vm.upload.progressing)?[_c('button',{staticClass:"btn btn-link webfont-icon-only tooltip",attrs:{"data-tooltip":"Abbrechen","type":"button"},on:{"click":_vm.cancelUpload}},[_vm._v("")]),_c('label',{staticClass:"d-inline-block mr-2"},[_vm._v(_vm._s(_vm.progress.file))]),_c('circular-progress',{attrs:{"progress":100 * _vm.progress.loaded / (_vm.progress.total || 1),"radius":16}})]:_c('strong',{staticClass:"text-primary d-block col-12 text-center"},[_vm._v("Dateien zum Upload hierher ziehen")])],2),_c('section',{staticClass:"navbar-section"},[_c('filemanager-search',{attrs:{"search":_vm.doSearch},scopedSlots:_vm._u([{key:"folder",fn:function(slotProps){return [_c('span',{staticClass:"with-webfont-icon-left",attrs:{"data-icon":""}},[_c('a',{attrs:{"href":'#' + slotProps.folder.id},on:{"click":function($event){$event.preventDefault();return _vm.readFolder(slotProps.folder.id)}}},[_vm._v(_vm._s(slotProps.folder.name))])])]}},{key:"file",fn:function(slotProps){return [_c('span',{staticClass:"with-webfont-icon-left",attrs:{"data-icon":""}},[_vm._v(_vm._s(slotProps.file.name)+" ("+_vm._s(slotProps.file.type)+")")]),_c('br'),_c('a',{attrs:{"href":'#' + slotProps.file.folder},on:{"click":function($event){$event.preventDefault();return _vm.readFolder(slotProps.file.folder)}}},[_vm._v(_vm._s(slotProps.file.path))])]}}])})],1)]),_c('sortable',{ref:"sortable",attrs:{"rows":_vm.directoryEntries,"columns":_vm.columns,"sort-prop":_vm.initSort.column,"sort-direction":_vm.initSort.dir,"id":"files-list"},on:{"after-sort":function($event){return _vm.$emit('after-sort', { sortColumn: _vm.$refs.sortable.sortColumn, sortDir: _vm.$refs.sortable.sortDir })}},scopedSlots:_vm._u([{key:"checked-header",fn:function(){return [_c('label',{staticClass:"form-checkbox"},[_c('input',{directives:[{name:"check-indeterminate",rawName:"v-check-indeterminate"}],attrs:{"type":"checkbox"},on:{"click":_vm.toggleAll}}),_c('i',{staticClass:"form-icon"})])]},proxy:true},{key:"checked",fn:function(slotProps){return [_c('label',{staticClass:"form-checkbox"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(slotProps.row.checked),expression:"slotProps.row.checked"}],attrs:{"type":"checkbox"},domProps:{"checked":Array.isArray(slotProps.row.checked)?_vm._i(slotProps.row.checked,null)>-1:(slotProps.row.checked)},on:{"change":function($event){var $$a=slotProps.row.checked,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(slotProps.row, "checked", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(slotProps.row, "checked", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(slotProps.row, "checked", $$c)}}}}),_c('i',{staticClass:"form-icon"})])]}},{key:"name",fn:function(slotProps){return [(slotProps.row.isFolder)?[(slotProps.row === _vm.toRename)?_c('input',{directives:[{name:"focus",rawName:"v-focus"}],staticClass:"form-input",domProps:{"value":slotProps.row.name},on:{"keydown":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.renameFolder($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }_vm.toRename = null}],"blur":function($event){_vm.toRename = null}}}):[_c('a',{attrs:{"href":'#' + slotProps.row.id},on:{"click":function($event){$event.preventDefault();return _vm.readFolder(slotProps.row.id)}}},[_vm._v(_vm._s(slotProps.row.name))]),_c('button',{staticClass:"btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2",attrs:{"data-tooltip":"Umbenennen"},on:{"click":function($event){_vm.toRename = slotProps.row}}},[_vm._v("")])]]:[(slotProps.row === _vm.toRename)?_c('input',{directives:[{name:"focus",rawName:"v-focus"}],staticClass:"form-input",domProps:{"value":slotProps.row.name},on:{"keydown":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.renameFile($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }_vm.toRename = null}],"blur":function($event){_vm.toRename = null}}}):[_c('span',[_vm._v(_vm._s(slotProps.row.name))]),_c('button',{staticClass:"btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2",attrs:{"data-tooltip":"Umbenennen"},on:{"click":function($event){_vm.toRename = slotProps.row}}},[_vm._v("")])]]]}},{key:"size",fn:function(slotProps){return [(!slotProps.row.isFolder)?[_vm._v(_vm._s(_vm._f("formatFilesize")(slotProps.row.size,',')))]:_vm._e()]}},{key:"type",fn:function(slotProps){return [(slotProps.row.image)?_c('img',{attrs:{"src":slotProps.row.src,"alt":""}}):_c('span',[_vm._v(_vm._s(slotProps.row.type))])]}},_vm._l((_vm.$scopedSlots),function(_,name){return {key:name,fn:function(slotData){return [_vm._t(name,null,null,slotData)]}}})],null,true)}),(_vm.showEditForm)?_c('div',{staticClass:"modal active"},[_c('div',{staticClass:"modal-overlay"}),_c('div',{staticClass:"modal-container"},[_c('div',{staticClass:"modal-header"},[_c('a',{staticClass:"btn btn-clear float-right",attrs:{"href":"#close","aria-label":"Close"},on:{"click":function($event){$event.preventDefault();_vm.showEditForm = false}}})]),_c('div',{staticClass:"modal-body"},[_c('file-edit-form',{ref:"editForm",attrs:{"initial-data":_vm.editFormData,"file-info":_vm.editFileInfo,"url":_vm.routes.updateFile},on:{"response-received":function (response) { return _vm.$emit('response-received', response); }}})],1)])]):_vm._e(),(_vm.showFolderTree)?_c('div',{staticClass:"modal active"},[_c('div',{staticClass:"modal-overlay"}),_c('div',{staticClass:"modal-container"},[_c('div',{staticClass:"modal-header"},[_c('a',{staticClass:"btn btn-clear float-right",attrs:{"href":"#close","aria-label":"Close"},on:{"click":function($event){$event.preventDefault();_vm.showFolderTree = false}}}),_c('div',{staticClass:"modal-title h5"},[_vm._v("Zielordner wählen…")])]),_c('div',{staticClass:"modal-body"},[_c('simple-tree',{attrs:{"branch":_vm.root},on:{"branch-selected":_vm.moveToFolder}})],1)])]):_vm._e(),_c('confirm',{ref:"confirm",attrs:{"config":{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }}}),_c('alert',{ref:"alert",attrs:{"config":{ label: 'Ok', buttonClass: 'btn-error' }}})],1)}
-var filemanagervue_type_template_id_6c2bf96e_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager.vue?vue&type=template&id=db7272d2&
+var filemanagervue_type_template_id_db7272d2_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:{'dragged-over': _vm.indicateDrag},on:{"drop":function($event){$event.preventDefault();return _vm.uploadDraggedFiles($event)},"dragover":function($event){$event.preventDefault();_vm.indicateDrag = true},"dragleave":function($event){$event.preventDefault();_vm.indicateDrag = false}}},[_c('div',{staticClass:"vx-button-bar navbar"},[_c('section',{staticClass:"navbar-section"},[_c('filemanager-breadcrumbs',{attrs:{"breadcrumbs":_vm.breadcrumbs,"current-folder":_vm.currentFolder,"folders":_vm.folders},on:{"breadcrumb-clicked":_vm.readFolder}}),_c('div',{staticClass:"popup popup-bottom ml-1",class:{ active: _vm.showAddActivities }},[_c('button',{staticClass:"btn webfont-icon-only",attrs:{"type":"button"},on:{"click":function($event){$event.stopPropagation();_vm.showAddActivities = !_vm.showAddActivities}}},[_vm._v("")]),_c('div',{staticClass:"popup-container"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('filemanager-add',{on:{"upload":_vm.uploadInputFiles,"create-folder":_vm.createFolder}})],1)])])]),_c('filemanager-actions',{attrs:{"files":_vm.checkedFiles,"folders":_vm.checkedFolders},on:{"delete-selection":_vm.delSelection,"move-selection":_vm.moveSelection}})],1),_c('section',{staticClass:"navbar-section"},[(_vm.upload.progressing)?[_c('button',{staticClass:"btn btn-link webfont-icon-only tooltip",attrs:{"data-tooltip":"Abbrechen","type":"button"},on:{"click":_vm.cancelUpload}},[_vm._v("")]),_c('label',{staticClass:"d-inline-block mr-2"},[_vm._v(_vm._s(_vm.progress.file))]),_c('circular-progress',{attrs:{"progress":100 * _vm.progress.loaded / (_vm.progress.total || 1),"radius":16}})]:_c('strong',{staticClass:"text-primary d-block col-12 text-center"},[_vm._v("Dateien zum Upload hierher ziehen")])],2),_c('section',{staticClass:"navbar-section"},[_c('filemanager-search',{attrs:{"search":_vm.doSearch},scopedSlots:_vm._u([{key:"folder",fn:function(slotProps){return [_c('span',{staticClass:"with-webfont-icon-left",attrs:{"data-icon":""}},[_c('a',{attrs:{"href":'#' + slotProps.folder.id},on:{"click":function($event){$event.preventDefault();return _vm.readFolder(slotProps.folder.id)}}},[_vm._v(_vm._s(slotProps.folder.name))])])]}},{key:"file",fn:function(slotProps){return [_c('span',{staticClass:"with-webfont-icon-left",attrs:{"data-icon":""}},[_vm._v(_vm._s(slotProps.file.name)+" ("+_vm._s(slotProps.file.type)+")")]),_c('br'),_c('a',{attrs:{"href":'#' + slotProps.file.folder},on:{"click":function($event){$event.preventDefault();return _vm.readFolder(slotProps.file.folder)}}},[_vm._v(_vm._s(slotProps.file.path))])]}}])})],1)]),_c('sortable',{ref:"sortable",attrs:{"rows":_vm.directoryEntries,"columns":_vm.columns,"sort-prop":_vm.initSort.column,"sort-direction":_vm.initSort.dir,"id":"files-list"},on:{"after-sort":function($event){return _vm.$emit('after-sort', { sortColumn: _vm.$refs.sortable.sortColumn, sortDir: _vm.$refs.sortable.sortDir })}},scopedSlots:_vm._u([{key:"checked-header",fn:function(){return [_c('label',{staticClass:"form-checkbox"},[_c('input',{directives:[{name:"check-indeterminate",rawName:"v-check-indeterminate"}],attrs:{"type":"checkbox"},on:{"click":_vm.toggleAll}}),_c('i',{staticClass:"form-icon"})])]},proxy:true},{key:"checked",fn:function(slotProps){return [_c('label',{staticClass:"form-checkbox"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(slotProps.row.checked),expression:"slotProps.row.checked"}],attrs:{"type":"checkbox"},domProps:{"checked":Array.isArray(slotProps.row.checked)?_vm._i(slotProps.row.checked,null)>-1:(slotProps.row.checked)},on:{"change":function($event){var $$a=slotProps.row.checked,$$el=$event.target,$$c=$$el.checked?(true):(false);if(Array.isArray($$a)){var $$v=null,$$i=_vm._i($$a,$$v);if($$el.checked){$$i<0&&(_vm.$set(slotProps.row, "checked", $$a.concat([$$v])))}else{$$i>-1&&(_vm.$set(slotProps.row, "checked", $$a.slice(0,$$i).concat($$a.slice($$i+1))))}}else{_vm.$set(slotProps.row, "checked", $$c)}}}}),_c('i',{staticClass:"form-icon"})])]}},{key:"name",fn:function(slotProps){return [(slotProps.row.isFolder)?[(slotProps.row === _vm.toRename)?_c('input',{directives:[{name:"focus",rawName:"v-focus"}],staticClass:"form-input",domProps:{"value":slotProps.row.name},on:{"keydown":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.renameFolder($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }_vm.toRename = null}],"blur":function($event){_vm.toRename = null}}}):[_c('a',{attrs:{"href":'#' + slotProps.row.id},on:{"click":function($event){$event.preventDefault();return _vm.readFolder(slotProps.row.id)}}},[_vm._v(_vm._s(slotProps.row.name))]),_c('button',{staticClass:"btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2",attrs:{"data-tooltip":"Umbenennen"},on:{"click":function($event){_vm.toRename = slotProps.row}}},[_vm._v("")])]]:[(slotProps.row === _vm.toRename)?_c('input',{directives:[{name:"focus",rawName:"v-focus"}],staticClass:"form-input",domProps:{"value":slotProps.row.name},on:{"keydown":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.renameFile($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }_vm.toRename = null}],"blur":function($event){_vm.toRename = null}}}):[_c('span',[_vm._v(_vm._s(slotProps.row.name))]),_c('button',{staticClass:"btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2",attrs:{"data-tooltip":"Umbenennen"},on:{"click":function($event){_vm.toRename = slotProps.row}}},[_vm._v("")])]]]}},{key:"size",fn:function(slotProps){return [(!slotProps.row.isFolder)?[_vm._v(_vm._s(_vm._f("formatFilesize")(slotProps.row.size,',')))]:_vm._e()]}},{key:"type",fn:function(slotProps){return [(slotProps.row.image)?_c('img',{attrs:{"src":slotProps.row.src,"alt":""}}):_c('span',[_vm._v(_vm._s(slotProps.row.type))])]}},_vm._l((_vm.$scopedSlots),function(_,name){return {key:name,fn:function(slotData){return [_vm._t(name,null,null,slotData)]}}})],null,true)}),(_vm.showEditForm)?_c('div',{staticClass:"modal active"},[_c('div',{staticClass:"modal-overlay"}),_c('div',{staticClass:"modal-container"},[_c('div',{staticClass:"modal-header"},[_c('a',{staticClass:"btn btn-clear float-right",attrs:{"href":"#close","aria-label":"Close"},on:{"click":function($event){$event.preventDefault();_vm.showEditForm = false}}})]),_c('div',{staticClass:"modal-body"},[_c('file-edit-form',{ref:"editForm",attrs:{"initial-data":_vm.editFormData,"file-info":_vm.editFileInfo,"url":_vm.routes.updateFile},on:{"response-received":function (response) { return _vm.$emit('response-received', response); }}})],1)])]):_vm._e(),_c('confirm',{ref:"confirm",attrs:{"config":{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }}}),_c('alert',{ref:"alert",attrs:{"config":{ label: 'Ok', buttonClass: 'btn-error' }}}),_c('folder-tree',{ref:"folder-tree"})],1)}
+var filemanagervue_type_template_id_db7272d2_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/filemanager.vue?vue&type=template&id=6c2bf96e&
+// CONCATENATED MODULE: ./vue/components/filemanager.vue?vue&type=template&id=db7272d2&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager/filemanager-add.vue?vue&type=template&id=00de0c76&
 var filemanager_addvue_type_template_id_00de0c76_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[(_vm.showAddFolderInput)?_c('input',{directives:[{name:"focus",rawName:"v-focus"}],staticClass:"form-input",on:{"keydown":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.addFolder($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }_vm.showAddFolderInput = false}],"blur":function($event){_vm.showAddFolderInput = false}}}):_vm._e(),(!_vm.showAddFolderInput)?_c('button',{staticClass:"btn with-webfont-icon-left btn-link",attrs:{"type":"button","data-icon":""},on:{"click":function($event){$event.stopPropagation();_vm.showAddFolderInput = true}}},[_vm._v("Verzeichnis erstellen")]):_vm._e(),_c('label',{staticClass:"btn with-webfont-icon-left btn-link",attrs:{"data-icon":"","for":"file_upload"}},[_vm._v("Datei hochladen")]),_c('input',{staticClass:"d-none",attrs:{"type":"file","id":"file_upload","multiple":_vm.multiple},on:{"change":_vm.fileChanged}})])}
@@ -2675,16 +2675,14 @@ var filemanager_add_component = normalizeComponent(
 )
 
 /* harmony default export */ var filemanager_add = (filemanager_add_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager/filemanager-actions.vue?vue&type=template&id=50bee48b&
-var filemanager_actionsvue_type_template_id_50bee48b_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return (_vm.files.length || _vm.folders.length)?_c('div',{staticClass:"mx-2"},[_c('button',{staticClass:"btn btn-link webfont-icon-only tooltip",attrs:{"data-tooltip":_vm.files.length + _vm.folders.length + ' gewählte Dateien/Ordner löschen',"type":"button"},on:{"click":_vm.confirmDelete}},[_vm._v("")])]):_vm._e()}
-var filemanager_actionsvue_type_template_id_50bee48b_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager/filemanager-actions.vue?vue&type=template&id=3439351d&
+var filemanager_actionsvue_type_template_id_3439351d_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return (_vm.files.length || _vm.folders.length)?_c('div',{staticClass:"mx-2"},[_c('button',{staticClass:"btn btn-link webfont-icon-only tooltip",attrs:{"data-tooltip":_vm.files.length + _vm.folders.length + ' gewählte Dateien/Ordner löschen',"type":"button"},on:{"click":_vm.confirmDelete}},[_vm._v("")]),_c('button',{staticClass:"btn btn-link webfont-icon-only tooltip",attrs:{"data-tooltip":_vm.files.length + _vm.folders.length + ' gewählte Dateien/Ordner verschieben',"type":"button"},on:{"click":_vm.pickFolder}},[_vm._v("")])]):_vm._e()}
+var filemanager_actionsvue_type_template_id_3439351d_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/filemanager/filemanager-actions.vue?vue&type=template&id=50bee48b&
+// CONCATENATED MODULE: ./vue/components/filemanager/filemanager-actions.vue?vue&type=template&id=3439351d&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager/filemanager-actions.vue?vue&type=script&lang=js&
-//
-//
 //
 //
 //
@@ -2703,6 +2701,9 @@ var filemanager_actionsvue_type_template_id_50bee48b_staticRenderFns = []
             if(await this.$parent.$refs.confirm.open('Auswahl löschen', "Selektierte Dateien/Ordner wirklich löschen?")) {
                 this.$emit('delete-selection');
             }
+        },
+        async pickFolder () {
+          this.$emit('move-selection');
         }
     }
 });
@@ -2719,8 +2720,8 @@ var filemanager_actionsvue_type_template_id_50bee48b_staticRenderFns = []
 
 var filemanager_actions_component = normalizeComponent(
   filemanager_filemanager_actionsvue_type_script_lang_js_,
-  filemanager_actionsvue_type_template_id_50bee48b_render,
-  filemanager_actionsvue_type_template_id_50bee48b_staticRenderFns,
+  filemanager_actionsvue_type_template_id_3439351d_render,
+  filemanager_actionsvue_type_template_id_3439351d_staticRenderFns,
   false,
   null,
   null,
@@ -2940,6 +2941,134 @@ var filemanager_breadcrumbs_component = normalizeComponent(
 )
 
 /* harmony default export */ var filemanager_breadcrumbs = (filemanager_breadcrumbs_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager/filemanager-folder-tree.vue?vue&type=template&id=715416dd&
+var filemanager_folder_treevue_type_template_id_715416dd_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"modal",class:{ active: _vm.show }},[_c('div',{staticClass:"modal-container"},[_c('div',{staticClass:"modal-header"},[_c('a',{staticClass:"btn btn-clear float-right",attrs:{"href":"#close","aria-label":"Close"},on:{"click":function($event){$event.preventDefault();return _vm.cancel($event)}}}),_c('div',{staticClass:"modal-title h5"},[_vm._v(_vm._s(_vm.title))])]),_c('div',{staticClass:"modal-body"},[_c('simple-tree',{attrs:{"branch":_vm.root},on:{"branch-selected":_vm.folderSelected}})],1)])])}
+var filemanager_folder_treevue_type_template_id_715416dd_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./vue/components/filemanager/filemanager-folder-tree.vue?vue&type=template&id=715416dd&
+
+// CONCATENATED MODULE: ./vue/util/simple-fetch.js
+async function SimpleFetch(url, method = 'GET', headers = {}, payload = null) {
+
+    if(!headers['X-CSRF-Token'] && document.querySelector('meta[name="csrf-token"]')) {
+        headers['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    }
+    headers['X-Requested-With'] = 'XMLHttpRequest';
+    const response = await fetch(
+        url,
+        {
+            method: method.toUpperCase(),
+            body: payload,
+            headers: headers
+        }
+    );
+
+    return await response.json();
+}
+
+// CONCATENATED MODULE: ./vue/util/url-query.js
+/* harmony default export */ var url_query = ({
+    /**
+     * @return {string}
+     */
+    create (url, query = {}) {
+        return url + (url.indexOf('?') !== -1 ? '&' : '?') + this.objectToSearch(query);
+    },
+
+    /* @see https://stackoverflow.com/questions/8648892/how-to-convert-url-parameters-to-a-javascript-object */
+
+    searchToObject (query) {
+        return Object.fromEntries(new URLSearchParams(query));
+    },
+
+    /* @see https://stackoverflow.com/questions/1714786/query-string-encoding-of-a-javascript-object */
+
+    objectToSearch (obj) {
+        return new URLSearchParams(obj).toString();
+    }
+});
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager/filemanager-folder-tree.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+/* harmony default export */ var filemanager_folder_treevue_type_script_lang_js_ = ({
+  name: 'folder-tree',
+  components: {
+    'simple-tree': simple_tree
+  },
+  data () {
+      return {
+        show: false,
+        resolve: null,
+        reject: null,
+        root: {}
+      }
+  },
+  props: {
+    title: { type: String, default: 'Zielordner wählen' }
+  },
+  methods: {
+    async open (route, currentFolder) {
+
+      this.root = await SimpleFetch(url_query.create(route, { folder: currentFolder }));
+      this.show = true;
+
+      return new Promise((resolve, reject) => {
+        this.resolve = resolve;
+        this.reject = reject;
+      });
+    },
+    cancel () {
+      this.show = false;
+      this.resolve(false);
+    },
+    folderSelected (folder) {
+      this.show = false;
+      this.resolve(folder);
+    }
+  }
+});
+
+// CONCATENATED MODULE: ./vue/components/filemanager/filemanager-folder-tree.vue?vue&type=script&lang=js&
+ /* harmony default export */ var filemanager_filemanager_folder_treevue_type_script_lang_js_ = (filemanager_folder_treevue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./vue/components/filemanager/filemanager-folder-tree.vue
+
+
+
+
+
+/* normalize component */
+
+var filemanager_folder_tree_component = normalizeComponent(
+  filemanager_filemanager_folder_treevue_type_script_lang_js_,
+  filemanager_folder_treevue_type_template_id_715416dd_render,
+  filemanager_folder_treevue_type_template_id_715416dd_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var filemanager_folder_tree = (filemanager_folder_tree_component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/confirm.vue?vue&type=template&id=24becebd&
 var confirmvue_type_template_id_24becebd_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"container",staticClass:"modal modal-sm",class:{ active: _vm.show },on:{"keydown":function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }$event.stopPropagation();return _vm.cancel($event)}}},[_c('a',{staticClass:"modal-overlay",attrs:{"href":"#close"},on:{"click":function($event){$event.preventDefault();return _vm.cancel($event)}}}),_c('div',{staticClass:"modal-container"},[(_vm.title)?_c('div',{staticClass:"modal-header bg-error text-light"},[_c('div',{staticClass:"modal-title h5"},[_vm._v(_vm._s(_vm.title))])]):_vm._e(),_c('div',{staticClass:"modal-body"},[_c('div',{staticClass:"content"},[_vm._v(" "+_vm._s(_vm.message)+" ")])]),_c('div',{staticClass:"modal-footer"},[_c('button',{ref:"okButton",staticClass:"btn mr-2",class:_vm.options.okClass,on:{"click":function($event){$event.stopPropagation();return _vm.ok($event)}}},[_vm._v(_vm._s(_vm.options.okLabel))]),_c('button',{staticClass:"btn btn-link",on:{"click":function($event){$event.stopPropagation();return _vm.cancel($event)}}},[_vm._v(_vm._s(_vm.options.cancelLabel))])])])])}
 var confirmvue_type_template_id_24becebd_staticRenderFns = []
@@ -3155,25 +3284,6 @@ var file_edit_formvue_type_template_id_707c41ea_staticRenderFns = []
 
 // CONCATENATED MODULE: ./vue/components/forms/file-edit-form.vue?vue&type=template&id=707c41ea&
 
-// CONCATENATED MODULE: ./vue/util/simple-fetch.js
-async function SimpleFetch(url, method = 'GET', headers = {}, payload = null) {
-
-    if(!headers['X-CSRF-Token'] && document.querySelector('meta[name="csrf-token"]')) {
-        headers['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    }
-    headers['X-Requested-With'] = 'XMLHttpRequest';
-    const response = await fetch(
-        url,
-        {
-            method: method.toUpperCase(),
-            body: payload,
-            headers: headers
-        }
-    );
-
-    return await response.json();
-}
-
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/file-edit-form.vue?vue&type=script&lang=js&
 //
 //
@@ -3345,28 +3455,6 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
     return xhrPromise;
 }
 
-// CONCATENATED MODULE: ./vue/util/url-query.js
-/* harmony default export */ var url_query = ({
-    /**
-     * @return {string}
-     */
-    create (url, query = {}) {
-        return url + (url.indexOf('?') !== -1 ? '&' : '?') + this.objectToSearch(query);
-    },
-
-    /* @see https://stackoverflow.com/questions/8648892/how-to-convert-url-parameters-to-a-javascript-object */
-
-    searchToObject (query) {
-        return Object.fromEntries(new URLSearchParams(query));
-    },
-
-    /* @see https://stackoverflow.com/questions/1714786/query-string-encoding-of-a-javascript-object */
-
-    objectToSearch (obj) {
-        return new URLSearchParams(obj).toString();
-    }
-});
-
 // CONCATENATED MODULE: ./vue/filters.js
 
 function formatFilesize (size, sep) {
@@ -3514,18 +3602,8 @@ function formatFilesize (size, sep) {
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
 
 
 
@@ -3544,294 +3622,307 @@ function formatFilesize (size, sep) {
 
 
 /* harmony default export */ var filemanagervue_type_script_lang_js_ = ({
-    components: {
-        'sortable': sortable,
-        'simple-tree': simple_tree,
-        'circular-progress': circular_progress,
-        'confirm': components_confirm,
-        'alert': components_alert,
-        'file-edit-form': file_edit_form,
-        'filemanager-add': filemanager_add,
-        'filemanager-search': filemanager_search,
-        'filemanager-actions': filemanager_actions,
-        'filemanager-breadcrumbs': filemanager_breadcrumbs
+  components: {
+    FolderTree: filemanager_folder_tree,
+    'sortable': sortable,
+    'simple-tree': simple_tree,
+    'circular-progress': circular_progress,
+    'confirm': components_confirm,
+    'alert': components_alert,
+    'file-edit-form': file_edit_form,
+    'filemanager-add': filemanager_add,
+    'filemanager-search': filemanager_search,
+    'filemanager-actions': filemanager_actions,
+    'filemanager-breadcrumbs': filemanager_breadcrumbs,
+    'filemanager-folder-tree': filemanager_folder_tree
+  },
+
+  data () {
+    return {
+      root: {},
+      currentFolder: null,
+      files: [],
+      folders: [],
+      breadcrumbs: [],
+      toRename: null,
+      showEditForm: false,
+      showAddActivities: false,
+      indicateDrag: false,
+      upload: {
+        files: [],
+        progressing: false,
+        cancelToken: {}
+      },
+      cancelUploadToken: {},
+      progress: { total: null, loaded: null, file: null },
+      editFormData: {},
+      editFileInfo: {}
+    }
+  },
+
+  computed: {
+    directoryEntries () {
+      let folders = this.folders;
+      let files = this.files;
+      folders.forEach(item => {
+        item.isFolder = true;
+        item.key = 'd' + item.id
+      });
+      files.forEach(item => item.key = item.id);
+      return [...folders, ...files];
     },
-
-    data () {
-        return {
-            root: {},
-            currentFolder: null,
-            files: [],
-            folders: [],
-            breadcrumbs: [],
-            toRename: null,
-            toMove: null,
-            showEditForm: false,
-            showFolderTree: false,
-            showAddActivities: false,
-            indicateDrag: false,
-            upload: {
-                files: [],
-                progressing: false,
-                cancelToken: {}
-            },
-            cancelUploadToken: {},
-            progress: { total: null, loaded: null, file: null },
-            editFormData: {},
-            editFileInfo: {}
-        }
+    checkedFiles () {
+      return this.files.filter(item => item.checked);
     },
+    checkedFolders () {
+      return this.folders.filter(item => item.checked);
+    }
+  },
 
-    computed: {
-        directoryEntries () {
-            let folders = this.folders;
-            let files = this.files;
-            folders.forEach(item => {
-                item.isFolder = true;
-                item.key = 'd' + item.id
-            });
-            files.forEach(item => item.key = item.id);
-            return [...folders, ...files];
-        },
-        checkedFiles () {
-            return this.files.filter(item => item.checked);
-        },
-        checkedFolders () {
-            return this.folders.filter(item => item.checked);
-        }
+  props: {
+    routes: { type: Object, required: true },
+    limits: { type: Object, default: () => {} },
+    columns: { type: Array, required: true },
+    folder: { type: String, default: '' },
+    initSort: { type: Object }
+  },
+
+  watch: {
+    folder (newValue) {
+      this.currentFolder = newValue;
+    }
+  },
+
+  async created () {
+    let response = await SimpleFetch(url_query.create(this.routes.init, { folder: this.folder }));
+
+    this.breadcrumbs = response.breadcrumbs || [];
+    this.files = response.files || [];
+    this.folders = response.folders || [];
+    this.currentFolder = response.currentFolder || null;
+  },
+  mounted () {
+    document.body.addEventListener('click', this.handleBodyClick);
+  },
+  beforeDestroy () {
+    document.body.removeEventListener('click', this.handleBodyClick);
+  },
+
+  methods: {
+    handleBodyClick () {
+      this.showAddActivities = false;
     },
-
-    props: {
-        routes: { type: Object, required: true },
-        limits: { type: Object, default: () => {} },
-        columns: { type: Array, required: true },
-        folder: { type: String, default: '' },
-        initSort: { type: Object }
+    toggleAll (event) {
+      [...this.folders, ...this.files].forEach(item => this.$set(item, 'checked', event.target.checked));
     },
+    async readFolder (id) {
+      let response = await SimpleFetch(url_query.create(this.routes.readFolder, { folder: id }));
 
-    watch: {
-        folder (newValue) {
-            this.currentFolder = newValue;
-        }
-    },
-
-    async created () {
-        let response = await SimpleFetch(url_query.create(this.routes.init, { folder: this.folder }));
-
-        this.breadcrumbs = response.breadcrumbs || [];
+      if(response.success) {
         this.files = response.files || [];
         this.folders = response.folders || [];
-        this.currentFolder = response.currentFolder || null;
-    },
-    mounted () {
-        document.body.addEventListener('click', this.handleBodyClick);
-    },
-    beforeDestroy () {
-        document.body.removeEventListener('click', this.handleBodyClick);
-    },
-
-    methods: {
-        handleBodyClick () {
-            this.showAddActivities = false;
-        },
-        toggleAll (event) {
-            [...this.folders, ...this.files].forEach(item => this.$set(item, 'checked', event.target.checked));
-        },
-        async readFolder (id) {
-            let response = await SimpleFetch(url_query.create(this.routes.readFolder, { folder: id }));
-
-            if(response.success) {
-                this.files = response.files || [];
-                this.folders = response.folders || [];
-                this.currentFolder = id;
-                if(response.breadcrumbs) {
-                    this.breadcrumbs = response.breadcrumbs;
-                }
-            }
-        },
-        async delSelection () {
-            let response = await SimpleFetch(url_query.create(this.routes.delSelection, { files: this.checkedFiles.map(item => item.id).join(","), folders: this.checkedFolders.map(item => item.id).join(",") }), 'DELETE');
-            if(response.success) {
-                this.files = response.files || [];
-                this.folders = response.folders || [];
-            }
-            else if(response.error) {
-                this.$emit('response-received', response);
-                this.files = response.files || this.files;
-                this.folders = response.folders || this.folders;
-            }
-        },
-        moveSelection () {
-        },
-        async editFile (row) {
-            this.showEditForm = true;
-            let response = await SimpleFetch(url_query.create(this.routes.getFile, { id: row.id }));
-            this.editFormData = response.form || {};
-            this.editFileInfo = response.fileInfo || {};
-            this.editFormData.id = row.id;
-        },
-        async delFile (row) {
-            if(await this.$refs.confirm.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
-                let response = await SimpleFetch(url_query.create(this.routes.delFile, { id: row.id }), 'DELETE');
-                if(response.success) {
-                    this.files.splice(this.files.findIndex(item => row === item), 1);
-                }
-            }
-        },
-        async renameFile (event) {
-            let name = event.target.value.trim();
-            if(name && this.toRename) {
-                let response = await SimpleFetch(this.routes.renameFile, 'POST', {}, JSON.stringify({name: name, id: this.toRename.id }));
-                if(response.success) {
-                    this.toRename.name = response.name || name;
-                    this.toRename = null;
-                }
-            }
-        },
-        async renameFolder (event) {
-            let name = event.target.value.trim();
-            if(name && this.toRename) {
-                let response = await SimpleFetch(this.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, folder: this.toRename.id }));
-                if(response.success) {
-                    this.toRename.name = response.name || name;
-                    this.toRename = null;
-                }
-            }
-        },
-        async delFolder (row) {
-            if(await this.$refs.confirm.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?", { cancelLabel: "Abbrechen" })) {
-                let response = await SimpleFetch(url_query.create(this.routes.delFolder, { folder: row.id }), 'DELETE');
-                if(response.success) {
-                    this.folders.splice(this.folders.findIndex(item => row === item), 1);
-                }
-            }
-        },
-        async createFolder (name) {
-            this.showAddActivities = false;
-
-            let response = await SimpleFetch(this.routes.addFolder, 'POST', {}, JSON.stringify({ name: name, parent: this.currentFolder }));
-            if(response.folder) {
-                this.folders.push(response.folder);
-            }
-        },
-        async getFolderTree (row) {
-            this.toMove = row;
-            let response = await SimpleFetch(url_query.create(this.routes.getFoldersTree, { folder: this.currentFolder }));
-            this.showFolderTree = true;
-            this.root = response;
-        },
-        async moveToFolder (folder) {
-            if(this.toMove) {
-                let response = await SimpleFetch(this.routes.moveFile, 'POST', {}, JSON.stringify({
-                    id: this.toMove.id,
-                    folderId: folder.id
-                }));
-                if (response.success) {
-                    this.files.splice(this.files.findIndex(item => this.toMove === item), 1);
-                    this.toMove = null;
-                    this.showFolderTree = false;
-                }
-                else {
-                    this.$emit('response-received', response);
-                }
-            }
-        },
-        uploadDraggedFiles (event) {
-            this.indicateDrag = false;
-            let files = event.dataTransfer.files;
-
-            if (!files) {
-                return;
-            }
-
-            this.uploadInputFiles(files);
-        },
-        uploadInputFiles (files) {
-            this.showAddActivities = false;
-
-            [...files].forEach(f => this.upload.files.push(f));
-            if(!this.upload.progressing) {
-                this.upload.progressing = true;
-                this.progress.loaded = 0;
-                this.handleUploads();
-            }
-        },
-        async handleUploads () {
-            let file = null, response = null;
-            while((file = this.upload.files.shift()) !== undefined) {
-
-                if(this.limits.maxUploadFilesize && this.limits.maxUploadFilesize < file.size) {
-                    await this.$refs.alert.open('Datei zu groß', "'" + file.name + "' übersteigt die maximale Uploadgröße.");
-                    continue;
-                }
-                this.progress.file = file.name;
-                try {
-                    response = await PromisedXhr(
-                        url_query.create(this.routes.uploadFile, { folder: this.currentFolder }),
-                        'POST',
-                        {
-                            'Content-type': file.type || 'application/octet-stream',
-                            'X-File-Name': file.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
-                            'X-File-Size': file.size,
-                            'X-File-Type': file.type
-                        },
-                        file,
-                        null,
-                        e => {
-                            this.progress.total = e.total;
-                            this.progress.loaded = e.loaded;
-                        },
-                        this.upload.cancelToken
-                    );
-                    this.files = response.files || this.files;
-                } catch(err) {
-                    this.upload.files = [];
-                    this.upload.progressing = false;
-                    return;
-                }
-
-                if(!response.success) {
-                    this.$emit('response-received', response);
-                    this.upload.files = [];
-                    this.upload.progressing = false;
-                    return;
-                }
-            }
-            this.upload.progressing = false;
-            if(response) {
-                this.$emit('response-received', { success: true, message: response.message || 'File upload successful' });
-            }
-        },
-        cancelUpload () {
-            if(this.upload.cancelToken.cancel) {
-                this.upload.cancelToken.cancel();
-                this.upload.cancelToken = {};
-            }
-        },
-        doSearch (term) {
-            if(term.trim().length > 2) {
-                return SimpleFetch(url_query.create(this.routes.search, { search: term }));
-            }
-            return { files: [], folders: [] };
+        this.currentFolder = id;
+        if(response.breadcrumbs) {
+          this.breadcrumbs = response.breadcrumbs;
         }
+      }
     },
+    async delSelection () {
+      let response = await SimpleFetch(url_query.create(this.routes.delSelection, { files: this.checkedFiles.map(item => item.id).join(","), folders: this.checkedFolders.map(item => item.id).join(",") }), 'DELETE');
+      if(response.success) {
+        this.files = response.files || [];
+        this.folders = response.folders || [];
+      }
+      else if(response.error) {
+        this.$emit('response-received', response);
+        this.files = response.files || this.files;
+        this.folders = response.folders || this.folders;
+      }
+    },
+    async moveSelection () {
+      let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
 
-    directives: {
-        focus: Focus,
-        checkIndeterminate: {
-            update (el, binding, vnode) {
-                let filteredLength = vnode.context.checkedFolders.length + vnode.context.checkedFiles.length;
-                if (!filteredLength) {
-                    el.checked = false;
-                }
-                el.indeterminate = filteredLength && filteredLength !== vnode.context.folders.length + vnode.context.files.length;
-            }
+      if (folder !== false) {
+        let response = await SimpleFetch(url_query.create(this.routes.moveSelection, { destination: folder.id }), 'POST', {}, JSON.stringify({
+          files: this.checkedFiles.map(item => item.id),
+          folders: this.checkedFolders.map(item => item.id)
+        }));
+
+        if(response.success) {
+          this.files = response.files || [];
+          this.folders = response.folders || [];
         }
+        else if(response.error) {
+          this.$emit('response-received', response);
+          this.files = response.files || this.files;
+          this.folders = response.folders || this.folders;
+        }
+      }
     },
 
-    filters: {
-        formatFilesize: formatFilesize
+    async editFile (row) {
+      this.showEditForm = true;
+      let response = await SimpleFetch(url_query.create(this.routes.getFile, { id: row.id }));
+      this.editFormData = response.form || {};
+      this.editFileInfo = response.fileInfo || {};
+      this.editFormData.id = row.id;
+    },
+    async delFile (row) {
+      if(await this.$refs.confirm.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
+        let response = await SimpleFetch(url_query.create(this.routes.delFile, { id: row.id }), 'DELETE');
+        if(response.success) {
+          this.files.splice(this.files.findIndex(item => row === item), 1);
+        }
+      }
+    },
+    async renameFile (event) {
+      let name = event.target.value.trim();
+      if(name && this.toRename) {
+        let response = await SimpleFetch(this.routes.renameFile, 'POST', {}, JSON.stringify({name: name, id: this.toRename.id }));
+        if(response.success) {
+          this.toRename.name = response.name || name;
+          this.toRename = null;
+        }
+      }
+    },
+    async renameFolder (event) {
+      let name = event.target.value.trim();
+      if(name && this.toRename) {
+        let response = await SimpleFetch(this.routes.renameFolder, 'POST', {}, JSON.stringify({name: name, folder: this.toRename.id }));
+        if(response.success) {
+          this.toRename.name = response.name || name;
+          this.toRename = null;
+        }
+      }
+    },
+    async delFolder (row) {
+      if(await this.$refs.confirm.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?", { cancelLabel: "Abbrechen" })) {
+        let response = await SimpleFetch(url_query.create(this.routes.delFolder, { folder: row.id }), 'DELETE');
+        if(response.success) {
+          this.folders.splice(this.folders.findIndex(item => row === item), 1);
+        }
+      }
+    },
+    async createFolder (name) {
+      this.showAddActivities = false;
+
+      let response = await SimpleFetch(this.routes.addFolder, 'POST', {}, JSON.stringify({ name: name, parent: this.currentFolder }));
+      if(response.folder) {
+        this.folders.push(response.folder);
+      }
+    },
+    async moveFile (row) {
+      let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
+
+      if (folder !== false) {
+        let response = await SimpleFetch(this.routes.moveFile, 'POST', {}, JSON.stringify({
+          id: row.id,
+          folderId: folder.id
+        }));
+        if (response.success) {
+          this.files.splice(this.files.findIndex(item => row === item), 1);
+        }
+        else {
+          this.$emit('response-received', response);
+        }
+      }
+    },
+    uploadDraggedFiles (event) {
+      this.indicateDrag = false;
+      let files = event.dataTransfer.files;
+
+      if (!files) {
+        return;
+      }
+
+      this.uploadInputFiles(files);
+    },
+    uploadInputFiles (files) {
+      this.showAddActivities = false;
+
+      [...files].forEach(f => this.upload.files.push(f));
+      if(!this.upload.progressing) {
+        this.upload.progressing = true;
+        this.progress.loaded = 0;
+        this.handleUploads();
+      }
+    },
+    async handleUploads () {
+      let file = null, response = null;
+      while((file = this.upload.files.shift()) !== undefined) {
+
+        if(this.limits.maxUploadFilesize && this.limits.maxUploadFilesize < file.size) {
+          await this.$refs.alert.open('Datei zu groß', "'" + file.name + "' übersteigt die maximale Uploadgröße.");
+          continue;
+        }
+        this.progress.file = file.name;
+        try {
+          response = await PromisedXhr(
+              url_query.create(this.routes.uploadFile, { folder: this.currentFolder }),
+              'POST',
+              {
+                'Content-type': file.type || 'application/octet-stream',
+                'X-File-Name': file.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
+                'X-File-Size': file.size,
+                'X-File-Type': file.type
+              },
+              file,
+              null,
+              e => {
+                this.progress.total = e.total;
+                this.progress.loaded = e.loaded;
+              },
+              this.upload.cancelToken
+          );
+          this.files = response.files || this.files;
+        } catch(err) {
+          this.upload.files = [];
+          this.upload.progressing = false;
+          return;
+        }
+
+        if(!response.success) {
+          this.$emit('response-received', response);
+          this.upload.files = [];
+          this.upload.progressing = false;
+          return;
+        }
+      }
+      this.upload.progressing = false;
+      if(response) {
+        this.$emit('response-received', { success: true, message: response.message || 'File upload successful' });
+      }
+    },
+    cancelUpload () {
+      if(this.upload.cancelToken.cancel) {
+        this.upload.cancelToken.cancel();
+        this.upload.cancelToken = {};
+      }
+    },
+    doSearch (term) {
+      if(term.trim().length > 2) {
+        return SimpleFetch(url_query.create(this.routes.search, { search: term }));
+      }
+      return { files: [], folders: [] };
     }
+  },
+
+  directives: {
+    focus: Focus,
+    checkIndeterminate: {
+      update (el, binding, vnode) {
+        let filteredLength = vnode.context.checkedFolders.length + vnode.context.checkedFiles.length;
+        if (!filteredLength) {
+          el.checked = false;
+        }
+        el.indeterminate = filteredLength && filteredLength !== vnode.context.folders.length + vnode.context.files.length;
+      }
+    }
+  },
+
+  filters: {
+    formatFilesize: formatFilesize
+  }
 });
 
 // CONCATENATED MODULE: ./vue/components/filemanager.vue?vue&type=script&lang=js&
@@ -3846,8 +3937,8 @@ function formatFilesize (size, sep) {
 
 var filemanager_component = normalizeComponent(
   components_filemanagervue_type_script_lang_js_,
-  filemanagervue_type_template_id_6c2bf96e_render,
-  filemanagervue_type_template_id_6c2bf96e_staticRenderFns,
+  filemanagervue_type_template_id_db7272d2_render,
+  filemanagervue_type_template_id_db7272d2_staticRenderFns,
   false,
   null,
   null,

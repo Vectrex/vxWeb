@@ -130,19 +130,6 @@
                 </div>
             </div>
         </div>
-        <div class="modal active" v-if="showFolderTree">
-            <div class="modal-overlay"></div>
-            <div class="modal-container">
-                <div class="modal-header">
-                    <a href="#close" class="btn btn-clear float-right" aria-label="Close" @click.prevent="showFolderTree = false"></a>
-                    <div class="modal-title h5">Zielordner wählen&hellip;</div>
-                </div>
-                <div class="modal-body">
-                    <simple-tree :branch="root" @branch-selected="moveToFolder"></simple-tree>
-                </div>
-            </div>
-        </div>
-
         <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
         <alert ref="alert" :config="{ label: 'Ok', buttonClass: 'btn-error' }"></alert>
         <folder-tree ref="folder-tree" />
@@ -192,9 +179,7 @@ export default {
       folders: [],
       breadcrumbs: [],
       toRename: null,
-      toMove: null,
       showEditForm: false,
-      showFolderTree: false,
       showAddActivities: false,
       indicateDrag: false,
       upload: {
@@ -289,8 +274,26 @@ export default {
       }
     },
     async moveSelection () {
-      let response = await SimpleFetch(this.routes.moveSelection,'POST', {},JSON.stringify({ files: this.checkedFiles.map(item => item.id), folders: this.checkedFolders.map(item => item.id) }));
+      let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
+
+      if (folder !== false) {
+        let response = await SimpleFetch(UrlQuery.create(this.routes.moveSelection, { destination: folder.id }), 'POST', {}, JSON.stringify({
+          files: this.checkedFiles.map(item => item.id),
+          folders: this.checkedFolders.map(item => item.id)
+        }));
+
+        if(response.success) {
+          this.files = response.files || [];
+          this.folders = response.folders || [];
+        }
+        else if(response.error) {
+          this.$emit('response-received', response);
+          this.files = response.files || this.files;
+          this.folders = response.folders || this.folders;
+        }
+      }
     },
+
     async editFile (row) {
       this.showEditForm = true;
       let response = await SimpleFetch(UrlQuery.create(this.routes.getFile, { id: row.id }));
@@ -342,25 +345,16 @@ export default {
         this.folders.push(response.folder);
       }
     },
-    async getFolderTree (row) {
-      this.toMove = row;
-      /*
-      let response = await SimpleFetch(UrlQuery.create(this.routes.getFoldersTree, { folder: this.currentFolder }));
-      this.showFolderTree = true;
-      this.root = response;
-       */
-      console.log(await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder));
-    },
-    async moveToFolder (folder) {
-      if(this.toMove) {
+    async moveFile (row) {
+      let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
+
+      if (folder !== false) {
         let response = await SimpleFetch(this.routes.moveFile, 'POST', {}, JSON.stringify({
-          id: this.toMove.id,
+          id: row.id,
           folderId: folder.id
         }));
         if (response.success) {
-          this.files.splice(this.files.findIndex(item => this.toMove === item), 1);
-          this.toMove = null;
-          this.showFolderTree = false;
+          this.files.splice(this.files.findIndex(item => row === item), 1);
         }
         else {
           this.$emit('response-received', response);
