@@ -1,7 +1,7 @@
 <template>
     <div class="mx-2" v-if="files.length || folders.length">
         <button class="btn btn-link webfont-icon-only tooltip" :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner löschen'" type="button" @click="confirmDelete">&#xe011;</button>
-        <button class="btn btn-link webfont-icon-only tooltip" :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner verschieben'" type="button" @click="pickFolder">&#xe02a;</button>
+        <button class="btn btn-link webfont-icon-only tooltip" :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner verschieben'" type="button" @click="pickFolder">&#xe02d;&#xe032;&#xe00e;</button>
     </div>
 </template>
 

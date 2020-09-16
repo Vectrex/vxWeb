@@ -2666,12 +2666,12 @@ var filemanager_add_component = normalizeComponent(
 )
 
 /* harmony default export */ var filemanager_add = (filemanager_add_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager/filemanager-actions.vue?vue&type=template&id=3439351d&
-var filemanager_actionsvue_type_template_id_3439351d_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return (_vm.files.length || _vm.folders.length)?_c('div',{staticClass:"mx-2"},[_c('button',{staticClass:"btn btn-link webfont-icon-only tooltip",attrs:{"data-tooltip":_vm.files.length + _vm.folders.length + ' gewählte Dateien/Ordner löschen',"type":"button"},on:{"click":_vm.confirmDelete}},[_vm._v("")]),_c('button',{staticClass:"btn btn-link webfont-icon-only tooltip",attrs:{"data-tooltip":_vm.files.length + _vm.folders.length + ' gewählte Dateien/Ordner verschieben',"type":"button"},on:{"click":_vm.pickFolder}},[_vm._v("")])]):_vm._e()}
-var filemanager_actionsvue_type_template_id_3439351d_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager/filemanager-actions.vue?vue&type=template&id=45b0484a&
+var filemanager_actionsvue_type_template_id_45b0484a_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return (_vm.files.length || _vm.folders.length)?_c('div',{staticClass:"mx-2"},[_c('button',{staticClass:"btn btn-link webfont-icon-only tooltip",attrs:{"data-tooltip":_vm.files.length + _vm.folders.length + ' gewählte Dateien/Ordner löschen',"type":"button"},on:{"click":_vm.confirmDelete}},[_vm._v("")]),_c('button',{staticClass:"btn btn-link webfont-icon-only tooltip",attrs:{"data-tooltip":_vm.files.length + _vm.folders.length + ' gewählte Dateien/Ordner verschieben',"type":"button"},on:{"click":_vm.pickFolder}},[_vm._v("")])]):_vm._e()}
+var filemanager_actionsvue_type_template_id_45b0484a_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/filemanager/filemanager-actions.vue?vue&type=template&id=3439351d&
+// CONCATENATED MODULE: ./vue/components/filemanager/filemanager-actions.vue?vue&type=template&id=45b0484a&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/filemanager/filemanager-actions.vue?vue&type=script&lang=js&
 //
@@ -2711,8 +2711,8 @@ var filemanager_actionsvue_type_template_id_3439351d_staticRenderFns = []
 
 var filemanager_actions_component = normalizeComponent(
   filemanager_filemanager_actionsvue_type_script_lang_js_,
-  filemanager_actionsvue_type_template_id_3439351d_render,
-  filemanager_actionsvue_type_template_id_3439351d_staticRenderFns,
+  filemanager_actionsvue_type_template_id_45b0484a_render,
+  filemanager_actionsvue_type_template_id_45b0484a_staticRenderFns,
   false,
   null,
   null,
