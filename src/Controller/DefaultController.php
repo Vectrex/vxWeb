@@ -50,7 +50,7 @@ class DefaultController extends Controller
                     array_shift($pathSegments);
                 }
 
-                if(count($pathSegments)) {
+                if(count($pathSegments) && $pathSegments[0]) {
 					$pageAlias = array_pop($pathSegments);
 				}
 
