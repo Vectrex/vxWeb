@@ -61,7 +61,7 @@
                 <button v-if="slotProps.row.isFolder" class="btn btn-link webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
                 <template v-else>
                     <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFile(slotProps.row)">&#xe002;</button>
-                    <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.getFolderTree(slotProps.row)">&#xe004;</button>
+                    <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.getFolderTree(slotProps.row)">&#xe02d;&#xe032;&#xe00e;</button>
                     <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Löschen" type="button" @click="$refs.fm.delFile(slotProps.row)">&#xe011;</button>
                 </template>
             </template>
@@ -80,8 +80,9 @@
                     <img :src="slotProps.item.type" alt="" v-if="slotProps.item.isThumb" class="img-responsive">
                     <div style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" v-else>{{ slotProps.item.type }}</div>
                 </div>
-                <div class="d-inline-block col-1">
+                <div class="d-inline-block col-2">
                     <button class="btn webfont-icon-only tooltip" data-tooltip="Verlinkung entfernen" type="button" @click="unlinkSort(slotProps.item)">&#xe014;</button>
+                    <button class="btn webfont-icon-only tooltip" :data-tooltip="slotProps.item.hidden ? 'Anzeigen' : 'Verstecken'" type="button" @click="toggleVisibility(slotProps.item)">{{ slotProps.item.hidden ? '&#xe015;' : '&#xe016;' }}</button>
                 </div>
                 <a class="d-inline-block col-3" :href="'#' + slotProps.item.folderid" @click.prevent="gotoFolder(slotProps.item.folderid)">{{ slotProps.item.path }}</a>
             </template>
@@ -132,9 +133,9 @@
             linkedFiles: [],
             activeTabIndex: 0,
             tabItems: [
-                { name: 'Inhalt', disabled: true },
-                { name: 'Dateien', disabled: true },
-                { name: 'Sortierung', disabled: true }
+                { name: 'Artikelinhalt', disabled: true },
+                { name: 'Verlinkte Dateien', disabled: true },
+                { name: 'Sortierung und Sichtbarkeit verlinkter Dateien', disabled: true }
             ],
             toastProps: {
                 message: "",
@@ -202,7 +203,8 @@
             init: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_init')->getUrl() ?>",
             link: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_link_file')->getUrl() ?>",
             getLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('get_linked_files')->getUrl() ?>",
-            updateLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('update_linked_files')->getUrl() ?>"
+            updateLinkedFiles: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('update_linked_files')->getUrl() ?>",
+            toggleLinkedFile: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('toggle_linked_files')->getUrl() ?>"
         },
 
         limits: {
@@ -262,6 +264,12 @@
             unlinkSort (file) {
                 this.linkedFiles.splice(this.linkedFiles.indexOf(file), 1);
                 this.saveSort();
+            },
+            async toggleVisibility (file) {
+                let response = await SimpleFetch(this.$options.routes.toggleLinkedFile + '?article=' + this.instanceId, 'POST', {}, JSON.stringify({ fileId: file.id }));
+                if (response.success) {
+                    file.hidden = !!response.hidden;
+                }
             },
             gotoFolder (folderId) {
                 this.fmProps.folder = folderId;

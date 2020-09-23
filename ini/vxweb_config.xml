@@ -42,6 +42,7 @@
 		<page id="article_link_file" controller="admin/articles" method="fileLink" auth="privileged" request_methods="POST" />
 		<page id="get_linked_files" controller="admin/articles" method="getLinkedFiles" auth="privileged" />
 		<page id="update_linked_files" controller="admin/articles" method="updateLinkedFiles" auth="privileged" request_methods="POST" />
+		<page id="toggle_linked_files" controller="admin/articles" method="toggleLinkedFile" auth="privileged" request_methods="POST" />
 
 		<page id="article_files_init" controller="admin/files" method="init" auth="privileged" />
 		<page id="article_file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
@@ -62,6 +63,7 @@
 		<page id="folder_rename" controller="admin/files" method="folderRename" auth="privileged" request_methods="POST" />
 		<page id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
 		<page id="selection_del" controller="admin/files" method="selectionDel" auth="privileged" request_methods="DELETE" />
+		<page id="selection_move" controller="admin/files" method="selectionMove" auth="privileged" request_methods="POST" />
 
 		<page id="filepicker" controller="admin/files" auth="privileged" />
 	</pages>

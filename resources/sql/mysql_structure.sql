@@ -115,6 +115,7 @@ DROP TABLE IF EXISTS `articles_files`;
 CREATE TABLE `articles_files` (
   `articlesID` int(11) NOT NULL,
   `filesID` int(11) NOT NULL,
+  `hidden` tinyint DEFAULT NULL,
   `customSort` int(11) DEFAULT NULL,
   `updatedBy` int(11) DEFAULT NULL,
   `createdBy` int(11) DEFAULT NULL,

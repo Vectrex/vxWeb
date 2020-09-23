@@ -22,7 +22,8 @@
 		"ext-zip": "*",
 		"ext-gd": "*",
 		"ext-dom": "*",
-		"vectrex/vxphp": "^2.2.0",
+		"ext-json": "*",
+		"vectrex/vxphp": "^2.3.0",
 		"ivopetkov/html5-dom-document-php": "^2.0.0",
 		"ckeditor/ckeditor": "dev-full/stable"
     },

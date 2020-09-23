@@ -138,7 +138,7 @@ class ArticlesController extends Controller {
         return new JsonResponse([
             'form' => $formData ?? null,
             'options' => [
-                'categories' => (array) $db->doPreparedQuery("SELECT articlecategoriesid AS id, title FROM articlecategories ORDER BY title")
+                'categories' => (array) $db->doPreparedQuery("SELECT articlecategoriesid AS " . $db->quoteIdentifier('key') . ", title AS label FROM articlecategories ORDER BY title")
             ]
         ]);
     }
@@ -330,14 +330,17 @@ class ArticlesController extends Controller {
 
         $rows = [];
 
-        foreach($article->getLinkedMetaFiles() as $mf) {
+        $visibleFiles = $article->getLinkedMetaFiles();
+
+        foreach($article->getLinkedMetaFiles(true) as $mf) {
             $rows[] = [
                 'id' => $mf->getId(),
                 'folderid' => $mf->getMetaFolder()->getId(),
                 'filename' => $mf->getFilename(),
                 'isThumb' => $mf->isWebImage(),
                 'type' => $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
-                'path' => $mf->getMetaFolder()->getRelativePath()
+                'path' => $mf->getMetaFolder()->getRelativePath(),
+                'hidden' => !in_array($mf, $visibleFiles)
             ];
         }
 
@@ -354,15 +357,35 @@ class ArticlesController extends Controller {
         }
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
-        foreach($article->getLinkedMetaFiles() as $mf) {
-            $article->unlinkMetaFile($mf);
-        }
-        foreach(MetaFile::getInstancesByIds($bag->get('fileIds', [])) as $mf) {
-            $article->linkMetaFile($mf);
+        foreach(MetaFile::getInstancesByIds($bag->get('fileIds', [])) as $ndx => $mf) {
+            $article->setCustomSortOfMetaFile($mf, $ndx);
         }
         $article->save();
 
         return new JsonResponse(['success' => true]);
+    }
+
+    protected function toggleLinkedFile (): JsonResponse
+    {
+        try {
+            $article = Article::getInstance($this->request->query->getInt('article'));
+        }
+        catch (MetaFileException $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $fileId = $bag->get('fileId');
+
+        $linkedFiles = $article->getLinkedMetaFiles(true);
+        foreach ($article->getLinkedMetaFiles(true) as $file) {
+            if ($file->getId() === $fileId) {
+                $newState = !$article->getLinkedFileVisibility($file);
+                $article->setLinkedFileVisibility($file, $newState);
+                $article->save();
+                return new JsonResponse (['success' => true, 'hidden' => !$newState]);
+            }
+        }
+        return new JsonResponse(null, Response::HTTP_NOT_FOUND);
     }
 
 	/**

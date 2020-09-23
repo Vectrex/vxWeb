@@ -7,7 +7,7 @@
             <button v-if="slotProps.row.isFolder" class="btn btn-link webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
             <template v-else>
                 <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFile(slotProps.row)">&#xe002;</button>
-                <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.getFolderTree(slotProps.row)">&#xe02a;</button>
+                <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.moveFile(slotProps.row)">&#xe02d;&#xe032;&#xe00e;</button>
                 <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Löschen" type="button" @click="$refs.fm.delFile(slotProps.row)">&#xe011;</button>
             </template>
         </template>
@@ -45,7 +45,8 @@
             renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
             addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>",
             search:  "<?= $router->getRoute('files_search')->getUrl() ?>",
-            delSelection: "<?= $router->getRoute('selection_del')->getUrl() ?>"
+            delSelection: "<?= $router->getRoute('selection_del')->getUrl() ?>",
+            moveSelection: "<?= $router->getRoute('selection_move')->getUrl() ?>"
         },
         limits: {
             maxExecutionTime: <?= $this->max_execution_time_ms ?>,

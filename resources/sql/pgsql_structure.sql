@@ -201,6 +201,7 @@ DROP TABLE IF EXISTS "articles_files";
 CREATE TABLE "articles_files" (
 "filesid" int4 NOT NULL,
 "articlesid" int4 NOT NULL,
+"hidden" int2,
 "customsort" int2,
 "updatedby" int4,
 "createdby" int4,

@@ -15,6 +15,7 @@
         data () { return {
             show: false
         }},
-        props: { value: String }
+        props: { value: String },
+        inheritAttrs: false
     }
 </script>

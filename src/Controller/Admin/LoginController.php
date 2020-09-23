@@ -28,12 +28,11 @@ class LoginController extends Controller
 
 			    /* @var $route Route */
 
-				if(in_array($route->getRouteId(), ['login', 'logout'])) {
+				if(in_array($route->getRouteId(), ['login', 'logout', 'auth_violation'])) {
 					continue;
 				}
 
 				return $this->redirect($route->getUrl());
-				break;
 			}
 		}
 

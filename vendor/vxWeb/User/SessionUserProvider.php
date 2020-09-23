@@ -25,7 +25,7 @@ use vxPHP\User\SimpleSessionUserProvider;
  * session after initialization
  * 
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.5.0, 2020-04-17
+ * @version 0.5.1, 2020-08-02
  *        
  */
 class SessionUserProvider extends SimpleSessionUserProvider implements UserProviderInterface {
@@ -50,7 +50,7 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 	 */
 	public function refreshUser(UserInterface $user)
     {
-	    $u = $this->getUserRow($user->getUsername());
+	    $u = $this->getUserRows($user->getUsername())->current();
 
 		if(!$u) {
 			throw new UserException(sprintf("User '%s' no longer exists.", $user->getUsername()));
@@ -80,7 +80,7 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 	 */
 	public function instanceUserByUsername($username): SessionUser
     {
-        $rows = $this->getUserRow($username, 'username');
+        $rows = $this->getUserRows($username, 'username');
 
         if(count($rows) !== 1) {
             throw new UserException(sprintf("User identified by username '%s' not found or not unique.", $username));
@@ -96,7 +96,7 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
      */
 	public function instanceUserByEmail (string $email): SessionUser
     {
-        $rows = $this->getUserRow($email, 'email');
+        $rows = $this->getUserRows($email, 'email');
 
         if(count($rows) !== 1) {
             throw new UserException(sprintf("User identified by e-mail '%s' not found or not unique.", $email));
@@ -113,7 +113,7 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
      * @param string $column
      * @return RecordsetIteratorInterface
      */
-	private function getUserRow(string $value, string $column = 'username'): RecordsetIteratorInterface
+	private function getUserRows(string $value, string $column = 'username'): RecordsetIteratorInterface
     {
         $rows = $this->db->doPreparedQuery(sprintf("
 			SELECT

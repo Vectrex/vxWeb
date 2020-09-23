@@ -5338,6 +5338,16 @@ a.text-error:visited
     content: '\e016';
 }
 
+.required
+{
+    font-weight: bold;
+}
+
+.required:after
+{
+    content: '*';
+}
+
 .form-autocomplete[data-loading='true']::after
 {right: .8rem; 
     left: auto;
@@ -6217,6 +6227,61 @@ table#files-list tr td:nth-child(6)
 }
 
 #article-files table#files-list tr td:nth-child(6)
+{
+    text-align: right;
+}
+
+#file-picker table#files-list tr th:nth-child(1)
+{width: 40%; 
+
+    text-align: left;
+}
+
+#file-picker table#files-list tr td:nth-child(1)
+{
+    text-align: left;
+}
+
+#file-picker table#files-list tr th:nth-child(2)
+{width: 10%; 
+
+    text-align: right;
+}
+
+#file-picker table#files-list tr td:nth-child(2)
+{
+    text-align: right;
+}
+
+#file-picker table#files-list tr th:nth-child(3)
+{width: 20%; 
+
+    text-align: center;
+}
+
+#file-picker table#files-list tr td:nth-child(3)
+{
+    text-align: center;
+}
+
+#file-picker table#files-list tr th:nth-child(4)
+{width: 20%; 
+
+    text-align: right;
+}
+
+#file-picker table#files-list tr td:nth-child(4)
+{
+    text-align: right;
+}
+
+#file-picker table#files-list tr th:nth-child(5)
+{width: 10%; 
+
+    text-align: right;
+}
+
+#file-picker table#files-list tr td:nth-child(5)
 {
     text-align: right;
 }

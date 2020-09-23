@@ -488,12 +488,78 @@ class FilesController extends Controller
         }
         if(count($errors)) {
             return new JsonResponse([
-                'error' => 1, 'message' => $errors, 'files' => $files ?? [], 'folders' => $folders
+                'error' => 1, 'message' => $errors, 'files' => $files, 'folders' => $folders
             ]);
         }
         return new JsonResponse([
-            'success' => true, 'files' => $files ?? [], 'folders' => $folders
+            'success' => true, 'files' => $files, 'folders' => $folders
         ]);
+    }
+
+    protected function selectionMove (): JsonResponse
+    {
+        if(($destination = $this->getRequest()->query->getInt('destination')) === null) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $destinationFolder = MetaFolder::getInstance(null, $destination);
+        }
+        catch (MetaFolderException $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $bag = new ParameterBag(json_decode($this->getRequest()->getContent(), true));
+
+        $fileIds = $bag->get('files', []);
+        $folderIds = $bag->get('folders', []);
+
+        if (empty($fileIds) && empty($folderIds)) {
+            return new JsonResponse();
+        }
+
+        // avoid moving folders into themselves
+
+        if (in_array($destination, $folderIds, true)) {
+            return new JsonResponse(['success' => false, 'message' => 'Ordner kann nicht in sich selbst verschoben werden.']);
+        }
+
+        // do moving
+
+        try {
+            $files = MetaFile::getInstancesByIds($fileIds);
+        }
+        catch (MetaFileException $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $folders = MetaFolder::getInstancesByIds($folderIds);
+        }
+        catch (MetaFolderException $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $currentFolderId = count($files) ? $files[0]->getMetaFolder()->getId() : $folders[0]->getParentMetafolder()->getId();
+
+        try {
+            foreach ($files as $file) {
+                $file->move($destinationFolder);
+            }
+        }
+        catch (MetaFileException $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
+        try {
+            foreach ($folders as $folder) {
+                $folder->move($destinationFolder);
+            }
+        }
+        catch (MetaFolderException $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
+        }
+
+        $currentFolder = MetaFolder::getInstance(null, $currentFolderId);
+        return new JsonResponse(['id' => $currentFolderId, 'success' => true, 'files' => $this->getFileRows($currentFolder), 'folders' => $this->getFolderRows($currentFolder)]);
     }
 
     /**
@@ -513,7 +579,7 @@ class FilesController extends Controller
 
         if(in_array($route->getRouteId(), ['article_files_init', 'article_folder_read', 'article_file_upload']) && ($articleId = $this->request->query->getInt('article'))) {
             try {
-                $linkedFiles = Article::getInstance($articleId)->getLinkedMetaFiles();
+                $linkedFiles = Article::getInstance($articleId)->getLinkedMetaFiles(true);
             }
             catch (ArticleException $e) {
                 $linkedFiles = [];
