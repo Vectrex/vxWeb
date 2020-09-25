@@ -134,7 +134,7 @@ class ProfileController extends Controller {
                 $notifications = $v->get('notifications', []);
 
                 foreach($availableNotifications as $n) {
-                    if(in_array($n->alias, $notifications)) {
+                    if(in_array($n->alias, $notifications, true)) {
                         $n->subscribe($admin);
                     }
                     else {
@@ -147,13 +147,16 @@ class ProfileController extends Controller {
                 // refresh user data if username hasn't changed
 
                 if($v['username'] === $admin->getUsername()) {
+
+                    // a changed password sets User::authenticated to false
+
                     $userProvider->refreshUser($admin);
                 }
                 else {
-                    $previousUser = $userProvider->unsetSessionUser();
+                    $userProvider->unsetSessionUser();
                     $admin = $userProvider->instanceUserByUsername($v['username']);
-                    $admin->setAuthenticated($previousUser->isAuthenticated());
                 }
+                $admin->setAuthenticated(true);
 
                 return new JsonResponse(['success' => true, 'message' => 'Daten erfolgreich übernommen.']);
 
