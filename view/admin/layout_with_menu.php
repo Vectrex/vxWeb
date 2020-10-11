@@ -20,7 +20,7 @@
 
             <div class="columns">
                 <div id="sidebar" class="column">
-                    <?= vxPHP\Webpage\MenuGenerator::create('admin', 0, null, null, ['ulClass' => 'nav', 'liClass' => 'nav-item', 'containerTag' => ''])->render() ?>
+                    <?= vxPHP\Webpage\MenuGenerator::create('admin', 0, false, null, ['ulClass' => 'nav', 'liClass' => 'nav-item', 'containerTag' => ''])->render() ?>
                 </div>
 
                 <div id="content" class="column">
