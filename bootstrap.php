@@ -2,6 +2,9 @@
 
 // enable error reporting (might be disabled at end of bootstrap)
 
+use vxPHP\Application\Exception\ConfigException;
+use vxWeb\Config\Parser\CustomVxweb;
+
 ini_set('display_errors', true);
 error_reporting(E_ALL & ~(E_STRICT|E_DEPRECATED));
 
@@ -46,12 +49,12 @@ if(file_exists($cachedConfigFilename)) {
 	$cachedIsValid = true;
 
 	foreach(
-		new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator(
+		new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator(
 				$iniPath,
-				\FilesystemIterator::SKIP_DOTS
+				FilesystemIterator::SKIP_DOTS
 			),
-			\RecursiveIteratorIterator::CHILD_FIRST
+			RecursiveIteratorIterator::CHILD_FIRST
 		) as $f) {
 		
 		if($f->getMTime() > $cachedFileTimestamp && strtolower($f->getExtension()) === 'xml') {
@@ -72,21 +75,16 @@ if(!isset($config)) {
 
 	// create cache path if no cached config was found and path does not exist
 
-	if(!isset($cachedFileTimestamp)) {
-
-		if(!file_exists($cachedConfigPath)) {
-			if(!mkdir($cachedConfigPath, 0777, true) && !is_dir($cachedConfigPath)) {
-				die ('Cannot create directory ' . $cachedConfigPath);
-			}
-		}
-	}
+	if(!isset($cachedFileTimestamp) && !file_exists($cachedConfigPath) && !mkdir($cachedConfigPath, 0777, true) && !is_dir($cachedConfigPath)) {
+        die ('Cannot create directory ' . $cachedConfigPath);
+    }
 
 	// create config instance
 	
 	try {
-		$config = new vxPHP\Application\Config($configFilename);
+		$config = new vxPHP\Application\Config($configFilename, ['parsers' => ['custom_vxweb' => CustomVxweb::class]]);
 	}
-	catch(\vxPHP\Application\Exception\ConfigException $e) {
+	catch(ConfigException $e) {
 		die('<h1>Cannot create Config instance</h1><pre>' . $e->getMessage() . '</pre>');
 	}
 	
