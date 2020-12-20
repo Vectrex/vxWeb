@@ -11,8 +11,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn mr-2" :class="options.okClass" @click.stop="ok" ref="okButton">{{ options.okLabel }}</button>
-                <button class="btn btn-link" @click.stop="cancel">{{ options.cancelLabel }}</button>
+                <button type="button" class="btn mr-2" :class="options.okClass" @click.prevent="ok" ref="okButton">{{ options.okLabel }}</button>
+                <button type="button" class="btn btn-link" @click.prevent="cancel">{{ options.cancelLabel }}</button>
             </div>
         </div>
     </div>

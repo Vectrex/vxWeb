@@ -161,7 +161,7 @@ class Notification {
 
 	private static function queryAllNotifications()
     {
-		$db = Application::getInstance()->getDb();
+		$db = Application::getInstance()->getVxPDO();
 		
 		$rows = $db->doPreparedQuery("
 			SELECT
