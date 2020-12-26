@@ -19,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-            <tr v-for="row in sortedRows" :key="row.key" :class="row.cssClass">
+            <tr v-for="row in sortedRows" :key="row[keyProperty]" :class="row.cssClass">
                 <td v-for="column in columns" :class="{ 'active': sortColumn === column }"><slot :name="column.prop" :row="row">{{ row[column.prop] }}</slot></td>
             </tr>
         </tbody>
@@ -63,6 +63,10 @@
                 validator (val) {
                     return !val || ['asc', 'desc'].indexOf(val) !== -1;
                 }
+            },
+            keyProperty: {
+              type: String,
+              default: 'key'
             }
         },
 
