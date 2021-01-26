@@ -43,8 +43,8 @@ if($currentUser = (new SessionUserProvider())->getSessionUser()) {
 
 // ensure the presence of a valid assets path
 
-if(!is_dir($application->getAbsoluteAssetsPath())) {
-	throw new \Exception(sprintf("Assets path '%s' not found.", $application->getRelativeAssetsPath()));
+if(!is_dir($app->getAbsoluteAssetsPath())) {
+	throw new \Exception(sprintf("Assets path '%s' not found.", $app->getRelativeAssetsPath()));
 }
 
 // set up routing
@@ -52,17 +52,17 @@ if(!is_dir($application->getAbsoluteAssetsPath())) {
 $scriptName = basename($_SERVER['SCRIPT_NAME']);
 
 $router = new Router($app->getConfig()->routes[$scriptName]);
-$application->setRouter($router);
+$app->setRouter($router);
 
 $route = $router->getRouteFromPathInfo(vxPHP\Http\Request::createFromGlobals());
-$application->setCurrentRoute($route);
+$app->setCurrentRoute($route);
 
 // render output
 
 try {
     Controller::createControllerFromRoute(
         $route,
-        $application->getApplicationNamespace(),
+        $app->getApplicationNamespace(),
         \vxPHP\Http\Request::createFromGlobals()
     )->renderResponse();
 }
