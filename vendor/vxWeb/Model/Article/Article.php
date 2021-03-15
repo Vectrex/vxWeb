@@ -402,7 +402,7 @@ class Article implements PublisherInterface {
 		}
 		
 		// store link information for linked files if linked files were changed in any way
-		
+
 		if($this->updateLinkedFiles) {
 
 			// delete all previous entries
@@ -528,7 +528,7 @@ class Article implements PublisherInterface {
 
 			$this->updateLinkedFiles = true;
 		}
-		
+
 		return $this;
 	}
 
