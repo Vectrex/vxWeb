@@ -355,11 +355,19 @@ class ArticlesController extends Controller {
         catch (MetaFileException $e) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
-        foreach(MetaFile::getInstancesByIds($bag->get('fileIds', [])) as $ndx => $mf) {
+        $filedIds = (new ParameterBag(json_decode($this->request->getContent(), true)))->get('fileIds', []);
+
+        foreach ($article->getLinkedMetaFiles() as $linkedMf) {
+            if (!in_array($linkedMf->getId(), $filedIds, true)) {
+                $article->unlinkMetaFile($linkedMf);
+            }
+        }
+
+        foreach(MetaFile::getInstancesByIds($filedIds) as $ndx => $mf) {
             $article->setCustomSortOfMetaFile($mf, $ndx);
         }
+        // var_dump($article->getLinkedMetaFiles()); exit();
         $article->save();
 
         return new JsonResponse(['success' => true]);
