@@ -2,75 +2,75 @@
 
 <config>
 
-	<pages script="admin.php" default_redirect="auth_violation">
-		<page id="auth_violation" controller="admin/authViolation" />
+	<routes script="admin.php" default_redirect="auth_violation">
+		<route id="auth_violation" controller="admin/authViolation" />
 
-		<page id="login" controller="admin/login" />
-		<page id="logout" controller="admin/logout" />
+		<route id="login" controller="admin/login" />
+		<route id="logout" controller="admin/logout" />
 
-		<page id="profile" controller="admin/profile" auth="observe_row" />
-		<page id="profile_data_get" path="profile_data" controller="admin/profile" method="get" auth="observe_row" request_methods="GET" />
-		<page id="profile_data_post" path="profile_data" controller="admin/profile" method="post" auth="observe_row" request_methods="POST" />
+		<route id="profile" controller="admin/profile" auth="observe_row" />
+		<route id="profile_data_get" path="profile_data" controller="admin/profile" method="get" auth="observe_row" request_methods="GET" />
+		<route id="profile_data_post" path="profile_data" controller="admin/profile" method="post" auth="observe_row" request_methods="POST" />
 
-		<page id="pages" controller="admin/pages" auth="superadmin" />
-		<page id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
-		<page id="page_edit" controller="admin/pages" auth="superadmin" method="edit" />
-		<page id="page_init" controller="admin/pages" auth="superadmin" method="editInit" />
-		<page id="page_update" controller="admin/pages" auth="superadmin" method="update" request_methods="POST" />
-		<page id="page_revision_load" controller="admin/pages" auth="superadmin" method="loadRevision" />
-		<page id="page_revision_activate" controller="admin/pages" auth="superadmin" method="activateRevision" request_methods="POST" />
-		<page id="page_revision_delete" controller="admin/pages" auth="superadmin" method="deleteRevision" request_methods="DELETE" />
+		<route id="pages" controller="admin/pages" auth="superadmin" />
+		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
+		<route id="page_edit" controller="admin/pages" auth="superadmin" method="edit" />
+		<route id="page_init" controller="admin/pages" auth="superadmin" method="editInit" />
+		<route id="page_update" controller="admin/pages" auth="superadmin" method="update" request_methods="POST" />
+		<route id="page_revision_load" controller="admin/pages" auth="superadmin" method="loadRevision" />
+		<route id="page_revision_activate" controller="admin/pages" auth="superadmin" method="activateRevision" request_methods="POST" />
+		<route id="page_revision_delete" controller="admin/pages" auth="superadmin" method="deleteRevision" request_methods="DELETE" />
 
-		<page id="inline_edit" controller="admin/pages" method="inlineEdit" path="pages/inline" auth="superadmin" request_methods="POST"/>
+		<route id="inline_edit" controller="admin/pages" method="inlineEdit" path="pages/inline" auth="superadmin" request_methods="POST"/>
 
-		<page id="users" controller="admin/users" path="users" auth="superadmin" />
-		<page id="users_init" controller="admin/users" auth="superadmin" method="init" />
-		<page id="user_init" controller="admin/users" auth="superadmin" method="editInit" />
-		<page id="user_add" controller="admin/users" auth="superadmin" method="add" />
-		<page id="user_del" controller="admin/users" auth="superadmin" method="del" request_methods="DELETE" />
-		<page id="user_edit" controller="admin/users" auth="superadmin" method="edit" />
-		<page id="user_update" controller="admin/users" auth="superadmin" method="update" request_methods="POST" />
+		<route id="users" controller="admin/users" path="users" auth="superadmin" />
+		<route id="users_init" controller="admin/users" auth="superadmin" method="init" />
+		<route id="user_init" controller="admin/users" auth="superadmin" method="editInit" />
+		<route id="user_add" controller="admin/users" auth="superadmin" method="add" />
+		<route id="user_del" controller="admin/users" auth="superadmin" method="del" request_methods="DELETE" />
+		<route id="user_edit" controller="admin/users" auth="superadmin" method="edit" />
+		<route id="user_update" controller="admin/users" auth="superadmin" method="update" request_methods="POST" />
 
-		<page id="articles" controller="admin/articles" auth="privileged" />
-		<page id="articles_init" controller="admin/articles" method="init" auth="privileged" />
-		<page id="article_init" controller="admin/articles" method="editInit" auth="privileged" />
-		<page id="article_add" controller="admin/articles" method="add" path="articles/add" auth="privileged" />
-		<page id="article_del" controller="admin/articles" method="del" auth="privileged" request_methods="DELETE" />
-		<page id="article_edit" controller="admin/articles" method="edit" path="articles/edit" auth="privileged" />
-		<page id="article_update" controller="admin/articles" method="update" auth="privileged" request_methods="POST" />
-		<page id="article_publish" controller="admin/articles" method="publish" auth="superadmin" request_methods="POST" />
-		<page id="article_link_file" controller="admin/articles" method="fileLink" auth="privileged" request_methods="POST" />
-		<page id="get_linked_files" controller="admin/articles" method="getLinkedFiles" auth="privileged" />
-		<page id="update_linked_files" controller="admin/articles" method="updateLinkedFiles" auth="privileged" request_methods="POST" />
-		<page id="toggle_linked_files" controller="admin/articles" method="toggleLinkedFile" auth="privileged" request_methods="POST" />
+		<route id="articles" controller="admin/articles" auth="privileged" />
+		<route id="articles_init" controller="admin/articles" method="init" auth="privileged" />
+		<route id="article_init" controller="admin/articles" method="editInit" auth="privileged" />
+		<route id="article_add" controller="admin/articles" method="add" path="articles/add" auth="privileged" />
+		<route id="article_del" controller="admin/articles" method="del" auth="privileged" request_methods="DELETE" />
+		<route id="article_edit" controller="admin/articles" method="edit" path="articles/edit" auth="privileged" />
+		<route id="article_update" controller="admin/articles" method="update" auth="privileged" request_methods="POST" />
+		<route id="article_publish" controller="admin/articles" method="publish" auth="superadmin" request_methods="POST" />
+		<route id="article_link_file" controller="admin/articles" method="fileLink" auth="privileged" request_methods="POST" />
+		<route id="get_linked_files" controller="admin/articles" method="getLinkedFiles" auth="privileged" />
+		<route id="update_linked_files" controller="admin/articles" method="updateLinkedFiles" auth="privileged" request_methods="POST" />
+		<route id="toggle_linked_files" controller="admin/articles" method="toggleLinkedFile" auth="privileged" request_methods="POST" />
 
-		<page id="article_files_init" controller="admin/files" method="init" auth="privileged" />
-		<page id="article_file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
-		<page id="article_folder_read" controller="admin/files" method="folderRead" auth="privileged" />
+		<route id="article_files_init" controller="admin/files" method="init" auth="privileged" />
+		<route id="article_file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
+		<route id="article_folder_read" controller="admin/files" method="folderRead" auth="privileged" />
 
-		<page id="files" controller="admin/files" auth="privileged" />
-		<page id="files_init" controller="admin/files" method="init" auth="privileged" />
-		<page id="files_search" controller="admin/files" method="search" auth="privileged" />
-		<page id="folders_tree" controller="admin/files" method="getFoldersTree" auth="privileged" />
-		<page id="file_get" controller="admin/files" method="fileGet" auth="privileged" />
-		<page id="file_update" controller="admin/files" method="fileUpdate" auth="privileged" request_methods="POST" />
-		<page id="file_rename" controller="admin/files" method="fileRename" auth="privileged" request_methods="POST" />
-		<page id="file_move" controller="admin/files" method="fileMove" auth="privileged" request_methods="POST" />
-		<page id="file_del" controller="admin/files" method="fileDel" auth="privileged" request_methods="DELETE" />
-		<page id="file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
-		<page id="folder_read" controller="admin/files" method="folderRead" auth="privileged" />
-		<page id="folder_add" controller="admin/files" method="folderAdd" auth="privileged" request_methods="POST" />
-		<page id="folder_rename" controller="admin/files" method="folderRename" auth="privileged" request_methods="POST" />
-		<page id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
-		<page id="selection_del" controller="admin/files" method="selectionDel" auth="privileged" request_methods="DELETE" />
-		<page id="selection_move" controller="admin/files" method="selectionMove" auth="privileged" request_methods="POST" />
+		<route id="files" controller="admin/files" auth="privileged" />
+		<route id="files_init" controller="admin/files" method="init" auth="privileged" />
+		<route id="files_search" controller="admin/files" method="search" auth="privileged" />
+		<route id="folders_tree" controller="admin/files" method="getFoldersTree" auth="privileged" />
+		<route id="file_get" controller="admin/files" method="fileGet" auth="privileged" />
+		<route id="file_update" controller="admin/files" method="fileUpdate" auth="privileged" request_methods="POST" />
+		<route id="file_rename" controller="admin/files" method="fileRename" auth="privileged" request_methods="POST" />
+		<route id="file_move" controller="admin/files" method="fileMove" auth="privileged" request_methods="POST" />
+		<route id="file_del" controller="admin/files" method="fileDel" auth="privileged" request_methods="DELETE" />
+		<route id="file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
+		<route id="folder_read" controller="admin/files" method="folderRead" auth="privileged" />
+		<route id="folder_add" controller="admin/files" method="folderAdd" auth="privileged" request_methods="POST" />
+		<route id="folder_rename" controller="admin/files" method="folderRename" auth="privileged" request_methods="POST" />
+		<route id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
+		<route id="selection_del" controller="admin/files" method="selectionDel" auth="privileged" request_methods="DELETE" />
+		<route id="selection_move" controller="admin/files" method="selectionMove" auth="privileged" request_methods="POST" />
 
-		<page id="filepicker" controller="admin/files" auth="privileged" />
-	</pages>
+		<route id="filepicker" controller="admin/files" auth="privileged" />
+	</routes>
 
-	<pages script="installer.php">
-		<page id="installer" controller="installer/installer"/>
-	</pages>
+	<routes script="installer.php">
+		<route id="installer" controller="installer/installer"/>
+	</routes>
 
 	<menus>
 		<menu id="admin" script="admin.php" auth="privileged">

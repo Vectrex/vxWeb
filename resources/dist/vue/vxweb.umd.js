@@ -1487,13 +1487,40 @@ var circular_progress_component = normalizeComponent(
 )
 
 /* harmony default export */ var circular_progress = (circular_progress_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/autocomplete.vue?vue&type=template&id=26c4faf0&
-var autocompletevue_type_template_id_26c4faf0_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',_vm._b({ref:"container"},'div',_vm.containerProps,false),[_c('input',_vm._g(_vm._b({ref:"input",on:{"input":_vm.handleInput,"keydown":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.handleEnter($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }return _vm.handleEsc($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"tab",9,$event.key,"Tab")){ return null; }return _vm.handleTab($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"up",38,$event.key,["Up","ArrowUp"])){ return null; }$event.preventDefault();return _vm.handleUp($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"down",40,$event.key,["Down","ArrowDown"])){ return null; }$event.preventDefault();return _vm.handleDown($event)}],"focus":_vm.handleFocus,"blur":_vm.handleBlur}},'input',_vm.inputProps,false),_vm.$listeners)),_c('ul',_vm._b({ref:"resultList",on:{"click":_vm.handleResultClick,"mousedown":function($event){$event.preventDefault();}}},'ul',_vm.resultListProps,false),[_vm._l((_vm.results),function(result,index){return [_vm._t("result",[_c('li',_vm._b({key:_vm.resultProps[index].id},'li',_vm.resultProps[index],false),[_vm._v(" "+_vm._s(_vm.getResultValue(result))+" ")])],{"result":result,"props":_vm.resultProps[index]})]})],2)])}
-var autocompletevue_type_template_id_26c4faf0_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/autocomplete.vue?vue&type=template&id=1a3f0f5e&
+var autocompletevue_type_template_id_1a3f0f5e_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',_vm._b({ref:"container"},'div',_vm.containerProps,false),[_c('autocomplete-input',_vm._g(_vm._b({ref:"input",attrs:{"value":_vm.value},on:{"input":_vm.handleInput,"keydown":[function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.handleEnter($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }return _vm.handleEsc($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"tab",9,$event.key,"Tab")){ return null; }return _vm.handleTab($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"up",38,$event.key,["Up","ArrowUp"])){ return null; }$event.preventDefault();return _vm.handleUp($event)},function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"down",40,$event.key,["Down","ArrowDown"])){ return null; }$event.preventDefault();return _vm.handleDown($event)}],"focus":_vm.handleFocus,"blur":_vm.handleBlur}},'autocomplete-input',_vm.inputProps,false),_vm.$listeners)),(_vm.results.length)?_c('ul',_vm._b({ref:"resultList",on:{"click":_vm.handleResultClick,"mousedown":function($event){$event.preventDefault();}}},'ul',_vm.resultListProps,false),[_vm._l((_vm.results),function(result,index){return [_vm._t("result",[_c('li',_vm._b({key:_vm.resultProps[index].id},'li',_vm.resultProps[index],false),[_vm._v(" "+_vm._s(_vm.getResultValue(result))+" ")])],{"result":result,"props":_vm.resultProps[index]})]})],2):_vm._e()],1)}
+var autocompletevue_type_template_id_1a3f0f5e_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/autocomplete.vue?vue&type=template&id=26c4faf0&
+// CONCATENATED MODULE: ./vue/components/autocomplete.vue?vue&type=template&id=1a3f0f5e&
 
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/formelements/form-input.vue?vue&type=template&id=5ed93f00&
+var form_inputvue_type_template_id_5ed93f00_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('input',_vm._g(_vm._b({staticClass:"form-input"},'input',_vm.$attrs,false),Object.assign({}, _vm.$listeners,
+    {input: function (event) { return _vm.$emit('input', event.target.value); }})))}
+var form_inputvue_type_template_id_5ed93f00_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./vue/components/formelements/form-input.vue?vue&type=template&id=5ed93f00&
+
+// CONCATENATED MODULE: ./vue/components/formelements/form-input.vue
+
+var script = {}
+
+
+/* normalize component */
+
+var form_input_component = normalizeComponent(
+  script,
+  form_inputvue_type_template_id_5ed93f00_render,
+  form_inputvue_type_template_id_5ed93f00_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var form_input = (form_input_component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/autocomplete.vue?vue&type=script&lang=js&
 //
 //
@@ -1527,6 +1554,10 @@ var autocompletevue_type_template_id_26c4faf0_staticRenderFns = []
 //
 //
 //
+//
+//
+
+
 
 let uniqueId = function() {
   let counter = 0;
@@ -1539,7 +1570,14 @@ let uniqueId = function() {
   name: 'Autocomplete',
   inheritAttrs: false,
 
+  components: {
+    'autocomplete-input': form_input,
+  },
   props: {
+    value: {
+      type: String,
+      default: ""
+    },
     search: {
       type: Function,
       required: true
@@ -1567,16 +1605,11 @@ let uniqueId = function() {
     getResultValue: {
       type: Function,
       default: result => result
-    },
-    defaultValue: {
-      type: String,
-      default: ""
-    },
+    }
   },
 
   data() {
     return {
-      value: this.defaultValue,
       resultListId: uniqueId(this.resultListClass + "-"),
       results: [],
       selectedIndex: -1,
@@ -1585,12 +1618,6 @@ let uniqueId = function() {
       loading: false,
       position: 'below',
       resetPosition: true
-    }
-  },
-
-  watch: {
-    defaultValue (newValue) {
-      this.value = newValue;
     }
   },
 
@@ -1607,7 +1634,6 @@ let uniqueId = function() {
     inputProps() {
       return {
         class: this.inputClass,
-        value: this.value,
         role: 'combobox',
         autocomplete: 'off',
         autocapitalize: 'off',
@@ -1648,11 +1674,11 @@ let uniqueId = function() {
   },
 
   updated() {
-    if (!this.$refs.input || !this.$refs.resultList) {
+    if (!this.$refs.resultList) {
       return;
     }
 
-    let inputPos = this.$refs.input.getBoundingClientRect();
+    let inputPos = this.$refs.input.$el.getBoundingClientRect();
     let listPos = this.$refs.resultList.getBoundingClientRect();
 
     if (this.resetPosition && this.results.length) {
@@ -1686,18 +1712,13 @@ let uniqueId = function() {
   },
 
   methods: {
-    setValue (result) {
-      this.value = result ? this.getResultValue(result) : '';
-    },
-
-    handleInput (event) {
-      this.value = event.target.value;
-      this.updateResults(this.value);
+    handleInput (value) {
+      this.$emit('input', value);
+      this.updateResults(value);
     },
 
     handleFocus (event) {
       this.updateResults(event.target.value);
-      this.value = event.target.value;
     },
 
     handleBlur () {
@@ -1720,11 +1741,11 @@ let uniqueId = function() {
 
     handleEsc () {
       this.hideResults();
-      this.setValue();
+      this.$emit('input', '');
     },
 
     handleEnter () {
-      this.handleSubmit(this.selectResult());
+      this.$emit('submit', this.selectResult());
     },
 
     handleTab () {
@@ -1741,21 +1762,17 @@ let uniqueId = function() {
     selectResult () {
       const selectedResult = this.results[this.selectedIndex];
       if (selectedResult) {
-        this.setValue(selectedResult);
+        this.$emit('input', this.getResultValue(selectedResult));
       }
       this.hideResults();
       return selectedResult;
-    },
-
-    handleSubmit (selectedResult) {
-      this.$emit('submit', selectedResult);
     },
 
     handleResultClick (event) {
       const result = event.target.closest('[data-result-index]');
       if (result) {
         this.selectedIndex = parseInt(result.dataset.resultIndex, 10);
-        this.handleSubmit(this.selectResult());
+        this.$emit('submit', this.selectResult());
       }
     },
 
@@ -1802,7 +1819,6 @@ let uniqueId = function() {
         }
       }
     }
-
   }
 });
 
@@ -1818,8 +1834,8 @@ let uniqueId = function() {
 
 var autocomplete_component = normalizeComponent(
   components_autocompletevue_type_script_lang_js_,
-  autocompletevue_type_template_id_26c4faf0_render,
-  autocompletevue_type_template_id_26c4faf0_staticRenderFns,
+  autocompletevue_type_template_id_1a3f0f5e_render,
+  autocompletevue_type_template_id_1a3f0f5e_staticRenderFns,
   false,
   null,
   null,
@@ -5064,32 +5080,6 @@ var profile_formvue_type_template_id_dc2462e2_staticRenderFns = []
 
 // CONCATENATED MODULE: ./vue/components/forms/profile-form.vue?vue&type=template&id=dc2462e2&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"19e69891-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/formelements/form-input.vue?vue&type=template&id=4421e4ca&
-var form_inputvue_type_template_id_4421e4ca_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('input',_vm._b({staticClass:"form-input",on:{"input":function($event){return _vm.$emit('input', $event.target.value)}}},'input',_vm.$attrs,false))}
-var form_inputvue_type_template_id_4421e4ca_staticRenderFns = []
-
-
-// CONCATENATED MODULE: ./vue/components/formelements/form-input.vue?vue&type=template&id=4421e4ca&
-
-// CONCATENATED MODULE: ./vue/components/formelements/form-input.vue
-
-var script = {}
-
-
-/* normalize component */
-
-var form_input_component = normalizeComponent(
-  script,
-  form_inputvue_type_template_id_4421e4ca_render,
-  form_inputvue_type_template_id_4421e4ca_staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* harmony default export */ var form_input = (form_input_component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/forms/profile-form.vue?vue&type=script&lang=js&
 //
 //
@@ -5873,7 +5863,7 @@ var page_form_component = normalizeComponent(
 )
 
 /* harmony default export */ var page_form = (page_form_component.exports);
-// CONCATENATED MODULE: ./vue/vxweb.js
+// CONCATENATED MODULE: ./vue/build/vxweb.js
 
 
 

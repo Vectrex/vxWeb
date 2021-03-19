@@ -24,6 +24,7 @@
     "not IE 11"
   ],
   "scripts": {
-    "vue-backend-build": "vue-cli-service build --target lib --dest 'dist/vue' --name vxweb ./vue/vxweb.js"
+    "vue-backend-build": "vue-cli-service build --no-clean --target lib --dest 'dist/vue' --name vxweb vue/build/vxweb.js",
+    "vue-sample-build": "vue-cli-service build --no-clean --target lib --dest 'dist/vue' --name sample vue/build/sample.js"
   }
 }

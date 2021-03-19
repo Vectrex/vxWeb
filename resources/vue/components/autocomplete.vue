@@ -1,7 +1,8 @@
 <template>
       <div v-bind="containerProps" ref="container">
-        <input
+        <autocomplete-input
           ref="input"
+          :value="value"
           v-bind="inputProps"
           @input="handleInput"
           @keydown.enter="handleEnter"
@@ -14,6 +15,7 @@
           v-on="$listeners"
         />
         <ul
+          v-if="results.length"
           ref="resultList"
           v-bind="resultListProps"
           @click="handleResultClick"
@@ -31,6 +33,8 @@
 </template>
 
 <script>
+  import FormInput from './formelements/form-input';
+
   let uniqueId = function() {
     let counter = 0;
     return function(prefix) {
@@ -42,7 +46,14 @@
     name: 'Autocomplete',
     inheritAttrs: false,
 
+    components: {
+      'autocomplete-input': FormInput,
+    },
     props: {
+      value: {
+        type: String,
+        default: ""
+      },
       search: {
         type: Function,
         required: true
@@ -70,16 +81,11 @@
       getResultValue: {
         type: Function,
         default: result => result
-      },
-      defaultValue: {
-        type: String,
-        default: ""
-      },
+      }
     },
 
     data() {
       return {
-        value: this.defaultValue,
         resultListId: uniqueId(this.resultListClass + "-"),
         results: [],
         selectedIndex: -1,
@@ -88,12 +94,6 @@
         loading: false,
         position: 'below',
         resetPosition: true
-      }
-    },
-
-    watch: {
-      defaultValue (newValue) {
-        this.value = newValue;
       }
     },
 
@@ -110,7 +110,6 @@
       inputProps() {
         return {
           class: this.inputClass,
-          value: this.value,
           role: 'combobox',
           autocomplete: 'off',
           autocapitalize: 'off',
@@ -151,11 +150,11 @@
     },
 
     updated() {
-      if (!this.$refs.input || !this.$refs.resultList) {
+      if (!this.$refs.resultList) {
         return;
       }
 
-      let inputPos = this.$refs.input.getBoundingClientRect();
+      let inputPos = this.$refs.input.$el.getBoundingClientRect();
       let listPos = this.$refs.resultList.getBoundingClientRect();
 
       if (this.resetPosition && this.results.length) {
@@ -189,18 +188,13 @@
     },
 
     methods: {
-      setValue (result) {
-        this.value = result ? this.getResultValue(result) : '';
-      },
-
-      handleInput (event) {
-        this.value = event.target.value;
-        this.updateResults(this.value);
+      handleInput (value) {
+        this.$emit('input', value);
+        this.updateResults(value);
       },
 
       handleFocus (event) {
         this.updateResults(event.target.value);
-        this.value = event.target.value;
       },
 
       handleBlur () {
@@ -223,11 +217,11 @@
 
       handleEsc () {
         this.hideResults();
-        this.setValue();
+        this.$emit('input', '');
       },
 
       handleEnter () {
-        this.handleSubmit(this.selectResult());
+        this.$emit('submit', this.selectResult());
       },
 
       handleTab () {
@@ -244,21 +238,17 @@
       selectResult () {
         const selectedResult = this.results[this.selectedIndex];
         if (selectedResult) {
-          this.setValue(selectedResult);
+          this.$emit('input', this.getResultValue(selectedResult));
         }
         this.hideResults();
         return selectedResult;
-      },
-
-      handleSubmit (selectedResult) {
-        this.$emit('submit', selectedResult);
       },
 
       handleResultClick (event) {
         const result = event.target.closest('[data-result-index]');
         if (result) {
           this.selectedIndex = parseInt(result.dataset.resultIndex, 10);
-          this.handleSubmit(this.selectResult());
+          this.$emit('submit', this.selectResult());
         }
       },
 
@@ -305,7 +295,6 @@
           }
         }
       }
-
     }
   }
 </script>
