@@ -72,7 +72,7 @@
       },
       inputClass: {
         type: String,
-        default: 'autocomplete-input form-input'
+        default: 'autocomplete-input'
       },
       autoSelect: {
         type: Boolean,

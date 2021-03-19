@@ -3619,6 +3619,44 @@ a.text-error:visited
     -webkit-hyphens: auto;            hyphens: auto;        -ms-hyphens: auto;
 }
 
+.form-autocomplete
+{
+    position: relative;
+}
+
+.form-autocomplete .form-autocomplete-input
+{display: flex; height: auto; min-height: 1.6rem; padding: .1rem; 
+
+    align-content: flex-start; flex-wrap: wrap;
+}
+
+.form-autocomplete .form-autocomplete-input.is-focused
+{border-color: #5755d9; 
+    box-shadow: 0 0 0 .1rem rgba(87, 85, 217, .2);
+}
+
+.form-autocomplete .form-autocomplete-input .form-input
+{line-height: .8rem; display: inline-block; width: auto; height: 1.2rem; margin: .1rem; 
+
+    border-color: transparent; box-shadow: none; flex: 1 0 auto;
+}
+
+.form-autocomplete .menu
+{position: absolute; top: 100%; 
+    left: 0; width: 100%;
+}
+
+.form-autocomplete.autocomplete-oneline .form-autocomplete-input
+{overflow-x: auto; 
+
+    flex-wrap: nowrap;
+}
+
+.form-autocomplete.autocomplete-oneline .chip
+{
+    flex: 1 0 auto;
+}
+
 .form-autocomplete[data-loading='true']::after
 {right: .8rem; 
     left: auto;

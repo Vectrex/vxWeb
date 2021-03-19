@@ -6,9 +6,11 @@
 
 <div id="app">
     <h2>Autocomplete</h2>
-    <span class="chip" v-for="(item, ndx) in picked">{{ item }}
-        <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="picked.splice(ndx, 1)"></a>
-    </span>
+    <div class="d-inline-block py-1">
+        <span class="chip" v-for="(item, ndx) in picked">{{ item }}
+            <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="picked.splice(ndx, 1)"></a>
+        </span>
+    </div>
     <autocomplete
         :search="findItem"
         v-model="inputValue"
@@ -17,6 +19,7 @@
         class="d-inline-block"
     >
     </autocomplete>
+    <h2>Datepicker</h2>
 </div>
 
 <script>
