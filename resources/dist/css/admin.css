@@ -52,7 +52,7 @@
 .slick-sort-item
 {display: flex; 
 
-    padding: .4rem .8rem; -webkit-user-select: none;    -moz-user-select: none;     -ms-user-select: none;         user-select: none; border-bottom: solid 1px #adb5b9; background: #fff; align-items: center;
+    padding: .4rem .8rem; -webkit-user-select: none;     -ms-user-select: none;         user-select: none; border-bottom: solid 1px #adb5b9; background: #fff; align-items: center;
 }
 
 .slick-sort-item .handle
@@ -481,7 +481,7 @@ a,
 ins,
 u
 {
-    -webkit-text-decoration-skip: ink edges;            text-decoration-skip: ink edges;
+    text-decoration-skip: ink edges;
 }
 
 abbr[title]
@@ -668,7 +668,7 @@ html:lang(ko),
 .cookie-consent .btn-accept,
 .cookie-consent .btn-decline,
 .cookie-consent .btn-link
-{font-size: .8rem; line-height: 1.2rem; display: inline-block; height: 1.8rem; padding: .25rem .4rem; cursor: pointer; -webkit-user-select: none;    -moz-user-select: none;     -ms-user-select: none;         user-select: none; transition: background .2s, border .2s, box-shadow .2s, color .2s; text-align: center; vertical-align: middle; white-space: nowrap; text-decoration: none; color: #0089cc; border: .05rem solid #0089cc; border-radius: .1rem; outline: none; background: #fff; 
+{font-size: .8rem; line-height: 1.2rem; display: inline-block; height: 1.8rem; padding: .25rem .4rem; cursor: pointer; -webkit-user-select: none;     -ms-user-select: none;         user-select: none; transition: background .2s, border .2s, box-shadow .2s, color .2s; text-align: center; vertical-align: middle; white-space: nowrap; text-decoration: none; color: #0089cc; border: .05rem solid #0089cc; border-radius: .1rem; outline: none; background: #fff; 
 
     -webkit-appearance: none;       -moz-appearance: none;            appearance: none;
 }
@@ -1224,15 +1224,13 @@ textarea.form-input.input-sm
 }
 
 .has-icon-left,
-.has-icon-right,
-.is-password
+.has-icon-right
 {
     position: relative;
 }
 
 .has-icon-left .form-icon,
-.has-icon-right .form-icon,
-.is-password .form-icon
+.has-icon-right .form-icon
 {position: absolute; z-index: 2; top: 50%; width: .8rem; 
     height: .8rem; margin: 0 .25rem; transform: translateY(-50%);
 }
@@ -1247,14 +1245,12 @@ textarea.form-input.input-sm
     padding-left: 1.3rem;
 }
 
-.has-icon-right .form-icon,
-.is-password .form-icon
+.has-icon-right .form-icon
 {
     right: .05rem;
 }
 
-.has-icon-right .form-input,
-.is-password .form-input
+.has-icon-right .form-input
 {
     padding-right: 1.3rem;
 }
@@ -3603,7 +3599,7 @@ a.text-error:visited
 
 .p-sticky
 {
-    position: -webkit-sticky !important;    position:         sticky !important;
+    position: sticky !important;
 }
 
 .p-centered
@@ -4308,7 +4304,7 @@ a.text-error:visited
 }
 
 .comparison-slider .comparison-label
-{position: absolute; bottom: .8rem; padding: .2rem .4rem; -webkit-user-select: none;    -moz-user-select: none;     -ms-user-select: none;         user-select: none; color: #fff; 
+{position: absolute; bottom: .8rem; padding: .2rem .4rem; -webkit-user-select: none;     -ms-user-select: none;         user-select: none; color: #fff; 
     background: rgba(36, 40, 42, .5);
 }
 
@@ -5320,22 +5316,6 @@ a.text-error:visited
     {
         margin-left: calc(100% / 12 * 11);
     }
-}
-
-.is-password a.visibility-switch:focus
-{text-decoration: none; 
-
-    box-shadow: none;
-}
-
-.is-password .visibility-switch:after
-{font-family: icomoon; line-height: 100%; position: absolute; z-index: 2; top: 50%; right: .05rem; width: .8rem; 
-    height: .8rem; margin: 0 .25rem; content: '\e015'; transform: translateY(-50%);
-}
-
-.is-password.show .visibility-switch:after
-{
-    content: '\e016';
 }
 
 .required

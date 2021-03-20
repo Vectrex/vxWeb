@@ -2,6 +2,7 @@ import Autocomplete from '../components/autocomplete';
 import DatePicker from '../components/formelements/datepicker';
 import Confirm from '../components/confirm';
 import Alert from '../components/alert';
+import PasswordInput from '../components/formelements/password-input';
 
 import SimpleFetch from '../util/simple-fetch';
 import PromisedXhr from '../util/promised-xhr';
@@ -14,7 +15,8 @@ const Components = {
     Autocomplete,
     DatePicker,
     Confirm,
-    Alert
+    Alert,
+    PasswordInput
 };
 
 const Directives = {

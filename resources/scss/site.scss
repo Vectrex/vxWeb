@@ -4,4 +4,7 @@
 @import "../node_modules/spectre.css/src/spectre";
 @import "../node_modules/spectre.css/src/autocomplete";
 
-@import "spectre-mods/autocomplete";
+@import "spectre-mods/spectre-mods";
+
+@include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
+

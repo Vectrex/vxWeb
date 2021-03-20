@@ -1,12 +1,15 @@
 <template>
-    <div class="form-group is-password" :class="{'show': show }">
-        <input
-            :value="value"
-            @input="$emit('input', $event.target.value)" :type="show ? 'text': 'password'"
-            class="form-input input-lg"
-            v-bind="$attrs"
-        >
-        <a class="visibility-switch" href="#" @click.prevent="show = !show"></a>
+    <div class="form-group is-password">
+      <input
+        v-bind="$attrs"
+        class="form-input"
+        :type="show ? 'text': 'password'"
+        v-on="{
+          ...$listeners,
+          input: event => $emit('input', event.target.value)
+        }"
+      >
+      <a :class="{ 'show': show }" href="#" @click.prevent="show = !show"></a>
     </div>
 </template>
 
@@ -14,8 +17,39 @@
     export default {
         data () { return {
             show: false
-        }},
-        props: { value: String },
-        inheritAttrs: false
+        }}
     }
 </script>
+
+<style scoped lang="scss">
+  @import "~spectre.css/src/variables";
+
+  div {
+    position: relative;
+
+    a {
+      &:focus {
+        box-shadow: none;
+        text-decoration: none;
+        font-family: icomoon;
+      }
+      &:after {
+        height: $control-icon-size;
+        margin: 0 $control-padding-y;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: $control-icon-size;
+        z-index: $zindex-0 + 1;
+        line-height: 100%;
+        right: $border-width;
+        font-family: icomoon;
+        content: '\e015';
+      }
+      &.show:after {
+        content: '\e016';
+      }
+    }
+  }
+
+</style>
