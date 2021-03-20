@@ -8,6 +8,7 @@
         <route id="sample_template" controller="sample/template" path="sample_template" />
         <route id="sample_form" controller="sample/form" path="sample_form" />
         <route id="sample_vue" controller="sample/vue" path="sample_vue" />
+        <route id="sample_fetch" controller="sample/vue" method="fetchItems" path="sample_fetch" />
     </routes>
 
 </config>

@@ -4,6 +4,7 @@
 namespace App\Controller\Sample;
 
 
+use vxPHP\Http\JsonResponse;
 use vxPHP\Http\Response;
 use vxPHP\Template\SimpleTemplate;
 
@@ -264,10 +265,19 @@ class VueController extends \vxPHP\Controller\Controller
     /**
      * @inheritDoc
      */
-    protected function execute()
+    protected function execute(): Response
     {
         return new Response(
             SimpleTemplate::create('sample/vue.php')->assign('items', $this->countries)->display()
         );
+    }
+
+    protected function fetchItems(): JsonResponse
+    {
+        $items = [];
+        foreach($this->countries as $key => $label) {
+            $items[] = ['key' => $key, 'label' => $label];
+        }
+        return new JsonResponse($items);
     }
 }
