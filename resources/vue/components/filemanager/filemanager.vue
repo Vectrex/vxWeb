@@ -137,23 +137,23 @@
 </template>
 
 <script>
-import FilemanagerAdd  from './filemanager/filemanager-add';
-import FilemanagerActions  from './filemanager/filemanager-actions';
-import FilemanagerSearch  from './filemanager/filemanager-search';
-import FilemanagerBreadcrumbs  from './filemanager/filemanager-breadcrumbs';
-import FilemanagerFolderTree from './filemanager/filemanager-folder-tree';
-import Sortable from './sortable';
-import SimpleTree from './simple-tree';
-import CircularProgress from './circular-progress';
-import Confirm from './confirm';
-import Alert from './alert';
-import FileEditForm from './forms/file-edit-form';
-import SimpleFetch from "../util/simple-fetch";
-import PromisedXhr from "../util/promised-xhr";
-import UrlQuery from "../util/url-query";
-import { formatFilesize } from '../filters';
-import { Focus } from "../directives";
-import FolderTree from "./filemanager/filemanager-folder-tree";
+import FilemanagerAdd  from './filemanager-add';
+import FilemanagerActions  from './filemanager-actions';
+import FilemanagerSearch  from './filemanager-search';
+import FilemanagerBreadcrumbs  from './filemanager-breadcrumbs';
+import FilemanagerFolderTree from './filemanager-folder-tree';
+import Sortable from '../sortable';
+import SimpleTree from '../simple-tree/simple-tree';
+import CircularProgress from '../circular-progress';
+import Confirm from '../confirm';
+import Alert from '../alert';
+import FileEditForm from '../forms/file-edit-form';
+import SimpleFetch from "../../util/simple-fetch";
+import PromisedXhr from "../../util/promised-xhr";
+import UrlQuery from "../../util/url-query";
+import { formatFilesize } from '../../filters';
+import { Focus } from "../../directives";
+import FolderTree from "./filemanager-folder-tree";
 
 export default {
   components: {

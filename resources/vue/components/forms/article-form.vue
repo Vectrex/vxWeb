@@ -25,7 +25,7 @@
 <script>
 
 import SimpleFetch from "../../util/simple-fetch.js";
-import VueCkeditor from "../VueCkeditor";
+import VueCkeditor from "../vue-ckeditor";
 import Datepicker from "../formelements/datepicker";
 import FormInput from "../formelements/form-input";
 import FormTextarea from "../formelements/form-textarea";

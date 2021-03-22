@@ -47,8 +47,8 @@
 
 <script>
     import SimpleFetch from "../../util/simple-fetch.js";
-    import VueCkeditor from "../VueCkeditor";
-    import RevisionTable from "../revision-table";
+    import VueCkeditor from "../vue-ckeditor";
+    import RevisionTable from "./revision-table";
 
     export default {
         components: {

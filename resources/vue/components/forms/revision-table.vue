@@ -28,7 +28,7 @@
     </table>
 </template>
 <script>
-    import DateFunctions from '../util/date-functions';
+    import DateFunctions from '../../util/date-functions';
     export default {
         props: {
             revisions: { type: Array, default: [] }

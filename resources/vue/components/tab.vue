@@ -7,7 +7,7 @@
         class="tab-item"
         :class="{ active: activeIndex === ndx }"
       >
-        <z-link :badge="item.badge" :name="item.name" @click="itemOnClick(item)" :class="{ disabled: item.disabled }" />
+        <a :data-badge="item.badge" @click="itemOnClick(item)" :class="{ disabled: item.disabled }">{{ item.name }}</a>
       </li>
       <li v-if="hasActionSlot" class="tab-item tab-action">
           <slot name="action"/>

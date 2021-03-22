@@ -3,9 +3,9 @@ import CircularProgress from '../components/circular-progress';
 import Autocomplete from '../components/autocomplete';
 import DatePicker from '../components/formelements/datepicker';
 import Sortable from '../components/sortable';
-import SimpleTree from '../components/simple-tree';
-import Filemanager from '../components/filemanager';
-import SlicksortList from '../components/slicksort-list';
+import SimpleTree from '../components/simple-tree/simple-tree';
+import Filemanager from '../components/filemanager/filemanager';
+import SlicksortList from '../components/slicksort/slicksort-list';
 import Tab from '../components/tab';
 import Confirm from '../components/confirm';
 import Alert from '../components/alert';
@@ -13,7 +13,7 @@ import PasswordInput from '../components/formelements/password-input';
 import CookieConsent from '../components/cookie-consent';
 
 import Pagination from '../components/pagination';
-import VueCkeditor from "../components/VueCkeditor";
+import VueCkeditor from "../components/vue-ckeditor";
 
 import SimpleFetch from '../util/simple-fetch';
 import PromisedXhr from '../util/promised-xhr';

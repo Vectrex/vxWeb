@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import SimpleTree from '../simple-tree';
+  import SimpleTree from '../simple-tree/simple-tree';
   import SimpleFetch from "../../util/simple-fetch";
   import UrlQuery from "../../util/url-query";
 
