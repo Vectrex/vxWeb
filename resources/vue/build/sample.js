@@ -3,6 +3,7 @@ import DatePicker from '../components/formelements/datepicker';
 import Confirm from '../components/confirm';
 import Alert from '../components/alert';
 import PasswordInput from '../components/formelements/password-input';
+import Pagination from '../components/pagination';
 
 import SimpleFetch from '../util/simple-fetch';
 import PromisedXhr from '../util/promised-xhr';
@@ -16,7 +17,8 @@ const Components = {
     DatePicker,
     Confirm,
     Alert,
-    PasswordInput
+    PasswordInput,
+    Pagination
 };
 
 const Directives = {

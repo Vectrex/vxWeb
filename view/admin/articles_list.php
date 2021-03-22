@@ -13,7 +13,7 @@
         </select>
         <input v-model="filter.title" class="form-input col-2 mx-2" placeholder="Titel filtern...">
 
-        <z-pagination
+        <pagination
             :page.sync="currentPage"
             :items="filteredArticles"
             :per-page="entriesPerPage"
@@ -54,15 +54,13 @@
 </div>
 
 <script>
-    const { Sortable, Confirm, ZPagination, ZLink } = window.vxweb.Components;
+    const { Sortable, Confirm, Pagination } = window.vxweb.Components;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;
-
-    Vue.component('z-link', ZLink);
 
     let app = new Vue({
 
         el: "#app",
-        components: { 'sortable': Sortable, 'confirm': Confirm, 'z-pagination': ZPagination },
+        components: { 'sortable': Sortable, 'confirm': Confirm, 'pagination': Pagination },
 
         routes: {
             init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('articles_init')->getUrl() ?>",

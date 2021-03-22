@@ -6,47 +6,92 @@
 
 <div id="app" class="columns">
     <div class="column col-4 col-sm-12">
-        <h2>Autocomplete</h2>
-        <div class="my-1">Selectable items on client</div>
-        <div class="d-inline-block py-1">
-            <span class="chip" v-for="(item, ndx) in client.picked">{{ item }}
-                <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="client.picked.splice(ndx, 1)"></a>
-            </span>
-        </div>
-        <autocomplete
-            :search="findItem"
-            v-model="client.inputValue"
-            placeholder="pick a country"
-            @submit="clientItemPicked"
-            class="d-inline-block"
-        >
-        </autocomplete>
+        <div class="card my-2">
+            <div class="card-header">
+                <h2>Autocomplete</h2>
+            </div>
+            <div class="card-body">
+                <p class="my-1">Autocompletes can work both with items already available on the client or items fetched from the backend.</p>
+                <div class="my-2">
+                    <div class="d-inline-block py-1">
+                        <span class="chip" v-for="(item, ndx) in client.picked">{{ item }}
+                            <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="client.picked.splice(ndx, 1)"></a>
+                        </span>
+                    </div>
+                    <autocomplete
+                        :search="findItem"
+                        v-model="client.inputValue"
+                        placeholder="pick a country"
+                        @submit="clientItemPicked"
+                        class="d-inline-block"
+                    >
+                    </autocomplete>
+                </div>
 
-        <div class="my-1">Selectable items fetched from backend</div>
-
-        <div class="d-inline-block py-1">
-            <span class="chip" v-for="(item, ndx) in fetched.picked">{{ item.label }}
-                <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="fetched.picked.splice(ndx, 1)"></a>
-            </span>
+                <div>
+                    <div class="d-inline-block py-1">
+                        <span class="chip" v-for="(item, ndx) in fetched.picked">{{ item.label }}
+                            <a href="#" class="btn btn-clear" aria-label="Close" role="button" @click.prevent="fetched.picked.splice(ndx, 1)"></a>
+                        </span>
+                    </div>
+                    <autocomplete
+                        :search="fetchItems"
+                        :get-result-value="parseItem"
+                        v-model="fetched.inputValue"
+                        placeholder="fetch a country"
+                        @submit="fetchedItemPicked"
+                        class="d-inline-block"
+                    >
+                    </autocomplete>
+                </div>
+            </div>
         </div>
-        <autocomplete
-            :search="fetchItems"
-            :get-result-value="parseItem"
-            v-model="fetched.inputValue"
-            placeholder="pick a country"
-            @submit="fetchedItemPicked"
-            class="d-inline-block"
-        >
-        </autocomplete>
     </div>
 
     <div class="column col-4 col-sm-12">
-        <h2>Password Input</h2>
-        <password-input v-model="password" placeholder="Your password"></password-input>
+        <div class="card my-2">
+            <div class="card-header">
+                <h2>Password Input</h2>
+            </div>
+            <div class="card-body">
+                <p>Input element wrapped with a button to change the input type.</p>
+                <password-input v-model="password" placeholder="Your password"></password-input>
+            </div>
+        </div>
+    </div>
+    <div class="column col-4 col-sm-12">
+        <div class="card my-2">
+            <div class="card-header">
+                <h2>Alerts and Confirms</h2>
+            </div>
+            <div class="card-body">
+                <button class="btn" @click="alertMe">Alert me!</button>
+                <button class="btn" @click="confirmThis">Confirm this!</button>
+            </div>
+        </div>
+    </div>
 
-        <h2>Alerts and Confirms</h2>
-        <button class="btn" @click="alertMe">Alert me!</button>
-        <button class="btn" @click="confirmThis">Confirm this!</button>
+    <div class="column col-4 col-sm-12">
+        <div class="card my-2">
+            <div class="card-header">
+                <h2>Pagination</h2>
+            </div>
+            <div class="card-body">
+                <table>
+                    <tr v-for="item in paginatedItems">
+                        <td>{{ item }}</td>
+                    </tr>
+                </table>
+                <pagination
+                    :page.sync="currentPage"
+                    :items="items"
+                    :per-page="10"
+                    prev-text="&laquo;"
+                    next-text="&raquo;"
+                >
+                </pagination>
+            </div>
+        </div>
     </div>
 
     <alert ref="alert"></alert>
@@ -55,7 +100,7 @@
 </div>
 
 <script>
-    const { Autocomplete, Datepicker, Confirm, Alert, PasswordInput } = window.sample.Components;
+    const { Autocomplete, Datepicker, Confirm, Alert, PasswordInput, Pagination } = window.sample.Components;
     const { SimpleFetch, UrlQuery } = window.sample.Util;
 
     const app = new Vue({
@@ -65,7 +110,8 @@
             'datepicker': Datepicker,
             'password-input': PasswordInput,
             'alert': Alert,
-            'confirm': Confirm
+            'confirm': Confirm,
+            'pagination': Pagination
         },
 
         el: "#app",
@@ -87,7 +133,15 @@
                     picked: [],
                     inputValue:""
                 },
-                password: ""
+                password: "",
+                currentPage: 1,
+                entriesPerPage: 10
+            }
+        },
+
+        computed: {
+            paginatedItems () {
+                return this.items.slice((this.currentPage - 1) * this.entriesPerPage, this.currentPage * this.entriesPerPage);
             }
         },
 
@@ -123,4 +177,10 @@
             }
         }
     })
+</script>
+<script>
+    import Pagination from "../../resources/vue/components/pagination";
+    export default {
+        components: {Pagination}
+    }
 </script>

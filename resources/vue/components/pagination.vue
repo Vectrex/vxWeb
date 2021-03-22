@@ -1,8 +1,8 @@
 <template>
   <div>
     <ul class="pagination">
-      <li v-if="showNavButtons" class="page-item" :class="{disabled: !hasPrev}">
-        <z-link tabindex="-1" v-on:click="() => prevPage()">{{prevText}}</z-link>
+      <li v-if="showNavButtons" class="page-item" :class="{ disabled: currentPage <= 1 }">
+        <a tabindex="-1" @click="prevPage" class="menu-item">{{ prevText }}</a>
       </li>
       
       <li 
@@ -11,70 +11,47 @@
         class="page-item"
         :class="{active: currentPage === page}"
       >
-        <z-link v-on:click="() => pageClick(page)" v-if="page !== 'dots'">{{page}}</z-link>
-        <span v-else>...</span>
+        <a @click="pageClick(page)" v-if="page !== 'dots'">{{ page }}</a>
+        <span v-else>&hellip;</span>
       </li>
 
-      <li v-if="showNavButtons" class="page-item" :class="{disabled: !hasNext}">
-        <z-link tabindex="-1" v-on:click="() => nextPage()">{{nextText}}</z-link>
+      <li v-if="showNavButtons" class="page-item" :class="{ disabled: currentPage >= maxPage }">
+        <a tabindex="-1" @click="nextPage">{{ nextText }}</a>
       </li>
     </ul>
   </div>
 </template>
 <script>
-const props = {
-  prevText: {
-    type: String,
-    default: () => 'Previous',
-  },
-  nextText: {
-    type: String,
-    default: () => 'Next',
-  },
-  items: Array,
-  total: {
-    type: Number,
-    default: () => 0,
-  },
-  page: {
-    type: Number,
-    default: () => 1,
-  },
-  perPage: {
-    type: Number,
-    default: () => 20,
-  },
-  showNavButtons: {
-    type: Boolean,
-    default: () => true,
-  },
-  showAllPages: {
-    type: Boolean,
-    default: () => false,
-  },
-  onPageChange: Function,
-};
-
-const data = function() {
- return {
-   currentPage: 1,
-   maxPage: 0,
-   showPerPage: 20,
-   dataItems: undefined,
- };
-};
 
 export default {
   name: 'Pagination',
-  props,
-  data,
-  created() {
+  props: {
+    items: Array,
+    total: { type: Number, default: 1 },
+    page: { type: Number, default: 1 },
+    perPage: { type: Number, default: 20 },
+    showNavButtons: { type: Boolean, default: true },
+    prevText: { type: String, default: 'Previous' },
+    nextText: { type: String, default: 'Next' },
+    showAllPages: { type: Boolean, default: false },
+    onPageChange: Function
+  },
+  data () {
+    return {
+      currentPage: 1,
+      maxPage: 0,
+      showPerPage: 20,
+      dataItems: undefined,
+    };
+  },
+  created () {
     this.currentPage = this.page;
-    this.totalResults = (typeof this.items !== 'undefined') ? this.items.length : this.total;
+    this.totalResults = this.total;
     this.showPerPage = this.perPage;
 
     if (typeof this.items !== 'undefined') {
       this.dataItems = this.items;
+      this.totalResults = this.items.length;
     }
 
     this.countMaxPage();
@@ -151,12 +128,6 @@ export default {
     }
   },
   computed: {
-    hasPrev() {
-      return this.currentPage > 1;
-    },
-    hasNext() {
-      return this.currentPage < this.maxPage;
-    },
     dataResults() {
       if (typeof this.dataItems !== 'undefined' && this.dataItems.length > 0) {
         let start = (this.currentPage - 1) * this.showPerPage;
@@ -171,8 +142,8 @@ export default {
       let pages = [1];
 
       if (this.showAllPages === true || this.maxPage <= 7) {
-        var i = 2;
-        for (; i <= this.maxPage; i++) {
+        let i = 2;
+        for (; i <= this.maxPage; ++i) {
           pages.push(i);
         }
         return pages;
@@ -190,7 +161,6 @@ export default {
         pages.push(this.currentPage - 1);
       }
 
-      
       if (this.currentPage > 1) {
         pages.push(this.currentPage);
       }
@@ -213,6 +183,6 @@ export default {
 
       return pages;
     }
-  },
+  }
 };
 </script>

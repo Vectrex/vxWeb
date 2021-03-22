@@ -12,8 +12,7 @@ import Alert from '../components/alert';
 import PasswordInput from '../components/formelements/password-input';
 import CookieConsent from '../components/cookie-consent';
 
-import ZPagination from '../components/zutre/pagination';
-import ZLink from '../components/zutre/link';
+import Pagination from '../components/pagination';
 import VueCkeditor from "../components/VueCkeditor";
 
 import SimpleFetch from '../util/simple-fetch';
@@ -45,8 +44,7 @@ const Components = {
     Alert,
     PasswordInput,
     CookieConsent,
-    ZPagination,
-    ZLink,
+    Pagination,
     VueCkeditor,
     ProfileForm,
     UserForm,
