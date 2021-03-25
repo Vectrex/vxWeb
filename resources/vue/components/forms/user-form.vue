@@ -31,9 +31,9 @@
 <script>
 
     import SimpleFetch from "../../util/simple-fetch.js";
-    import PasswordInput from "../formelements/password-input";
-    import FormInput from "../formelements/form-input";
-    import FormSelect from "../formelements/form-select";
+    import PasswordInput from "../vx-vue/formelements/password-input";
+    import FormInput from "../vx-vue/formelements/form-input";
+    import FormSelect from "../vx-vue/formelements/form-select";
 
     export default {
         components: {

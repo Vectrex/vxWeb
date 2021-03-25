@@ -5,11 +5,9 @@
     "gulp": "latest",
     "gulp-autoprefixer": "latest",
     "gulp-clean-css": "^4.3.0",
-    "gulp-concat": "latest",
     "gulp-csscomb": "^3.1.0",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^4.1.0",
-    "gulp-uglify": "latest",
     "sass-loader": "^10.1.0",
     "spectre.css": "^0.5.9",
     "vue": "^2.6.12",
@@ -17,14 +15,16 @@
     "vue-template-compiler": "^2.6.12"
   },
   "browserslist": [
-    "last 3 Chrome versions",
-    "Edge >= 17",
-    "Firefox ESR",
-    "last 3 Safari versions",
-    "not IE 11"
+    "last 3 chrome versions",
+    "last 3 edge versions",
+    "firefox esr",
+    "last 3 safari versions"
   ],
   "scripts": {
     "vue-backend-build": "vue-cli-service build --no-clean --target lib --dest 'dist/vue' --name vxweb vue/build/vxweb.js",
     "vue-sample-build": "vue-cli-service build --no-clean --target lib --dest 'dist/vue' --name sample vue/build/sample.js"
+  },
+  "dependencies": {
+    "browserslist": "^4.16.3"
   }
 }

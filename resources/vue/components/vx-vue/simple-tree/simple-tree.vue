@@ -6,7 +6,7 @@
 
 <script>
     import SimpleTreeBranch from './simple-tree-branch';
-    import { Bubble } from "../../directives";
+    import { Bubble } from "../../../directives";
 
     Vue.directive('bubble', Bubble);
 

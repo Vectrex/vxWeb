@@ -15,6 +15,7 @@
 
 <script>
     export default {
+        inheritAttrs: false,
         data () { return {
             show: false
         }}
@@ -22,7 +23,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import "~spectre.css/src/variables";
+  @import "../../../../node_modules/spectre.css/src/variables";
 
   div {
     position: relative;

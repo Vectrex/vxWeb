@@ -1,9 +1,12 @@
 <template>
     <select
-        @change="$emit('input', $event.target.value)"
-        :value="value"
         v-bind="$attrs"
         class="form-select"
+        v-on="{
+        ...$listeners,
+        change: event => $emit('input', event.target.value)
+      }"
+
     >
       <option
           v-for="option in options"
@@ -16,6 +19,6 @@
 
 <script>
     export default {
-      props: { options: Array, value: [String, Number] }
+      props: { options: Array }
     }
 </script>

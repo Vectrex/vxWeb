@@ -1,9 +1,11 @@
-import Autocomplete from '../components/autocomplete';
-import DatePicker from '../components/formelements/datepicker';
-import Confirm from '../components/confirm';
-import Alert from '../components/alert';
-import PasswordInput from '../components/formelements/password-input';
-import Pagination from '../components/pagination';
+import Autocomplete from '../components/vx-vue/autocomplete';
+import DatePicker from '../components/vx-vue/formelements/datepicker';
+import Confirm from '../components/vx-vue/confirm';
+import Alert from '../components/vx-vue/alert';
+import PasswordInput from '../components/vx-vue/formelements/password-input';
+import Pagination from '../components/vx-vue/pagination';
+import FormSelect from '../components/vx-vue/formelements/form-select';
+import FormSwitch from '../components/vx-vue/formelements/form-switch';
 
 import SimpleFetch from '../util/simple-fetch';
 import PromisedXhr from '../util/promised-xhr';
@@ -13,11 +15,13 @@ import DateFunctions from '../util/date-functions';
 import { Focus, Bubble } from '../directives';
 
 const Components = {
+    FormSelect,
+    FormSwitch,
+    PasswordInput,
     Autocomplete,
     DatePicker,
     Confirm,
     Alert,
-    PasswordInput,
     Pagination
 };
 

@@ -26,11 +26,11 @@
 
 import SimpleFetch from "../../util/simple-fetch.js";
 import VueCkeditor from "../vue-ckeditor";
-import Datepicker from "../formelements/datepicker";
-import FormInput from "../formelements/form-input";
-import FormTextarea from "../formelements/form-textarea";
-import FormSelect from "../formelements/form-select";
-import FormCheckbox from "../formelements/form-checkbox";
+import Datepicker from "../vx-vue/formelements/datepicker";
+import FormInput from "../vx-vue/formelements/form-input";
+import FormTextarea from "../vx-vue/formelements/form-textarea";
+import FormSelect from "../vx-vue/formelements/form-select";
+import FormCheckbox from "../vx-vue/formelements/form-checkbox";
 
 export default {
   components: {

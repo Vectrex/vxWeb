@@ -5,8 +5,8 @@
 <h1>VxWeb Vue Components</h1>
 
 <div id="app" class="columns">
-    <div class="column col-4 col-sm-12">
-        <div class="card my-2">
+    <div class="column col-4 col-sm-12 my-2">
+        <div class="card" style="height: 100%;">
             <div class="card-header">
                 <h2>Autocomplete</h2>
             </div>
@@ -48,19 +48,32 @@
         </div>
     </div>
 
-    <div class="column col-4 col-sm-12">
-        <div class="card my-2">
+    <div class="column col-4 col-sm-12 my-2">
+        <div class="card" style="height: 100%;">
             <div class="card-header">
-                <h2>Password Input</h2>
+                <h2>Form Elements</h2>
             </div>
             <div class="card-body">
-                <p>Input element wrapped with a button to change the input type.</p>
-                <password-input v-model="password" placeholder="Your password"></password-input>
+                <div class="form-group">
+                    <label for="password-input">Input element wrapped with a button to change the input type</label>
+                    <password-input v-model="form.password" placeholder="Your password" id="password-input"></password-input>
+                </div>
+                <div class="form-group">
+                    <label for="form-select">Select Element</label>
+                    <form-select v-model="form.select" :options="this.selectItems" id="form-select"></form-select>
+                </div>
+                <div class="form-group">
+                    <label for="form-switch">Switch Element</label>
+                    <form-switch v-model="form.switch" id="form-switch"></form-switch>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div v-for="(item, key) in form">{{ key }} : {{ item }}</div>
             </div>
         </div>
     </div>
-    <div class="column col-4 col-sm-12">
-        <div class="card my-2">
+    <div class="column col-4 col-sm-12 my-2">
+        <div class="card" style="height: 100%;">
             <div class="card-header">
                 <h2>Alerts and Confirms</h2>
             </div>
@@ -71,8 +84,8 @@
         </div>
     </div>
 
-    <div class="column col-4 col-sm-12">
-        <div class="card my-2">
+    <div class="column col-4 col-sm-12 my-2">
+        <div class="card" style="height: 100%;">
             <div class="card-header">
                 <h2>Pagination</h2>
             </div>
@@ -100,7 +113,7 @@
 </div>
 
 <script>
-    const { Autocomplete, Datepicker, Confirm, Alert, PasswordInput, Pagination } = window.sample.Components;
+    const { Autocomplete, Datepicker, Confirm, Alert, PasswordInput, Pagination, FormSelect, FormSwitch } = window.sample.Components;
     const { SimpleFetch, UrlQuery } = window.sample.Util;
 
     const app = new Vue({
@@ -108,6 +121,8 @@
         components: {
             'autocomplete': Autocomplete,
             'datepicker': Datepicker,
+            'form-select': FormSelect,
+            'form-switch': FormSwitch,
             'password-input': PasswordInput,
             'alert': Alert,
             'confirm': Confirm,
@@ -133,7 +148,11 @@
                     picked: [],
                     inputValue:""
                 },
-                password: "",
+                form: {
+                    password: "",
+                    select: "",
+                    switch: false
+                },
                 currentPage: 1,
                 entriesPerPage: 10
             }
@@ -142,6 +161,9 @@
         computed: {
             paginatedItems () {
                 return this.items.slice((this.currentPage - 1) * this.entriesPerPage, this.currentPage * this.entriesPerPage);
+            },
+            selectItems () {
+                return this.items.filter(item => item.length > 10);
             }
         },
 
@@ -177,10 +199,4 @@
             }
         }
     })
-</script>
-<script>
-    import Pagination from "../../resources/vue/components/pagination";
-    export default {
-        components: {Pagination}
-    }
 </script>

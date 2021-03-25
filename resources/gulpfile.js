@@ -4,8 +4,6 @@ let cleancss = require('gulp-clean-css');
 let csscomb = require('gulp-csscomb');
 let rename = require('gulp-rename');
 let autoprefixer = require('gulp-autoprefixer');
-let uglify = require('gulp-uglify');
-let concat = require('gulp-concat');
 
 let scssPaths = {
     src: "./scss/*.scss",
@@ -32,22 +30,3 @@ gulp.task('scssBuild', () => {
 });
 
 gulp.task('default', gulp.series('scssBuild'));
-
-var jsPaths = {
-    src: "./js/",
-    dest: "./dist/js"
-};
-
-gulp.task('jsBuild', () => {
-    return gulp.src([
-        "./js/core.js",
-        "./js/xhr.js",
-        "./js/widgets/xhrform.js",
-        "./js/widgets/calendar.js",
-        "./js/widgets/sortable.js",
-        "./js/widgets/simpletabs.js"
-    ])
-        .pipe(concat("vxjs.js"))
-        .pipe(uglify())
-        .pipe(gulp.dest(jsPaths.dest));
-});
