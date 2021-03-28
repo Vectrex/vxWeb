@@ -6,17 +6,20 @@ import PasswordInput from '../components/vx-vue/formelements/password-input';
 import Pagination from '../components/vx-vue/pagination';
 import FormSelect from '../components/vx-vue/formelements/form-select';
 import FormSwitch from '../components/vx-vue/formelements/form-switch';
+import FormFileButton from '../components/vx-vue/formelements/form-file-button';
 
 import SimpleFetch from '../util/simple-fetch';
 import PromisedXhr from '../util/promised-xhr';
 import UrlQuery from '../util/url-query';
 import DateFunctions from '../util/date-functions';
+import BytesToSize from '../util/bytes-to-size';
 
 import { Focus, Bubble } from '../directives';
 
 const Components = {
     FormSelect,
     FormSwitch,
+    FormFileButton,
     PasswordInput,
     Autocomplete,
     DatePicker,
@@ -34,7 +37,8 @@ const Util = {
     SimpleFetch,
     PromisedXhr,
     UrlQuery,
-    DateFunctions
+    DateFunctions,
+    BytesToSize
 };
 
 export { Components, Directives, Util };

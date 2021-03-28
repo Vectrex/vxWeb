@@ -5654,16 +5654,14 @@ var form_textarea_component = normalizeComponent(
 )
 
 /* harmony default export */ var form_textarea = (form_textarea_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"090a5385-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=1c36feea&
-var form_checkboxvue_type_template_id_1c36feea_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('label',{staticClass:"form-checkbox"},[_c('input',_vm._b({attrs:{"value":"1","type":"checkbox"},domProps:{"checked":_vm.value},on:{"change":function($event){return _vm.$emit('input', $event.target.checked)}}},'input',_vm.$attrs,false)),_c('i',{staticClass:"form-icon"})])])}
-var form_checkboxvue_type_template_id_1c36feea_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"090a5385-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=a9e2ff60&
+var form_checkboxvue_type_template_id_a9e2ff60_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('label',{staticClass:"form-checkbox"},[_c('input',_vm._b({attrs:{"value":"1","type":"checkbox"},domProps:{"checked":_vm.value},on:{"change":function($event){return _vm.$emit('input', $event.target.checked)}}},'input',_vm.$attrs,false)),_c('i',{staticClass:"form-icon"})])}
+var form_checkboxvue_type_template_id_a9e2ff60_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=1c36feea&
+// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=a9e2ff60&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=script&lang=js&
-//
-//
 //
 //
 //
@@ -5688,8 +5686,8 @@ var form_checkboxvue_type_template_id_1c36feea_staticRenderFns = []
 
 var form_checkbox_component = normalizeComponent(
   formelements_form_checkboxvue_type_script_lang_js_,
-  form_checkboxvue_type_template_id_1c36feea_render,
-  form_checkboxvue_type_template_id_1c36feea_staticRenderFns,
+  form_checkboxvue_type_template_id_a9e2ff60_render,
+  form_checkboxvue_type_template_id_a9e2ff60_staticRenderFns,
   false,
   null,
   null,

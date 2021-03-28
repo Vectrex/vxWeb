@@ -1978,16 +1978,14 @@ var form_select_component = normalizeComponent(
 )
 
 /* harmony default export */ var form_select = (form_select_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"090a5385-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=11ea7f6b&
-var form_switchvue_type_template_id_11ea7f6b_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('label',{staticClass:"form-switch"},[_c('input',_vm._b({attrs:{"value":"1","type":"checkbox"},domProps:{"checked":_vm.value},on:{"change":function($event){return _vm.$emit('input', $event.target.checked)}}},'input',_vm.$attrs,false)),_c('i',{staticClass:"form-icon"})])])}
-var form_switchvue_type_template_id_11ea7f6b_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"090a5385-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=36056f20&
+var form_switchvue_type_template_id_36056f20_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('label',{staticClass:"form-switch"},[_c('input',_vm._b({attrs:{"value":"1","type":"checkbox"},domProps:{"checked":_vm.value},on:{"change":function($event){return _vm.$emit('input', $event.target.checked)}}},'input',_vm.$attrs,false)),_c('i',{staticClass:"form-icon"})])}
+var form_switchvue_type_template_id_36056f20_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=11ea7f6b&
+// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=36056f20&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=script&lang=js&
-//
-//
 //
 //
 //
@@ -2012,8 +2010,8 @@ var form_switchvue_type_template_id_11ea7f6b_staticRenderFns = []
 
 var form_switch_component = normalizeComponent(
   formelements_form_switchvue_type_script_lang_js_,
-  form_switchvue_type_template_id_11ea7f6b_render,
-  form_switchvue_type_template_id_11ea7f6b_staticRenderFns,
+  form_switchvue_type_template_id_36056f20_render,
+  form_switchvue_type_template_id_36056f20_staticRenderFns,
   false,
   null,
   null,
@@ -2022,6 +2020,103 @@ var form_switch_component = normalizeComponent(
 )
 
 /* harmony default export */ var form_switch = (form_switch_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"090a5385-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=4cac9518&
+var form_file_buttonvue_type_template_id_4cac9518_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('label',_vm._b({attrs:{"for":_vm.id}},'label',_vm.$attrs,false),[_vm._v(" "+_vm._s(_vm.label)+" "),_c('input',{staticClass:"d-none",attrs:{"type":"file","id":_vm.id,"multiple":_vm.multiple,"accept":_vm.accept},on:{"change":_vm.fileChanged}})])}
+var form_file_buttonvue_type_template_id_4cac9518_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=4cac9518&
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ var form_file_buttonvue_type_script_lang_js_ = ({
+
+  inheritAttrs: false,
+
+  props: {
+    value: { type: Array },
+    accept: { type: String, default: "*" },
+    multiple: { type: Boolean, default: false },
+    name: { type: String, default: "file" },
+    label: { type: String, default: 'Upload' },
+    id: { type: String, default: 'file_upload' }
+  },
+
+  data: () => {
+    return {
+      filename: ""
+    };
+  },
+
+  watch: {
+    value(v) {
+      this.filename = v;
+    }
+  },
+
+  mounted() {
+    this.filename = this.value;
+  },
+
+  methods: {
+    getFormData(files) {
+      const data = new FormData();
+      const name = this.name + (this.multiple ? "[]" : "");
+      for (let file of files) {
+        data.append(name, file, file.name);
+      }
+      return data;
+    },
+    fileChanged (event) {
+      let files = event.target.files || event.dataTransfer.files;
+      if (files) {
+
+        // convert FileList to Array
+
+        files = [...files];
+        this.$emit('input', files);
+        this.$emit('form-data', this.getFormData(files));
+      }
+    }
+  }
+});
+
+// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=script&lang=js&
+ /* harmony default export */ var formelements_form_file_buttonvue_type_script_lang_js_ = (form_file_buttonvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-file-button.vue
+
+
+
+
+
+/* normalize component */
+
+var form_file_button_component = normalizeComponent(
+  formelements_form_file_buttonvue_type_script_lang_js_,
+  form_file_buttonvue_type_template_id_4cac9518_render,
+  form_file_buttonvue_type_template_id_4cac9518_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var form_file_button = (form_file_button_component.exports);
 // CONCATENATED MODULE: ./vue/util/simple-fetch.js
 async function SimpleFetch(url, method = 'GET', headers = {}, payload = null) {
 
@@ -2112,6 +2207,16 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
     }
 });
 
+// CONCATENATED MODULE: ./vue/util/bytes-to-size.js
+/* harmony default export */ var bytes_to_size = ({
+    formatBytes (bytes, decimals = 2) {
+        bytes = parseInt(bytes, 10);
+        const sizes = "B KB MB GB TB PB EB".split(" "), base = 1024;
+
+        const ndx = Math.floor(Math.log(bytes) / Math.log(base));
+        return parseFloat((bytes / Math.pow(base, ndx)).toFixed(decimals)) + ' ' + sizes[ndx];
+    }
+});
 // CONCATENATED MODULE: ./vue/directives.js
 // simple directive to enable event bubbling
 
@@ -2157,9 +2262,12 @@ const Focus = { inserted: (el) => el.focus() };
 
 
 
+
+
 const Components = {
     FormSelect: form_select,
     FormSwitch: form_switch,
+    FormFileButton: form_file_button,
     PasswordInput: password_input,
     Autocomplete: autocomplete,
     DatePicker: datepicker,
@@ -2177,7 +2285,8 @@ const Util = {
     SimpleFetch: SimpleFetch,
     PromisedXhr: PromisedXhr,
     UrlQuery: url_query,
-    DateFunctions: date_functions
+    DateFunctions: date_functions,
+    BytesToSize: bytes_to_size
 };
 
 

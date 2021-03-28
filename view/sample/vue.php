@@ -66,6 +66,13 @@
                     <label for="form-switch">Switch Element</label>
                     <form-switch v-model="form.switch" id="form-switch"></form-switch>
                 </div>
+                <div class="form-group">
+                    <label for="upload-button">Upload Button</label>
+                    <file-button class="btn d-block" v-model="uploads" id="upload-button" :multiple="true"></file-button>
+                    <div>
+                        <span class="chip" v-for="upload in uploads">{{ upload.name }}</span>
+                    </div>
+                </div>
             </div>
             <div class="card-footer">
                 <div v-for="(item, key) in form">{{ key }} : {{ item }}</div>
@@ -113,8 +120,8 @@
 </div>
 
 <script>
-    const { Autocomplete, Datepicker, Confirm, Alert, PasswordInput, Pagination, FormSelect, FormSwitch } = window.sample.Components;
-    const { SimpleFetch, UrlQuery } = window.sample.Util;
+    const { Autocomplete, Datepicker, Confirm, Alert, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton } = window.sample.Components;
+    const { SimpleFetch, UrlQuery, BytesToSize } = window.sample.Util;
 
     const app = new Vue({
 
@@ -124,6 +131,7 @@
             'form-select': FormSelect,
             'form-switch': FormSwitch,
             'password-input': PasswordInput,
+            'file-button': FormFileButton,
             'alert': Alert,
             'confirm': Confirm,
             'pagination': Pagination
@@ -154,7 +162,8 @@
                     switch: false
                 },
                 currentPage: 1,
-                entriesPerPage: 10
+                entriesPerPage: 10,
+                uploads: []
             }
         },
 
