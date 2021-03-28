@@ -70,7 +70,7 @@
                     <label for="upload-button">Upload Button</label>
                     <file-button class="btn d-block" v-model="uploads" id="upload-button" :multiple="true"></file-button>
                     <div>
-                        <span class="chip" v-for="upload in uploads">{{ upload.name }}</span>
+                        <span class="chip" v-for="upload in uploads">{{ upload.name }}, {{ upload.size | formatSize }}</span>
                     </div>
                 </div>
             </div>
@@ -205,6 +205,11 @@
                 if (!await this.$refs.confirm.open('Pull...', "...the plug on Skynet?")) {
                     await this.$refs.alert.open('Judgement Day', " Three billion human lives ended on August 29th, 1997.");
                 }
+            }
+        },
+        filters: {
+            formatSize (size) {
+                return BytesToSize.formatBytes(size);
             }
         }
     })

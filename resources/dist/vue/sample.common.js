@@ -2200,12 +2200,9 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
 
 // CONCATENATED MODULE: ./vue/util/bytes-to-size.js
 /* harmony default export */ var bytes_to_size = ({
-    formatBytes (bytes, decimals = 2) {
-        bytes = parseInt(bytes, 10);
-        const sizes = "B KB MB GB TB PB EB".split(" "), base = 1024;
-
-        const ndx = Math.floor(Math.log(bytes) / Math.log(base));
-        return parseFloat((bytes / Math.pow(base, ndx)).toFixed(decimals)) + ' ' + sizes[ndx];
+    formatBytes (bytes, decimals = 2, base = 1024) {
+        let i = Math.floor(Math.log(bytes) / Math.log(base));
+        return (bytes /Math.pow(base, i)).toFixed(decimals) + " " + ("KMGTPEZY"[i-1] || "") + "B";
     }
 });
 // CONCATENATED MODULE: ./vue/directives.js
