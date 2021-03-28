@@ -22,8 +22,6 @@
 
 	<include>pdo_config.xml</include>
 
-	<pages />
-
 	<!-- vx routes and menu configuration for vxWeb admin pages -->
 
 	<include>vxweb_config.xml</include>

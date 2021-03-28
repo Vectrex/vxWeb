@@ -1,6 +1,6 @@
-<?php /* @var \vxPHP\Template\TemplateBuffer $this */ ?>
-
 <!-- { extend: layout.php @ content_block } -->
+
+<?php /* @var \vxPHP\Template\TemplateBuffer $this */ ?>
 
 <h1>Welcome to vxWeb</h1>
 
