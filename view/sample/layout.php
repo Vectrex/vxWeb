@@ -14,7 +14,7 @@
 
 			<div id="main">
 
-				<div id="content" class="p-2">
+				<div id="content">
 				<!-- { block: content_block } -->
 				</div>
 			</div>
