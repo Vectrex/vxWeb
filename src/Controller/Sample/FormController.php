@@ -20,13 +20,12 @@ use vxPHP\Template\SimpleTemplate;
 
 class FormController extends Controller
 {
-
     protected function execute()
     {
         $form = $this->generateForm();
 
         $formTpl = (new SimpleTemplate())->setRawContents($form->render());
-        $tpl = new SimpleTemplate('layout.php');
+        $tpl = new SimpleTemplate('sample/layout.php');
         $tpl->insertTemplateAt($formTpl, 'content_block');
 
         return new Response($tpl->display());
@@ -127,6 +126,4 @@ EOD;
 
         return $form;
     }
-
-
 }

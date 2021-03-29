@@ -2,7 +2,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/sample.umd.js') ?>"></script>
 <!-- { extend: layout.php @ content_block } -->
-<h1>VxWeb Vue Components</h1>
+<h1>vxWeb Vue Components</h1>
 
 <div id="app" class="columns">
     <div class="column col-4 col-sm-12 my-2">
