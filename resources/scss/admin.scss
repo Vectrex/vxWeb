@@ -17,10 +17,11 @@ $sidebar-width: 10rem;
 @import "vx/slick-sort";
 @import "vx/circular-progress";
 
-@import "../node_modules/spectre.css/src/spectre";
-@import "../node_modules/spectre.css/src/spectre-exp";
+@import "~spectre.css/src/spectre";
+@import "~spectre.css/src/spectre-exp";
 @import "spectre-mods/spectre-mods";
 @import "vx/cookie-consent";
+@import "vx/with-webfont-icon";
 
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
 
@@ -81,33 +82,6 @@ $sidebar-width: 10rem;
   }
   &.active > span {
     font-weight: bold;
-  }
-}
-
-.with-webfont-icon-left {
-  &:before {
-    font-family: icomoon;
-    content: attr(data-icon);
-    display: inline-block;
-    padding-right: 0.4rem;
-  }
-}
-
-.with-webfont-icon-right {
-  &:after {
-    font-family: icomoon;
-    content: attr(data-icon);
-    display: inline-block;
-    padding-left: 0.4rem;
-  }
-}
-
-.webfont-icon-only {
-  display: inline-block;
-  font-family: icomoon;
-
-  &.tooltip:after {
-    font-family: $base-font-family;
   }
 }
 

@@ -2267,7 +2267,7 @@ const Components = {
     FormFileButton: form_file_button,
     PasswordInput: password_input,
     Autocomplete: autocomplete,
-    DatePicker: datepicker,
+    Datepicker: datepicker,
     Confirm: vx_vue_confirm,
     Alert: vx_vue_alert,
     Pagination: pagination

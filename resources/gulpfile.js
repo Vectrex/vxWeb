@@ -1,5 +1,6 @@
 let gulp = require('gulp');
 let sass = require('gulp-sass');
+let tildeImporter = require('node-sass-tilde-importer');
 let cleancss = require('gulp-clean-css');
 let csscomb = require('gulp-csscomb');
 let rename = require('gulp-rename');
@@ -16,7 +17,12 @@ gulp.task('scssWatch', () => {
 
 gulp.task('scssBuild', () => {
     return gulp.src(scssPaths.src)
-        .pipe(sass({outputStyle: 'compact', precision: 10})
+        .pipe(sass(
+            {
+                outputStyle: 'compact',
+                precision: 10,
+                importer: tildeImporter
+            })
             .on('error', sass.logError)
         )
         .pipe(autoprefixer())

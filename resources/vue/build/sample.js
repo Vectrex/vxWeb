@@ -1,5 +1,5 @@
 import Autocomplete from '../components/vx-vue/autocomplete';
-import DatePicker from '../components/vx-vue/formelements/datepicker';
+import Datepicker from '../components/vx-vue/formelements/datepicker';
 import Confirm from '../components/vx-vue/confirm';
 import Alert from '../components/vx-vue/alert';
 import PasswordInput from '../components/vx-vue/formelements/password-input';
@@ -22,7 +22,7 @@ const Components = {
     FormFileButton,
     PasswordInput,
     Autocomplete,
-    DatePicker,
+    Datepicker,
     Confirm,
     Alert,
     Pagination

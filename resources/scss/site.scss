@@ -1,10 +1,11 @@
 @import "vx/functions";
 @import "mixin/webfont";
 
-@import "../node_modules/spectre.css/src/spectre";
-@import "../node_modules/spectre.css/src/autocomplete";
+@import "~spectre.css/src/spectre";
+@import "~spectre.css/src/spectre-exp";
 
 @import "spectre-mods/spectre-mods";
+@import "vx/with-webfont-icon";
 
 @include font-face(icomoon, "../fonts/icomoon/icomoon", null, null, woff woff2);
 

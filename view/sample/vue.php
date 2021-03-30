@@ -67,6 +67,10 @@
                     <form-switch v-model="form.switch" id="form-switch"></form-switch>
                 </div>
                 <div class="form-group">
+                    <label for="form-date">Datepicker</label>
+                    <datepicker v-model="form.date" id="form-date"></datepicker>
+                </div>
+                <div class="form-group">
                     <label for="upload-button">Upload Button</label>
                     <file-button class="btn d-block" v-model="uploads" id="upload-button" :multiple="true"></file-button>
                     <div>
@@ -159,7 +163,8 @@
                 form: {
                     password: "",
                     select: "",
-                    switch: false
+                    switch: false,
+                    date: new Date()
                 },
                 currentPage: 1,
                 entriesPerPage: 10,

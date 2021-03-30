@@ -1,0 +1,28 @@
+@import "~spectre.css/src/_variables";
+
+.with-webfont-icon-left {
+  &:before {
+    font-family: icomoon;
+    content: attr(data-icon);
+    display: inline-block;
+    padding-right: $unit-2;
+  }
+}
+
+.with-webfont-icon-right {
+  &:after {
+    font-family: icomoon;
+    content: attr(data-icon);
+    display: inline-block;
+    padding-left: $unit-2;
+  }
+}
+
+.webfont-icon-only {
+  display: inline-block;
+  font-family: icomoon;
+
+  &.tooltip:after {
+    font-family: $base-font-family;
+  }
+}
