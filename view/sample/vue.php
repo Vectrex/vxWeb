@@ -1,6 +1,6 @@
 <!-- { extend: layout.php @ header_block } -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/sample.umd.js') ?>"></script>
+<script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/sample.umd.min.js') ?>"></script>
 <!-- { extend: layout.php @ content_block } -->
 <h1>vxWeb Vue Components</h1>
 
@@ -119,13 +119,27 @@
         </div>
     </div>
 
+    <div class="column col-4 col-sm-12 my-2">
+        <div class="card" style="height: 100%;">
+            <div class="card-header">
+                <h2>Sortable</h2>
+            </div>
+            <div class="card-body">
+                <sortable
+                    :rows="sortable.rows"
+                    :columns="sortable.cols"
+                ></sortable>
+            </div>
+        </div>
+    </div>
+
     <alert ref="alert"></alert>
     <confirm ref="confirm"></confirm>
     <message-toast v-bind="toast" ref="toast" @cancel="toast.active = false" @timeout="toast.active = false"></message-toast>
 </div>
 
 <script>
-    const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton } = window.sample.Components;
+    const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton, Sortable } = window.sample.Components;
     const { SimpleFetch, UrlQuery, BytesToSize } = window.sample.Util;
 
     const app = new Vue({
@@ -140,7 +154,8 @@
             'alert': Alert,
             'confirm': Confirm,
             'message-toast': MessageToast,
-            'pagination': Pagination
+            'pagination': Pagination,
+            'sortable': Sortable
         },
 
         el: "#app",
@@ -172,6 +187,19 @@
                     message: "Howdy!",
                     classname: "toast-success",
                     active: false
+                },
+                sortable: {
+                    rows: [
+                        { key: 1, name: 'Linda', role: 'Sarah', yob: 1956 },
+                        { key: 2, name: 'Robert', role: 'T1000', yob: 1958 },
+                        { key: 3, name: 'Arnold', role: 'T800', yob: 1947 },
+                        { key: 4, name: 'Edward', role: 'John', yob: 1977 }
+                    ],
+                    cols: [
+                        { label: 'Name', prop: 'name', sortable: true },
+                        { label: 'Role', prop: 'role', sortable: true  },
+                        { label: 'Born in', prop: 'yob', sortable: true  }
+                    ]
                 },
                 currentPage: 1,
                 entriesPerPage: 10,

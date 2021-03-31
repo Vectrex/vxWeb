@@ -8,6 +8,7 @@ import Pagination from '../components/vx-vue/pagination';
 import FormSelect from '../components/vx-vue/formelements/form-select';
 import FormSwitch from '../components/vx-vue/formelements/form-switch';
 import FormFileButton from '../components/vx-vue/formelements/form-file-button';
+import Sortable from '../components/vx-vue/sortable';
 
 import SimpleFetch from '../util/simple-fetch';
 import PromisedXhr from '../util/promised-xhr';
@@ -27,7 +28,8 @@ const Components = {
     Confirm,
     Alert,
     MessageToast,
-    Pagination
+    Pagination,
+    Sortable
 };
 
 const Directives = {

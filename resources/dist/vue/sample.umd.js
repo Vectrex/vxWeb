@@ -1647,12 +1647,12 @@ var alert_component = normalizeComponent(
 )
 
 /* harmony default export */ var vx_vue_alert = (alert_component.exports);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"295cdad2-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/message-toast.vue?vue&type=template&id=6f4c1552&
-var message_toastvue_type_template_id_6f4c1552_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:[{ 'display': _vm.active }, _vm.classname, 'toast'],attrs:{"id":"messageBox"}},[_c('button',{staticClass:"btn btn-clear float-right",on:{"click":function($event){return _vm.$emit('cancel')}}}),_vm._l((_vm.lines),function(line){return _c('div',[_vm._v(_vm._s(line))])})],2)}
-var message_toastvue_type_template_id_6f4c1552_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"295cdad2-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/message-toast.vue?vue&type=template&id=5a285958&
+var message_toastvue_type_template_id_5a285958_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:[{ 'display': _vm.active }, _vm.classname, 'toast'],attrs:{"id":"messageBox"}},[_c('button',{staticClass:"btn btn-clear float-right",on:{"click":function($event){return _vm.$emit('cancel')}}}),_vm._l((_vm.lines),function(line){return _c('div',[_vm._v(_vm._s(line))])})],2)}
+var message_toastvue_type_template_id_5a285958_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./vue/components/vx-vue/message-toast.vue?vue&type=template&id=6f4c1552&
+// CONCATENATED MODULE: ./vue/components/vx-vue/message-toast.vue?vue&type=template&id=5a285958&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/message-toast.vue?vue&type=script&lang=js&
 //
@@ -1666,8 +1666,7 @@ var message_toastvue_type_template_id_6f4c1552_staticRenderFns = []
 /* harmony default export */ var message_toastvue_type_script_lang_js_ = ({
 
     data: () => ({
-        activeTimeout: null,
-        isActive: false
+        activeTimeout: null
     }),
 
     props: {
@@ -1706,9 +1705,7 @@ var message_toastvue_type_template_id_6f4c1552_staticRenderFns = []
             // timeout 0 disables fadeout
 
             if (this.active && this.timeout) {
-                this.activeTimeout = window.setTimeout( () => {
-                    this.$emit('timeout');
-                }, this.timeout);
+                this.activeTimeout = window.setTimeout( () => { this.$emit('timeout'); }, this.timeout);
             }
         }
     }
@@ -1726,8 +1723,8 @@ var message_toastvue_type_template_id_6f4c1552_staticRenderFns = []
 
 var message_toast_component = normalizeComponent(
   vx_vue_message_toastvue_type_script_lang_js_,
-  message_toastvue_type_template_id_6f4c1552_render,
-  message_toastvue_type_template_id_6f4c1552_staticRenderFns,
+  message_toastvue_type_template_id_5a285958_render,
+  message_toastvue_type_template_id_5a285958_staticRenderFns,
   false,
   null,
   null,
@@ -2206,6 +2203,166 @@ var form_file_button_component = normalizeComponent(
 )
 
 /* harmony default export */ var form_file_button = (form_file_button_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"295cdad2-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/sortable.vue?vue&type=template&id=333bb357&
+var sortablevue_type_template_id_333bb357_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('table',{staticClass:"table table-striped"},[_c('thead',[_c('tr',_vm._l((_vm.columns),function(column){return _c('th',{class:[
+                'vx-sortable-header',
+                column.cssClass,
+                _vm.sortColumn === column ? _vm.sortDir : null,
+                column.width
+            ],on:{"click":function($event){column.sortable ? _vm.clickSort(column) : null}}},[_vm._t(column.prop + '-header',[_vm._v(" "+_vm._s(column.label)+" ")],{"column":column})],2)}),0)]),_c('tbody',_vm._l((_vm.sortedRows),function(row){return _c('tr',{key:row[_vm.keyProperty],class:row.cssClass},_vm._l((_vm.columns),function(column){return _c('td',{class:{ 'active': _vm.sortColumn === column }},[_vm._t(column.prop,[_vm._v(_vm._s(row[column.prop]))],{"row":row})],2)}),0)}),0)])}
+var sortablevue_type_template_id_333bb357_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./vue/components/vx-vue/sortable.vue?vue&type=template&id=333bb357&
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./vue/components/vx-vue/sortable.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ var sortablevue_type_script_lang_js_ = ({
+    name: 'sortable',
+
+    props: {
+        columns: {
+            type: Array,
+            required: true,
+            validator (val) {
+                for(let l = val.length; l--;) {
+                    if(val[l].label === undefined || val[l].prop === undefined) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        },
+        rows: {
+            type: Array,
+            required: true
+        },
+        offset: {
+            type: Number,
+            default: null
+        },
+        count: {
+            type: Number,
+            default: null
+        },
+        sortProp: {
+            type: String
+        },
+        sortDirection: {
+            type: String,
+            validator (val) {
+                return !val || ['asc', 'desc'].indexOf(val) !== -1;
+            }
+        },
+        keyProperty: {
+          type: String,
+          default: 'key'
+        }
+    },
+
+    data() {
+        return {
+            sortColumn: this.columns.find(item => item.prop === this.sortProp),
+            sortDir: this.sortDirection
+        };
+    },
+
+    computed: {
+        sortedRows () {
+            let rows = this.rows.slice();
+
+            if(this.sortColumn) {
+                if (this.sortDir === 'asc' && this.sortColumn.sortAscFunction) {
+                    rows.sort (this.sortColumn.sortAscFunction);
+                }
+                else if (this.sortDir === 'desc' && this.sortColumn.sortDescFunction) {
+                    rows.sort (this.sortColumn.sortDescFunction);
+                }
+                else {
+                    let prop = this.sortColumn.prop;
+
+                    rows.sort((a, b) => {
+                        if (a[prop] < b[prop]) {
+                            return this.sortDir === "asc" ? -1 : 1;
+                        }
+                        if (a[prop] > b[prop]) {
+                            return this.sortDir === "asc" ? 1 : -1;
+                        }
+                        return 0;
+                    });
+                }
+            }
+
+            let offset = this.offset || 0, count = this.count || rows.length;
+
+            return rows.slice(offset, offset + count);
+        }
+    },
+
+    methods: {
+        clickSort (column) {
+            this.$emit('before-sort');
+            if(this.sortColumn === column) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            }
+            else {
+                this.sortColumn = column;
+            }
+            this.$nextTick( () => this.$emit('after-sort') );
+        }
+    }
+});
+
+// CONCATENATED MODULE: ./vue/components/vx-vue/sortable.vue?vue&type=script&lang=js&
+ /* harmony default export */ var vx_vue_sortablevue_type_script_lang_js_ = (sortablevue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./vue/components/vx-vue/sortable.vue
+
+
+
+
+
+/* normalize component */
+
+var sortable_component = normalizeComponent(
+  vx_vue_sortablevue_type_script_lang_js_,
+  sortablevue_type_template_id_333bb357_render,
+  sortablevue_type_template_id_333bb357_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var sortable = (sortable_component.exports);
 // CONCATENATED MODULE: ./vue/util/simple-fetch.js
 async function SimpleFetch(url, method = 'GET', headers = {}, payload = null) {
 
@@ -2351,6 +2508,7 @@ const Focus = { inserted: (el) => el.focus() };
 
 
 
+
 const Components = {
     FormSelect: form_select,
     FormSwitch: form_switch,
@@ -2361,7 +2519,8 @@ const Components = {
     Confirm: vx_vue_confirm,
     Alert: vx_vue_alert,
     MessageToast: message_toast,
-    Pagination: pagination
+    Pagination: pagination,
+    Sortable: sortable
 };
 
 const Directives = {
