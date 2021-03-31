@@ -9,12 +9,6 @@
     </div>
 
     <div class="form-content">
-        <message-toast
-            :message="toastProps.message"
-            :classname="toastProps.messageClass"
-            :active="toastProps.isActive"
-            ref="toast"
-        ></message-toast>
         <user-form
             :url="formProps.url"
             :initial-data="formProps.form"
@@ -22,6 +16,7 @@
             @response-received="responseReceived"
             ref="form"
         ></user-form>
+        <message-toast v-bind="toastProps" ref="toast" @cancel="toastProps.active = false" @timeout="toastProps.active = false"></message-toast>
     </div>
 
 </div>
@@ -49,8 +44,8 @@
             },
             toastProps: {
                 message: "",
-                messageClass: "",
-                isActive: false
+                classname: "",
+                active: false
             }
         },
 
@@ -83,9 +78,9 @@
                 let response = this.$refs.form.response;
                 this.toastProps = {
                     message: response.message,
-                    messageClass: response.success ? 'toast-success' : 'toast-error',
+                    classname: response.success ? 'toast-success' : 'toast-error',
+                    active: true
                 };
-                this.$refs.toast.isActive = true;
                 if(response.instanceId) {
                     this.instanceId = response.instanceId;
                     this.formProps.form = Object.assign({}, this.formProps.form, { id: response.instanceId });

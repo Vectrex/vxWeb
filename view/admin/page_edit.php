@@ -7,12 +7,6 @@
     <div class="vx-button-bar">
         <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="<?= $router->getRoute('pages')->getUrl() ?>">Zurück zur Übersicht</a>
     </div>
-    <message-toast
-        :message="toastProps.message"
-        :classname="toastProps.messageClass"
-        :active="toastProps.isActive"
-        ref="toast"
-    ></message-toast>
     <page-form
         :url="formUrl"
         :initial-data="{ form: formProps.form, revisions: formProps.revisions }"
@@ -23,6 +17,7 @@
         @delete-revision="deleteRevision"
         ref="form"
     ></page-form>
+    <message-toast v-bind="toastProps" ref="toast" @cancel="toastProps.active = false" @timeout="toastProps.active = false"></message-toast>
     <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
 </div>
 
@@ -46,8 +41,8 @@
             },
             toastProps: {
                 message: "",
-                messageClass: "",
-                isActive: false
+                classname: "",
+                active: false
             }
         },
 
@@ -82,9 +77,9 @@
                 let response = this.$refs.form.response;
                 this.toastProps = {
                     message: response.message,
-                    messageClass: response.success ? 'toast-success' : 'toast-error',
+                    classname: response.success ? 'toast-success' : 'toast-error',
+                    active: true
                 };
-                this.$refs.toast.isActive = true;
                 if(response.success) {
                     if (response.revisions) {
                         this.formProps.revisions = response.revisions.map(item => { item.firstCreated = new Date(item.firstCreated); return item });

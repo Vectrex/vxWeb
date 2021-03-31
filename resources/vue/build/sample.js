@@ -2,6 +2,7 @@ import Autocomplete from '../components/vx-vue/autocomplete';
 import Datepicker from '../components/vx-vue/formelements/datepicker';
 import Confirm from '../components/vx-vue/confirm';
 import Alert from '../components/vx-vue/alert';
+import MessageToast from '../components/vx-vue/message-toast';
 import PasswordInput from '../components/vx-vue/formelements/password-input';
 import Pagination from '../components/vx-vue/pagination';
 import FormSelect from '../components/vx-vue/formelements/form-select';
@@ -25,6 +26,7 @@ const Components = {
     Datepicker,
     Confirm,
     Alert,
+    MessageToast,
     Pagination
 };
 

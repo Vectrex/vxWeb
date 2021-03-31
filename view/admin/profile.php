@@ -3,13 +3,6 @@
 <h1>Meine Einstellungen</h1>
 
 <div class="form-content">
-
-    <message-toast
-        :message="toastProps.message"
-        :classname="toastProps.messageClass"
-        :active="toastProps.isActive"
-        ref="toast"
-    ></message-toast>
     <profile-form
         :url="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_post')->getUrl() ?>'"
         :initial-data="form"
@@ -17,6 +10,7 @@
         @response-received="responseReceived"
         ref="form"
     ></profile-form>
+    <message-toast v-bind="toastProps" ref="toast" @cancel="toastProps.active = false" @timeout="toastProps.active = false"></message-toast>
 </div>
 
 <script>
@@ -37,8 +31,8 @@
             notifications: [],
             toastProps: {
                 message: "",
-                messageClass: "",
-                isActive: false
+                classname: "",
+                active: false
             }
         },
 
@@ -57,9 +51,9 @@
                 let response = this.$refs.form.response;
                 this.toastProps = {
                     message: response.message,
-                    messageClass: response.success ? 'toast-success' : 'toast-error',
+                    classname: response.success ? 'toast-success' : 'toast-error',
+                    active: true
                 };
-                this.$refs.toast.isActive = true;
             }
         }
     });

@@ -5216,3 +5216,13 @@ a.text-error:visited
 {
     font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2');
 }
+
+#messageBox
+{
+    position: fixed; z-index: 401; top: -2rem; left: 50%; max-width: 30rem; transition: top .5s ease-in-out, opacity .5s; transform: translateX(-50%); opacity: 0;
+}
+
+#messageBox.display
+{
+    top: 0; opacity: 1;
+}

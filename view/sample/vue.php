@@ -91,6 +91,7 @@
             <div class="card-body">
                 <button class="btn" @click="alertMe">Alert me!</button>
                 <button class="btn" @click="confirmThis">Confirm this!</button>
+                <button class="btn" @click="toast.active = true">Toast me!</button>
             </div>
         </div>
     </div>
@@ -120,11 +121,11 @@
 
     <alert ref="alert"></alert>
     <confirm ref="confirm"></confirm>
-
+    <message-toast v-bind="toast" ref="toast" @cancel="toast.active = false" @timeout="toast.active = false"></message-toast>
 </div>
 
 <script>
-    const { Autocomplete, Datepicker, Confirm, Alert, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton } = window.sample.Components;
+    const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton } = window.sample.Components;
     const { SimpleFetch, UrlQuery, BytesToSize } = window.sample.Util;
 
     const app = new Vue({
@@ -138,6 +139,7 @@
             'file-button': FormFileButton,
             'alert': Alert,
             'confirm': Confirm,
+            'message-toast': MessageToast,
             'pagination': Pagination
         },
 
@@ -165,6 +167,11 @@
                     select: "",
                     switch: false,
                     date: new Date()
+                },
+                toast: {
+                    message: "Howdy!",
+                    classname: "toast-success",
+                    active: false
                 },
                 currentPage: 1,
                 entriesPerPage: 10,

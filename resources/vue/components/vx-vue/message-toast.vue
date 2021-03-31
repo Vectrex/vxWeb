@@ -1,6 +1,6 @@
 <template>
-    <div id="messageBox" :class="[{ 'display': isActive }, classname, 'toast']">
-        <button class="btn btn-clear float-right" @click="isActive = false"></button>
+    <div id="messageBox" :class="[{ 'display': active }, classname, 'toast']">
+        <button class="btn btn-clear float-right" @click="$emit('cancel')"></button>
         <div v-for="line in lines">{{ line }}</div>
     </div>
 </template>
@@ -9,8 +9,7 @@
     export default {
 
         data: () => ({
-            activeTimeout: null,
-            isActive: false
+            activeTimeout: null
         }),
 
         props: {
@@ -33,10 +32,7 @@
         },
 
         watch: {
-            active (state) {
-                this.isActive = state;
-            },
-            isActive () {
+            active () {
                 this.setTimeout();
             }
         },
@@ -51,10 +47,8 @@
 
                 // timeout 0 disables fadeout
 
-                if (this.isActive && this.timeout) {
-                    this.activeTimeout = window.setTimeout( () => {
-                        this.isActive = false;
-                    }, this.timeout);
+                if (this.active && this.timeout) {
+                    this.activeTimeout = window.setTimeout( () => { this.$emit('timeout'); }, this.timeout);
                 }
             }
         }

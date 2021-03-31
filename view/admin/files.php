@@ -12,13 +12,7 @@
             </template>
         </template>
     </filemanager>
-
-    <message-toast
-        :message="toastProps.message"
-        :classname="toastProps.messageClass"
-        :active="toastProps.isActive"
-        ref="toast"
-    />
+    <message-toast v-bind="toastProps" ref="toast" @cancel="toastProps.active = false" @timeout="toastProps.active = false"></message-toast>
 </div>
 <?php $router = \vxPHP\Application\Application::getInstance()->getRouter() ?>
 
@@ -84,8 +78,8 @@
             initSort: {},
             toastProps: {
                 message: "",
-                messageClass: "",
-                isActive: false
+                classname: "",
+                active: false
             }
         },
 
@@ -98,11 +92,11 @@
 
         methods: {
             handleResponse (response) {
-                Object.assign(this.toastProps, {
+                this.toastProps = {
                     message: response.message,
-                    messageClass: response.success ? 'toast-success' : 'toast-error'
-                });
-                this.$refs.toast.isActive = true;
+                    classname: response.success ? 'toast-success' : 'toast-error',
+                    active: true
+                };
             },
             storeSort (sort) {
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: sort.sortColumn.prop, dir: sort.sortDir }));

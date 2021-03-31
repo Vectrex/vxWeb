@@ -32,14 +32,6 @@
     <div class="vx-button-bar">
         <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="<?= $router->getRoute('articles')->getUrl() ?>">Zurück zur Übersicht</a>
     </div>
-
-    <message-toast
-        :message="toastProps.message"
-        :classname="toastProps.messageClass"
-        :active="toastProps.isActive"
-        ref="toast"
-    ></message-toast>
-
     <tab :items="tabItems" :active-index="activeTabIndex" v-on:update:active-index="switchTabs"></tab>
 
     <section id="article-form" v-if="activeTabIndex === 0" class="form-content">
@@ -88,6 +80,7 @@
             </template>
         </slicksort-list>
     </section>
+    <message-toast v-bind="toastProps" ref="toast" @cancel="toastProps.active = false" @timeout="toastProps.active = false"></message-toast>
 </div>
 
 <script>
@@ -139,8 +132,8 @@
             ],
             toastProps: {
                 message: "",
-                messageClass: "",
-                isActive: false
+                classname: "",
+                active: false
             },
             formProps: {
                 url: "<?= $router->getRoute('article_update')->getUrl() ?>",
@@ -231,11 +224,11 @@
         methods: {
             handleResponse (response) {
                 this.instanceId = response.articleId || this.instanceId;
-                Object.assign(this.toastProps, {
+                this.toastProps = {
                     message: response.message,
-                    messageClass: response.success ? 'toast-success' : 'toast-error'
-                });
-                this.$refs.toast.isActive = true;
+                    classname: response.success ? 'toast-success' : 'toast-error',
+                    active: true
+                };
             },
             async handleLink (row) {
                 let response = await SimpleFetch(this.$options.routes.link + "?article=" + this.instanceId + "&file=" + row.id, 'POST');
