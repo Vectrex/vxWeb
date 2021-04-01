@@ -5849,21 +5849,6 @@ body
     color: #e85600;
 }
 
-th.vx-sortable-header:before
-{
-    font-family: icomoon; font-size: 150%; font-weight: normal; vertical-align: middle;
-}
-
-th.vx-sortable-header.desc:before
-{
-    content: '\e033';
-}
-
-th.vx-sortable-header.asc:before
-{
-    content: '\e031';
-}
-
 table.table-striped tbody td.active,
 table.table-striped tbody tr.active
 {

@@ -130,6 +130,9 @@
                     :columns="sortable.cols"
                 ></sortable>
             </div>
+            <div class="card-footer">
+                <button class="btn" @click="sortable.cols.push(sortable.cols.shift())">Shift columns</button>
+            </div>
         </div>
     </div>
 

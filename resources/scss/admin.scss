@@ -196,27 +196,6 @@ html, body {
   }
 }
 
-th.vx-sortable-header {
-  &:before {
-    font-family: icomoon;
-    font-weight: normal;
-    vertical-align: middle;
-    font-size: 150%;
-  }
-
-  &.desc {
-    &:before {
-      content: "\e033";
-    }
-  }
-
-  &.asc {
-    &:before {
-      content: "\e031";
-    }
-  }
-}
-
 table.table-striped tbody td.active,
 table.table-striped tbody tr.active {
   background: lighten($accent-color, 40%);

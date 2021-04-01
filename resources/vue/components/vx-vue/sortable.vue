@@ -5,7 +5,7 @@
             <th
                 v-for="column in columns"
                 :class="[
-                    'vx-sortable-header',
+                    { 'sortable-header': column.sortable },
                     column.cssClass,
                     sortColumn === column ? sortDir : null,
                     column.width
@@ -117,9 +117,27 @@
                 }
                 else {
                     this.sortColumn = column;
+                    this.sortDir = this.sortDir || 'asc';
                 }
                 this.$nextTick( () => this.$emit('after-sort') );
             }
         }
     }
 </script>
+
+<style scoped lang="scss">
+  .sortable-header {
+    &:after {
+      font-family: icomoon;
+      font-weight: normal;
+      vertical-align: middle;
+      display: inline-block;
+    }
+    &.asc:after {
+      content: "\e031";
+    }
+    &.desc:after {
+      content: "\e033";
+    }
+  }
+</style>
