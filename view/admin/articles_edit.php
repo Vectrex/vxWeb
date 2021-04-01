@@ -34,11 +34,11 @@
     </div>
     <tab :items="tabItems" :active-index="activeTabIndex" v-on:update:active-index="switchTabs"></tab>
 
-    <section id="article-form" v-if="activeTabIndex === 0" class="form-content">
+    <section id="article-form" v-show="activeTabIndex === 0" class="form-content">
         <article-form :url="formProps.url" :options="formProps.options" :initial-data="formProps.form" :editor-config="editorConfig" @response-received="handleResponse"></article-form>
     </section>
 
-    <section id="article-files" v-if="activeTabIndex === 1">
+    <section id="article-files" v-show="activeTabIndex === 1">
         <filemanager
             :routes="fmRoutes"
             :columns="fmProps.cols"
@@ -64,7 +64,7 @@
         </filemanager>
     </section>
 
-    <section id="article-files-sort" v-if="activeTabIndex === 2">
+    <section id="article-files-sort" v-show="activeTabIndex === 2">
         <slicksort-list v-model="linkedFiles" lock-axis="y" helper-class="slick-sort-helper" @input="saveSort" :use-drag-handle="true">
             <template v-slot:row="slotProps">
                 <div class="d-inline-block col-2">{{ slotProps.item.filename }}</div>
@@ -223,7 +223,7 @@
 
         methods: {
             handleResponse (response) {
-                this.instanceId = response.articleId || this.instanceId;
+                this.instanceId = response.id || this.instanceId;
                 this.toastProps = {
                     message: response.message,
                     classname: response.success ? 'toast-success' : 'toast-error',
