@@ -538,7 +538,7 @@ if (typeof window !== 'undefined') {
 
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__(507);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/autocomplete.vue?vue&type=template&id=26e4a5b8
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/autocomplete.vue?vue&type=template&id=1e90eeda
 
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -547,9 +547,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)($options.containerProps, { ref: "container" }), [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)(_component_autocomplete_input, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)({
       ref: "input",
-      value: $props.value
+      value: $props.modelValue
     }, $options.inputProps, {
-      onInput: $options.handleInput,
+      onInput: _cache[1] || (_cache[1] = $event => ($options.handleInput($event.target.value))),
       onKeydown: [
         (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withKeys)($options.handleEnter, ["enter"]),
         (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withKeys)($options.handleEsc, ["esc"]),
@@ -559,14 +559,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       ],
       onFocus: $options.handleFocus,
       onBlur: $options.handleBlur
-    }), null, 16, ["value", "onInput", "onKeydown", "onFocus", "onBlur"]),
+    }), null, 16, ["value", "onKeydown", "onFocus", "onBlur"]),
     ($data.results.length)
       ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("ul", (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)({
           key: 0,
           ref: "resultList"
         }, $options.resultListProps, {
-          onClick: _cache[1] || (_cache[1] = (...args) => ($options.handleResultClick && $options.handleResultClick(...args))),
-          onMousedown: _cache[2] || (_cache[2] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)(() => {}, ["prevent"]))
+          onClick: _cache[2] || (_cache[2] = (...args) => ($options.handleResultClick && $options.handleResultClick(...args))),
+          onMousedown: _cache[3] || (_cache[3] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)(() => {}, ["prevent"]))
         }), [
           ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(true), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(external_commonjs_vue_commonjs2_vue_root_Vue_.Fragment, null, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderList)($data.results, (result, index) => {
             return (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderSlot)(_ctx.$slots, "result", {
@@ -582,19 +582,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true)
   ], 16))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/autocomplete.vue?vue&type=template&id=26e4a5b8
+;// CONCATENATED MODULE: ./vue/components/vx-vue/autocomplete.vue?vue&type=template&id=1e90eeda
 
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-input.vue?vue&type=template&id=2344d254
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-input.vue?vue&type=template&id=d04404da
 
 
-function form_inputvue_type_template_id_2344d254_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("input", (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)(_ctx.$attrs, {
+function form_inputvue_type_template_id_d04404da_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("input", {
     value: $props.modelValue,
     class: "form-input",
     onInput: _cache[1] || (_cache[1] = $event => (_ctx.$emit('update:modelValue', $event.target.value)))
-  }), null, 16, ["value"]))
+  }, null, 40, ["value"]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-input.vue?vue&type=template&id=2344d254
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-input.vue?vue&type=template&id=d04404da
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-input.vue?vue&type=script&lang=js
 
@@ -609,7 +609,7 @@ function form_inputvue_type_template_id_2344d254_render(_ctx, _cache, $props, $s
 
 
 
-form_inputvue_type_script_lang_js.render = form_inputvue_type_template_id_2344d254_render
+form_inputvue_type_script_lang_js.render = form_inputvue_type_template_id_d04404da_render
 
 /* harmony default export */ const form_input = (form_inputvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/autocomplete.vue?vue&type=script&lang=js
@@ -630,8 +630,9 @@ form_inputvue_type_script_lang_js.render = form_inputvue_type_template_id_2344d2
     components: {
       'autocomplete-input': form_input,
     },
+    emits: ['update:modelValue', 'blur', 'submit'],
     props: {
-      value: {
+      modelValue: {
         type: String,
         default: ""
       },
@@ -770,7 +771,7 @@ form_inputvue_type_script_lang_js.render = form_inputvue_type_template_id_2344d2
 
     methods: {
       handleInput (value) {
-        this.$emit('input', value);
+        this.$emit('update:modelValue', value);
         this.updateResults(value);
       },
 
@@ -798,7 +799,7 @@ form_inputvue_type_script_lang_js.render = form_inputvue_type_template_id_2344d2
 
       handleEsc () {
         this.hideResults();
-        this.$emit('input', '');
+        this.$emit('update:modelValue', '');
       },
 
       handleEnter () {
@@ -819,7 +820,7 @@ form_inputvue_type_script_lang_js.render = form_inputvue_type_template_id_2344d2
       selectResult () {
         const selectedResult = this.results[this.selectedIndex];
         if (selectedResult) {
-          this.$emit('input', this.getResultValue(selectedResult));
+          this.$emit('update:modelValue', this.getResultValue(selectedResult));
         }
         this.hideResults();
         return selectedResult;

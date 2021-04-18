@@ -2,9 +2,9 @@
       <div v-bind="containerProps" ref="container">
         <autocomplete-input
           ref="input"
-          :value="value"
+          :value="modelValue"
           v-bind="inputProps"
-          @input="handleInput"
+          @input="handleInput($event.target.value)"
           @keydown.enter="handleEnter"
           @keydown.esc="handleEsc"
           @keydown.tab="handleTab"
@@ -48,8 +48,9 @@
     components: {
       'autocomplete-input': FormInput,
     },
+    emits: ['update:modelValue', 'blur', 'submit'],
     props: {
-      value: {
+      modelValue: {
         type: String,
         default: ""
       },
@@ -188,7 +189,7 @@
 
     methods: {
       handleInput (value) {
-        this.$emit('input', value);
+        this.$emit('update:modelValue', value);
         this.updateResults(value);
       },
 
@@ -216,7 +217,7 @@
 
       handleEsc () {
         this.hideResults();
-        this.$emit('input', '');
+        this.$emit('update:modelValue', '');
       },
 
       handleEnter () {
@@ -237,7 +238,7 @@
       selectResult () {
         const selectedResult = this.results[this.selectedIndex];
         if (selectedResult) {
-          this.$emit('input', this.getResultValue(selectedResult));
+          this.$emit('update:modelValue', this.getResultValue(selectedResult));
         }
         this.hideResults();
         return selectedResult;
