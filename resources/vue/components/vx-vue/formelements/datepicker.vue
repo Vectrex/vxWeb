@@ -156,7 +156,7 @@
             this.month = (this.value || this.today).getMonth();
             this.selectedDate = this.value ? new Date(this.value.getFullYear(), this.value.getMonth(), this.value.getDate()) : null;
         },
-        beforeDestroy() {
+        beforeUnmount() {
             if(this.hasInput) {
                 document.body.removeEventListener('click', this.handleBodyClick);
             }

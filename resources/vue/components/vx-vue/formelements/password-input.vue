@@ -4,10 +4,7 @@
         v-bind="$attrs"
         class="form-input"
         :type="show ? 'text': 'password'"
-        v-on="{
-          ...$listeners,
-          input: event => $emit('input', event.target.value)
-        }"
+        @input="event => $emit('input', event.target.value)"
       >
       <a :class="{ 'show': show }" href="#" @click.prevent="show = !show"></a>
     </div>

@@ -12,7 +12,6 @@
           @keydown.down.prevent="handleDown"
           @focus="handleFocus"
           @blur="handleBlur"
-          v-on="$listeners"
         />
         <ul
           v-if="results.length"
@@ -145,7 +144,7 @@
       document.body.addEventListener('click', this.handleDocumentClick);
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
       document.body.removeEventListener('click', this.handleDocumentClick);
     },
 

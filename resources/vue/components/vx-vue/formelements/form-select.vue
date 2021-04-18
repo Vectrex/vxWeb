@@ -2,11 +2,7 @@
     <select
         v-bind="$attrs"
         class="form-select"
-        v-on="{
-        ...$listeners,
-        change: event => $emit('input', event.target.value)
-      }"
-
+        @change="event => $emit('input', event.target.value)"
     >
       <option
           v-for="option in options"

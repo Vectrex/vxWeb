@@ -1,3 +1,11 @@
 module.exports = {
-    css: { extract: false }
+    css: { extract: false },
+
+    pluginOptions: {
+      'style-resources-loader': {
+        preProcessor: 'scss',
+        patterns: [
+        ]
+      }
+    }
 }

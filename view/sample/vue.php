@@ -1,5 +1,5 @@
 <!-- { extend: layout.php @ header_block } -->
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue@next"></script>
 <script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/sample.umd.min.js') ?>"></script>
 <!-- { extend: layout.php @ content_block } -->
 <h1>vxWeb Vue Components</h1>
@@ -145,7 +145,7 @@
     const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton, Sortable } = window.sample.Components;
     const { SimpleFetch, UrlQuery, BytesToSize } = window.sample.Util;
 
-    const app = new Vue({
+    Vue.createApp({
 
         components: {
             'autocomplete': Autocomplete,
@@ -160,8 +160,6 @@
             'pagination': Pagination,
             'sortable': Sortable
         },
-
-        el: "#app",
 
         routes: {
             fetchItems: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('sample_fetch')->getUrl() ?>"
@@ -255,5 +253,5 @@
                 return BytesToSize.formatBytes(size);
             }
         }
-    })
+    }).mount ("#app");
 </script>
