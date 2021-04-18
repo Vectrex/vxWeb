@@ -2,9 +2,10 @@
     <div class="form-group is-password">
       <input
         v-bind="$attrs"
+        :value="modelValue"
         class="form-input"
         :type="show ? 'text': 'password'"
-        @input="event => $emit('input', event.target.value)"
+        @input="$emit('update:modelValue', $event.target.value)"
       >
       <a :class="{ 'show': show }" href="#" @click.prevent="show = !show"></a>
     </div>
@@ -12,10 +13,12 @@
 
 <script>
     export default {
-        inheritAttrs: false,
-        data () { return {
-            show: false
-        }}
+      inheritAttrs: false,
+      props: ['modelValue'],
+      emits: ['update:modelValue'],
+      data () { return {
+        show: false
+      }}
     }
 </script>
 

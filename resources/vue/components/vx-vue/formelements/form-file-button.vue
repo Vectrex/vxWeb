@@ -18,7 +18,7 @@ export default {
   inheritAttrs: false,
 
   props: {
-    value: { type: Array },
+    modelValue: { type: Array },
     accept: { type: String, default: "*" },
     multiple: { type: Boolean, default: false },
     name: { type: String, default: "file" },
@@ -26,21 +26,7 @@ export default {
     id: { type: String, default: 'file_upload' }
   },
 
-  data: () => {
-    return {
-      filename: ""
-    };
-  },
-
-  watch: {
-    value(v) {
-      this.filename = v;
-    }
-  },
-
-  mounted() {
-    this.filename = this.value;
-  },
+  emits: ['update:modelValue', 'form-data'],
 
   methods: {
     getFormData(files) {
@@ -58,7 +44,7 @@ export default {
         // convert FileList to Array
 
         files = [...files];
-        this.$emit('input', files);
+        this.$emit('update:modelValue', files);
         this.$emit('form-data', this.getFormData(files));
       }
     }

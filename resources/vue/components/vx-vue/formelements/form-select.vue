@@ -1,13 +1,14 @@
 <template>
     <select
         v-bind="$attrs"
+        :value="modelValue"
         class="form-select"
-        @change="event => $emit('input', event.target.value)"
+        @change="$emit('update:modelValue', $event.target.value)"
     >
       <option
           v-for="option in options"
           :value="option.key || option.label || option"
-          :selected="(option.key || option.label || option) == value"
+          :selected="(option.key || option.label || option) == modelValue"
       >{{ option.label || option }}
       </option>
     </select>
@@ -15,6 +16,7 @@
 
 <script>
     export default {
-      props: { options: Array }
+      props: { options: Array, modelValue: String },
+      emits: ['update:modelValue']
     }
 </script>
