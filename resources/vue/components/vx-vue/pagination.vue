@@ -24,7 +24,8 @@
 <script>
 
 export default {
-  name: 'Pagination',
+  name: 'pagination',
+  emits: ['update:page', 'update:total'],
   props: {
     items: Array,
     total: { type: Number, default: 1 },

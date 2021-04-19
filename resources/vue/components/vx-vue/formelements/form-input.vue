@@ -7,6 +7,7 @@
 </template>
 <script>
   export default {
+    name: 'form-input',
     props: ['modelValue'],
     emits: ['update:modelValue']
   }

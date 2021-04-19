@@ -13,6 +13,7 @@
 
 <script>
     export default {
+      name: 'password-input',
       inheritAttrs: false,
       props: ['modelValue'],
       emits: ['update:modelValue'],

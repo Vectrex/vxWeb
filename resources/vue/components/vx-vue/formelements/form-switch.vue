@@ -6,6 +6,7 @@
 </template>
 <script>
   export default {
+    name: 'form-switch',
     inheritAttrs: false,
     props: ['modelValue'],
     emits: ['update:modelValue']

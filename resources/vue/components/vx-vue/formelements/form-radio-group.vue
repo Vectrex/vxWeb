@@ -2,8 +2,8 @@
   <div v-bind="$attrs">
     <label class="form-radio" v-for="option in options">
       <input
-          @change="$emit('input', $event.target.value)"
-          :checked="(option.key || option.label || option) == value"
+          @change="$emit('update:modelValue', $event.target.checked)"
+          :checked="(option.key || option.label || option) == modelValue"
           :value="option.key || option.label || option"
           type="radio"
       >
@@ -14,6 +14,6 @@
 
 <script>
 export default {
-  props: { value: [String, Number], options: Array }
+  props: { modelValue: [String, Number], options: Array }
 }
 </script>

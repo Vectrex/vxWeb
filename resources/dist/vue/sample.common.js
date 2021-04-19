@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 598:
+/***/ 214:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -15,14 +15,14 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "div[data-v-0529d304]{position:relative}div a[data-v-0529d304]:focus{box-shadow:none;text-decoration:none;font-family:icomoon}div a[data-v-0529d304]:after{height:.8rem;margin:0 .25rem;position:absolute;top:50%;transform:translateY(-50%);width:.8rem;z-index:2;line-height:100%;right:.05rem;font-family:icomoon;content:\"\"}div a.show[data-v-0529d304]:after{content:\"\"}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "div[data-v-0aec82d5]{position:relative}div a[data-v-0aec82d5]:focus{box-shadow:none;text-decoration:none;font-family:icomoon}div a[data-v-0aec82d5]:after{height:.8rem;margin:0 .25rem;position:absolute;top:50%;transform:translateY(-50%);width:.8rem;z-index:2;line-height:100%;right:.05rem;font-family:icomoon;content:\"\"}div a.show[data-v-0aec82d5]:after{content:\"\"}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
 
-/***/ 583:
+/***/ 589:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -36,7 +36,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".sortable-header[data-v-f6a68e2c]:after{font-family:icomoon;font-weight:400;vertical-align:middle;display:inline-block}.sortable-header.asc[data-v-f6a68e2c]:after{content:\"\"}.sortable-header.desc[data-v-f6a68e2c]:after{content:\"\"}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".sortable-header[data-v-3d275eb2]:after{font-family:icomoon;font-weight:400;vertical-align:middle;display:inline-block}.sortable-header.asc[data-v-3d275eb2]:after{content:\"\"}.sortable-header.desc[data-v-3d275eb2]:after{content:\"\"}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -116,35 +116,35 @@ module.exports = function (cssWithMappingToString) {
 
 /***/ }),
 
-/***/ 410:
+/***/ 19:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(598);
+var content = __webpack_require__(214);
 if(content.__esModule) content = content.default;
 if(typeof content === 'string') content = [[module.id, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = __webpack_require__(346)/* .default */ .Z
-var update = add("3b52555f", content, true, {"sourceMap":false,"shadowMode":false});
+var update = add("caa48e4c", content, true, {"sourceMap":false,"shadowMode":false});
 
 /***/ }),
 
-/***/ 44:
+/***/ 685:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(583);
+var content = __webpack_require__(589);
 if(content.__esModule) content = content.default;
 if(typeof content === 'string') content = [[module.id, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = __webpack_require__(346)/* .default */ .Z
-var update = add("cfbb827a", content, true, {"sourceMap":false,"shadowMode":false});
+var update = add("a5784f60", content, true, {"sourceMap":false,"shadowMode":false});
 
 /***/ }),
 
@@ -566,21 +566,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 ;// CONCATENATED MODULE: ./vue/components/vx-vue/autocomplete.vue?vue&type=template&id=1e90eeda
 
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-input.vue?vue&type=template&id=d04404da
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-input.vue?vue&type=template&id=05532945
 
 
-function form_inputvue_type_template_id_d04404da_render(_ctx, _cache, $props, $setup, $data, $options) {
+function form_inputvue_type_template_id_05532945_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("input", {
     value: $props.modelValue,
     class: "form-input",
     onInput: _cache[1] || (_cache[1] = $event => (_ctx.$emit('update:modelValue', $event.target.value)))
   }, null, 40, ["value"]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-input.vue?vue&type=template&id=d04404da
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-input.vue?vue&type=template&id=05532945
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-input.vue?vue&type=script&lang=js
 
   /* harmony default export */ const form_inputvue_type_script_lang_js = ({
+    name: 'form-input',
     props: ['modelValue'],
     emits: ['update:modelValue']
   });
@@ -591,7 +592,7 @@ function form_inputvue_type_template_id_d04404da_render(_ctx, _cache, $props, $s
 
 
 
-form_inputvue_type_script_lang_js.render = form_inputvue_type_template_id_d04404da_render
+form_inputvue_type_script_lang_js.render = form_inputvue_type_template_id_05532945_render
 
 /* harmony default export */ const form_input = (form_inputvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/autocomplete.vue?vue&type=script&lang=js
@@ -871,7 +872,7 @@ form_inputvue_type_script_lang_js.render = form_inputvue_type_template_id_d04404
 autocompletevue_type_script_lang_js.render = render
 
 /* harmony default export */ const autocomplete = (autocompletevue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/datepicker.vue?vue&type=template&id=745c0fd0
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/datepicker.vue?vue&type=template&id=10a22640
 
 
 const _hoisted_1 = { class: "calendar-nav navbar" }
@@ -881,17 +882,17 @@ const _hoisted_4 = { class: "calendar-header" }
 const _hoisted_5 = { class: "calendar-date" }
 const _hoisted_6 = { class: "calendar-body" }
 
-function datepickervue_type_template_id_745c0fd0_render(_ctx, _cache, $props, $setup, $data, $options) {
+function datepickervue_type_template_id_10a22640_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_date_input = (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.resolveComponent)("date-input")
 
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", $options.rootProps, [
     ($props.hasInput)
       ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)(_component_date_input, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.mergeProps)({
           key: 0,
-          value: $data.selectedDate,
-          onInput: $options.handleInput,
+          modelValue: $data.selectedDate,
+          "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => ($data.selectedDate = $event)),
           onToggleDatepicker: $options.toggleDatepicker
-        }, $options.inputProps, { ref: "input" }), null, 16, ["value", "onInput", "onToggleDatepicker"]))
+        }, $options.inputProps, { ref: "input" }), null, 16, ["modelValue", "onToggleDatepicker"]))
       : (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createCommentVNode)("", true),
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.mergeProps)({ class: "calendar" }, $options.calendarProps, {
       ref: "calendar",
@@ -900,12 +901,12 @@ function datepickervue_type_template_id_745c0fd0_render(_ctx, _cache, $props, $s
       (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", _hoisted_1, [
         (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("button", {
           class: "btn btn-action btn-link btn-large prvMon",
-          onClick: _cache[1] || (_cache[1] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withModifiers)((...args) => ($options.previousMonth && $options.previousMonth(...args)), ["stop"]))
+          onClick: _cache[2] || (_cache[2] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withModifiers)((...args) => ($options.previousMonth && $options.previousMonth(...args)), ["stop"]))
         }),
-        (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", _hoisted_2, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($options.monthLabel) + " " + (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($data.year), 1),
+        (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", _hoisted_2, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($options.monthLabel) + " " + (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($data.sheetDate.getFullYear()), 1),
         (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("button", {
           class: "btn btn-action btn-link btn-large nxtMon",
-          onClick: _cache[2] || (_cache[2] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withModifiers)((...args) => ($options.nextMonth && $options.nextMonth(...args)), ["stop"]))
+          onClick: _cache[3] || (_cache[3] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withModifiers)((...args) => ($options.nextMonth && $options.nextMonth(...args)), ["stop"]))
         })
       ]),
       (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", _hoisted_3, [
@@ -917,46 +918,45 @@ function datepickervue_type_template_id_745c0fd0_render(_ctx, _cache, $props, $s
         (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", _hoisted_6, [
           ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(true), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)(external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.Fragment, null, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.renderList)($options.days, (day) => {
             return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", {
-              class: ["calendar-date text-center", ['prev-month', '', 'next-month'][day.getMonth() - $data.month + 1]],
-              key: day.getTime()
+              class: ["calendar-date text-center", ['prev-month', '', 'next-month'][day.getMonth() - $data.sheetDate.getMonth() + 1]]
             }, [
               (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("button", {
                 type: "button",
                 class: ["date-item", {
-                                'active': $data.selectedDate && day.getTime() === $data.selectedDate.getTime(),
-                                'date-today': day.getTime() === $options.today.getTime()
-                            }],
+                  'active': $data.selectedDate && day.getTime() === $data.selectedDate.getTime(),
+                  'date-today': day.getTime() === $options.today.getTime()
+                }],
                 disabled: ($props.validFrom && $props.validFrom) > day || ($props.validUntil && $props.validUntil < day),
                 onClick: (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withModifiers)($event => (($props.validFrom && $props.validFrom) > day || ($props.validUntil && $props.validUntil < day) ? null : $options.selectDate(day)), ["stop"])
               }, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)(day.getDate()), 11, ["disabled", "onClick"])
             ], 2))
-          }), 128))
+          }), 256))
         ])
       ])
     ], 16)
   ], 16))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/datepicker.vue?vue&type=template&id=745c0fd0
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/datepicker.vue?vue&type=template&id=10a22640
 
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/date-input.vue?vue&type=template&id=3dfc53c8
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/date-input.vue?vue&type=template&id=009accae
 
 
-const date_inputvue_type_template_id_3dfc53c8_hoisted_1 = { class: "date-input" }
-const date_inputvue_type_template_id_3dfc53c8_hoisted_2 = {
+const date_inputvue_type_template_id_009accae_hoisted_1 = { class: "date-input" }
+const date_inputvue_type_template_id_009accae_hoisted_2 = {
   key: 0,
   class: "form-input"
 }
-const date_inputvue_type_template_id_3dfc53c8_hoisted_3 = { class: "chip" }
+const date_inputvue_type_template_id_009accae_hoisted_3 = { class: "chip" }
 
-function date_inputvue_type_template_id_3dfc53c8_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", date_inputvue_type_template_id_3dfc53c8_hoisted_1, [
+function date_inputvue_type_template_id_009accae_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", date_inputvue_type_template_id_009accae_hoisted_1, [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", {
       class: "input-group",
       style: $options.computedStyles
     }, [
       ($options.dateString)
-        ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", date_inputvue_type_template_id_3dfc53c8_hoisted_2, [
-            (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("span", date_inputvue_type_template_id_3dfc53c8_hoisted_3, [
+        ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", date_inputvue_type_template_id_009accae_hoisted_2, [
+            (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("span", date_inputvue_type_template_id_009accae_hoisted_3, [
               (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createTextVNode)((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($options.dateString) + " ", 1),
               (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("a", {
                 href: "#",
@@ -973,7 +973,8 @@ function date_inputvue_type_template_id_3dfc53c8_render(_ctx, _cache, $props, $s
             class: "form-input",
             autocomplete: "off",
             "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => ($data.inputString = $event)),
-            onBlur: _cache[3] || (_cache[3] = (...args) => ($options.handleBlur && $options.handleBlur(...args)))
+            onBlur: _cache[3] || (_cache[3] = (...args) => ($options.handleBlur && $options.handleBlur(...args))),
+            onInput: _cache[4] || (_cache[4] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withModifiers)(() => {}, ["stop"]))
           }, null, 544)), [
             [external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.vModelText, $data.inputString]
           ]),
@@ -982,13 +983,13 @@ function date_inputvue_type_template_id_3dfc53c8_render(_ctx, _cache, $props, $s
             key: 2,
             type: "button",
             class: "btn webfont-icon-only btn-primary input-group-btn",
-            onClick: _cache[4] || (_cache[4] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withModifiers)($event => (_ctx.$emit('toggle-datepicker')), ["stop"]))
-          }, ""))
+            onClick: _cache[5] || (_cache[5] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withModifiers)($event => (_ctx.$emit('toggle-datepicker')), ["stop"]))
+          }, " "))
         : (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createCommentVNode)("", true)
     ], 4)
   ]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/date-input.vue?vue&type=template&id=3dfc53c8
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/date-input.vue?vue&type=template&id=009accae
 
 ;// CONCATENATED MODULE: ./vue/util/date-functions.js
 /* harmony default export */ const date_functions = ({
@@ -1095,67 +1096,67 @@ function date_inputvue_type_template_id_3dfc53c8_render(_ctx, _cache, $props, $s
 });
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/date-input.vue?vue&type=script&lang=js
 
-    
 
-    /* harmony default export */ const date_inputvue_type_script_lang_js = ({
 
-        data() {
-            return {
-                inputString: null
-            }
-        },
+/* harmony default export */ const date_inputvue_type_script_lang_js = ({
+  name: 'date-input',
+  data() {
+    return {
+      inputString: null
+    }
+  },
 
-        props: {
-            monthNames: {
-                type: Array,
-                default: () => "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")
-            },
-            dayNames: {
-                type: Array,
-                default: () => "Mon Tue Wed Thu Fri Sat Sun".split(" ")
-            },
-            outputFormat: {
-                type: String,
-                default: "y-mm-dd"
-            },
-            inputFormat: {
-                type: String,
-                default: 'y-m-d'
-            },
-            showButton: {
-                type: Boolean,
-                default: true
-            },
-            value: Date
-        },
+  props: {
+    monthNames: {
+      type: Array,
+      default: () => "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")
+    },
+    dayNames: {
+      type: Array,
+      default: () => "Mon Tue Wed Thu Fri Sat Sun".split(" ")
+    },
+    outputFormat: {
+      type: String,
+      default: "y-mm-dd"
+    },
+    inputFormat: {
+      type: String,
+      default: 'y-m-d'
+    },
+    showButton: {
+      type: Boolean,
+      default: true
+    },
+    modelValue: Date
+  },
 
-        watch: {
-            value (value) {
-                this.inputString = value ? date_functions.formatDate(value, this.outputFormat) : '';
-            }
-        },
+  watch: {
+    modelValue(value) {
+      this.inputString = value ? date_functions.formatDate(value, this.outputFormat) : '';
+    }
+  },
 
-        computed: {
-            dateString () {
-                return this.value ? date_functions.formatDate(this.value, this.outputFormat) : '';
-            },
-            computedStyles() {
-                return {
-                    width: '100%'
-                }
-            }
-        },
+  computed: {
+    dateString() {
+      return this.modelValue ? date_functions.formatDate(this.modelValue, this.outputFormat) : '';
+    },
+    computedStyles() {
+      return {
+        width: '100%'
+      }
+    }
+  },
 
-        methods: {
-            handleBlur () {
-                let date = date_functions.parseDate(this.inputString, this.inputFormat);
-                this.$emit('input', date || null);
-            },
-            handleClear () {
-                this.$emit('input', null);
-            }
-        }
-    });
+  methods: {
+    handleBlur() {
+      let date = date_functions.parseDate(this.inputString, this.inputFormat);
+      this.$emit('update:modelValue', date || null);
+    },
+    handleClear() {
+      this.$emit('update:modelValue', null);
+    }
+  }
+});
 
 ;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/date-input.vue?vue&type=script&lang=js
  
@@ -1163,165 +1164,165 @@ function date_inputvue_type_template_id_3dfc53c8_render(_ctx, _cache, $props, $s
 
 
 
-date_inputvue_type_script_lang_js.render = date_inputvue_type_template_id_3dfc53c8_render
+date_inputvue_type_script_lang_js.render = date_inputvue_type_template_id_009accae_render
 
 /* harmony default export */ const date_input = (date_inputvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/datepicker.vue?vue&type=script&lang=js
 
-    
 
-    /* harmony default export */ const datepickervue_type_script_lang_js = ({
-        components: {
-            DateInput: date_input
-        },
 
-        data() {
-            return {
-                year: null,
-                month: null,
-                selectedDate: null,
-                expanded: !this.hasInput,
-                align: 'left'
-            };
-        },
+/* harmony default export */ const datepickervue_type_script_lang_js = ({
+  name: 'date-picker',
+  components: {
+    DateInput: date_input
+  },
+  emits: ['update:modelValue', 'month-change'],
 
-        watch: {
-            value (newValue) {
-                this.year = (newValue || this.today).getFullYear();
-                this.month = (newValue || this.today).getMonth();
-                this.selectedDate = newValue ? new Date(newValue.getFullYear(), newValue.getMonth(), newValue.getDate()) : null;
-            },
-            expanded (newValue) {
-                if(newValue && this.hasInput) {
-                    this.$nextTick(() =>
-                         this.align = this.$refs.input.$el.getBoundingClientRect().left + this.$refs.calendar.getBoundingClientRect().width > window.innerWidth ? 'right' : 'left'
-                    );
-                }
-            }
-        },
+  data() {
+    return {
+      sheetDate: null,
+      selectedDate: null,
+      expanded: !this.hasInput,
+      align: 'left'
+    };
+  },
 
-        computed: {
-            rootProps() {
-                return {
-                    class: ['datepicker', this.$attrs['class']],
-                    style: { position: 'relative' }
-                }
-            },
-            inputProps() {
-                return {
-                    style: { position: 'relative' },
-                    inputFormat: this.$attrs['input-format'],
-                    outputFormat: this.$attrs['output-format'],
-                    dayNames: this.$attrs['day-names'],
-                    monthNames: this.$attrs['month-names'],
-                    showButton: this.$attrs['show-button']
-                }
-            },
-            calendarProps() {
-                return {
-                    style: this.hasInput ? {
-                        display: this.expanded ? 'block': 'none',
-                        position: 'absolute',
-                        top: '100%',
-                        transform: 'translateY(.2rem)',
-                        'z-index': 300
-                    } : {}
-                }
-            },
-            days() {
-                const dates = [];
-                const nextMonth = new Date(this.year, this.month + 1, 0);
-                const preceedingDays = (new Date(this.year, this.month, 0)).getDay() + 1 - this.startOfWeekIndex;
-                const trailingDays = (7 - nextMonth.getDay()) % 7 - 1 + this.startOfWeekIndex;
+  watch: {
+    modelValue(newValue) {
+      if (newValue) {
+        this.selectedDate = new Date(newValue.getFullYear(), newValue.getMonth(), newValue.getDate()); // crop any timedata
+        this.sheetDate = new Date(this.selectedDate.getTime());
+      }
+      else {
+        this.selectedDate = null;
+        this.sheetDate = this.today;
+      }
+      this.sheetDate.setDate(1);
+    },
+    expanded(newValue) {
+      if (newValue && this.hasInput) {
+        this.$nextTick(() =>
+            this.align = this.$refs.input.$el.getBoundingClientRect().left + this.$refs.calendar.getBoundingClientRect().width > window.innerWidth ? 'right' : 'left'
+        );
+      }
+    }
+  },
 
-                for(let i = -preceedingDays, j = nextMonth.getDate() + trailingDays; i < j; ++i) {
-                    dates.push(new Date(this.year, this.month, i + 1));
-                }
+  computed: {
+    rootProps() {
+      return {
+        class: ['datepicker', this.$attrs['class']],
+        style: {position: 'relative'}
+      }
+    },
+    inputProps() {
+      return {
+        style: {position: 'relative'},
+        inputFormat: this.$attrs['input-format'],
+        outputFormat: this.$attrs['output-format'],
+        dayNames: this.$attrs['day-names'],
+        monthNames: this.$attrs['month-names'],
+        showButton: this.$attrs['show-button']
+      }
+    },
+    calendarProps() {
+      return {
+        style: this.hasInput ? {
+          display: this.expanded ? 'block' : 'none',
+          position: 'absolute',
+          top: '100%',
+          transform: 'translateY(.2rem)',
+          'z-index': 300
+        } : {}
+      }
+    },
+    days() {
+      const dates = [], yr = this.sheetDate.getFullYear(), mon = this.sheetDate.getMonth();
+      const nextMonth = new Date(yr, mon + 1, 0);
+      const preceedingDays = (new Date(yr, mon, 0)).getDay() + 1 - this.startOfWeekIndex;
+      const trailingDays = (7 - nextMonth.getDay()) % 7 - 1 + this.startOfWeekIndex;
 
-                return (dates);
-            },
-            monthLabel() {
-                return this.monthNames[this.month];
-            },
-            today() {
-                const now = new Date();
-                return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            }
-        },
+      for (let i = -preceedingDays, j = nextMonth.getDate() + trailingDays; i < j; ++i) {
+        dates.push(new Date(yr, mon, i + 1));
+      }
 
-        props: {
-            value: {
-                type: Date
-            },
-            validFrom: {
-                type: Date
-            },
-            validUntil: {
-                type: Date
-            },
-            weekdays: {
-                type: Array,
-                default: (() => "M T W T F S S".split(" "))
-            },
-            monthNames: {
-                type: Array,
-                default: (() => "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" "))
-            },
-            startOfWeekIndex: {
-                type: Number,
-                default: 1,
-                validator: value => !value || value === 1
-            },
-            hasInput: {
-                type: Boolean,
-                default: true
-            }
-        },
+      return (dates);
+    },
+    monthLabel() {
+      return this.monthNames[this.sheetDate.getMonth()];
+    },
+    today() {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+  },
 
-        mounted () {
-            if(this.hasInput) {
-                document.body.addEventListener('click', this.handleBodyClick);
-            }
-            this.year = (this.value || this.today).getFullYear();
-            this.month = (this.value || this.today).getMonth();
-            this.selectedDate = this.value ? new Date(this.value.getFullYear(), this.value.getMonth(), this.value.getDate()) : null;
-        },
-        beforeUnmount() {
-            if(this.hasInput) {
-                document.body.removeEventListener('click', this.handleBodyClick);
-            }
-        },
+  props: {
+    modelValue: Date,
+    validFrom: Date,
+    validUntil: Date,
+    weekdays: {
+      type: Array,
+      default: (() => "M T W T F S S".split(" "))
+    },
+    monthNames: {
+      type: Array,
+      default: (() => "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" "))
+    },
+    startOfWeekIndex: {
+      type: Number,
+      default: 1,
+      validator: value => !value || value === 1
+    },
+    hasInput: {
+      type: Boolean,
+      default: true
+    }
+  },
+  created () {
+    this.sheetDate = new Date(this.today.getTime());
+    this.sheetDate.setDate(1);
+  },
+  mounted() {
+    if (this.hasInput) {
+      document.body.addEventListener('click', this.handleBodyClick);
+    }
+    if (this.modelValue) {
+      this.sheetDate = new Date(this.modelValue.getTime());
+      this.sheetDate.setDate(1);
+      this.selectedDate = new Date(this.modelValue.getFullYear(), this.modelValue.getMonth(), this.modelValue.getDate());
+    }
+  },
+  beforeUnmount() {
+    document.body.removeEventListener('click', this.handleBodyClick);
+  },
 
-        methods: {
-            previousMonth() {
-                const d = new Date(this.year, this.month - 1, 1);
-                this.month = d.getMonth();
-                this.year = d.getFullYear();
-                this.$emit("month-change");
-            },
-            nextMonth() {
-                const d = new Date(this.year, this.month + 1, 1);
-                this.month = d.getMonth();
-                this.year = d.getFullYear();
-                this.$emit("month-change");
-            },
-            selectDate(day) {
-                this.selectedDate = day;
-                this.$emit('input', day);
-                this.expanded = !this.hasInput;
-            },
-            toggleDatepicker() {
-                this.expanded = !this.expanded;
-            },
-            handleBodyClick() {
-                this.expanded = false;
-            },
-            handleInput (date) {
-                this.selectedDate = date;
-                this.$emit('input', date);
-            }
-        }
-    });
+  methods: {
+    previousMonth() {
+      this.sheetDate = new Date(this.sheetDate.getFullYear(), this.sheetDate.getMonth() - 1, 1);
+      this.$emit("month-change", this.sheetDate);
+    },
+    nextMonth() {
+      this.sheetDate = new Date(this.sheetDate.getFullYear(), this.sheetDate.getMonth() + 1, 1);
+      this.$emit("month-change", this.sheetDate);
+    },
+    selectDate(day) {
+      this.selectedDate = day;
+      this.$emit('update:modelValue', day);
+      this.expanded = !this.hasInput;
+    },
+    toggleDatepicker() {
+      this.expanded = !this.expanded;
+    },
+    handleBodyClick() {
+      this.expanded = false;
+    },
+    handleInput(date) {
+      this.selectedDate = date;
+      this.$emit('update:modelValue', date);
+    }
+  }
+});
 
 ;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/datepicker.vue?vue&type=script&lang=js
  
@@ -1329,23 +1330,23 @@ date_inputvue_type_script_lang_js.render = date_inputvue_type_template_id_3dfc53
 
 
 
-datepickervue_type_script_lang_js.render = datepickervue_type_template_id_745c0fd0_render
+datepickervue_type_script_lang_js.render = datepickervue_type_template_id_10a22640_render
 
 /* harmony default export */ const datepicker = (datepickervue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/confirm.vue?vue&type=template&id=217d9a93
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/confirm.vue?vue&type=template&id=09de9d7a
 
 
-const confirmvue_type_template_id_217d9a93_hoisted_1 = { class: "modal-container" }
-const confirmvue_type_template_id_217d9a93_hoisted_2 = {
+const confirmvue_type_template_id_09de9d7a_hoisted_1 = { class: "modal-container" }
+const confirmvue_type_template_id_09de9d7a_hoisted_2 = {
   key: 0,
   class: "modal-header bg-error text-light"
 }
-const confirmvue_type_template_id_217d9a93_hoisted_3 = { class: "modal-title h5" }
-const confirmvue_type_template_id_217d9a93_hoisted_4 = { class: "modal-body" }
-const confirmvue_type_template_id_217d9a93_hoisted_5 = { class: "content" }
-const confirmvue_type_template_id_217d9a93_hoisted_6 = { class: "modal-footer" }
+const confirmvue_type_template_id_09de9d7a_hoisted_3 = { class: "modal-title h5" }
+const confirmvue_type_template_id_09de9d7a_hoisted_4 = { class: "modal-body" }
+const confirmvue_type_template_id_09de9d7a_hoisted_5 = { class: "content" }
+const confirmvue_type_template_id_09de9d7a_hoisted_6 = { class: "modal-footer" }
 
-function confirmvue_type_template_id_217d9a93_render(_ctx, _cache, $props, $setup, $data, $options) {
+function confirmvue_type_template_id_09de9d7a_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", {
     ref: "container",
     class: ["modal modal-sm", { active: $data.show }],
@@ -1356,16 +1357,16 @@ function confirmvue_type_template_id_217d9a93_render(_ctx, _cache, $props, $setu
       class: "modal-overlay",
       onClick: _cache[1] || (_cache[1] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withModifiers)((...args) => ($options.cancel && $options.cancel(...args)), ["prevent"]))
     }),
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_217d9a93_hoisted_1, [
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_09de9d7a_hoisted_1, [
       ($data.title)
-        ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", confirmvue_type_template_id_217d9a93_hoisted_2, [
-            (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_217d9a93_hoisted_3, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($data.title), 1)
+        ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", confirmvue_type_template_id_09de9d7a_hoisted_2, [
+            (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_09de9d7a_hoisted_3, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($data.title), 1)
           ]))
         : (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createCommentVNode)("", true),
-      (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_217d9a93_hoisted_4, [
-        (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_217d9a93_hoisted_5, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($data.message), 1)
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_09de9d7a_hoisted_4, [
+        (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_09de9d7a_hoisted_5, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($data.message), 1)
       ]),
-      (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_217d9a93_hoisted_6, [
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("div", confirmvue_type_template_id_09de9d7a_hoisted_6, [
         (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("button", {
           type: "button",
           class: ["btn mr-2", $data.options.okClass],
@@ -1381,66 +1382,68 @@ function confirmvue_type_template_id_217d9a93_render(_ctx, _cache, $props, $setu
     ])
   ], 34))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/confirm.vue?vue&type=template&id=217d9a93
+;// CONCATENATED MODULE: ./vue/components/vx-vue/confirm.vue?vue&type=template&id=09de9d7a
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/confirm.vue?vue&type=script&lang=js
 
-    /* heavily inspired by https://gist.github.com/eolant/ba0f8a5c9135d1a146e1db575276177d */
+/* heavily inspired by https://gist.github.com/eolant/ba0f8a5c9135d1a146e1db575276177d */
 
-    /* harmony default export */ const confirmvue_type_script_lang_js = ({
-        name: 'confirm',
+/* harmony default export */ const confirmvue_type_script_lang_js = ({
+  name: 'confirm',
 
-        props: {
-            config: {
-                type: Object
-            }
-        },
+  props: {
+    config: {
+      type: Object
+    }
+  },
 
-        data () { return {
-            title: "",
-            message: "",
-            show: false,
-            resolve: null,
-            reject: null,
-            options: {
-                okLabel: "Ok",
-                cancelLabel: "Cancel",
-                okClass: "btn-success"
-            }
-        }},
+  data() {
+    return {
+      title: "",
+      message: "",
+      show: false,
+      resolve: null,
+      reject: null,
+      options: {
+        okLabel: "Ok",
+        cancelLabel: "Cancel",
+        okClass: "btn-success"
+      }
+    }
+  },
 
-        watch: {
-            config() {
-                this.options = Object.assign({}, this.options, this.config);
-            }
-        },
+  watch: {
+    config() {
+      this.options = Object.assign({}, this.options, this.config);
+    }
+  },
 
-        created() {
-            this.options = Object.assign({}, this.options, this.config);
-        },
+  created() {
+    this.options = Object.assign({}, this.options, this.config);
+  },
 
-        methods: {
-            open (title, message, options) {
-                this.title = title;
-                this.message = message;
-                this.show = true;
-                this.$nextTick(() => this.$refs.okButton.focus());
-                this.options = Object.assign(this.options, options || {});
-                return new Promise((resolve, reject) => {
-                    this.resolve = resolve;
-                    this.reject = reject;
-                });
-            },
-            ok () {
-                this.show = false;
-                this.resolve(true);
-            },
-            cancel () {
-                this.show = false;
-                this.resolve(false);
-            }
-        }
-    });
+  methods: {
+    open(title, message, options) {
+      this.title = title;
+      this.message = message;
+      this.show = true;
+      this.$nextTick(() => this.$refs.okButton.focus());
+      this.options = Object.assign(this.options, options || {});
+      return new Promise((resolve, reject) => {
+        this.resolve = resolve;
+        this.reject = reject;
+      });
+    },
+    ok() {
+      this.show = false;
+      this.resolve(true);
+    },
+    cancel() {
+      this.show = false;
+      this.resolve(false);
+    }
+  }
+});
 
 ;// CONCATENATED MODULE: ./vue/components/vx-vue/confirm.vue?vue&type=script&lang=js
  
@@ -1448,7 +1451,7 @@ function confirmvue_type_template_id_217d9a93_render(_ctx, _cache, $props, $setu
 
 
 
-confirmvue_type_script_lang_js.render = confirmvue_type_template_id_217d9a93_render
+confirmvue_type_script_lang_js.render = confirmvue_type_template_id_09de9d7a_render
 
 /* harmony default export */ const vx_vue_confirm = (confirmvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/alert.vue?vue&type=template&id=9bfcbb82
@@ -1554,10 +1557,10 @@ function alertvue_type_template_id_9bfcbb82_render(_ctx, _cache, $props, $setup,
 alertvue_type_script_lang_js.render = alertvue_type_template_id_9bfcbb82_render
 
 /* harmony default export */ const vx_vue_alert = (alertvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/message-toast.vue?vue&type=template&id=5a285958
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/message-toast.vue?vue&type=template&id=26f13a35
 
 
-function message_toastvue_type_template_id_5a285958_render(_ctx, _cache, $props, $setup, $data, $options) {
+function message_toastvue_type_template_id_26f13a35_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", {
     id: "messageBox",
     class: [{ 'display': $props.active }, $props.classname, 'toast']
@@ -1571,57 +1574,53 @@ function message_toastvue_type_template_id_5a285958_render(_ctx, _cache, $props,
     }), 256))
   ], 2))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/message-toast.vue?vue&type=template&id=5a285958
+;// CONCATENATED MODULE: ./vue/components/vx-vue/message-toast.vue?vue&type=template&id=26f13a35
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/message-toast.vue?vue&type=script&lang=js
 
-    /* harmony default export */ const message_toastvue_type_script_lang_js = ({
+/* harmony default export */ const message_toastvue_type_script_lang_js = ({
+  name: 'message-toast',
+  emits: ['timeout'],
+  props: {
+    message: [String, Array],
+    classname: String,
+    timeout: {type: Number, default: 5000},
+    active: {type: Boolean, default: false}
+  },
+  data() {
+    return {
+      activeTimeout: null
+    }
+  },
+  computed: {
+    lines() {
+      return typeof this.message === 'string' ? [this.message] : this.message;
+    }
+  },
+  watch: {
+    active() {
+      this.setTimeout();
+    }
+  },
 
-        data: () => ({
-            activeTimeout: null
-        }),
+  mounted() {
+    this.setTimeout();
+  },
 
-        props: {
-            message: [String, Array],
-            classname: String,
-            timeout: {
-                type: Number,
-                default: 5000
-            },
-            active: {
-                type: Boolean,
-                default: false
-            }
-        },
+  methods: {
+    setTimeout() {
+      window.clearTimeout(this.activeTimeout);
 
-        computed: {
-            lines () {
-                return typeof this.message === 'string' ? [this.message] : this.message;
-            }
-        },
+      // timeout 0 disables fadeout
 
-        watch: {
-            active () {
-                this.setTimeout();
-            }
-        },
-
-        mounted () {
-            this.setTimeout();
-        },
-
-        methods: {
-            setTimeout() {
-                window.clearTimeout(this.activeTimeout);
-
-                // timeout 0 disables fadeout
-
-                if (this.active && this.timeout) {
-                    this.activeTimeout = window.setTimeout( () => { this.$emit('timeout'); }, this.timeout);
-                }
-            }
-        }
-    });
+      if (this.active && this.timeout) {
+        this.activeTimeout = window.setTimeout(() => {
+          this.$emit('timeout');
+        }, this.timeout);
+      }
+    }
+  }
+});
 
 ;// CONCATENATED MODULE: ./vue/components/vx-vue/message-toast.vue?vue&type=script&lang=js
  
@@ -1629,19 +1628,19 @@ function message_toastvue_type_template_id_5a285958_render(_ctx, _cache, $props,
 
 
 
-message_toastvue_type_script_lang_js.render = message_toastvue_type_template_id_5a285958_render
+message_toastvue_type_script_lang_js.render = message_toastvue_type_template_id_26f13a35_render
 
 /* harmony default export */ const message_toast = (message_toastvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/password-input.vue?vue&type=template&id=0529d304&scoped=true
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/password-input.vue?vue&type=template&id=0aec82d5&scoped=true
 
-const _withId = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withScopeId)("data-v-0529d304")
+const _withId = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withScopeId)("data-v-0aec82d5")
 
-;(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.pushScopeId)("data-v-0529d304")
-const password_inputvue_type_template_id_0529d304_scoped_true_hoisted_1 = { class: "form-group is-password" }
+;(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.pushScopeId)("data-v-0aec82d5")
+const password_inputvue_type_template_id_0aec82d5_scoped_true_hoisted_1 = { class: "form-group is-password" }
 ;(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.popScopeId)()
 
-const password_inputvue_type_template_id_0529d304_scoped_true_render = /*#__PURE__*/_withId((_ctx, _cache, $props, $setup, $data, $options) => {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", password_inputvue_type_template_id_0529d304_scoped_true_hoisted_1, [
+const password_inputvue_type_template_id_0aec82d5_scoped_true_render = /*#__PURE__*/_withId((_ctx, _cache, $props, $setup, $data, $options) => {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", password_inputvue_type_template_id_0aec82d5_scoped_true_hoisted_1, [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("input", (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.mergeProps)(_ctx.$attrs, {
       value: $props.modelValue,
       class: "form-input",
@@ -1655,11 +1654,12 @@ const password_inputvue_type_template_id_0529d304_scoped_true_render = /*#__PURE
     }, null, 2)
   ]))
 })
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/password-input.vue?vue&type=template&id=0529d304&scoped=true
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/password-input.vue?vue&type=template&id=0aec82d5&scoped=true
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/password-input.vue?vue&type=script&lang=js
 
     /* harmony default export */ const password_inputvue_type_script_lang_js = ({
+      name: 'password-input',
       inheritAttrs: false,
       props: ['modelValue'],
       emits: ['update:modelValue'],
@@ -1670,9 +1670,9 @@ const password_inputvue_type_template_id_0529d304_scoped_true_render = /*#__PURE
 
 ;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/password-input.vue?vue&type=script&lang=js
  
-// EXTERNAL MODULE: ./node_modules/vue-style-loader/index.js??clonedRuleSet-21.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-21.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-21.use[2]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-21.use[3]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-21.use[4]!./node_modules/style-resources-loader/lib/index.js??clonedRuleSet-21.use[5]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/password-input.vue?vue&type=style&index=0&id=0529d304&scoped=true&lang=scss
-var password_inputvue_type_style_index_0_id_0529d304_scoped_true_lang_scss = __webpack_require__(410);
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/password-input.vue?vue&type=style&index=0&id=0529d304&scoped=true&lang=scss
+// EXTERNAL MODULE: ./node_modules/vue-style-loader/index.js??clonedRuleSet-21.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-21.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-21.use[2]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-21.use[3]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-21.use[4]!./node_modules/style-resources-loader/lib/index.js??clonedRuleSet-21.use[5]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/password-input.vue?vue&type=style&index=0&id=0aec82d5&scoped=true&lang=scss
+var password_inputvue_type_style_index_0_id_0aec82d5_scoped_true_lang_scss = __webpack_require__(19);
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/password-input.vue?vue&type=style&index=0&id=0aec82d5&scoped=true&lang=scss
 
 ;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/password-input.vue
 
@@ -1680,19 +1680,19 @@ var password_inputvue_type_style_index_0_id_0529d304_scoped_true_lang_scss = __w
 
 
 ;
-password_inputvue_type_script_lang_js.render = password_inputvue_type_template_id_0529d304_scoped_true_render
-password_inputvue_type_script_lang_js.__scopeId = "data-v-0529d304"
+password_inputvue_type_script_lang_js.render = password_inputvue_type_template_id_0aec82d5_scoped_true_render
+password_inputvue_type_script_lang_js.__scopeId = "data-v-0aec82d5"
 
 /* harmony default export */ const password_input = (password_inputvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/pagination.vue?vue&type=template&id=e8c7c19c
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/pagination.vue?vue&type=template&id=7c778d31
 
 
-const paginationvue_type_template_id_e8c7c19c_hoisted_1 = { class: "pagination" }
-const paginationvue_type_template_id_e8c7c19c_hoisted_2 = { key: 1 }
+const paginationvue_type_template_id_7c778d31_hoisted_1 = { class: "pagination" }
+const paginationvue_type_template_id_7c778d31_hoisted_2 = { key: 1 }
 
-function paginationvue_type_template_id_e8c7c19c_render(_ctx, _cache, $props, $setup, $data, $options) {
+function paginationvue_type_template_id_7c778d31_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("div", null, [
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("ul", paginationvue_type_template_id_e8c7c19c_hoisted_1, [
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("ul", paginationvue_type_template_id_7c778d31_hoisted_1, [
       ($props.showNavButtons)
         ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("li", {
             key: 0,
@@ -1715,7 +1715,7 @@ function paginationvue_type_template_id_e8c7c19c_render(_ctx, _cache, $props, $s
                 key: 0,
                 onClick: $event => ($options.pageClick(page))
               }, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)(page), 9, ["onClick"]))
-            : ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("span", paginationvue_type_template_id_e8c7c19c_hoisted_2, "…"))
+            : ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("span", paginationvue_type_template_id_7c778d31_hoisted_2, "…"))
         ], 2))
       }), 128)),
       ($props.showNavButtons)
@@ -1732,13 +1732,14 @@ function paginationvue_type_template_id_e8c7c19c_render(_ctx, _cache, $props, $s
     ])
   ]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/pagination.vue?vue&type=template&id=e8c7c19c
+;// CONCATENATED MODULE: ./vue/components/vx-vue/pagination.vue?vue&type=template&id=7c778d31
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/pagination.vue?vue&type=script&lang=js
 
 
 /* harmony default export */ const paginationvue_type_script_lang_js = ({
-  name: 'Pagination',
+  name: 'pagination',
+  emits: ['update:page', 'update:total'],
   props: {
     items: Array,
     total: { type: Number, default: 1 },
@@ -1906,13 +1907,13 @@ function paginationvue_type_template_id_e8c7c19c_render(_ctx, _cache, $props, $s
 
 
 
-paginationvue_type_script_lang_js.render = paginationvue_type_template_id_e8c7c19c_render
+paginationvue_type_script_lang_js.render = paginationvue_type_template_id_7c778d31_render
 
 /* harmony default export */ const pagination = (paginationvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=c252f544
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=19523714
 
 
-function form_selectvue_type_template_id_c252f544_render(_ctx, _cache, $props, $setup, $data, $options) {
+function form_selectvue_type_template_id_19523714_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("select", (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.mergeProps)(_ctx.$attrs, {
     value: $props.modelValue,
     class: "form-select",
@@ -1926,11 +1927,12 @@ function form_selectvue_type_template_id_c252f544_render(_ctx, _cache, $props, $
     }), 256))
   ], 16, ["value"]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=c252f544
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=19523714
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=script&lang=js
 
     /* harmony default export */ const form_selectvue_type_script_lang_js = ({
+      name: 'form-select',
       props: { options: Array, modelValue: String },
       emits: ['update:modelValue']
     });
@@ -1941,30 +1943,31 @@ function form_selectvue_type_template_id_c252f544_render(_ctx, _cache, $props, $
 
 
 
-form_selectvue_type_script_lang_js.render = form_selectvue_type_template_id_c252f544_render
+form_selectvue_type_script_lang_js.render = form_selectvue_type_template_id_19523714_render
 
 /* harmony default export */ const form_select = (form_selectvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=2e9033ec
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=6021bab4
 
 
-const form_switchvue_type_template_id_2e9033ec_hoisted_1 = { class: "form-switch" }
-const form_switchvue_type_template_id_2e9033ec_hoisted_2 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("i", { class: "form-icon" }, null, -1)
+const form_switchvue_type_template_id_6021bab4_hoisted_1 = { class: "form-switch" }
+const form_switchvue_type_template_id_6021bab4_hoisted_2 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("i", { class: "form-icon" }, null, -1)
 
-function form_switchvue_type_template_id_2e9033ec_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("label", form_switchvue_type_template_id_2e9033ec_hoisted_1, [
+function form_switchvue_type_template_id_6021bab4_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("label", form_switchvue_type_template_id_6021bab4_hoisted_1, [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("input", (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.mergeProps)({
       value: "1",
       type: "checkbox",
       onChange: _cache[1] || (_cache[1] = $event => (_ctx.$emit('update:modelValue', $event.target.checked)))
     }, _ctx.$attrs, { checked: $props.modelValue }), null, 16, ["checked"]),
-    form_switchvue_type_template_id_2e9033ec_hoisted_2
+    form_switchvue_type_template_id_6021bab4_hoisted_2
   ]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=2e9033ec
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=6021bab4
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=script&lang=js
 
   /* harmony default export */ const form_switchvue_type_script_lang_js = ({
+    name: 'form-switch',
     inheritAttrs: false,
     props: ['modelValue'],
     emits: ['update:modelValue']
@@ -1976,14 +1979,14 @@ function form_switchvue_type_template_id_2e9033ec_render(_ctx, _cache, $props, $
 
 
 
-form_switchvue_type_script_lang_js.render = form_switchvue_type_template_id_2e9033ec_render
+form_switchvue_type_script_lang_js.render = form_switchvue_type_template_id_6021bab4_render
 
 /* harmony default export */ const form_switch = (form_switchvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=6bfd667e
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=f32da906
 
 
-function form_file_buttonvue_type_template_id_6bfd667e_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("label", (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.mergeProps)(_ctx.$attrs, { for: $props.id }), [
+function form_file_buttonvue_type_template_id_f32da906_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("label", { for: $props.id }, [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createTextVNode)((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.toDisplayString)($props.label) + " ", 1),
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("input", {
       type: "file",
@@ -1993,16 +1996,14 @@ function form_file_buttonvue_type_template_id_6bfd667e_render(_ctx, _cache, $pro
       onChange: _cache[1] || (_cache[1] = (...args) => ($options.fileChanged && $options.fileChanged(...args))),
       class: "d-none"
     }, null, 40, ["id", "multiple", "accept"])
-  ], 16, ["for"]))
+  ], 8, ["for"]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=6bfd667e
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=f32da906
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=script&lang=js
 
 /* harmony default export */ const form_file_buttonvue_type_script_lang_js = ({
-
-  inheritAttrs: false,
-
+  name: 'form-file-button',
   props: {
     modelValue: { type: Array },
     accept: { type: String, default: "*" },
@@ -2043,19 +2044,19 @@ function form_file_buttonvue_type_template_id_6bfd667e_render(_ctx, _cache, $pro
 
 
 
-form_file_buttonvue_type_script_lang_js.render = form_file_buttonvue_type_template_id_6bfd667e_render
+form_file_buttonvue_type_script_lang_js.render = form_file_buttonvue_type_template_id_f32da906_render
 
 /* harmony default export */ const form_file_button = (form_file_buttonvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/sortable.vue?vue&type=template&id=f6a68e2c&scoped=true
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/sortable.vue?vue&type=template&id=3d275eb2&scoped=true
 
-const sortablevue_type_template_id_f6a68e2c_scoped_true_withId = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withScopeId)("data-v-f6a68e2c")
+const sortablevue_type_template_id_3d275eb2_scoped_true_withId = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.withScopeId)("data-v-3d275eb2")
 
-;(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.pushScopeId)("data-v-f6a68e2c")
-const sortablevue_type_template_id_f6a68e2c_scoped_true_hoisted_1 = { class: "table table-striped" }
+;(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.pushScopeId)("data-v-3d275eb2")
+const sortablevue_type_template_id_3d275eb2_scoped_true_hoisted_1 = { class: "table table-striped" }
 ;(0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.popScopeId)()
 
-const sortablevue_type_template_id_f6a68e2c_scoped_true_render = /*#__PURE__*/sortablevue_type_template_id_f6a68e2c_scoped_true_withId((_ctx, _cache, $props, $setup, $data, $options) => {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("table", sortablevue_type_template_id_f6a68e2c_scoped_true_hoisted_1, [
+const sortablevue_type_template_id_3d275eb2_scoped_true_render = /*#__PURE__*/sortablevue_type_template_id_3d275eb2_scoped_true_withId((_ctx, _cache, $props, $setup, $data, $options) => {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)("table", sortablevue_type_template_id_3d275eb2_scoped_true_hoisted_1, [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("thead", null, [
       (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createVNode)("tr", null, [
         ((0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.openBlock)(true), (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.createBlock)(external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.Fragment, null, (0,external_commonjs_vue_commonjs2_vue_root_Vue_namespaceObject.renderList)($props.columns, (column) => {
@@ -2095,13 +2096,13 @@ const sortablevue_type_template_id_f6a68e2c_scoped_true_render = /*#__PURE__*/so
     ])
   ]))
 })
-;// CONCATENATED MODULE: ./vue/components/vx-vue/sortable.vue?vue&type=template&id=f6a68e2c&scoped=true
+;// CONCATENATED MODULE: ./vue/components/vx-vue/sortable.vue?vue&type=template&id=3d275eb2&scoped=true
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/sortable.vue?vue&type=script&lang=js
 
     /* harmony default export */ const sortablevue_type_script_lang_js = ({
         name: 'sortable',
-
+        emits: ['before-sort', 'after-sort'],
         props: {
             columns: {
                 type: Array,
@@ -2198,9 +2199,9 @@ const sortablevue_type_template_id_f6a68e2c_scoped_true_render = /*#__PURE__*/so
 
 ;// CONCATENATED MODULE: ./vue/components/vx-vue/sortable.vue?vue&type=script&lang=js
  
-// EXTERNAL MODULE: ./node_modules/vue-style-loader/index.js??clonedRuleSet-21.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-21.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-21.use[2]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-21.use[3]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-21.use[4]!./node_modules/style-resources-loader/lib/index.js??clonedRuleSet-21.use[5]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/sortable.vue?vue&type=style&index=0&id=f6a68e2c&scoped=true&lang=scss
-var sortablevue_type_style_index_0_id_f6a68e2c_scoped_true_lang_scss = __webpack_require__(44);
-;// CONCATENATED MODULE: ./vue/components/vx-vue/sortable.vue?vue&type=style&index=0&id=f6a68e2c&scoped=true&lang=scss
+// EXTERNAL MODULE: ./node_modules/vue-style-loader/index.js??clonedRuleSet-21.use[0]!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-21.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-21.use[2]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-21.use[3]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-21.use[4]!./node_modules/style-resources-loader/lib/index.js??clonedRuleSet-21.use[5]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/sortable.vue?vue&type=style&index=0&id=3d275eb2&scoped=true&lang=scss
+var sortablevue_type_style_index_0_id_3d275eb2_scoped_true_lang_scss = __webpack_require__(685);
+;// CONCATENATED MODULE: ./vue/components/vx-vue/sortable.vue?vue&type=style&index=0&id=3d275eb2&scoped=true&lang=scss
 
 ;// CONCATENATED MODULE: ./vue/components/vx-vue/sortable.vue
 
@@ -2208,8 +2209,8 @@ var sortablevue_type_style_index_0_id_f6a68e2c_scoped_true_lang_scss = __webpack
 
 
 ;
-sortablevue_type_script_lang_js.render = sortablevue_type_template_id_f6a68e2c_scoped_true_render
-sortablevue_type_script_lang_js.__scopeId = "data-v-f6a68e2c"
+sortablevue_type_script_lang_js.render = sortablevue_type_template_id_3d275eb2_scoped_true_render
+sortablevue_type_script_lang_js.__scopeId = "data-v-3d275eb2"
 
 /* harmony default export */ const sortable = (sortablevue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./vue/util/simple-fetch.js

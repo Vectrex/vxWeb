@@ -1,5 +1,5 @@
 <template>
-    <label v-bind="$attrs" :for="id">
+    <label :for="id">
       {{ label }}
       <input
           type="file"
@@ -14,9 +14,7 @@
 
 <script>
 export default {
-
-  inheritAttrs: false,
-
+  name: 'form-file-button',
   props: {
     modelValue: { type: Array },
     accept: { type: String, default: "*" },

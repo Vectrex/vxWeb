@@ -1,12 +1,12 @@
 <template>
   <label class="form-checkbox">
-    <input value="1" type="checkbox" @change="$emit('input', $event.target.checked)" v-bind="$attrs" :checked="value">
+    <input value="1" type="checkbox" @change="$emit('update:modelValue', $event.target.checked)" v-bind="$attrs" :checked="modelValue">
     <i class="form-icon"></i>
   </label>
 </template>
 <script>
   export default {
     inheritAttrs: false,
-    props: ['value']
+    props: ['modelValue']
   }
 </script>

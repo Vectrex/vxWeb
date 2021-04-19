@@ -29,7 +29,7 @@
 <script>
     export default {
         name: 'sortable',
-
+        emits: ['before-sort', 'after-sort'],
         props: {
             columns: {
                 type: Array,
