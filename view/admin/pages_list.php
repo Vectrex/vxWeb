@@ -22,16 +22,15 @@
     const Sortable = window.vxweb.Components.Sortable;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
-    const app = new Vue({
+    Vue.createApp({
 
-        el: "#app",
         components: {"sortable": Sortable},
 
         routes: {
             init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('pages_init')->getUrl() ?>"
         },
 
-        data: {
+        data: () => ({
             pages: [],
             cols: [
                 { label: "Alias/Titel", sortable: true, width: "col-2", prop: "alias" },
@@ -42,7 +41,7 @@
                 { label: "", width: "col-1", prop: "action", cssClass: "text-right" }
             ],
             initSort: {}
-        },
+        }),
 
         async created () {
             let lsValue = window.localStorage.getItem(window.location.origin + "/admin/pages__sort__");
@@ -61,5 +60,5 @@
             }
         }
 
-    });
+    }).mount('#app');
 </script>

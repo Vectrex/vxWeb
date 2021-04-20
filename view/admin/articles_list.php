@@ -57,9 +57,8 @@
     const { Sortable, Confirm, Pagination } = window.vxweb.Components;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
-    let app = new Vue({
+    Vue.createApp({
 
-        el: "#app",
         components: { 'sortable': Sortable, 'confirm': Confirm, 'pagination': Pagination },
 
         routes: {
@@ -68,7 +67,7 @@
             delete: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('article_del')->getUrl() ?>"
         },
 
-        data: {
+        data: () => ({
             articles: [],
             categories: [],
             cols: [
@@ -90,7 +89,7 @@
             },
             entriesPerPage: 20,
             currentPage: 1
-        },
+        }),
 
         computed: {
             filteredArticles () {
@@ -135,5 +134,5 @@
                 window.localStorage.setItem(window.location.origin + "/admin/articles__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
             }
         }
-    });
+    }).mount('#app');
 </script>
