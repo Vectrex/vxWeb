@@ -8,7 +8,7 @@
 <script>
 export default {
   name: 'message-toast',
-  emits: ['timeout'],
+  emits: ['timeout', 'cancel'],
   props: {
     message: [String, Array],
     classname: String,

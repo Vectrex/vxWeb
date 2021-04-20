@@ -53,7 +53,7 @@ export default {
   },
   props: {
     url: { type: String, required: true },
-    initialData: { type: Object, default: () => { return {} } },
+    initialData: { type: Object, default: () => ({}) },
     notifications: { type: Array }
   },
 

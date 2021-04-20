@@ -8,7 +8,7 @@
 <link rel='icon' type='image/x-icon' href='/favicon.ico'>
 <link type='text/css' rel='stylesheet' href='<?= \vxPHP\Application\Application::getInstance()->asset('css/admin.min.css') ?>'>
 <?php if(\vxPHP\Application\Application::getInstance()->runsLocally()): ?>
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
 <?php else: ?>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
 <?php endif; ?>

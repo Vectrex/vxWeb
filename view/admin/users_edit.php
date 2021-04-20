@@ -1,6 +1,6 @@
 <!-- { extend: admin/layout_with_menu.php @ content_block } -->
 
-<div id="vue-root">
+<div id="app">
 
     <h1>User <em class="smaller"><?= htmlspecialchars($this->user['name'] ?? 'neuer User') ?></em></h1>
 
@@ -26,16 +26,14 @@
     const UserForm =  window.vxweb.Components.UserForm;
     const SimpleFetch =  window.vxweb.Util.SimpleFetch;
 
-    const app = new Vue({
+    Vue.createApp({
 
         components: {
             "message-toast": MessageToast,
             "user-form": UserForm
         },
 
-        el: "#vue-root",
-
-        data: {
+        data: () => ({
             instanceId: <?= $this->user['id'] ?? 'null' ?>,
             formProps: {
                 form: {},
@@ -47,7 +45,7 @@
                 classname: "",
                 active: false
             }
-        },
+        }),
 
         computed: {
             formUrl () {
@@ -66,11 +64,11 @@
         async created () {
             let response = await SimpleFetch(this.$options.routes.init + "?id=" + (this.instanceId || ''));
 
-            this.formProps = Object.assign({}, this.formProps, {
+            this.formProps = {
                 options: response.options || {},
                 form: response.form || {},
                 url: this.$options.routes.update
-            });
+            };
         },
 
         methods: {
@@ -87,5 +85,5 @@
                 }
             }
         }
-    });
+    }).mount('#app');
 </script>

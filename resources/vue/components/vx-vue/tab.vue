@@ -23,7 +23,7 @@ export default {
   props: {
     items: {
       type: Array,
-      default: []
+      default: () => ([])
     },
     activeIndex: {
       type: Number,

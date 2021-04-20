@@ -25,45 +25,28 @@
             </form>
         </div>
     </div>
-    <message-toast
-        :message="toastProps.message"
-        :classname="toastProps.messageClass"
-        :active="status === 'received'"
-        ref="toast"
-    ></message-toast>
+    <message-toast v-bind="toast" @cancel="toast.active = false" @timeout="toast.active = false"></message-toast>
 </div>
 
 <script>
     const { MessageToast, PasswordInput } = window.vxweb.Components;
     const SimpleFetch =  window.vxweb.Util.SimpleFetch;
 
-    const app = new Vue({
-
+    Vue.createApp({
         components: {
             "message-toast": MessageToast,
             "password-input": PasswordInput
         },
 
-        el: "#login",
-
         routes: {
             loginUrl: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('login')->getUrl() ?>"
         },
 
-        data: {
+        data() { return {
             form: {},
-            response: {},
-            status: null
-        },
-
-        computed: {
-            toastProps () {
-                return {
-                    message: this.response.message ? this.response.message : "",
-                    messageClass: this.response.error ? "toast-error" : "toast-success"
-                }
-            }
-        },
+            status: null,
+            toast: {}
+        }},
 
         methods: {
             async submit () {
@@ -73,11 +56,15 @@
                     if (response.locationHref) {
                         window.location.href = response.locationHref;
                     } else {
-                        this.response = response;
-                        this.status = "received";
+                        this.toast = {
+                            active: true,
+                            message: response.message || "",
+                            classname: response.error ? "toast-error" : "toast-success"
+                        }
                     }
+                    this.status = "received";
                 }
             }
         }
-    });
+    }).mount('#login');
 </script>

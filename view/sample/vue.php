@@ -89,9 +89,9 @@
                 <h2>Alerts and Confirms</h2>
             </div>
             <div class="card-body">
-                <button class="btn" @click="alertMe">Alert me!</button>
+                <button class="btn mr-1" @click="alertMe">Alert me!</button>
                 <button class="btn" @click="confirmThis">Confirm this!</button>
-                <button class="btn" @click="toast.active = true">Toast me!</button>
+                <button class="btn ml-1" @click="toast.active = true">Toast me!</button>
             </div>
         </div>
     </div>

@@ -48,8 +48,7 @@
             options: { type: Object }
         },
 
-        data: function() {
-            return {
+        data: () => ({
                 form: {},
                 response: {},
                 loading: false,
@@ -61,8 +60,7 @@
                     { type: 'password-input', model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
                     { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
                 ]
-            }
-        },
+        }),
 
         computed: {
             errors () {

@@ -18,15 +18,13 @@
     const ProfileForm =  window.vxweb.Components.ProfileForm;
     const SimpleFetch =  window.vxweb.Util.SimpleFetch;
 
-    const app = new Vue({
-
-        el: ".form-content",
+    Vue.createApp({
 
         components: {
             MessageToast, ProfileForm
         },
 
-        data: {
+        data: () => ({
             form: {},
             notifications: [],
             toastProps: {
@@ -34,16 +32,14 @@
                 classname: "",
                 active: false
             }
-        },
+        }),
 
-        mounted () {
-            SimpleFetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>")
-                .then(response => {
-                    this.notifications = response.notifications;
-                    if (response.formData) {
-                        this.form = response.formData;
-                    }
-                });
+        async created () {
+            let response = await SimpleFetch("<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('profile_data_get')->getUrl() ?>")
+            this.notifications = response.notifications;
+            if (response.formData) {
+                this.form = response.formData;
+            }
         },
 
         methods: {
@@ -56,5 +52,5 @@
                 };
             }
         }
-    });
+    }).mount(".form-content");
 </script>

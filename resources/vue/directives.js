@@ -1,7 +1,7 @@
 // simple directive to enable event bubbling
 
 const Bubble = {
-    bind (el, binding, vnode) {
+    beforeMount(el, binding, vnode) {
         Object.keys(binding.modifiers).forEach(event => {
             // Bubble events of Vue components
             if (vnode.componentInstance) {
@@ -21,6 +21,6 @@ const Bubble = {
 
 // focus an element upon insertion
 
-const Focus = { inserted: (el) => el.focus() };
+const Focus = { mounted: (el) => el.focus() };
 
-export { Focus, Bubble }
+export {Focus, Bubble}

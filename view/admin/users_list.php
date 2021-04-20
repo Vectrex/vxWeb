@@ -29,9 +29,8 @@
     const { Sortable, Confirm } = window.vxweb.Components;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
-    const app = new Vue({
+    Vue.createApp({
 
-        el: "#app",
         components: { "sortable": Sortable, "confirm": Confirm },
 
         routes: {
@@ -39,7 +38,7 @@
             delete: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_del')->getUrl() ?>"
         },
 
-        data: {
+        data: () => ({
             users: [],
             currentUser: {
             },
@@ -51,7 +50,7 @@
                 { label: "", width: "col-1", prop: "action", cssClass: "text-right" }
             ],
             initSort: {}
-        },
+        }),
 
         async created () {
             let lsValue = window.localStorage.getItem(window.location.origin + "/admin/users__sort__");
@@ -79,5 +78,5 @@
                 window.localStorage.setItem(window.location.origin + "/admin/users__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
             }
         }
-    });
+    }).mount('#app');
 </script>
