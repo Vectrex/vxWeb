@@ -126,7 +126,7 @@
       </template>
 
       <template v-slot:size="slotProps">
-        <template v-if="!slotProps.row.isFolder">{{ slotProps.row.size | formatFilesize(',') }}</template>
+        <template v-if="!slotProps.row.isFolder">{{ formatFilesize(slotProps.row.size, ',') }}</template>
       </template>
 
       <template v-slot:type="slotProps">
@@ -274,7 +274,7 @@ export default {
       this.showAddActivities = false;
     },
     toggleAll(event) {
-      [...this.folders, ...this.files].forEach(item => this.$set(item, 'checked', event.target.checked));
+      [...this.folders, ...this.files].forEach(item => item.checked = event.target.checked);
     },
     async readFolder(id) {
       let response = await SimpleFetch(UrlQuery.create(this.routes.readFolder, {folder: id}));
@@ -474,24 +474,21 @@ export default {
         return SimpleFetch(UrlQuery.create(this.routes.search, {search: term}));
       }
       return {files: [], folders: []};
-    }
+    },
+    formatFilesize: formatFilesize
   },
 
   directives: {
     focus: Focus,
     checkIndeterminate: {
-      update(el, binding, vnode) {
-        let filteredLength = vnode.context.checkedFolders.length + vnode.context.checkedFiles.length;
+      updated(el, binding, vnode) {
+        let filteredLength = binding.instance.checkedFolders.length + binding.instance.checkedFiles.length;
         if (!filteredLength) {
           el.checked = false;
         }
-        el.indeterminate = filteredLength && filteredLength !== vnode.context.folders.length + vnode.context.files.length;
+        el.indeterminate = filteredLength && filteredLength !== binding.instance.folders.length + binding.instance.files.length;
       }
     }
-  },
-
-  filters: {
-    formatFilesize: formatFilesize
   }
 }
 </script>

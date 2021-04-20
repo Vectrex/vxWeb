@@ -10,7 +10,7 @@
         </thead>
         <tbody>
         <tr v-for="revision in sortedRevisions" :key="revision.id">
-            <td>{{ revision.firstCreated | formatDateTime }}</td>
+            <td>{{ formatDateTime(revision.firstCreated, 'y-mm-dd h:i:s') }}</td>
             <td>
                 <button class="btn btn-link webfont-icon-only tooltip" type="button" data-tooltip="Ansicht" @click="$emit('load-revision', revision)">&#xe015;</button>
             </td>
@@ -38,10 +38,8 @@
                 return this.revisions.slice().sort((a, b) => a.firstCreated < b.firstCreated ? 1 : -1);
             }
         },
-        filters: {
-            formatDateTime (date) {
-                return DateFunctions.formatDate(date, 'y-mm-dd h:i:s');
-            }
+        methods: {
+            formatDateTime: DateFunctions.formatDate
         }
 
     }

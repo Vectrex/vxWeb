@@ -20,7 +20,7 @@
     const MessageToast = window.vxweb.Components.MessageToast;
     const Filemanager = window.vxweb.Components.Filemanager;
 
-    let app = new Vue({
+    Vue.createApp({
 
         el: "#app",
         components: { 'message-toast': MessageToast, 'filemanager': Filemanager },
@@ -47,7 +47,7 @@
             maxUploadFilesize:  <?= $this->upload_max_filesize ?>
         },
 
-        data: {
+        data: () => ({
             cols: [
                 {
                     label: "",
@@ -81,7 +81,7 @@
                 classname: "",
                 active: false
             }
-        },
+        }),
 
         created () {
             let lsValue = window.localStorage.getItem(window.location.origin + "/admin/files__sort__");
@@ -102,5 +102,5 @@
                 window.localStorage.setItem(window.location.origin + "/admin/files__sort__", JSON.stringify({ column: sort.sortColumn.prop, dir: sort.sortDir }));
             }
         }
-    });
+    }).mount('#app');
 </script>

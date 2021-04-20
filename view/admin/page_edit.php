@@ -3,7 +3,7 @@
 
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 
-<div id="vue-root" v-cloak>
+<div id="app" v-cloak>
     <div class="vx-button-bar">
         <a class="btn with-webfont-icon-left" data-icon="&#xe025;" href="<?= $router->getRoute('pages')->getUrl() ?>">Zurück zur Übersicht</a>
     </div>
@@ -25,13 +25,11 @@
     const { MessageToast, PageForm, Confirm } = window.vxweb.Components;
     const { SimpleFetch, UrlQuery } =  window.vxweb.Util;
 
-    const app = new Vue({
+    Vue.createApp({
 
         components: { "message-toast": MessageToast, "page-form": PageForm, "confirm": Confirm },
 
-        el: "#vue-root",
-
-        data: {
+        data: () => ({
             instanceId: <?= $this->id ?>,
             formProps: {
                 form: {},
@@ -44,7 +42,7 @@
                 classname: "",
                 active: false
             }
-        },
+        }),
 
         computed: {
             formUrl () {
@@ -108,5 +106,5 @@
                 }
             }
         }
-    });
+    }).mount('#app');
 </script>
