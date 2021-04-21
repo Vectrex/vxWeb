@@ -24,8 +24,7 @@
 		"ext-dom": "*",
 		"ext-json": "*",
 		"vectrex/vxphp": "^2.5.0",
-		"ivopetkov/html5-dom-document-php": "^2.0.0",
-		"ckeditor/ckeditor": "dev-full/stable"
+		"ivopetkov/html5-dom-document-php": "^2.0.0"
     },
 	"require-dev": {
 		"roave/security-advisories": "dev-master"

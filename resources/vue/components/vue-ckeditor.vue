@@ -4,7 +4,7 @@
     <textarea
       :name="name"
       :id="id"
-      :value="value"
+      :value="modelValue"
       :types="types"
       :config="config"
       :disabled="readOnlyMode"
@@ -17,21 +17,20 @@
 let inc = new Date().getTime();
 
 export default {
-  name: 'VueCkeditor',
+  name: 'vue-ckeditor',
+  emits: ['blur', 'focus', 'contentDom', 'dialogDefinition', 'fileUploadRequest', 'fileUploadResponse', 'update:modelValue'],
   props: {
+    modelValue: String,
     name: { type: String, default: `editor-${++inc}` },
-    value: String,
     id: { type: String, default:`editor-${inc}` },
     types: { type: String, default: `classic` },
     config: { type: Object, default: {} },
     instanceReadyCallback: Function,
     readOnlyMode: { type: Boolean, default: false }
   },
-  data() {
-    return {
+  data: () => ({
       instanceValue: ''
-    };
-  },
+  }),
   computed: {
     instance() {
       return CKEDITOR.instances[this.id];
@@ -59,10 +58,10 @@ export default {
         CKEDITOR.replace(this.id, this.config);
       }
 
-      this.instance.setData(this.value);
+      this.instance.setData(this.modelValue);
 
       this.instance.on('instanceReady', () => {
-        this.instance.setData(this.value);
+        this.instance.setData(this.modelValue);
       });
 
       // Ckeditor change event
@@ -72,35 +71,23 @@ export default {
       this.instance.on('mode', this.onMode);
 
       // Ckeditor blur event
-      this.instance.on('blur', evt => {
-        this.$emit('blur', evt);
-      });
+      this.instance.on('blur', evt => { this.$emit('blur', evt) });
 
       // Ckeditor focus event
-      this.instance.on('focus', evt => {
-        this.$emit('focus', evt);
-      });
+      this.instance.on('focus', evt => { this.$emit('focus', evt) });
 
       // Ckeditor contentDom event
-      this.instance.on('contentDom', evt => {
-        this.$emit('contentDom', evt);
-      });
+      this.instance.on('contentDom', evt => { this.$emit('contentDom', evt) });
 
       // Ckeditor dialog definition event
-      CKEDITOR.on('dialogDefinition', evt => {
-        this.$emit('dialogDefinition', evt);
-      });
+      CKEDITOR.on('dialogDefinition', evt => { this.$emit('dialogDefinition', evt) });
 
       // Ckeditor file upload request event
-      this.instance.on('fileUploadRequest', evt => {
-        this.$emit('fileUploadRequest', evt);
-      });
+      this.instance.on('fileUploadRequest', evt => { this.$emit('fileUploadRequest', evt) });
 
       // Ckditor file upload response event
       this.instance.on('fileUploadResponse', evt => {
-        setTimeout(() => {
-          this.onChange();
-        }, 0);
+        this.$nextTick( () => { this.onChange() });
         this.$emit('fileUploadResponse', evt);
       });
 
@@ -108,12 +95,15 @@ export default {
       if (typeof this.instanceReadyCallback !== 'undefined') {
         this.instance.on('instanceReady', this.instanceReadyCallback);
       }
-
-      // Registering the beforeDestroyed hook right after creating the instance
-      this.$once('hook:beforeDestroy', () => {
-        this.destroy();
-      });
     }
+  },
+  beforeUnmount() {
+    try {
+      let editor = window['CKEDITOR'];
+      if (editor.instances && editor.instances[this.id]) {
+        editor.instances[this.id].destroy();
+      }
+    } catch (e) {}
   },
   methods: {
     update(val) {
@@ -121,14 +111,6 @@ export default {
         this.instance.setData(val, { internal: false });
         this.instanceValue = val;
       }
-    },
-    destroy() {
-      try {
-        let editor = window['CKEDITOR'];
-        if (editor.instances && editor.instances[this.id]) {
-          editor.instances[this.id].destroy();
-        }
-      } catch (e) {}
     },
     onMode() {
       if (this.instance.mode === 'source') {
@@ -140,8 +122,8 @@ export default {
     },
     onChange() {
       let html = this.instance.getData();
-      if (html !== this.value) {
-        this.$emit('input', html);
+      if (html !== this.modelValue) {
+        this.$emit('update:modelValue', html);
         this.instanceValue = html;
       }
     }

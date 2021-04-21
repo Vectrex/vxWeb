@@ -57,37 +57,35 @@
         },
         props: {
             url: { type: String, required: true },
-            initialData: { type: Object, default: () => { return {} } }
+            initialData: { type: Object, default: () => {{}} }
         },
 
-        data() {
-            return {
-                form: {},
-                revisions: [],
-                response: {},
-                loading: false,
-                editorConfig: {
-                    allowedContent: true,
-                    autoParagraph: false,
-                    customConfig: "",
-                    toolbar:
-                        [
-                            ['Maximize', '-', 'Source'],
-                            ['Undo', 'Redo', '-', 'Cut','Copy','Paste','PasteText','PasteFromWord'],
-                            [ 'Find', 'Replace'],
-                            [ 'Bold', 'Italic', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat', '-', 'TextColor', 'BGColor'],
-                            ['NumberedList','BulletedList','-','Blockquote'],
-                            ['Link','Unlink'],
-                            ['Image','Table','SpecialChar'],
-                            ['Styles', 'Format'],
-                            ['ShowBlocks']
-                        ],
-                    height: "24rem", contentsCss: ['/css/site.css', '/css/site_edit.css'],
-                    filebrowserBrowseUrl: null,
-                    filebrowserImageBrowseUrl: null
-                }
+        data: () => ({
+            form: {},
+            revisions: [],
+            response: {},
+            loading: false,
+            editorConfig: {
+                allowedContent: true,
+                autoParagraph: false,
+                customConfig: "",
+                toolbar:
+                    [
+                        ['Maximize', '-', 'Source'],
+                        ['Undo', 'Redo', '-', 'Cut','Copy','Paste','PasteText','PasteFromWord'],
+                        [ 'Find', 'Replace'],
+                        [ 'Bold', 'Italic', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat', '-', 'TextColor', 'BGColor'],
+                        ['NumberedList','BulletedList','-','Blockquote'],
+                        ['Link','Unlink'],
+                        ['Image','Table','SpecialChar'],
+                        ['Styles', 'Format'],
+                        ['ShowBlocks']
+                    ],
+                height: "24rem", contentsCss: ['/css/site.css', '/css/site_edit.css'],
+                filebrowserBrowseUrl: null,
+                filebrowserImageBrowseUrl: null
             }
-        },
+        }),
 
         computed: {
             errors () {

@@ -9,6 +9,7 @@ import FormSelect from '../components/vx-vue/formelements/form-select';
 import FormSwitch from '../components/vx-vue/formelements/form-switch';
 import FormFileButton from '../components/vx-vue/formelements/form-file-button';
 import Sortable from '../components/vx-vue/sortable';
+import CKEditor from '../components/vue-ckeditor';
 
 import SimpleFetch from '../util/simple-fetch';
 import PromisedXhr from '../util/promised-xhr';
@@ -17,6 +18,7 @@ import DateFunctions from '../util/date-functions';
 import BytesToSize from '../util/bytes-to-size';
 
 import { Focus, Bubble } from '../directives';
+
 
 const Components = {
     FormSelect,
@@ -29,7 +31,8 @@ const Components = {
     Alert,
     MessageToast,
     Pagination,
-    Sortable
+    Sortable,
+    CKEditor
 };
 
 const Directives = {

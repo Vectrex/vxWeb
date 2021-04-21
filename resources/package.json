@@ -28,5 +28,8 @@
     "last 3 edge versions",
     "firefox esr",
     "last 3 safari versions"
-  ]
+  ],
+  "dependencies": {
+    "ckeditor4": "^4.16.0"
+  }
 }

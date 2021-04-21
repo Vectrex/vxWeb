@@ -1,5 +1,6 @@
 <!-- { extend: layout.php @ header_block } -->
 <script src="https://unpkg.com/vue@next"></script>
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/sample.umd.min.js') ?>"></script>
 <!-- { extend: layout.php @ content_block } -->
 <h1>vxWeb Vue Components</h1>
@@ -136,13 +137,18 @@
         </div>
     </div>
 
-    <alert ref="alert"></alert>
+    <div class="column col-4 col-sm-12 my-2">
+        <div class="card" style="height: 100%;">
+        <ckeditor v-model="ck.editorData" :config="ck.editorConfig"></ckeditor>
+        </div>
+    </div>
+        <alert ref="alert"></alert>
     <confirm ref="confirm"></confirm>
     <message-toast v-bind="toast" ref="toast" @cancel="toast.active = false" @timeout="toast.active = false"></message-toast>
 </div>
 
 <script>
-    const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton, Sortable } = window.sample.Components;
+    const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton, Sortable, CKEditor } = window.sample.Components;
     const { SimpleFetch, UrlQuery, BytesToSize } = window.sample.Util;
 
     Vue.createApp({
@@ -158,55 +164,77 @@
             'confirm': Confirm,
             'message-toast': MessageToast,
             'pagination': Pagination,
-            'sortable': Sortable
+            'sortable': Sortable,
+            'ckeditor': CKEditor
         },
 
         routes: {
             fetchItems: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('sample_fetch')->getUrl() ?>"
         },
 
-        data () {
-            return {
-                items: [
-                    "<?= implode('","', $this->items) ?>"
+        data: () => ({
+            items: [
+                "<?= implode('","', $this->items) ?>"
+            ],
+            client: {
+                picked: [],
+                inputValue:""
+            },
+            fetched: {
+                picked: [],
+                inputValue:""
+            },
+            form: {
+                password: "",
+                select: "",
+                switch: false,
+                date: new Date()
+            },
+            toast: {
+                message: "Howdy!",
+                classname: "toast-success",
+                active: false
+            },
+            sortable: {
+                rows: [
+                    { key: 1, name: 'Linda', role: 'Sarah', yob: 1956 },
+                    { key: 2, name: 'Robert', role: 'T1000', yob: 1958 },
+                    { key: 3, name: 'Arnold', role: 'T800', yob: 1947 },
+                    { key: 4, name: 'Edward', role: 'John', yob: 1977 }
                 ],
-                client: {
-                    picked: [],
-                    inputValue:""
-                },
-                fetched: {
-                    picked: [],
-                    inputValue:""
-                },
-                form: {
-                    password: "",
-                    select: "",
-                    switch: false,
-                    date: new Date()
-                },
-                toast: {
-                    message: "Howdy!",
-                    classname: "toast-success",
-                    active: false
-                },
-                sortable: {
-                    rows: [
-                        { key: 1, name: 'Linda', role: 'Sarah', yob: 1956 },
-                        { key: 2, name: 'Robert', role: 'T1000', yob: 1958 },
-                        { key: 3, name: 'Arnold', role: 'T800', yob: 1947 },
-                        { key: 4, name: 'Edward', role: 'John', yob: 1977 }
-                    ],
-                    cols: [
-                        { label: 'Name', prop: 'name', sortable: true },
-                        { label: 'Role', prop: 'role', sortable: true  },
-                        { label: 'Born in', prop: 'yob', sortable: true  }
-                    ]
-                },
-                currentPage: 1,
-                entriesPerPage: 10,
-                uploads: []
+                cols: [
+                    { label: 'Name', prop: 'name', sortable: true },
+                    { label: 'Role', prop: 'role', sortable: true  },
+                    { label: 'Born in', prop: 'yob', sortable: true  }
+                ]
+            },
+            currentPage: 1,
+            entriesPerPage: 10,
+            uploads: [],
+            ck: {
+                editorData: '<p>Content of the editor.</p>',
+                editorConfig: {
+                    allowedContent: true,
+                    autoParagraph: false,
+                    customConfig: "",
+                    toolbar:
+                        [
+                            ['Maximize', '-', 'Source'],
+                            ['Undo', 'Redo', '-', 'Cut','Copy','Paste','PasteText','PasteFromWord'],
+                            [ 'Find', 'Replace'],
+                            [ 'Bold', 'Italic', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat', '-', 'TextColor', 'BGColor'],
+                            ['NumberedList','BulletedList','-','Blockquote'],
+                            ['Link','Unlink'],
+                            ['Image','Table','SpecialChar'],
+                            ['Styles', 'Format'],
+                            ['ShowBlocks']
+                        ],
+                    height: "24rem", contentsCss: ['/css/site.css', '/css/site_edit.css'],
+                    filebrowserBrowseUrl: null,
+                    filebrowserImageBrowseUrl: null
+                }
             }
-        },
+        }),
 
         computed: {
             paginatedItems () {
@@ -251,5 +279,5 @@
                 return BytesToSize.formatBytes(size);
             }
         }
-    }).mount ("#app");
+    }).mount("#app");
 </script>
