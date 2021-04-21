@@ -516,6 +516,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.d(__webpack_exports__, {
   "Components": () => (/* reexport */ Components),
   "Directives": () => (/* reexport */ Directives),
+  "Plugins": () => (/* reexport */ Plugins),
   "Util": () => (/* reexport */ Util)
 });
 
@@ -1928,10 +1929,10 @@ function paginationvue_type_template_id_7c778d31_render(_ctx, _cache, $props, $s
 paginationvue_type_script_lang_js.render = paginationvue_type_template_id_7c778d31_render
 
 /* harmony default export */ const pagination = (paginationvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=19523714
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=7295af77
 
 
-function form_selectvue_type_template_id_19523714_render(_ctx, _cache, $props, $setup, $data, $options) {
+function form_selectvue_type_template_id_7295af77_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("select", (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)(_ctx.$attrs, {
     value: $props.modelValue,
     class: "form-select",
@@ -1945,13 +1946,13 @@ function form_selectvue_type_template_id_19523714_render(_ctx, _cache, $props, $
     }), 256))
   ], 16, ["value"]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=19523714
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=7295af77
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=script&lang=js
 
     /* harmony default export */ const form_selectvue_type_script_lang_js = ({
       name: 'form-select',
-      props: { options: Array, modelValue: String },
+      props: { options: Array, modelValue: [String, Number] },
       emits: ['update:modelValue']
     });
 
@@ -1961,7 +1962,7 @@ function form_selectvue_type_template_id_19523714_render(_ctx, _cache, $props, $
 
 
 
-form_selectvue_type_script_lang_js.render = form_selectvue_type_template_id_19523714_render
+form_selectvue_type_script_lang_js.render = form_selectvue_type_template_id_7295af77_render
 
 /* harmony default export */ const form_select = (form_selectvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=6021bab4
@@ -2524,7 +2525,6 @@ const Focus = { mounted: (el) => el.focus() };
 
 
 
-
 const Components = {
     FormSelect: form_select,
     FormSwitch: form_switch,
@@ -2537,12 +2537,15 @@ const Components = {
     MessageToast: message_toast,
     Pagination: pagination,
     Sortable: sortable,
-    CKEditor: vue_ckeditor
+    CKEditor: vue_ckeditor,
 };
 
 const Directives = {
     Focus: Focus,
     Bubble: Bubble
+};
+
+const Plugins = {
 };
 
 const Util = {

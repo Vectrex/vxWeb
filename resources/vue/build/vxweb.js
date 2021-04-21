@@ -5,7 +5,6 @@ import DatePicker from '../components/vx-vue/formelements/datepicker';
 import Sortable from '../components/vx-vue/sortable';
 import SimpleTree from '../components/vx-vue/simple-tree/simple-tree';
 import Filemanager from '../components/filemanager/filemanager';
-import SlicksortList from '../components/slicksort/slicksort-list';
 import Tab from '../components/vx-vue/tab';
 import Confirm from '../components/vx-vue/confirm';
 import Alert from '../components/vx-vue/alert';
@@ -28,7 +27,7 @@ import PageForm from '../components/forms/page-form';
 import { formatFilesize } from '../filters';
 import { Focus, Bubble } from '../directives';
 
-import { ContainerMixin, ElementMixin, HandleDirective } from 'vue-slicksort';
+import { SlickList, SlickItem, plugin as Slicksort, HandleDirective as Handle } from 'vue-slicksort';
 
 const Components = {
     MessageToast,
@@ -38,7 +37,7 @@ const Components = {
     Sortable,
     SimpleTree,
     Filemanager,
-    SlicksortList,
+    SlickList, SlickItem,
     Tab,
     Confirm,
     Alert,
@@ -59,12 +58,7 @@ const Filters = {
 const Directives = {
     Focus,
     Bubble,
-    HandleDirective
-};
-
-const Mixins = {
-    ContainerMixin,
-    ElementMixin
+    Handle
 };
 
 const Util = {
@@ -74,4 +68,8 @@ const Util = {
     DateFunctions
 };
 
-export { Components, Filters, Directives, Mixins, Util };
+const Plugins = {
+    Slicksort
+};
+
+export { Components, Filters, Directives, Util, Plugins };

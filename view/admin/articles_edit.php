@@ -25,7 +25,7 @@
 ?>
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 
-<div id="vue-root" v-cloak>
+<div id="app" v-cloak>
 
     <h1>Artikel &amp; News <em class="text-smaller">{{ formProps.form.headline }}</em></h1>
 
@@ -65,41 +65,39 @@
     </section>
 
     <section id="article-files-sort" v-show="activeTabIndex === 2">
-        <slicksort-list v-model="linkedFiles" lock-axis="y" helper-class="slick-sort-helper" @input="saveSort" :use-drag-handle="true">
-            <template v-slot:row="slotProps">
-                <div class="d-inline-block col-2">{{ slotProps.item.filename }}</div>
+        <slick-list v-model:list="linkedFiles" lock-axis="y" helper-class="slick-sort-helper" @update:list="saveSort" use-drag-handle>
+            <slick-item v-for="(item, i) in linkedFiles" :key="item.id" :index="i" class="slick-sort-item">
+                <div v-handle class="handle"></div>
+                <div class="d-inline-block col-2">{{ item.filename }}</div>
                 <div class="d-inline-block col-2">
-                    <img :src="slotProps.item.type" alt="" v-if="slotProps.item.isThumb" class="img-responsive">
-                    <div style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" v-else>{{ slotProps.item.type }}</div>
+                    <img :src="item.type" alt="" v-if="item.isThumb" class="img-responsive">
+                    <div style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" v-else>{{ item.type }}</div>
                 </div>
                 <div class="d-inline-block col-2">
-                    <button class="btn webfont-icon-only tooltip" data-tooltip="Verlinkung entfernen" type="button" @click="unlinkSort(slotProps.item)">&#xe014;</button>
-                    <button class="btn webfont-icon-only tooltip" :data-tooltip="slotProps.item.hidden ? 'Anzeigen' : 'Verstecken'" type="button" @click="toggleVisibility(slotProps.item)">{{ slotProps.item.hidden ? '&#xe015;' : '&#xe016;' }}</button>
+                    <button class="btn webfont-icon-only tooltip mr-1" data-tooltip="Verlinkung entfernen" type="button" @click="unlinkSort(item)">&#xe014;</button>
+                    <button class="btn webfont-icon-only tooltip" :data-tooltip="item.hidden ? 'Anzeigen' : 'Verstecken'" type="button" @click="toggleVisibility(item)">{{ item.hidden ? '&#xe015;' : '&#xe016;' }}</button>
                 </div>
-                <a class="d-inline-block col-3" :href="'#' + slotProps.item.folderid" @click.prevent="gotoFolder(slotProps.item.folderid)">{{ slotProps.item.path }}</a>
-            </template>
-        </slicksort-list>
+                <a class="d-inline-block col-3" :href="'#' + item.folderid" @click.prevent="gotoFolder(item.folderid)">{{ item.path }}</a>
+            </slick-item>
+        </slick-list>
     </section>
     <message-toast v-bind="toastProps" ref="toast" @cancel="toastProps.active = false" @timeout="toastProps.active = false"></message-toast>
 </div>
 
 <script>
-    const { MessageToast, Tab, Filemanager, ArticleForm, SlicksortList } = window.vxweb.Components;
+    const { MessageToast, Tab, Filemanager, ArticleForm, SlickList, SlickItem } = window.vxweb.Components;
+    const { Handle } = window.vxweb.Directives;
+    const { Slicksort } = window.vxweb.Plugins;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
-    Vue.directive('handle', window.vxweb.Directives.HandleDirective);
-    Vue.component('z-link', window.vxweb.Components.ZLink);
-
-    const app = new Vue({
-
-        el: '#vue-root',
-
+    Vue.createApp({
         components: {
             "message-toast": MessageToast,
             "tab": Tab,
             "filemanager": Filemanager,
             "article-form": ArticleForm,
-            "slicksort-list": SlicksortList
+            "slick-list": SlickList,
+            "slick-item": SlickItem
         },
 
         computed: {
@@ -121,7 +119,7 @@
             }
         },
 
-        data: {
+        data: () => ({
             instanceId: <?= isset($this->article) ? $this->article->getId() : 'null' ?>,
             linkedFiles: [],
             activeTabIndex: 0,
@@ -182,7 +180,7 @@
                         ['ShowBlocks']
                     ], height: "20rem", contentsCss: ['/css/site.css', '/css/site_edit.css']
             }
-        },
+        }),
 
         watch: {
             instanceId (newValue) {
@@ -269,5 +267,5 @@
                 this.switchTabs(1);
             }
         }
-    });
+    }).use(Slicksort).directive('handle', Handle).mount('#app');
 </script>

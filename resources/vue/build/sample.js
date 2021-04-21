@@ -19,7 +19,6 @@ import BytesToSize from '../util/bytes-to-size';
 
 import { Focus, Bubble } from '../directives';
 
-
 const Components = {
     FormSelect,
     FormSwitch,
@@ -40,6 +39,9 @@ const Directives = {
     Bubble
 };
 
+const Plugins = {
+};
+
 const Util = {
     SimpleFetch,
     PromisedXhr,
@@ -48,4 +50,4 @@ const Util = {
     BytesToSize
 };
 
-export { Components, Directives, Util };
+export { Components, Directives, Util, Plugins };

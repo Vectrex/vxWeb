@@ -1,9 +1,9 @@
 <!-- { extend: layout.php @ header_block } -->
 <script src="https://unpkg.com/vue@next"></script>
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
-<script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/sample.umd.min.js') ?>"></script>
+<script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/sample.umd.js') ?>"></script>
 <!-- { extend: layout.php @ content_block } -->
-<h1>vxWeb Vue Components</h1>
+<h1>vxWeb Vue3 Components</h1>
 
 <div id="app" class="columns">
     <div class="column col-4 col-sm-12 my-2">
@@ -57,7 +57,7 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="password-input">Input element wrapped with a button to change the input type</label>
-                    <password-input v-model="form.password" placeholder="Your password" id="password-input"></password-input>
+                    <password-input v-model="form.password" placeholder="Your password" id="password-input" name="dummy"></password-input>
                 </div>
                 <div class="form-group">
                     <label for="form-select">Select Element</label>
@@ -139,10 +139,11 @@
 
     <div class="column col-4 col-sm-12 my-2">
         <div class="card" style="height: 100%;">
-        <ckeditor v-model="ck.editorData" :config="ck.editorConfig"></ckeditor>
+            <ckeditor v-model="ck.editorData" :config="ck.editorConfig"></ckeditor>
         </div>
     </div>
-        <alert ref="alert"></alert>
+
+    <alert ref="alert"></alert>
     <confirm ref="confirm"></confirm>
     <message-toast v-bind="toast" ref="toast" @cancel="toast.active = false" @timeout="toast.active = false"></message-toast>
 </div>
@@ -150,6 +151,7 @@
 <script>
     const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton, Sortable, CKEditor } = window.sample.Components;
     const { SimpleFetch, UrlQuery, BytesToSize } = window.sample.Util;
+    const { HandleDirective } = window.sample.Directives;
 
     Vue.createApp({
 

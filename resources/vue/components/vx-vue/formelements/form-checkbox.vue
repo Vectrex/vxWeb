@@ -6,6 +6,7 @@
 </template>
 <script>
   export default {
+    name: 'form-checkbox',
     inheritAttrs: false,
     props: ['modelValue']
   }

@@ -127,1094 +127,1253 @@ module.exports = function (cssWithMappingToString) {
 /***/ }),
 
 /***/ 247:
-/***/ (function(__unused_webpack_module, exports) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 (function (global, factory) {
-	 true ? factory(exports) :
-	0;
-}(this, (function (exports) { 'use strict';
+     true ? factory(exports, __webpack_require__(507)) :
+    0;
+}(this, (function (exports, vue) { 'use strict';
 
-// Export Sortable Element Component Mixin
-var ElementMixin = {
-  inject: ['manager'],
-  props: {
-    index: {
-      type: Number,
-      required: true
-    },
-    collection: {
-      type: [String, Number],
-      default: 'default'
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    }
-  },
+    // Export Sortable Element Component Mixin
+    const ElementMixin = vue.defineComponent({
+        inject: ['manager'],
+        props: {
+            index: {
+                type: Number,
+                required: true,
+            },
+            disabled: {
+                type: Boolean,
+                default: false,
+            },
+        },
+        data() {
+            return {};
+        },
+        watch: {
+            index(newIndex) {
+                if (this.$el && this.$el.sortableInfo) {
+                    this.$el.sortableInfo.index = newIndex;
+                }
+            },
+            disabled(isDisabled) {
+                if (isDisabled) {
+                    this.removeDraggable();
+                }
+                else {
+                    this.setDraggable(this.index);
+                }
+            },
+        },
+        mounted() {
+            const { disabled, index } = this.$props;
+            if (!disabled) {
+                this.setDraggable(index);
+            }
+        },
+        beforeUnmount() {
+            if (!this.disabled)
+                this.removeDraggable();
+        },
+        methods: {
+            setDraggable(index) {
+                const node = this.$el;
+                node.sortableInfo = {
+                    index,
+                    manager: this.manager,
+                };
+                this.ref = { node };
+                this.manager.add(this.ref);
+            },
+            removeDraggable() {
+                this.manager.remove(this.ref);
+            },
+        },
+    });
 
-  mounted: function mounted() {
-    var _$props = this.$props,
-        collection = _$props.collection,
-        disabled = _$props.disabled,
-        index = _$props.index;
-
-
-    if (!disabled) {
-      this.setDraggable(collection, index);
-    }
-  },
-
-
-  watch: {
-    index: function index(newIndex) {
-      if (this.$el && this.$el.sortableInfo) {
-        this.$el.sortableInfo.index = newIndex;
-      }
-    },
-    disabled: function disabled(isDisabled) {
-      if (isDisabled) {
-        this.removeDraggable(this.collection);
-      } else {
-        this.setDraggable(this.collection, this.index);
-      }
-    },
-    collection: function collection(newCollection, oldCollection) {
-      this.removeDraggable(oldCollection);
-      this.setDraggable(newCollection, this.index);
-    }
-  },
-
-  beforeDestroy: function beforeDestroy() {
-    var collection = this.collection,
-        disabled = this.disabled;
-
-
-    if (!disabled) this.removeDraggable(collection);
-  },
-
-  methods: {
-    setDraggable: function setDraggable(collection, index) {
-      var node = this.$el;
-
-      node.sortableInfo = {
-        index: index,
-        collection: collection,
-        manager: this.manager
-      };
-
-      this.ref = { node: node };
-      this.manager.add(collection, this.ref);
-    },
-    removeDraggable: function removeDraggable(collection) {
-      this.manager.remove(collection, this.ref);
-    }
-  }
-};
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var slicedToArray = function () {
-  function sliceIterator(arr, i) {
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _e = undefined;
-
-    try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);
-
-        if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;
-      _e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"]) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
+    class Manager {
+        constructor() {
+            this.refs = [];
+            this.active = null;
+        }
+        add(ref) {
+            if (!this.refs) {
+                this.refs = [];
+            }
+            this.refs.push(ref);
+        }
+        remove(ref) {
+            const index = this.getIndex(ref);
+            if (index !== -1) {
+                this.refs.splice(index, 1);
+            }
+        }
+        isActive() {
+            return !!this.active;
+        }
+        getActive() {
+            return this.refs.find(({ node }) => { var _a, _b; return ((_a = node === null || node === void 0 ? void 0 : node.sortableInfo) === null || _a === void 0 ? void 0 : _a.index) == ((_b = this === null || this === void 0 ? void 0 : this.active) === null || _b === void 0 ? void 0 : _b.index); }) || null;
+        }
+        getIndex(ref) {
+            return this.refs.indexOf(ref);
+        }
+        getRefs() {
+            return this.refs;
+        }
+        getOrderedRefs() {
+            return this.refs.sort((a, b) => {
+                return a.node.sortableInfo.index - b.node.sortableInfo.index;
+            });
+        }
     }
 
-    return _arr;
-  }
-
-  return function (arr, i) {
-    if (Array.isArray(arr)) {
-      return arr;
-    } else if (Symbol.iterator in Object(arr)) {
-      return sliceIterator(arr, i);
-    } else {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
-    }
-  };
-}();
-
-
-
-
-
-
-
-
-
-
-
-
-
-var toConsumableArray = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  } else {
-    return Array.from(arr);
-  }
-};
-
-var Manager = function () {
-  function Manager() {
-    classCallCheck(this, Manager);
-
-    this.refs = {};
-  }
-
-  createClass(Manager, [{
-    key: "add",
-    value: function add(collection, ref) {
-      if (!this.refs[collection]) {
-        this.refs[collection] = [];
-      }
-
-      this.refs[collection].push(ref);
-    }
-  }, {
-    key: "remove",
-    value: function remove(collection, ref) {
-      var index = this.getIndex(collection, ref);
-
-      if (index !== -1) {
-        this.refs[collection].splice(index, 1);
-      }
-    }
-  }, {
-    key: "isActive",
-    value: function isActive() {
-      return this.active;
-    }
-  }, {
-    key: "getActive",
-    value: function getActive() {
-      var _this = this;
-
-      return this.refs[this.active.collection].find(function (_ref) {
-        var node = _ref.node;
-        return node.sortableInfo.index == _this.active.index;
-      });
-    }
-  }, {
-    key: "getIndex",
-    value: function getIndex(collection, ref) {
-      return this.refs[collection].indexOf(ref);
-    }
-  }, {
-    key: "getOrderedRefs",
-    value: function getOrderedRefs() {
-      var collection = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.active.collection;
-
-      return this.refs[collection].sort(function (a, b) {
-        return a.node.sortableInfo.index - b.node.sortableInfo.index;
-      });
-    }
-  }]);
-  return Manager;
-}();
-
-function arrayMove(arr, previousIndex, newIndex) {
-  var array = arr.slice(0);
-  if (newIndex >= array.length) {
-    var k = newIndex - array.length;
-    while (k-- + 1) {
-      array.push(undefined);
-    }
-  }
-  array.splice(newIndex, 0, array.splice(previousIndex, 1)[0]);
-  return array;
-}
-
-var events = {
-  start: ['touchstart', 'mousedown'],
-  move: ['touchmove', 'mousemove'],
-  end: ['touchend', 'touchcancel', 'mouseup']
-};
-
-var vendorPrefix = function () {
-  if (typeof window === 'undefined' || typeof document === 'undefined') return ''; // server environment
-  // fix for:
-  //    https://bugzilla.mozilla.org/show_bug.cgi?id=548397
-  //    window.getComputedStyle() returns null inside an iframe with display: none
-  // in this case return an array with a fake mozilla style in it.
-  var styles = window.getComputedStyle(document.documentElement, '') || ['-moz-hidden-iframe'];
-  var pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
-
-  switch (pre) {
-    case 'ms':
-      return 'ms';
-    default:
-      return pre && pre.length ? pre[0].toUpperCase() + pre.substr(1) : '';
-  }
-}();
-
-function closest(el, fn) {
-  while (el) {
-    if (fn(el)) return el;
-    el = el.parentNode;
-  }
-}
-
-function limit(min, max, value) {
-  if (value < min) {
-    return min;
-  }
-  if (value > max) {
-    return max;
-  }
-  return value;
-}
-
-function getCSSPixelValue(stringValue) {
-  if (stringValue.substr(-2) === 'px') {
-    return parseFloat(stringValue);
-  }
-  return 0;
-}
-
-function getElementMargin(element) {
-  var style = window.getComputedStyle(element);
-
-  return {
-    top: getCSSPixelValue(style.marginTop),
-    right: getCSSPixelValue(style.marginRight),
-    bottom: getCSSPixelValue(style.marginBottom),
-    left: getCSSPixelValue(style.marginLeft)
-  };
-}
-
-// Export Sortable Container Component Mixin
-var ContainerMixin = {
-  data: function data() {
-    return {
-      sorting: false,
-      sortingIndex: null,
-      manager: new Manager(),
-      events: {
-        start: this.handleStart,
-        move: this.handleMove,
-        end: this.handleEnd
-      }
+    const isTouch = (e) => {
+        return e.touches != null;
     };
-  },
-
-
-  props: {
-    value: { type: Array, required: true },
-    axis: { type: String, default: 'y' }, // 'x', 'y', 'xy'
-    distance: { type: Number, default: 0 },
-    pressDelay: { type: Number, default: 0 },
-    pressThreshold: { type: Number, default: 5 },
-    useDragHandle: { type: Boolean, default: false },
-    useWindowAsScrollContainer: { type: Boolean, default: false },
-    hideSortableGhost: { type: Boolean, default: true },
-    lockToContainerEdges: { type: Boolean, default: false },
-    lockOffset: { type: [String, Number, Array], default: '50%' },
-    transitionDuration: { type: Number, default: 300 },
-    appendTo: { type: String, default: 'body' },
-    draggedSettlingDuration: { type: Number, default: null },
-    lockAxis: String,
-    helperClass: String,
-    contentWindow: Object,
-    shouldCancelStart: {
-      type: Function,
-      default: function _default(e) {
-        // Cancel sorting if the event target is an `input`, `textarea`, `select` or `option`
-        var disabledElements = ['input', 'textarea', 'select', 'option', 'button'];
-        return disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1;
-      }
-    },
-    getHelperDimensions: {
-      type: Function,
-      default: function _default(_ref) {
-        var node = _ref.node;
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    function hasOwnProperty(obj, prop) {
+        return !!obj && Object.prototype.hasOwnProperty.call(obj, prop);
+    }
+    function arrayMove(arr, previousIndex, newIndex) {
+        const array = arr.slice(0);
+        if (newIndex >= array.length) {
+            let k = newIndex - array.length;
+            while (k-- + 1) {
+                array.push(undefined);
+            }
+        }
+        array.splice(newIndex, 0, array.splice(previousIndex, 1)[0]);
+        return array;
+    }
+    function arrayRemove(arr, previousIndex) {
+        const array = arr.slice(0);
+        if (previousIndex >= array.length)
+            return array;
+        array.splice(previousIndex, 1);
+        return array;
+    }
+    function arrayInsert(arr, newIndex, value) {
+        const array = arr.slice(0);
+        if (newIndex === array.length) {
+            array.push(value);
+        }
+        else {
+            array.splice(newIndex, 0, value);
+        }
+        return array;
+    }
+    const events = {
+        start: ['touchstart', 'mousedown'],
+        move: ['touchmove', 'mousemove'],
+        end: ['touchend', 'touchcancel', 'mouseup'],
+    };
+    function closest(el, fn) {
+        while (el) {
+            if (fn(el))
+                return el;
+            el = el.parentNode;
+        }
+    }
+    function limit(min, max, value) {
+        if (value < min) {
+            return min;
+        }
+        if (value > max) {
+            return max;
+        }
+        return value;
+    }
+    function getCSSPixelValue(stringValue) {
+        if (stringValue.substr(-2) === 'px') {
+            return parseFloat(stringValue);
+        }
+        return 0;
+    }
+    function getElementMargin(element) {
+        const style = window.getComputedStyle(element);
         return {
-          width: node.offsetWidth,
-          height: node.offsetHeight
+            top: getCSSPixelValue(style.marginTop),
+            right: getCSSPixelValue(style.marginRight),
+            bottom: getCSSPixelValue(style.marginBottom),
+            left: getCSSPixelValue(style.marginLeft),
         };
-      }
     }
-  },
-
-  provide: function provide() {
-    return {
-      manager: this.manager
-    };
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    this.container = this.$el;
-    this.document = this.container.ownerDocument || document;
-    this._window = this.contentWindow || window;
-    this.scrollContainer = this.useWindowAsScrollContainer ? this.document.body : this.container;
-
-    var _loop = function _loop(key) {
-      if (_this.events.hasOwnProperty(key)) {
-        events[key].forEach(function (eventName) {
-          return _this.container.addEventListener(eventName, _this.events[key], { passive: true });
+    function getPointerOffset(e, reference = 'page') {
+        const x = `${reference}X`;
+        const y = `${reference}Y`;
+        return {
+            x: isTouch(e) ? e.touches[0][x] : e[x],
+            y: isTouch(e) ? e.touches[0][y] : e[y],
+        };
+    }
+    function offsetParents(node) {
+        const nodes = [node];
+        for (; node; node = node.offsetParent) {
+            nodes.unshift(node);
+        }
+        return nodes;
+    }
+    function commonOffsetParent(node1, node2) {
+        const parents1 = offsetParents(node1);
+        const parents2 = offsetParents(node2);
+        if (parents1[0] != parents2[0])
+            throw 'No common ancestor!';
+        for (let i = 0; i < parents1.length; i++) {
+            if (parents1[i] != parents2[i])
+                return parents1[i - 1];
+        }
+    }
+    function getEdgeOffset(node, container, offset = { top: 0, left: 0 }) {
+        // Get the actual offsetTop / offsetLeft value, no matter how deep the node is nested
+        if (node) {
+            const nodeOffset = {
+                top: offset.top + node.offsetTop,
+                left: offset.left + node.offsetLeft,
+            };
+            if (node.offsetParent !== container.offsetParent) {
+                return getEdgeOffset(node.offsetParent, container, nodeOffset);
+            }
+            else {
+                return nodeOffset;
+            }
+        }
+        return { top: 0, left: 0 };
+    }
+    function cloneNode(node) {
+        const fields = node.querySelectorAll('input, textarea, select');
+        const clonedNode = node.cloneNode(true);
+        const clonedFields = [...clonedNode.querySelectorAll('input, textarea, select')]; // Convert NodeList to Array
+        clonedFields.forEach((field, index) => {
+            if (field.type !== 'file' && fields[index]) {
+                field.value = fields[index].value;
+            }
         });
-      }
+        return clonedNode;
+    }
+    function getLockPixelOffsets(lockOffset, width, height) {
+        if (typeof lockOffset == 'string') {
+            lockOffset = +lockOffset;
+        }
+        if (!Array.isArray(lockOffset)) {
+            lockOffset = [lockOffset, lockOffset];
+        }
+        if (lockOffset.length !== 2) {
+            throw new Error(`lockOffset prop of SortableContainer should be a single value or an array of exactly two values. Given ${lockOffset}`);
+        }
+        const [minLockOffset, maxLockOffset] = lockOffset;
+        return [getLockPixelOffset(minLockOffset, width, height), getLockPixelOffset(maxLockOffset, width, height)];
+    }
+    function getLockPixelOffset(lockOffset, width, height) {
+        let offsetX = lockOffset;
+        let offsetY = lockOffset;
+        let unit = 'px';
+        if (typeof lockOffset === 'string') {
+            const match = /^[+-]?\d*(?:\.\d*)?(px|%)$/.exec(lockOffset);
+            if (match === null) {
+                throw new Error(`lockOffset value should be a number or a string of a number followed by "px" or "%". Given ${lockOffset}`);
+            }
+            offsetX = offsetY = parseFloat(lockOffset);
+            unit = match[1];
+        }
+        if (!isFinite(offsetX) || !isFinite(offsetY)) {
+            throw new Error(`lockOffset value should be a finite. Given ${lockOffset}`);
+        }
+        if (unit === '%') {
+            offsetX = (offsetX * width) / 100;
+            offsetY = (offsetY * height) / 100;
+        }
+        return {
+            x: offsetX,
+            y: offsetY,
+        };
+    }
+    function getDistance(x1, y1, x2, y2) {
+        const x = x1 - x2;
+        const y = y1 - y2;
+        return Math.sqrt(x * x + y * y);
+    }
+    function getRectCenter(clientRect) {
+        return {
+            x: clientRect.left + clientRect.width / 2,
+            y: clientRect.top + clientRect.height / 2,
+        };
+    }
+    function resetTransform(nodes = []) {
+        for (let i = 0, len = nodes.length; i < len; i++) {
+            const node = nodes[i];
+            const el = node.node;
+            if (!el)
+                return;
+            // Clear the cached offsetTop / offsetLeft value
+            node.edgeOffset = null;
+            // Remove the transforms / transitions
+            setTransform(el);
+        }
+    }
+    function setTransform(el, transform = '', duration = '') {
+        if (!el)
+            return;
+        el.style['transform'] = transform;
+        el.style['transitionDuration'] = duration;
+    }
+    function withinBounds(pos, top, bottom) {
+        const upper = Math.max(top, bottom);
+        const lower = Math.min(top, bottom);
+        return lower <= pos && pos <= upper;
+    }
+    function isPointWithinRect({ x, y }, { top, left, width, height }) {
+        const withinX = withinBounds(x, left, left + width);
+        const withinY = withinBounds(y, top, top + height);
+        return withinX && withinY;
+    }
+
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    const timeout = setTimeout;
+    // Export Sortable Container Component Mixin
+    const ContainerMixin = vue.defineComponent({
+        inject: ['SlicksortHub'],
+        provide() {
+            return {
+                manager: this.manager,
+            };
+        },
+        props: {
+            list: { type: Array, required: true },
+            axis: { type: String, default: 'y' },
+            distance: { type: Number, default: 0 },
+            pressDelay: { type: Number, default: 0 },
+            pressThreshold: { type: Number, default: 5 },
+            useDragHandle: { type: Boolean, default: false },
+            useWindowAsScrollContainer: { type: Boolean, default: false },
+            hideSortableGhost: { type: Boolean, default: true },
+            lockToContainerEdges: { type: Boolean, default: false },
+            lockOffset: { type: [String, Number, Array], default: '50%' },
+            transitionDuration: { type: Number, default: 300 },
+            appendTo: { type: String, default: 'body' },
+            draggedSettlingDuration: { type: Number, default: null },
+            group: { type: String, default: '' },
+            accept: { type: [Boolean, Array, Function], default: null },
+            block: { type: Array, default: () => [] },
+            lockAxis: { type: String, default: '' },
+            helperClass: { type: String, default: '' },
+            contentWindow: { type: Object, default: null },
+            shouldCancelStart: {
+                type: Function,
+                default: (e) => {
+                    // Cancel sorting if the event target is an `input`, `textarea`, `select` or `option`
+                    const disabledElements = ['input', 'textarea', 'select', 'option', 'button'];
+                    return disabledElements.indexOf(e.target.tagName.toLowerCase()) !== -1;
+                },
+            },
+            getHelperDimensions: {
+                type: Function,
+                default: ({ node }) => ({
+                    width: node.offsetWidth,
+                    height: node.offsetHeight,
+                }),
+            },
+        },
+        emits: ['sort-start', 'sort-move', 'sort-end', 'sort-insert', 'sort-remove', 'update:list'],
+        data() {
+            let useHub = false;
+            if (this.group) {
+                // If the group option is set, it is assumed the user intends
+                // to drag between containers and the required plugin has been installed
+                if (this.SlicksortHub) {
+                    useHub = true;
+                }
+                else if (false) {}
+            }
+            return {
+                sorting: false,
+                hub: useHub ? this.SlicksortHub : null,
+                manager: new Manager(),
+            };
+        },
+        mounted() {
+            if (this.hub) {
+                this.id = this.hub.getId();
+            }
+            this.container = this.$el;
+            this.document = this.container.ownerDocument || document;
+            this._window = this.contentWindow || window;
+            this.scrollContainer = this.useWindowAsScrollContainer ? { scrollLeft: 0, scrollTop: 0 } : this.container;
+            this.events = {
+                start: this.handleStart,
+                move: this.handleMove,
+                end: this.handleEnd,
+            };
+            for (const key in this.events) {
+                if (hasOwnProperty(this.events, key)) {
+                    // @ts-ignore
+                    events[key].forEach((eventName) => this.container.addEventListener(eventName, this.events[key]));
+                }
+            }
+            if (this.hub) {
+                this.hub.addContainer(this);
+            }
+        },
+        beforeUnmount() {
+            for (const key in this.events) {
+                if (hasOwnProperty(this.events, key)) {
+                    // @ts-ignore
+                    events[key].forEach((eventName) => this.container.removeEventListener(eventName, this.events[key]));
+                }
+            }
+            if (this.hub) {
+                this.hub.removeContainer(this);
+            }
+            if (this.dragendTimer)
+                clearTimeout(this.dragendTimer);
+            if (this.cancelTimer)
+                clearTimeout(this.cancelTimer);
+            if (this.pressTimer)
+                clearTimeout(this.pressTimer);
+            if (this.autoscrollInterval)
+                clearInterval(this.autoscrollInterval);
+        },
+        methods: {
+            handleStart(e) {
+                const { distance, shouldCancelStart } = this.$props;
+                if ((!isTouch(e) && e.button === 2) || shouldCancelStart(e)) {
+                    return false;
+                }
+                this._touched = true;
+                this._pos = getPointerOffset(e);
+                const target = e.target;
+                const node = closest(target, (el) => el.sortableInfo != null);
+                if (node && node.sortableInfo && this.nodeIsChild(node) && !this.sorting) {
+                    const { useDragHandle } = this.$props;
+                    const { index } = node.sortableInfo;
+                    if (useDragHandle && !closest(target, (el) => el.sortableHandle != null))
+                        return;
+                    this.manager.active = { index };
+                    /*
+                     * Fixes a bug in Firefox where the :active state of anchor tags
+                     * prevent subsequent 'mousemove' events from being fired
+                     * (see https://github.com/clauderic/react-sortable-hoc/issues/118)
+                     */
+                    if (target.tagName.toLowerCase() === 'a') {
+                        e.preventDefault();
+                    }
+                    if (!distance) {
+                        if (this.pressDelay === 0) {
+                            this.handlePress(e);
+                        }
+                        else {
+                            this.pressTimer = timeout(() => this.handlePress(e), this.pressDelay);
+                        }
+                    }
+                }
+            },
+            nodeIsChild(node) {
+                return node.sortableInfo.manager === this.manager;
+            },
+            handleMove(e) {
+                const { distance, pressThreshold } = this.$props;
+                if (!this.sorting && this._touched) {
+                    const offset = getPointerOffset(e);
+                    this._delta = {
+                        x: this._pos.x - offset.x,
+                        y: this._pos.y - offset.y,
+                    };
+                    const delta = Math.abs(this._delta.x) + Math.abs(this._delta.y);
+                    if (!distance && (!pressThreshold || (pressThreshold && delta >= pressThreshold))) {
+                        if (this.cancelTimer)
+                            clearTimeout(this.cancelTimer);
+                        this.cancelTimer = timeout(this.cancel, 0);
+                    }
+                    else if (distance && delta >= distance && this.manager.isActive()) {
+                        this.handlePress(e);
+                    }
+                }
+            },
+            handleEnd(e) {
+                if (!this._touched)
+                    return;
+                const { distance } = this.$props;
+                this._touched = false;
+                if (!distance) {
+                    this.cancel(e);
+                }
+            },
+            cancel(e) {
+                if (!this.sorting) {
+                    if (this.pressTimer)
+                        clearTimeout(this.pressTimer);
+                    this.manager.active = null;
+                    if (this.hub)
+                        this.hub.cancel(e);
+                }
+            },
+            handlePress(e) {
+                e.stopPropagation();
+                const active = this.manager.getActive();
+                if (active) {
+                    const { getHelperDimensions, helperClass, hideSortableGhost, appendTo } = this.$props;
+                    const { node } = active;
+                    const { index } = node.sortableInfo;
+                    const margin = getElementMargin(node);
+                    const containerBoundingRect = this.container.getBoundingClientRect();
+                    const dimensions = getHelperDimensions({ index, node });
+                    this.node = node;
+                    this.margin = margin;
+                    this.width = dimensions.width;
+                    this.height = dimensions.height;
+                    this.marginOffset = {
+                        x: this.margin.left + this.margin.right,
+                        y: Math.max(this.margin.top, this.margin.bottom),
+                    };
+                    this.boundingClientRect = node.getBoundingClientRect();
+                    this.containerBoundingRect = containerBoundingRect;
+                    this.index = index;
+                    this.newIndex = index;
+                    const clonedNode = cloneNode(node);
+                    this.helper = this.document.querySelector(appendTo).appendChild(clonedNode);
+                    this.helper.style.position = 'fixed';
+                    this.helper.style.top = `${this.boundingClientRect.top - margin.top}px`;
+                    this.helper.style.left = `${this.boundingClientRect.left - margin.left}px`;
+                    this.helper.style.width = `${this.width}px`;
+                    this.helper.style.height = `${this.height}px`;
+                    this.helper.style.boxSizing = 'border-box';
+                    this.helper.style.pointerEvents = 'none';
+                    if (hideSortableGhost) {
+                        this.sortableGhost = node;
+                        node.style.visibility = 'hidden';
+                        node.style.opacity = '0';
+                    }
+                    if (this.hub) {
+                        this.hub.sortStart(this);
+                        this.hub.helper = this.helper;
+                        this.hub.ghost = this.sortableGhost;
+                    }
+                    this.intializeOffsets(e, this.boundingClientRect);
+                    this.offsetEdge = getEdgeOffset(node, this.container);
+                    if (helperClass) {
+                        this.helper.classList.add(...helperClass.split(' '));
+                    }
+                    this.listenerNode = isTouch(e) ? node : this._window;
+                    // @ts-ignore
+                    events.move.forEach((eventName) => this.listenerNode.addEventListener(eventName, this.handleSortMove));
+                    // @ts-ignore
+                    events.end.forEach((eventName) => this.listenerNode.addEventListener(eventName, this.handleSortEnd));
+                    this.sorting = true;
+                    this.$emit('sort-start', { event: e, node, index });
+                }
+            },
+            handleSortMove(e) {
+                e.preventDefault(); // Prevent scrolling on mobile
+                this.updatePosition(e);
+                if (this.hub) {
+                    const payload = this.list[this.index];
+                    this.hub.handleSortMove(e, payload);
+                }
+                if (!this.hub || this.hub.isDest(this)) {
+                    this.animateNodes();
+                    this.autoscroll();
+                }
+                this.$emit('sort-move', { event: e });
+            },
+            handleDropOut() {
+                const removed = this.list[this.index];
+                const newValue = arrayRemove(this.list, this.index);
+                this.$emit('sort-remove', {
+                    oldIndex: this.index,
+                });
+                this.$emit('update:list', newValue);
+                return removed;
+            },
+            handleDropIn(payload) {
+                const newValue = arrayInsert(this.list, this.newIndex, payload);
+                this.$emit('sort-insert', {
+                    newIndex: this.newIndex,
+                    value: payload,
+                });
+                this.$emit('update:list', newValue);
+                this.handleDragEnd();
+            },
+            handleDragOut() {
+                if (this.autoscrollInterval) {
+                    clearInterval(this.autoscrollInterval);
+                    this.autoscrollInterval = null;
+                }
+                if (this.hub.isSource(this)) {
+                    // Trick to animate all nodes up
+                    this.translate = {
+                        x: 10000,
+                        y: 10000,
+                    };
+                    this.animateNodes();
+                }
+                else {
+                    this.manager.getRefs().forEach((ref) => {
+                        ref.node.style['transform'] = '';
+                    });
+                    this.dragendTimer = timeout(this.handleDragEnd, this.transitionDuration || 0);
+                }
+            },
+            handleDragEnd() {
+                if (this.autoscrollInterval) {
+                    clearInterval(this.autoscrollInterval);
+                    this.autoscrollInterval = null;
+                }
+                resetTransform(this.manager.getRefs());
+                if (this.sortableGhost) {
+                    this.sortableGhost.remove();
+                    this.sortableGhost = null;
+                }
+                if (this.dragendTimer) {
+                    clearTimeout(this.dragendTimer);
+                    this.dragendTimer = null;
+                }
+                this.manager.active = null;
+                this._touched = false;
+                this.sorting = false;
+            },
+            intializeOffsets(e, clientRect) {
+                const { useWindowAsScrollContainer, containerBoundingRect, _window } = this;
+                this.marginOffset = {
+                    x: this.margin.left + this.margin.right,
+                    y: Math.max(this.margin.top, this.margin.bottom),
+                };
+                this._axis = {
+                    x: this.axis.indexOf('x') >= 0,
+                    y: this.axis.indexOf('y') >= 0,
+                };
+                this.initialOffset = getPointerOffset(e);
+                // initialScroll;
+                this.initialScroll = {
+                    top: this.scrollContainer.scrollTop,
+                    left: this.scrollContainer.scrollLeft,
+                };
+                // initialWindowScroll;
+                this.initialWindowScroll = {
+                    top: window.pageYOffset,
+                    left: window.pageXOffset,
+                };
+                this.translate = { x: 0, y: 0 };
+                this.minTranslate = {};
+                this.maxTranslate = {};
+                if (this._axis.x) {
+                    this.minTranslate.x =
+                        (useWindowAsScrollContainer ? 0 : containerBoundingRect.left) - clientRect.left - this.width / 2;
+                    this.maxTranslate.x =
+                        (useWindowAsScrollContainer ? _window.innerWidth : containerBoundingRect.left + containerBoundingRect.width) -
+                            clientRect.left -
+                            this.width / 2;
+                }
+                if (this._axis.y) {
+                    this.minTranslate.y =
+                        (useWindowAsScrollContainer ? 0 : containerBoundingRect.top) - clientRect.top - this.height / 2;
+                    this.maxTranslate.y =
+                        (useWindowAsScrollContainer
+                            ? _window.innerHeight
+                            : containerBoundingRect.top + containerBoundingRect.height) -
+                            clientRect.top -
+                            this.height / 2;
+                }
+            },
+            handleDragIn(e, sortableGhost, helper) {
+                if (this.hub.isSource(this)) {
+                    return;
+                }
+                if (this.dragendTimer) {
+                    this.handleDragEnd();
+                    clearTimeout(this.dragendTimer);
+                    this.dragendTimer = null;
+                }
+                const nodes = this.manager.getRefs();
+                this.index = nodes.length;
+                this.manager.active = { index: this.index };
+                const containerBoundingRect = this.container.getBoundingClientRect();
+                const helperBoundingRect = helper.getBoundingClientRect();
+                this.containerBoundingRect = containerBoundingRect;
+                this.sortableGhost = cloneNode(sortableGhost);
+                this.container.appendChild(this.sortableGhost);
+                const ghostRect = this.sortableGhost.getBoundingClientRect();
+                this.boundingClientRect = ghostRect;
+                this.margin = getElementMargin(this.sortableGhost);
+                this.width = ghostRect.width;
+                this.height = ghostRect.height;
+                // XY coords of the inserted node, relative to the top-left corner of the container
+                this.offsetEdge = getEdgeOffset(this.sortableGhost, this.container);
+                this.intializeOffsets(e, ghostRect);
+                // Move the initialOffset back to the insertion point of the
+                // sortableGhost (end of the list), as if we had started the drag there.
+                this.initialOffset.x += ghostRect.x - helperBoundingRect.x;
+                this.initialOffset.y += ghostRect.y - helperBoundingRect.y;
+                // Turn on dragging
+                this.sorting = true;
+            },
+            handleSortEnd(e) {
+                // Remove the event listeners if the node is still in the DOM
+                if (this.listenerNode) {
+                    events.move.forEach((eventName) => 
+                    // @ts-ignore
+                    this.listenerNode.removeEventListener(eventName, this.handleSortMove));
+                    events.end.forEach((eventName) => 
+                    // @ts-ignore
+                    this.listenerNode.removeEventListener(eventName, this.handleSortEnd));
+                }
+                const nodes = this.manager.getRefs();
+                // Remove the helper class(es) early to give it a chance to transition back
+                if (this.helper && this.helperClass) {
+                    this.helper.classList.remove(...this.helperClass.split(' '));
+                }
+                const onEnd = () => {
+                    // Remove the helper from the DOM
+                    if (this.helper) {
+                        this.helper.remove();
+                        this.helper = null;
+                    }
+                    if (this.hideSortableGhost && this.sortableGhost) {
+                        this.sortableGhost.style.visibility = '';
+                        this.sortableGhost.style.opacity = '';
+                    }
+                    resetTransform(nodes);
+                    // Stop autoscroll
+                    if (this.autoscrollInterval)
+                        clearInterval(this.autoscrollInterval);
+                    this.autoscrollInterval = null;
+                    // Update state
+                    if (this.hub && !this.hub.isDest(this)) {
+                        this.hub.handleSortEnd();
+                    }
+                    else {
+                        this.$emit('sort-end', {
+                            event: e,
+                            oldIndex: this.index,
+                            newIndex: this.newIndex,
+                        });
+                        this.$emit('update:list', arrayMove(this.list, this.index, this.newIndex));
+                    }
+                    this.manager.active = null;
+                    this._touched = false;
+                    this.sorting = false;
+                };
+                if (this.transitionDuration || this.draggedSettlingDuration) {
+                    this.transitionHelperIntoPlace(nodes, onEnd);
+                }
+                else {
+                    onEnd();
+                }
+            },
+            transitionHelperIntoPlace(nodes, cb) {
+                if (this.draggedSettlingDuration === 0 || nodes.length === 0 || !this.helper) {
+                    return Promise.resolve();
+                }
+                const indexNode = nodes[this.index].node;
+                let targetX = 0;
+                let targetY = 0;
+                const scrollDifference = {
+                    top: window.pageYOffset - this.initialWindowScroll.top,
+                    left: window.pageXOffset - this.initialWindowScroll.left,
+                };
+                if (this.hub && !this.hub.isDest(this)) {
+                    const dest = this.hub.getDest();
+                    if (!dest)
+                        return;
+                    const destIndex = dest.newIndex;
+                    const destRefs = dest.manager.getOrderedRefs();
+                    const destNode = destIndex < destRefs.length ? destRefs[destIndex].node : dest.sortableGhost;
+                    const ancestor = commonOffsetParent(indexNode, destNode);
+                    const sourceOffset = getEdgeOffset(indexNode, ancestor);
+                    const targetOffset = getEdgeOffset(destNode, ancestor);
+                    targetX = targetOffset.left - sourceOffset.left - scrollDifference.left;
+                    targetY = targetOffset.top - sourceOffset.top - scrollDifference.top;
+                }
+                else {
+                    const newIndexNode = nodes[this.newIndex].node;
+                    const deltaScroll = {
+                        left: this.scrollContainer.scrollLeft - this.initialScroll.left + scrollDifference.left,
+                        top: this.scrollContainer.scrollTop - this.initialScroll.top + scrollDifference.top,
+                    };
+                    targetX = -deltaScroll.left;
+                    if (this.translate && this.translate.x > 0) {
+                        // Diff against right edge when moving to the right
+                        targetX +=
+                            newIndexNode.offsetLeft + newIndexNode.offsetWidth - (indexNode.offsetLeft + indexNode.offsetWidth);
+                    }
+                    else {
+                        targetX += newIndexNode.offsetLeft - indexNode.offsetLeft;
+                    }
+                    targetY = -deltaScroll.top;
+                    if (this.translate && this.translate.y > 0) {
+                        // Diff against the bottom edge when moving down
+                        targetY +=
+                            newIndexNode.offsetTop + newIndexNode.offsetHeight - (indexNode.offsetTop + indexNode.offsetHeight);
+                    }
+                    else {
+                        targetY += newIndexNode.offsetTop - indexNode.offsetTop;
+                    }
+                }
+                const duration = this.draggedSettlingDuration !== null ? this.draggedSettlingDuration : this.transitionDuration;
+                setTransform(this.helper, `translate3d(${targetX}px,${targetY}px, 0)`, `${duration}ms`);
+                // Register an event handler to clean up styles when the transition
+                // finishes.
+                const cleanup = (event) => {
+                    if (!event || event.propertyName === 'transform') {
+                        clearTimeout(cleanupTimer);
+                        setTransform(this.helper);
+                        cb();
+                    }
+                };
+                // Force cleanup in case 'transitionend' never fires
+                const cleanupTimer = setTimeout(cleanup, duration + 10);
+                this.helper.addEventListener('transitionend', cleanup);
+            },
+            updatePosition(e) {
+                const { lockAxis, lockToContainerEdges } = this.$props;
+                const offset = getPointerOffset(e);
+                const translate = {
+                    x: offset.x - this.initialOffset.x,
+                    y: offset.y - this.initialOffset.y,
+                };
+                // Adjust for window scroll
+                translate.y -= window.pageYOffset - this.initialWindowScroll.top;
+                translate.x -= window.pageXOffset - this.initialWindowScroll.left;
+                this.translate = translate;
+                if (lockToContainerEdges) {
+                    const [minLockOffset, maxLockOffset] = getLockPixelOffsets(this.lockOffset, this.height, this.width);
+                    const minOffset = {
+                        x: this.width / 2 - minLockOffset.x,
+                        y: this.height / 2 - minLockOffset.y,
+                    };
+                    const maxOffset = {
+                        x: this.width / 2 - maxLockOffset.x,
+                        y: this.height / 2 - maxLockOffset.y,
+                    };
+                    if (this.minTranslate.x && this.maxTranslate.x)
+                        translate.x = limit(this.minTranslate.x + minOffset.x, this.maxTranslate.x - maxOffset.x, translate.x);
+                    if (this.minTranslate.y && this.maxTranslate.y)
+                        translate.y = limit(this.minTranslate.y + minOffset.y, this.maxTranslate.y - maxOffset.y, translate.y);
+                }
+                if (lockAxis === 'x') {
+                    translate.y = 0;
+                }
+                else if (lockAxis === 'y') {
+                    translate.x = 0;
+                }
+                if (this.helper) {
+                    this.helper.style['transform'] = `translate3d(${translate.x}px,${translate.y}px, 0)`;
+                }
+            },
+            animateNodes() {
+                const { transitionDuration, hideSortableGhost } = this.$props;
+                const nodes = this.manager.getOrderedRefs();
+                const deltaScroll = {
+                    left: this.scrollContainer.scrollLeft - this.initialScroll.left,
+                    top: this.scrollContainer.scrollTop - this.initialScroll.top,
+                };
+                const sortingOffset = {
+                    left: this.offsetEdge.left + this.translate.x + deltaScroll.left,
+                    top: this.offsetEdge.top + this.translate.y + deltaScroll.top,
+                };
+                const scrollDifference = {
+                    top: window.pageYOffset - this.initialWindowScroll.top,
+                    left: window.pageXOffset - this.initialWindowScroll.left,
+                };
+                this.newIndex = null;
+                for (let i = 0, len = nodes.length; i < len; i++) {
+                    const { node } = nodes[i];
+                    const index = node.sortableInfo.index;
+                    const width = node.offsetWidth;
+                    const height = node.offsetHeight;
+                    const offset = {
+                        width: this.width > width ? width / 2 : this.width / 2,
+                        height: this.height > height ? height / 2 : this.height / 2,
+                    };
+                    const translate = {
+                        x: 0,
+                        y: 0,
+                    };
+                    let { edgeOffset } = nodes[i];
+                    // If we haven't cached the node's offsetTop / offsetLeft value
+                    if (!edgeOffset) {
+                        nodes[i].edgeOffset = edgeOffset = getEdgeOffset(node, this.container);
+                    }
+                    // Get a reference to the next and previous node
+                    const nextNode = i < nodes.length - 1 && nodes[i + 1];
+                    const prevNode = i > 0 && nodes[i - 1];
+                    // Also cache the next node's edge offset if needed.
+                    // We need this for calculating the animation in a grid setup
+                    if (nextNode && !nextNode.edgeOffset) {
+                        nextNode.edgeOffset = getEdgeOffset(nextNode.node, this.container);
+                    }
+                    // If the node is the one we're currently animating, skip it
+                    if (index === this.index) {
+                        /*
+                         * With windowing libraries such as `react-virtualized`, the sortableGhost
+                         * node may change while scrolling down and then back up (or vice-versa),
+                         * so we need to update the reference to the new node just to be safe.
+                         */
+                        if (hideSortableGhost) {
+                            this.sortableGhost = node;
+                            node.style.visibility = 'hidden';
+                            node.style.opacity = '0';
+                        }
+                        continue;
+                    }
+                    if (transitionDuration) {
+                        node.style['transitionDuration'] = `${transitionDuration}ms`;
+                    }
+                    if (this._axis.x) {
+                        if (this._axis.y) {
+                            // Calculations for a grid setup
+                            if (index < this.index &&
+                                ((sortingOffset.left + scrollDifference.left - offset.width <= edgeOffset.left &&
+                                    sortingOffset.top + scrollDifference.top <= edgeOffset.top + offset.height) ||
+                                    sortingOffset.top + scrollDifference.top + offset.height <= edgeOffset.top)) {
+                                // If the current node is to the left on the same row, or above the node that's being dragged
+                                // then move it to the right
+                                translate.x = this.width + this.marginOffset.x;
+                                if (edgeOffset.left + translate.x > this.containerBoundingRect.width - offset.width && nextNode) {
+                                    // If it moves passed the right bounds, then animate it to the first position of the next row.
+                                    // We just use the offset of the next node to calculate where to move, because that node's original position
+                                    // is exactly where we want to go
+                                    translate.x = nextNode.edgeOffset.left - edgeOffset.left;
+                                    translate.y = nextNode.edgeOffset.top - edgeOffset.top;
+                                }
+                                if (this.newIndex === null) {
+                                    this.newIndex = index;
+                                }
+                            }
+                            else if (index > this.index &&
+                                ((sortingOffset.left + scrollDifference.left + offset.width >= edgeOffset.left &&
+                                    sortingOffset.top + scrollDifference.top + offset.height >= edgeOffset.top) ||
+                                    sortingOffset.top + scrollDifference.top + offset.height >= edgeOffset.top + height)) {
+                                // If the current node is to the right on the same row, or below the node that's being dragged
+                                // then move it to the left
+                                translate.x = -(this.width + this.marginOffset.x);
+                                if (edgeOffset.left + translate.x < this.containerBoundingRect.left + offset.width && prevNode) {
+                                    // If it moves passed the left bounds, then animate it to the last position of the previous row.
+                                    // We just use the offset of the previous node to calculate where to move, because that node's original position
+                                    // is exactly where we want to go
+                                    translate.x = prevNode.edgeOffset.left - edgeOffset.left;
+                                    translate.y = prevNode.edgeOffset.top - edgeOffset.top;
+                                }
+                                this.newIndex = index;
+                            }
+                        }
+                        else {
+                            if (index > this.index && sortingOffset.left + scrollDifference.left + offset.width >= edgeOffset.left) {
+                                translate.x = -(this.width + this.marginOffset.x);
+                                this.newIndex = index;
+                            }
+                            else if (index < this.index &&
+                                sortingOffset.left + scrollDifference.left <= edgeOffset.left + offset.width) {
+                                translate.x = this.width + this.marginOffset.x;
+                                if (this.newIndex == null) {
+                                    this.newIndex = index;
+                                }
+                            }
+                        }
+                    }
+                    else if (this._axis.y) {
+                        if (index > this.index && sortingOffset.top + scrollDifference.top + offset.height >= edgeOffset.top) {
+                            translate.y = -(this.height + this.marginOffset.y);
+                            this.newIndex = index;
+                        }
+                        else if (index < this.index &&
+                            sortingOffset.top + scrollDifference.top <= edgeOffset.top + offset.height) {
+                            translate.y = this.height + this.marginOffset.y;
+                            if (this.newIndex == null) {
+                                this.newIndex = index;
+                            }
+                        }
+                    }
+                    node.style['transform'] = `translate3d(${translate.x}px,${translate.y}px,0)`;
+                }
+                if (this.newIndex == null) {
+                    this.newIndex = this.index;
+                }
+            },
+            autoscroll() {
+                const translate = this.translate;
+                const direction = {
+                    x: 0,
+                    y: 0,
+                };
+                const speed = {
+                    x: 1,
+                    y: 1,
+                };
+                const acceleration = {
+                    x: 10,
+                    y: 10,
+                };
+                if (translate.y >= this.maxTranslate.y - this.height / 2) {
+                    direction.y = 1; // Scroll Down
+                    speed.y = acceleration.y * Math.abs((this.maxTranslate.y - this.height / 2 - translate.y) / this.height);
+                }
+                else if (translate.x >= this.maxTranslate.x - this.width / 2) {
+                    direction.x = 1; // Scroll Right
+                    speed.x = acceleration.x * Math.abs((this.maxTranslate.x - this.width / 2 - translate.x) / this.width);
+                }
+                else if (translate.y <= this.minTranslate.y + this.height / 2) {
+                    direction.y = -1; // Scroll Up
+                    speed.y = acceleration.y * Math.abs((translate.y - this.height / 2 - this.minTranslate.y) / this.height);
+                }
+                else if (translate.x <= this.minTranslate.x + this.width / 2) {
+                    direction.x = -1; // Scroll Left
+                    speed.x = acceleration.x * Math.abs((translate.x - this.width / 2 - this.minTranslate.x) / this.width);
+                }
+                if (this.autoscrollInterval) {
+                    clearInterval(this.autoscrollInterval);
+                    this.autoscrollInterval = null;
+                }
+                if (direction.x !== 0 || direction.y !== 0) {
+                    this.autoscrollInterval = window.setInterval(() => {
+                        const offset = {
+                            left: 1 * speed.x * direction.x,
+                            top: 1 * speed.y * direction.y,
+                        };
+                        if (this.useWindowAsScrollContainer) {
+                            this._window.scrollBy(offset.left, offset.top);
+                        }
+                        else {
+                            this.scrollContainer.scrollTop += offset.top;
+                            this.scrollContainer.scrollLeft += offset.left;
+                        }
+                        this.translate.x += offset.left;
+                        this.translate.y += offset.top;
+                        this.animateNodes();
+                    }, 5);
+                }
+            },
+        },
+    });
+
+    // Export Sortable Element Handle Directive
+    const HandleDirective = {
+        beforeMount(el) {
+            el.sortableHandle = true;
+        },
     };
 
-    for (var key in this.events) {
-      _loop(key);
-    }
-  },
-  beforeDestroy: function beforeDestroy() {
-    var _this2 = this;
+    const SlickItem = vue.defineComponent({
+        name: 'SlickItem',
+        mixins: [ElementMixin],
+        props: {
+            tag: {
+                type: String,
+                default: 'div',
+            },
+        },
+        render() {
+            var _a, _b;
+            return vue.h(this.tag, (_b = (_a = this.$slots).default) === null || _b === void 0 ? void 0 : _b.call(_a));
+        },
+    });
 
-    var _loop2 = function _loop2(key) {
-      if (_this2.events.hasOwnProperty(key)) {
-        events[key].forEach(function (eventName) {
-          return _this2.container.removeEventListener(eventName, _this2.events[key]);
-        });
-      }
-    };
+    const SlickList = vue.defineComponent({
+        name: 'SlickList',
+        mixins: [ContainerMixin],
+        props: {
+            tag: {
+                type: String,
+                default: 'div',
+            },
+            itemKey: {
+                type: [String, Function],
+                default: 'id',
+            },
+        },
+        render() {
+            var _a, _b;
+            if (this.$slots.item) {
+                return vue.h(this.tag, this.list.map((item, index) => {
+                    let key;
+                    if (item == null) {
+                        return;
+                    }
+                    else if (typeof this.itemKey === 'function') {
+                        key = this.itemKey(item);
+                    }
+                    else if (typeof item === 'object' &&
+                        hasOwnProperty(item, this.itemKey) &&
+                        typeof item[this.itemKey] == 'string') {
+                        key = item[this.itemKey];
+                    }
+                    else if (typeof item === 'string') {
+                        key = item;
+                    }
+                    else {
+                        throw new Error('Cannot find key for item, use the item-key prop and pass a function or string');
+                    }
+                    return vue.h(SlickItem, {
+                        key,
+                        index,
+                    }, {
+                        default: () => { var _a, _b; return (_b = (_a = this.$slots).item) === null || _b === void 0 ? void 0 : _b.call(_a, { item, index }); },
+                    });
+                }));
+            }
+            return vue.h(this.tag, (_b = (_a = this.$slots).default) === null || _b === void 0 ? void 0 : _b.call(_a));
+        },
+    });
 
-    for (var key in this.events) {
-      _loop2(key);
-    }
-  },
+    const DragHandle = vue.defineComponent({
+        props: {
+            tag: {
+                type: String,
+                default: 'span',
+            },
+        },
+        mounted() {
+            this.$el.sortableHandle = true;
+        },
+        render() {
+            var _a, _b;
+            return vue.h(this.tag, (_b = (_a = this.$slots).default) === null || _b === void 0 ? void 0 : _b.call(_a));
+        },
+    });
 
-
-  methods: {
-    handleStart: function handleStart(e) {
-      var _this3 = this;
-
-      var _$props = this.$props,
-          distance = _$props.distance,
-          shouldCancelStart = _$props.shouldCancelStart;
-
-
-      if (e.button === 2 || shouldCancelStart(e)) {
+    let containerIDCounter = 1;
+    /**
+     * Always allow when dest === source
+     * Defer to 'dest.accept()' if it is a function
+     * Allow any group in the accept lists
+     * Deny any group in the block list
+     * Allow the same group by default, this can be overridden with the block prop
+     */
+    function canAcceptElement(dest, source, payload) {
+        if (source.id === dest.id)
+            return true;
+        if (dest.block && dest.block.includes(source.group))
+            return false;
+        if (typeof dest.accept === 'function') {
+            return dest.accept({ dest, source, payload });
+        }
+        if (typeof dest.accept === 'boolean') {
+            return dest.accept;
+        }
+        if (dest.accept && dest.accept.includes(source.group))
+            return true;
+        if (dest.group === source.group)
+            return true;
         return false;
-      }
-
-      this._touched = true;
-      this._pos = this.getOffset(e);
-
-      var node = closest(e.target, function (el) {
-        return el.sortableInfo != null;
-      });
-
-      if (node && node.sortableInfo && this.nodeIsChild(node) && !this.sorting) {
-        var useDragHandle = this.$props.useDragHandle;
-        var _node$sortableInfo = node.sortableInfo,
-            index = _node$sortableInfo.index,
-            collection = _node$sortableInfo.collection;
-
-
-        if (useDragHandle && !closest(e.target, function (el) {
-          return el.sortableHandle != null;
-        })) return;
-
-        this.manager.active = { index: index, collection: collection };
-
-        /*
-        * Fixes a bug in Firefox where the :active state of anchor tags
-        * prevent subsequent 'mousemove' events from being fired
-        * (see https://github.com/clauderic/react-sortable-hoc/issues/118)
-        */
-        if (e.target.tagName.toLowerCase() === 'a') {
-          e.preventDefault();
-        }
-
-        if (!distance) {
-          if (this.$props.pressDelay === 0) {
-            this.handlePress(e);
-          } else {
-            this.pressTimer = setTimeout(function () {
-              return _this3.handlePress(e);
-            }, this.$props.pressDelay);
-          }
-        }
-      }
-    },
-    nodeIsChild: function nodeIsChild(node) {
-      return node.sortableInfo.manager === this.manager;
-    },
-    handleMove: function handleMove(e) {
-      var _$props2 = this.$props,
-          distance = _$props2.distance,
-          pressThreshold = _$props2.pressThreshold;
-
-
-      if (!this.sorting && this._touched) {
-        var offset = this.getOffset(e);
-        this._delta = {
-          x: this._pos.x - offset.x,
-          y: this._pos.y - offset.y
-        };
-        var delta = Math.abs(this._delta.x) + Math.abs(this._delta.y);
-
-        if (!distance && (!pressThreshold || pressThreshold && delta >= pressThreshold)) {
-          clearTimeout(this.cancelTimer);
-          this.cancelTimer = setTimeout(this.cancel, 0);
-        } else if (distance && delta >= distance && this.manager.isActive()) {
-          this.handlePress(e);
-        }
-      }
-    },
-    handleEnd: function handleEnd() {
-      var distance = this.$props.distance;
-
-
-      this._touched = false;
-
-      if (!distance) {
-        this.cancel();
-      }
-    },
-    cancel: function cancel() {
-      if (!this.sorting) {
-        clearTimeout(this.pressTimer);
-        this.manager.active = null;
-      }
-    },
-    handlePress: function handlePress(e) {
-      var _this4 = this;
-
-      e.stopPropagation();
-      var active = this.manager.getActive();
-
-      if (active) {
-        var _$props3 = this.$props,
-            axis = _$props3.axis,
-            getHelperDimensions = _$props3.getHelperDimensions,
-            helperClass = _$props3.helperClass,
-            hideSortableGhost = _$props3.hideSortableGhost,
-            useWindowAsScrollContainer = _$props3.useWindowAsScrollContainer,
-            appendTo = _$props3.appendTo;
-        var node = active.node,
-            collection = active.collection;
-        var index = node.sortableInfo.index;
-
-        var margin = getElementMargin(node);
-
-        var containerBoundingRect = this.container.getBoundingClientRect();
-        var dimensions = getHelperDimensions({ index: index, node: node, collection: collection });
-
-        this.node = node;
-        this.margin = margin;
-        this.width = dimensions.width;
-        this.height = dimensions.height;
-        this.marginOffset = {
-          x: this.margin.left + this.margin.right,
-          y: Math.max(this.margin.top, this.margin.bottom)
-        };
-        this.boundingClientRect = node.getBoundingClientRect();
-        this.containerBoundingRect = containerBoundingRect;
-        this.index = index;
-        this.newIndex = index;
-
-        this._axis = {
-          x: axis.indexOf('x') >= 0,
-          y: axis.indexOf('y') >= 0
-        };
-        this.offsetEdge = this.getEdgeOffset(node);
-        this.initialOffset = this.getOffset(e);
-        this.initialScroll = {
-          top: this.scrollContainer.scrollTop,
-          left: this.scrollContainer.scrollLeft
-        };
-
-        this.initialWindowScroll = {
-          top: window.pageYOffset,
-          left: window.pageXOffset
-        };
-
-        var fields = node.querySelectorAll('input, textarea, select');
-        var clonedNode = node.cloneNode(true);
-        var clonedFields = [].concat(toConsumableArray(clonedNode.querySelectorAll('input, textarea, select'))); // Convert NodeList to Array
-
-        clonedFields.forEach(function (field, index) {
-          if (field.type !== 'file' && fields[index]) {
-            field.value = fields[index].value;
-          }
-        });
-
-        this.helper = this.document.querySelector(appendTo).appendChild(clonedNode);
-
-        this.helper.style.position = 'fixed';
-        this.helper.style.top = this.boundingClientRect.top - margin.top + 'px';
-        this.helper.style.left = this.boundingClientRect.left - margin.left + 'px';
-        this.helper.style.width = this.width + 'px';
-        this.helper.style.height = this.height + 'px';
-        this.helper.style.boxSizing = 'border-box';
-        this.helper.style.pointerEvents = 'none';
-
-        if (hideSortableGhost) {
-          this.sortableGhost = node;
-          node.style.visibility = 'hidden';
-          node.style.opacity = 0;
-        }
-
-        this.translate = {};
-        this.minTranslate = {};
-        this.maxTranslate = {};
-        if (this._axis.x) {
-          this.minTranslate.x = (useWindowAsScrollContainer ? 0 : containerBoundingRect.left) - this.boundingClientRect.left - this.width / 2;
-          this.maxTranslate.x = (useWindowAsScrollContainer ? this._window.innerWidth : containerBoundingRect.left + containerBoundingRect.width) - this.boundingClientRect.left - this.width / 2;
-        }
-        if (this._axis.y) {
-          this.minTranslate.y = (useWindowAsScrollContainer ? 0 : containerBoundingRect.top) - this.boundingClientRect.top - this.height / 2;
-          this.maxTranslate.y = (useWindowAsScrollContainer ? this._window.innerHeight : containerBoundingRect.top + containerBoundingRect.height) - this.boundingClientRect.top - this.height / 2;
-        }
-
-        if (helperClass) {
-          var _helper$classList;
-
-          (_helper$classList = this.helper.classList).add.apply(_helper$classList, toConsumableArray(helperClass.split(' ')));
-        }
-
-        this.listenerNode = e.touches ? node : this._window;
-        events.move.forEach(function (eventName) {
-          return _this4.listenerNode.addEventListener(eventName, _this4.handleSortMove, false);
-        });
-        events.end.forEach(function (eventName) {
-          return _this4.listenerNode.addEventListener(eventName, _this4.handleSortEnd, false);
-        });
-
-        this.sorting = true;
-        this.sortingIndex = index;
-
-        this.$emit('sort-start', { event: e, node: node, index: index, collection: collection });
-      }
-    },
-    handleSortMove: function handleSortMove(e) {
-      e.preventDefault(); // Prevent scrolling on mobile
-
-      this.updatePosition(e);
-      this.animateNodes();
-      this.autoscroll();
-
-      this.$emit('sort-move', { event: e });
-    },
-    handleSortEnd: function handleSortEnd(e) {
-      var _this5 = this;
-
-      var collection = this.manager.active.collection;
-
-      // Remove the event listeners if the node is still in the DOM
-
-      if (this.listenerNode) {
-        events.move.forEach(function (eventName) {
-          return _this5.listenerNode.removeEventListener(eventName, _this5.handleSortMove);
-        });
-        events.end.forEach(function (eventName) {
-          return _this5.listenerNode.removeEventListener(eventName, _this5.handleSortEnd);
-        });
-      }
-
-      var nodes = this.manager.refs[collection];
-
-      var onEnd = function onEnd() {
-        // Remove the helper from the DOM
-        _this5.helper.parentNode.removeChild(_this5.helper);
-
-        if (_this5.hideSortableGhost && _this5.sortableGhost) {
-          _this5.sortableGhost.style.visibility = '';
-          _this5.sortableGhost.style.opacity = '';
-        }
-
-        for (var i = 0, len = nodes.length; i < len; i++) {
-          var node = nodes[i];
-          var el = node.node;
-
-          // Clear the cached offsetTop / offsetLeft value
-          node.edgeOffset = null;
-
-          // Remove the transforms / transitions
-          el.style[vendorPrefix + 'Transform'] = '';
-          el.style[vendorPrefix + 'TransitionDuration'] = '';
-        }
-
-        // Stop autoscroll
-        clearInterval(_this5.autoscrollInterval);
-        _this5.autoscrollInterval = null;
-
-        // Update state
-        _this5.manager.active = null;
-
-        _this5.sorting = false;
-        _this5.sortingIndex = null;
-
-        _this5.$emit('sort-end', {
-          event: e,
-          oldIndex: _this5.index,
-          newIndex: _this5.newIndex,
-          collection: collection
-        });
-        _this5.$emit('input', arrayMove(_this5.value, _this5.index, _this5.newIndex));
-
-        _this5._touched = false;
-      };
-
-      if (this.$props.transitionDuration || this.$props.draggedSettlingDuration) {
-        this.transitionHelperIntoPlace(nodes).then(function () {
-          return onEnd();
-        });
-      } else {
-        onEnd();
-      }
-    },
-    transitionHelperIntoPlace: function transitionHelperIntoPlace(nodes) {
-      var _this6 = this;
-
-      if (this.$props.draggedSettlingDuration === 0 || nodes.length === 0) {
-        return Promise.resolve();
-      }
-
-      var deltaScroll = {
-        left: this.scrollContainer.scrollLeft - this.initialScroll.left,
-        top: this.scrollContainer.scrollTop - this.initialScroll.top
-      };
-      var indexNode = nodes[this.index].node;
-      var newIndexNode = nodes[this.newIndex].node;
-
-      var targetX = -deltaScroll.left;
-      if (this.translate && this.translate.x > 0) {
-        // Diff against right edge when moving to the right
-        targetX += newIndexNode.offsetLeft + newIndexNode.offsetWidth - (indexNode.offsetLeft + indexNode.offsetWidth);
-      } else {
-        targetX += newIndexNode.offsetLeft - indexNode.offsetLeft;
-      }
-
-      var targetY = -deltaScroll.top;
-      if (this.translate && this.translate.y > 0) {
-        // Diff against the bottom edge when moving down
-        targetY += newIndexNode.offsetTop + newIndexNode.offsetHeight - (indexNode.offsetTop + indexNode.offsetHeight);
-      } else {
-        targetY += newIndexNode.offsetTop - indexNode.offsetTop;
-      }
-
-      var duration = this.$props.draggedSettlingDuration !== null ? this.$props.draggedSettlingDuration : this.$props.transitionDuration;
-
-      this.helper.style[vendorPrefix + 'Transform'] = 'translate3d(' + targetX + 'px,' + targetY + 'px, 0)';
-      this.helper.style[vendorPrefix + 'TransitionDuration'] = duration + 'ms';
-
-      return new Promise(function (resolve) {
-        // Register an event handler to clean up styles when the transition
-        // finishes.
-        var cleanup = function cleanup(event) {
-          if (!event || event.propertyName === 'transform') {
-            clearTimeout(cleanupTimer);
-            _this6.helper.style[vendorPrefix + 'Transform'] = '';
-            _this6.helper.style[vendorPrefix + 'TransitionDuration'] = '';
-            resolve();
-          }
-        };
-        // Force cleanup in case 'transitionend' never fires
-        var cleanupTimer = setTimeout(cleanup, duration + 10);
-        _this6.helper.addEventListener('transitionend', cleanup, false);
-      });
-    },
-    getEdgeOffset: function getEdgeOffset(node) {
-      var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { top: 0, left: 0 };
-
-      // Get the actual offsetTop / offsetLeft value, no matter how deep the node is nested
-      if (node) {
-        var nodeOffset = {
-          top: offset.top + node.offsetTop,
-          left: offset.left + node.offsetLeft
-        };
-        if (node.parentNode !== this.container) {
-          return this.getEdgeOffset(node.parentNode, nodeOffset);
-        } else {
-          return nodeOffset;
-        }
-      }
-    },
-    getOffset: function getOffset(e) {
-      var _ref2 = e.touches ? e.touches[0] : e,
-          pageX = _ref2.pageX,
-          pageY = _ref2.pageY;
-
-      return {
-        x: pageX,
-        y: pageY
-      };
-    },
-    getLockPixelOffsets: function getLockPixelOffsets() {
-      var lockOffset = this.$props.lockOffset;
-
-
-      if (!Array.isArray(this.lockOffset)) {
-        lockOffset = [lockOffset, lockOffset];
-      }
-
-      if (lockOffset.length !== 2) {
-        throw new Error('lockOffset prop of SortableContainer should be a single value or an array of exactly two values. Given ' + lockOffset);
-      }
-
-      var _lockOffset = lockOffset,
-          _lockOffset2 = slicedToArray(_lockOffset, 2),
-          minLockOffset = _lockOffset2[0],
-          maxLockOffset = _lockOffset2[1];
-
-      return [this.getLockPixelOffset(minLockOffset), this.getLockPixelOffset(maxLockOffset)];
-    },
-    getLockPixelOffset: function getLockPixelOffset(lockOffset) {
-      var offsetX = lockOffset;
-      var offsetY = lockOffset;
-      var unit = 'px';
-
-      if (typeof lockOffset === 'string') {
-        var match = /^[+-]?\d*(?:\.\d*)?(px|%)$/.exec(lockOffset);
-
-        if (match === null) {
-          throw new Error('lockOffset value should be a number or a string of a number followed by "px" or "%". Given ' + lockOffset);
-        }
-
-        offsetX = offsetY = parseFloat(lockOffset);
-        unit = match[1];
-      }
-
-      if (!isFinite(offsetX) || !isFinite(offsetY)) {
-        throw new Error('lockOffset value should be a finite. Given ' + lockOffset);
-      }
-
-      if (unit === '%') {
-        offsetX = offsetX * this.width / 100;
-        offsetY = offsetY * this.height / 100;
-      }
-
-      return {
-        x: offsetX,
-        y: offsetY
-      };
-    },
-    updatePosition: function updatePosition(e) {
-      var _$props4 = this.$props,
-          lockAxis = _$props4.lockAxis,
-          lockToContainerEdges = _$props4.lockToContainerEdges;
-
-
-      var offset = this.getOffset(e);
-      var translate = {
-        x: offset.x - this.initialOffset.x,
-        y: offset.y - this.initialOffset.y
-      };
-      // Adjust for window scroll
-      translate.y -= window.pageYOffset - this.initialWindowScroll.top;
-      translate.x -= window.pageXOffset - this.initialWindowScroll.left;
-
-      this.translate = translate;
-
-      if (lockToContainerEdges) {
-        var _getLockPixelOffsets = this.getLockPixelOffsets(),
-            _getLockPixelOffsets2 = slicedToArray(_getLockPixelOffsets, 2),
-            minLockOffset = _getLockPixelOffsets2[0],
-            maxLockOffset = _getLockPixelOffsets2[1];
-
-        var minOffset = {
-          x: this.width / 2 - minLockOffset.x,
-          y: this.height / 2 - minLockOffset.y
-        };
-        var maxOffset = {
-          x: this.width / 2 - maxLockOffset.x,
-          y: this.height / 2 - maxLockOffset.y
-        };
-
-        translate.x = limit(this.minTranslate.x + minOffset.x, this.maxTranslate.x - maxOffset.x, translate.x);
-        translate.y = limit(this.minTranslate.y + minOffset.y, this.maxTranslate.y - maxOffset.y, translate.y);
-      }
-
-      if (lockAxis === 'x') {
-        translate.y = 0;
-      } else if (lockAxis === 'y') {
-        translate.x = 0;
-      }
-
-      this.helper.style[vendorPrefix + 'Transform'] = 'translate3d(' + translate.x + 'px,' + translate.y + 'px, 0)';
-    },
-    animateNodes: function animateNodes() {
-      var _$props5 = this.$props,
-          transitionDuration = _$props5.transitionDuration,
-          hideSortableGhost = _$props5.hideSortableGhost;
-
-      var nodes = this.manager.getOrderedRefs();
-      var deltaScroll = {
-        left: this.scrollContainer.scrollLeft - this.initialScroll.left,
-        top: this.scrollContainer.scrollTop - this.initialScroll.top
-      };
-      var sortingOffset = {
-        left: this.offsetEdge.left + this.translate.x + deltaScroll.left,
-        top: this.offsetEdge.top + this.translate.y + deltaScroll.top
-      };
-      var scrollDifference = {
-        top: window.pageYOffset - this.initialWindowScroll.top,
-        left: window.pageXOffset - this.initialWindowScroll.left
-      };
-      this.newIndex = null;
-
-      for (var i = 0, len = nodes.length; i < len; i++) {
-        var node = nodes[i].node;
-
-        var index = node.sortableInfo.index;
-        var width = node.offsetWidth;
-        var height = node.offsetHeight;
-        var offset = {
-          width: this.width > width ? width / 2 : this.width / 2,
-          height: this.height > height ? height / 2 : this.height / 2
-        };
-
-        var translate = {
-          x: 0,
-          y: 0
-        };
-        var edgeOffset = nodes[i].edgeOffset;
-
-        // If we haven't cached the node's offsetTop / offsetLeft value
-
-        if (!edgeOffset) {
-          nodes[i].edgeOffset = edgeOffset = this.getEdgeOffset(node);
-        }
-
-        // Get a reference to the next and previous node
-        var nextNode = i < nodes.length - 1 && nodes[i + 1];
-        var prevNode = i > 0 && nodes[i - 1];
-
-        // Also cache the next node's edge offset if needed.
-        // We need this for calculating the animation in a grid setup
-        if (nextNode && !nextNode.edgeOffset) {
-          nextNode.edgeOffset = this.getEdgeOffset(nextNode.node);
-        }
-
-        // If the node is the one we're currently animating, skip it
-        if (index === this.index) {
-          if (hideSortableGhost) {
-            /*
-            * With windowing libraries such as `react-virtualized`, the sortableGhost
-            * node may change while scrolling down and then back up (or vice-versa),
-            * so we need to update the reference to the new node just to be safe.
-            */
-            this.sortableGhost = node;
-            node.style.visibility = 'hidden';
-            node.style.opacity = 0;
-          }
-          continue;
-        }
-
-        if (transitionDuration) {
-          node.style[vendorPrefix + 'TransitionDuration'] = transitionDuration + 'ms';
-        }
-
-        if (this._axis.x) {
-          if (this._axis.y) {
-            // Calculations for a grid setup
-            if (index < this.index && (sortingOffset.left + scrollDifference.left - offset.width <= edgeOffset.left && sortingOffset.top + scrollDifference.top <= edgeOffset.top + offset.height || sortingOffset.top + scrollDifference.top + offset.height <= edgeOffset.top)) {
-              // If the current node is to the left on the same row, or above the node that's being dragged
-              // then move it to the right
-              translate.x = this.width + this.marginOffset.x;
-              if (edgeOffset.left + translate.x > this.containerBoundingRect.width - offset.width) {
-                // If it moves passed the right bounds, then animate it to the first position of the next row.
-                // We just use the offset of the next node to calculate where to move, because that node's original position
-                // is exactly where we want to go
-                translate.x = nextNode.edgeOffset.left - edgeOffset.left;
-                translate.y = nextNode.edgeOffset.top - edgeOffset.top;
-              }
-              if (this.newIndex === null) {
-                this.newIndex = index;
-              }
-            } else if (index > this.index && (sortingOffset.left + scrollDifference.left + offset.width >= edgeOffset.left && sortingOffset.top + scrollDifference.top + offset.height >= edgeOffset.top || sortingOffset.top + scrollDifference.top + offset.height >= edgeOffset.top + height)) {
-              // If the current node is to the right on the same row, or below the node that's being dragged
-              // then move it to the left
-              translate.x = -(this.width + this.marginOffset.x);
-              if (edgeOffset.left + translate.x < this.containerBoundingRect.left + offset.width) {
-                // If it moves passed the left bounds, then animate it to the last position of the previous row.
-                // We just use the offset of the previous node to calculate where to move, because that node's original position
-                // is exactly where we want to go
-                translate.x = prevNode.edgeOffset.left - edgeOffset.left;
-                translate.y = prevNode.edgeOffset.top - edgeOffset.top;
-              }
-              this.newIndex = index;
-            }
-          } else {
-            if (index > this.index && sortingOffset.left + scrollDifference.left + offset.width >= edgeOffset.left) {
-              translate.x = -(this.width + this.marginOffset.x);
-              this.newIndex = index;
-            } else if (index < this.index && sortingOffset.left + scrollDifference.left <= edgeOffset.left + offset.width) {
-              translate.x = this.width + this.marginOffset.x;
-              if (this.newIndex == null) {
-                this.newIndex = index;
-              }
-            }
-          }
-        } else if (this._axis.y) {
-          if (index > this.index && sortingOffset.top + scrollDifference.top + offset.height >= edgeOffset.top) {
-            translate.y = -(this.height + this.marginOffset.y);
-            this.newIndex = index;
-          } else if (index < this.index && sortingOffset.top + scrollDifference.top <= edgeOffset.top + offset.height) {
-            translate.y = this.height + this.marginOffset.y;
-            if (this.newIndex == null) {
-              this.newIndex = index;
-            }
-          }
-        }
-        node.style[vendorPrefix + 'Transform'] = 'translate3d(' + translate.x + 'px,' + translate.y + 'px,0)';
-      }
-
-      if (this.newIndex == null) {
-        this.newIndex = this.index;
-      }
-    },
-    autoscroll: function autoscroll() {
-      var _this7 = this;
-
-      var translate = this.translate;
-      var direction = {
-        x: 0,
-        y: 0
-      };
-      var speed = {
-        x: 1,
-        y: 1
-      };
-      var acceleration = {
-        x: 10,
-        y: 10
-      };
-
-      if (translate.y >= this.maxTranslate.y - this.height / 2) {
-        direction.y = 1; // Scroll Down
-        speed.y = acceleration.y * Math.abs((this.maxTranslate.y - this.height / 2 - translate.y) / this.height);
-      } else if (translate.x >= this.maxTranslate.x - this.width / 2) {
-        direction.x = 1; // Scroll Right
-        speed.x = acceleration.x * Math.abs((this.maxTranslate.x - this.width / 2 - translate.x) / this.width);
-      } else if (translate.y <= this.minTranslate.y + this.height / 2) {
-        direction.y = -1; // Scroll Up
-        speed.y = acceleration.y * Math.abs((translate.y - this.height / 2 - this.minTranslate.y) / this.height);
-      } else if (translate.x <= this.minTranslate.x + this.width / 2) {
-        direction.x = -1; // Scroll Left
-        speed.x = acceleration.x * Math.abs((translate.x - this.width / 2 - this.minTranslate.x) / this.width);
-      }
-
-      if (this.autoscrollInterval) {
-        clearInterval(this.autoscrollInterval);
-        this.autoscrollInterval = null;
-        this.isAutoScrolling = false;
-      }
-
-      if (direction.x !== 0 || direction.y !== 0) {
-        this.autoscrollInterval = setInterval(function () {
-          _this7.isAutoScrolling = true;
-          var offset = {
-            left: 1 * speed.x * direction.x,
-            top: 1 * speed.y * direction.y
-          };
-          _this7.scrollContainer.scrollTop += offset.top;
-          _this7.scrollContainer.scrollLeft += offset.left;
-          _this7.translate.x += offset.left;
-          _this7.translate.y += offset.top;
-          _this7.animateNodes();
-        }, 5);
-      }
     }
-  }
-};
-
-// Export Sortable Element Handle Directive
-var HandleDirective = {
-  bind: function bind(el) {
-    el.sortableHandle = true;
-  }
-};
-
-function create(name, mixin) {
-  return {
-    name: name,
-    mixins: [mixin],
-    props: {
-      tag: {
-        type: String,
-        default: 'div'
-      }
-    },
-    render: function render(h) {
-      return h(this.tag, this.$slots.default);
+    function findClosestDest({ x, y }, refs, currentDest) {
+        // Quickly check if we are within the bounds of the current destination
+        if (isPointWithinRect({ x, y }, currentDest.container.getBoundingClientRect())) {
+            return currentDest;
+        }
+        let closest = null;
+        let minDistance = Infinity;
+        for (let i = 0; i < refs.length; i++) {
+            const ref = refs[i];
+            const rect = ref.container.getBoundingClientRect();
+            const isWithin = isPointWithinRect({ x, y }, rect);
+            if (isWithin) {
+                // If we are within another destination, stop here
+                return ref;
+            }
+            const center = getRectCenter(rect);
+            const distance = getDistance(x, y, center.x, center.y);
+            if (distance < minDistance) {
+                closest = ref;
+                minDistance = distance;
+            }
+        }
+        // Try to guess the closest destination
+        return closest;
     }
-  };
-}
+    class SlicksortHub {
+        constructor() {
+            this.helper = null;
+            this.ghost = null;
+            this.refs = [];
+            this.source = null;
+            this.dest = null;
+        }
+        getId() {
+            return '' + containerIDCounter++;
+        }
+        isSource({ id }) {
+            var _a;
+            return ((_a = this.source) === null || _a === void 0 ? void 0 : _a.id) === id;
+        }
+        getSource() {
+            return this.source;
+        }
+        isDest({ id }) {
+            var _a;
+            return ((_a = this.dest) === null || _a === void 0 ? void 0 : _a.id) === id;
+        }
+        getDest() {
+            return this.dest;
+        }
+        addContainer(ref) {
+            this.refs.push(ref);
+        }
+        removeContainer(ref) {
+            this.refs = this.refs.filter((c) => c.id !== ref.id);
+        }
+        sortStart(ref) {
+            this.source = ref;
+            this.dest = ref;
+        }
+        handleSortMove(e, payload) {
+            var _a, _b, _c, _d;
+            const dest = this.dest;
+            const source = this.source;
+            if (!dest || !source)
+                return;
+            const refs = this.refs;
+            const pointer = getPointerOffset(e, 'client');
+            const newDest = findClosestDest(pointer, refs, dest) || dest;
+            if (dest.id !== newDest.id && canAcceptElement(newDest, source, payload)) {
+                this.dest = newDest;
+                dest.handleDragOut();
+                newDest.handleDragIn(e, this.ghost, this.helper);
+            }
+            if (dest.id !== ((_a = this.source) === null || _a === void 0 ? void 0 : _a.id)) {
+                (_b = this.dest) === null || _b === void 0 ? void 0 : _b.updatePosition(e);
+                (_c = this.dest) === null || _c === void 0 ? void 0 : _c.animateNodes();
+                (_d = this.dest) === null || _d === void 0 ? void 0 : _d.autoscroll();
+            }
+        }
+        handleSortEnd() {
+            var _a, _b, _c, _d;
+            if (((_a = this.source) === null || _a === void 0 ? void 0 : _a.id) === ((_b = this.dest) === null || _b === void 0 ? void 0 : _b.id))
+                return;
+            const payload = (_c = this.source) === null || _c === void 0 ? void 0 : _c.handleDropOut();
+            (_d = this.dest) === null || _d === void 0 ? void 0 : _d.handleDropIn(payload);
+            this.reset();
+        }
+        reset() {
+            this.source = null;
+            this.dest = null;
+            this.helper = null;
+            this.ghost = null;
+        }
+        cancel(e) {
+            var _a, _b;
+            (_a = this.dest) === null || _a === void 0 ? void 0 : _a.handleDragEnd();
+            (_b = this.source) === null || _b === void 0 ? void 0 : _b.handleSortEnd(e);
+            this.reset();
+        }
+    }
 
-var SlickList = create('slick-list', ContainerMixin);
-var SlickItem = create('slick-item', ElementMixin);
+    const plugin = {
+        install(app) {
+            app.directive('drag-handle', HandleDirective);
+            app.provide('SlicksortHub', new SlicksortHub());
+        },
+    };
 
-exports.ElementMixin = ElementMixin;
-exports.ContainerMixin = ContainerMixin;
-exports.HandleDirective = HandleDirective;
-exports.SlickList = SlickList;
-exports.SlickItem = SlickItem;
-exports.arrayMove = arrayMove;
+    exports.ContainerMixin = ContainerMixin;
+    exports.DragHandle = DragHandle;
+    exports.ElementMixin = ElementMixin;
+    exports.HandleDirective = HandleDirective;
+    exports.SlickItem = SlickItem;
+    exports.SlickList = SlickList;
+    exports.arrayMove = arrayMove;
+    exports.plugin = plugin;
 
-Object.defineProperty(exports, '__esModule', { value: true });
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
@@ -1612,7 +1771,7 @@ __webpack_require__.d(__webpack_exports__, {
   "Components": () => (/* reexport */ Components),
   "Directives": () => (/* reexport */ Directives),
   "Filters": () => (/* reexport */ Filters),
-  "Mixins": () => (/* reexport */ Mixins),
+  "Plugins": () => (/* reexport */ Plugins),
   "Util": () => (/* reexport */ Util)
 });
 
@@ -4495,98 +4654,6 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
 filemanagervue_type_script_lang_js.render = filemanagervue_type_template_id_1b419b54_render
 
 /* harmony default export */ const filemanager = (filemanagervue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/slicksort/slicksort-list.vue?vue&type=template&id=8c5e72ba
-
-
-const slicksort_listvue_type_template_id_8c5e72ba_hoisted_1 = { "use-drag-handle": true }
-
-function slicksort_listvue_type_template_id_8c5e72ba_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_slicksort_item = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("slicksort-item")
-
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", slicksort_listvue_type_template_id_8c5e72ba_hoisted_1, [
-    ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(true), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(external_commonjs_vue_commonjs2_vue_root_Vue_.Fragment, null, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderList)($props.value, (item, ndx) => {
-      return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(_component_slicksort_item, {
-        key: ndx,
-        index: ndx,
-        item: item
-      }, {
-        default: (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withCtx)(() => [
-          ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(true), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(external_commonjs_vue_commonjs2_vue_root_Vue_.Fragment, null, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderList)(_ctx.$scopedSlots, (_, name) => {
-            return (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderSlot)(_ctx.$slots, name, _ctx.slotData)
-          }), 256))
-        ]),
-        _: 2
-      }, 1032, ["index", "item"]))
-    }), 128))
-  ]))
-}
-;// CONCATENATED MODULE: ./vue/components/slicksort/slicksort-list.vue?vue&type=template&id=8c5e72ba
-
-// EXTERNAL MODULE: ./node_modules/vue-slicksort/dist/vue-slicksort.umd.js
-var vue_slicksort_umd = __webpack_require__(247);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/slicksort/slicksort-item.vue?vue&type=template&id=bc0038d2
-
-
-const slicksort_itemvue_type_template_id_bc0038d2_hoisted_1 = { class: "slick-sort-item" }
-const slicksort_itemvue_type_template_id_bc0038d2_hoisted_2 = { class: "handle" }
-
-function slicksort_itemvue_type_template_id_bc0038d2_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _directive_handle = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveDirective)("handle")
-
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", slicksort_itemvue_type_template_id_bc0038d2_hoisted_1, [
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withDirectives)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", slicksort_itemvue_type_template_id_bc0038d2_hoisted_2, null, 512), [
-      [_directive_handle]
-    ]),
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderSlot)(_ctx.$slots, "row", { item: $props.item }, () => [
-      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createTextVNode)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)($props.item), 1)
-    ])
-  ]))
-}
-;// CONCATENATED MODULE: ./vue/components/slicksort/slicksort-item.vue?vue&type=template&id=bc0038d2
-
-;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/slicksort/slicksort-item.vue?vue&type=script&lang=js
-
-    
-
-    /* harmony default export */ const slicksort_itemvue_type_script_lang_js = ({
-        mixins: [vue_slicksort_umd.ElementMixin],
-        props: ['item']
-    });
-
-;// CONCATENATED MODULE: ./vue/components/slicksort/slicksort-item.vue?vue&type=script&lang=js
- 
-;// CONCATENATED MODULE: ./vue/components/slicksort/slicksort-item.vue
-
-
-
-slicksort_itemvue_type_script_lang_js.render = slicksort_itemvue_type_template_id_bc0038d2_render
-
-/* harmony default export */ const slicksort_item = (slicksort_itemvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/slicksort/slicksort-list.vue?vue&type=script&lang=js
-
-    
-    
-
-    /* harmony default export */ const slicksort_listvue_type_script_lang_js = ({
-        mixins: [vue_slicksort_umd.ContainerMixin],
-        components: { SlicksortItem: slicksort_item },
-        props: {
-            value: {
-                type: Array,
-                default: []
-            }
-        }
-    });
-
-;// CONCATENATED MODULE: ./vue/components/slicksort/slicksort-list.vue?vue&type=script&lang=js
- 
-;// CONCATENATED MODULE: ./vue/components/slicksort/slicksort-list.vue
-
-
-
-slicksort_listvue_type_script_lang_js.render = slicksort_listvue_type_template_id_8c5e72ba_render
-
-/* harmony default export */ const slicksort_list = (slicksort_listvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/tab.vue?vue&type=template&id=e613b9ee
 
 
@@ -5261,45 +5328,44 @@ function paginationvue_type_template_id_7c778d31_render(_ctx, _cache, $props, $s
 paginationvue_type_script_lang_js.render = paginationvue_type_template_id_7c778d31_render
 
 /* harmony default export */ const pagination = (paginationvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vue-ckeditor.vue?vue&type=template&id=0fb3331a
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vue-ckeditor.vue?vue&type=template&id=ecc1baaa
 
 
-const vue_ckeditorvue_type_template_id_0fb3331a_hoisted_1 = { class: "ckeditor" }
+const vue_ckeditorvue_type_template_id_ecc1baaa_hoisted_1 = { class: "ckeditor" }
 
-function vue_ckeditorvue_type_template_id_0fb3331a_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", vue_ckeditorvue_type_template_id_0fb3331a_hoisted_1, [
+function vue_ckeditorvue_type_template_id_ecc1baaa_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", vue_ckeditorvue_type_template_id_ecc1baaa_hoisted_1, [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("textarea", {
       name: $props.name,
       id: $props.id,
-      value: $props.value,
+      value: $props.modelValue,
       types: $props.types,
       config: $props.config,
       disabled: $props.readOnlyMode
     }, "\n    ", 8, ["name", "id", "value", "types", "config", "disabled"])
   ]))
 }
-;// CONCATENATED MODULE: ./vue/components/vue-ckeditor.vue?vue&type=template&id=0fb3331a
+;// CONCATENATED MODULE: ./vue/components/vue-ckeditor.vue?vue&type=template&id=ecc1baaa
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vue-ckeditor.vue?vue&type=script&lang=js
 
 let inc = new Date().getTime();
 
 /* harmony default export */ const vue_ckeditorvue_type_script_lang_js = ({
-  name: 'VueCkeditor',
+  name: 'vue-ckeditor',
+  emits: ['blur', 'focus', 'contentDom', 'dialogDefinition', 'fileUploadRequest', 'fileUploadResponse', 'update:modelValue'],
   props: {
+    modelValue: String,
     name: { type: String, default: `editor-${++inc}` },
-    value: String,
     id: { type: String, default:`editor-${inc}` },
     types: { type: String, default: `classic` },
     config: { type: Object, default: {} },
     instanceReadyCallback: Function,
     readOnlyMode: { type: Boolean, default: false }
   },
-  data() {
-    return {
+  data: () => ({
       instanceValue: ''
-    };
-  },
+  }),
   computed: {
     instance() {
       return CKEDITOR.instances[this.id];
@@ -5327,10 +5393,10 @@ let inc = new Date().getTime();
         CKEDITOR.replace(this.id, this.config);
       }
 
-      this.instance.setData(this.value);
+      this.instance.setData(this.modelValue);
 
       this.instance.on('instanceReady', () => {
-        this.instance.setData(this.value);
+        this.instance.setData(this.modelValue);
       });
 
       // Ckeditor change event
@@ -5340,35 +5406,23 @@ let inc = new Date().getTime();
       this.instance.on('mode', this.onMode);
 
       // Ckeditor blur event
-      this.instance.on('blur', evt => {
-        this.$emit('blur', evt);
-      });
+      this.instance.on('blur', evt => { this.$emit('blur', evt) });
 
       // Ckeditor focus event
-      this.instance.on('focus', evt => {
-        this.$emit('focus', evt);
-      });
+      this.instance.on('focus', evt => { this.$emit('focus', evt) });
 
       // Ckeditor contentDom event
-      this.instance.on('contentDom', evt => {
-        this.$emit('contentDom', evt);
-      });
+      this.instance.on('contentDom', evt => { this.$emit('contentDom', evt) });
 
       // Ckeditor dialog definition event
-      CKEDITOR.on('dialogDefinition', evt => {
-        this.$emit('dialogDefinition', evt);
-      });
+      CKEDITOR.on('dialogDefinition', evt => { this.$emit('dialogDefinition', evt) });
 
       // Ckeditor file upload request event
-      this.instance.on('fileUploadRequest', evt => {
-        this.$emit('fileUploadRequest', evt);
-      });
+      this.instance.on('fileUploadRequest', evt => { this.$emit('fileUploadRequest', evt) });
 
       // Ckditor file upload response event
       this.instance.on('fileUploadResponse', evt => {
-        setTimeout(() => {
-          this.onChange();
-        }, 0);
+        this.$nextTick( () => { this.onChange() });
         this.$emit('fileUploadResponse', evt);
       });
 
@@ -5376,12 +5430,15 @@ let inc = new Date().getTime();
       if (typeof this.instanceReadyCallback !== 'undefined') {
         this.instance.on('instanceReady', this.instanceReadyCallback);
       }
-
-      // Registering the beforeDestroyed hook right after creating the instance
-      this.$once('hook:beforeDestroy', () => {
-        this.destroy();
-      });
     }
+  },
+  beforeUnmount() {
+    try {
+      let editor = window['CKEDITOR'];
+      if (editor.instances && editor.instances[this.id]) {
+        editor.instances[this.id].destroy();
+      }
+    } catch (e) {}
   },
   methods: {
     update(val) {
@@ -5389,14 +5446,6 @@ let inc = new Date().getTime();
         this.instance.setData(val, { internal: false });
         this.instanceValue = val;
       }
-    },
-    destroy() {
-      try {
-        let editor = window['CKEDITOR'];
-        if (editor.instances && editor.instances[this.id]) {
-          editor.instances[this.id].destroy();
-        }
-      } catch (e) {}
     },
     onMode() {
       if (this.instance.mode === 'source') {
@@ -5408,8 +5457,8 @@ let inc = new Date().getTime();
     },
     onChange() {
       let html = this.instance.getData();
-      if (html !== this.value) {
-        this.$emit('input', html);
+      if (html !== this.modelValue) {
+        this.$emit('update:modelValue', html);
         this.instanceValue = html;
       }
     }
@@ -5422,7 +5471,7 @@ let inc = new Date().getTime();
 
 
 
-vue_ckeditorvue_type_script_lang_js.render = vue_ckeditorvue_type_template_id_0fb3331a_render
+vue_ckeditorvue_type_script_lang_js.render = vue_ckeditorvue_type_template_id_ecc1baaa_render
 
 /* harmony default export */ const vue_ckeditor = (vue_ckeditorvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/forms/profile-form.vue?vue&type=template&id=1e77d4c6
@@ -5642,10 +5691,10 @@ function user_formvue_type_template_id_7aac320a_render(_ctx, _cache, $props, $se
 }
 ;// CONCATENATED MODULE: ./vue/components/forms/user-form.vue?vue&type=template&id=7aac320a
 
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=19523714
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=7295af77
 
 
-function form_selectvue_type_template_id_19523714_render(_ctx, _cache, $props, $setup, $data, $options) {
+function form_selectvue_type_template_id_7295af77_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("select", (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)(_ctx.$attrs, {
     value: $props.modelValue,
     class: "form-select",
@@ -5659,13 +5708,13 @@ function form_selectvue_type_template_id_19523714_render(_ctx, _cache, $props, $
     }), 256))
   ], 16, ["value"]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=19523714
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=7295af77
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=script&lang=js
 
     /* harmony default export */ const form_selectvue_type_script_lang_js = ({
       name: 'form-select',
-      props: { options: Array, modelValue: String },
+      props: { options: Array, modelValue: [String, Number] },
       emits: ['update:modelValue']
     });
 
@@ -5675,7 +5724,7 @@ function form_selectvue_type_template_id_19523714_render(_ctx, _cache, $props, $
 
 
 
-form_selectvue_type_script_lang_js.render = form_selectvue_type_template_id_19523714_render
+form_selectvue_type_script_lang_js.render = form_selectvue_type_template_id_7295af77_render
 
 /* harmony default export */ const form_select = (form_selectvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/forms/user-form.vue?vue&type=script&lang=js
@@ -5824,27 +5873,28 @@ function form_textareavue_type_template_id_e3a10e74_render(_ctx, _cache, $props,
 form_textareavue_type_script_lang_js.render = form_textareavue_type_template_id_e3a10e74_render
 
 /* harmony default export */ const form_textarea = (form_textareavue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=6baef46f
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=755e7c2a
 
 
-const form_checkboxvue_type_template_id_6baef46f_hoisted_1 = { class: "form-checkbox" }
-const form_checkboxvue_type_template_id_6baef46f_hoisted_2 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("i", { class: "form-icon" }, null, -1)
+const form_checkboxvue_type_template_id_755e7c2a_hoisted_1 = { class: "form-checkbox" }
+const form_checkboxvue_type_template_id_755e7c2a_hoisted_2 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("i", { class: "form-icon" }, null, -1)
 
-function form_checkboxvue_type_template_id_6baef46f_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("label", form_checkboxvue_type_template_id_6baef46f_hoisted_1, [
+function form_checkboxvue_type_template_id_755e7c2a_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("label", form_checkboxvue_type_template_id_755e7c2a_hoisted_1, [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("input", (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)({
       value: "1",
       type: "checkbox",
       onChange: _cache[1] || (_cache[1] = $event => (_ctx.$emit('update:modelValue', $event.target.checked)))
     }, _ctx.$attrs, { checked: $props.modelValue }), null, 16, ["checked"]),
-    form_checkboxvue_type_template_id_6baef46f_hoisted_2
+    form_checkboxvue_type_template_id_755e7c2a_hoisted_2
   ]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=6baef46f
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=755e7c2a
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=script&lang=js
 
   /* harmony default export */ const form_checkboxvue_type_script_lang_js = ({
+    name: 'form-checkbox',
     inheritAttrs: false,
     props: ['modelValue']
   });
@@ -5855,7 +5905,7 @@ function form_checkboxvue_type_template_id_6baef46f_render(_ctx, _cache, $props,
 
 
 
-form_checkboxvue_type_script_lang_js.render = form_checkboxvue_type_template_id_6baef46f_render
+form_checkboxvue_type_script_lang_js.render = form_checkboxvue_type_template_id_755e7c2a_render
 
 /* harmony default export */ const form_checkbox = (form_checkboxvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/forms/article-form.vue?vue&type=script&lang=js
@@ -6289,8 +6339,9 @@ revision_tablevue_type_script_lang_js.render = revision_tablevue_type_template_i
 page_formvue_type_script_lang_js.render = page_formvue_type_template_id_24b3e582_render
 
 /* harmony default export */ const page_form = (page_formvue_type_script_lang_js);
+// EXTERNAL MODULE: ./node_modules/vue-slicksort/dist/vue-slicksort.umd.js
+var vue_slicksort_umd = __webpack_require__(247);
 ;// CONCATENATED MODULE: ./vue/build/vxweb.js
-
 
 
 
@@ -6330,7 +6381,7 @@ const Components = {
     Sortable: sortable,
     SimpleTree: simple_tree,
     Filemanager: filemanager,
-    SlicksortList: slicksort_list,
+    SlickList: vue_slicksort_umd.SlickList, SlickItem: vue_slicksort_umd.SlickItem,
     Tab: tab,
     Confirm: vx_vue_confirm,
     Alert: vx_vue_alert,
@@ -6351,12 +6402,7 @@ const Filters = {
 const Directives = {
     Focus: Focus,
     Bubble: Bubble,
-    HandleDirective: vue_slicksort_umd.HandleDirective
-};
-
-const Mixins = {
-    ContainerMixin: vue_slicksort_umd.ContainerMixin,
-    ElementMixin: vue_slicksort_umd.ElementMixin
+    Handle: vue_slicksort_umd.HandleDirective
 };
 
 const Util = {
@@ -6364,6 +6410,10 @@ const Util = {
     PromisedXhr: PromisedXhr,
     UrlQuery: url_query,
     DateFunctions: date_functions
+};
+
+const Plugins = {
+    Slicksort: vue_slicksort_umd.plugin
 };
 
 

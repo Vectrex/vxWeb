@@ -17,7 +17,7 @@
 <script>
     export default {
       name: 'form-select',
-      props: { options: Array, modelValue: String },
+      props: { options: Array, modelValue: [String, Number] },
       emits: ['update:modelValue']
     }
 </script>
