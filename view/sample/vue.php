@@ -64,8 +64,10 @@
                     <form-select v-model="form.select" :options="this.selectItems" id="form-select"></form-select>
                 </div>
                 <div class="form-group">
-                    <label for="form-switch">Switch Element</label>
-                    <form-switch v-model="form.switch" id="form-switch"></form-switch>
+                    <form-switch v-model="form.switch" id="form-switch"> A switch element</form-switch>
+                </div>
+                <div class="form-group">
+                    <form-checkbox v-model="form.checkbox" id="form-switch"> A less fancy checkbox</form-checkbox>
                 </div>
                 <div class="form-group">
                     <label for="form-date">Datepicker</label>
@@ -149,7 +151,7 @@
 </div>
 
 <script>
-    const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormFileButton, Sortable, CKEditor } = window.sample.Components;
+    const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormCheckbox, FormFileButton, Sortable, CKEditor } = window.sample.Components;
     const { SimpleFetch, UrlQuery, BytesToSize } = window.sample.Util;
     const { HandleDirective } = window.sample.Directives;
 
@@ -160,6 +162,7 @@
             'datepicker': Datepicker,
             'form-select': FormSelect,
             'form-switch': FormSwitch,
+            'form-checkbox': FormCheckbox,
             'password-input': PasswordInput,
             'file-button': FormFileButton,
             'alert': Alert,
@@ -190,6 +193,7 @@
                 password: "",
                 select: "",
                 switch: false,
+                checkbox: true,
                 date: new Date()
             },
             toast: {
@@ -282,4 +286,10 @@
             }
         }
     }).mount("#app");
+</script>
+<script>
+    import FormCheckbox from "../../resources/vue/components/vx-vue/formelements/form-checkbox";
+    export default {
+        components: {FormCheckbox}
+    }
 </script>

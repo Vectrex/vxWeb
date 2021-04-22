@@ -25,7 +25,7 @@ import ArticleForm from '../components/forms/article-form';
 import PageForm from '../components/forms/page-form';
 
 import { formatFilesize } from '../filters';
-import { Focus, Bubble } from '../directives';
+import { Focus } from '../directives';
 
 import { SlickList, SlickItem, plugin as Slicksort, HandleDirective as Handle } from 'vue-slicksort';
 
@@ -57,7 +57,6 @@ const Filters = {
 
 const Directives = {
     Focus,
-    Bubble,
     Handle
 };
 

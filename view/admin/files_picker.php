@@ -1,6 +1,6 @@
 <!-- { extend: admin/layout_dialog.php @ content_block } -->
 
-<div id="file-picker" v-cloak>
+<div id="app" v-cloak>
     <filemanager :routes="$options.routes" :columns="cols" :init-sort="initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
         <template v-slot:action="slotProps">
             <template v-if="!slotProps.row.isFolder">
@@ -20,9 +20,8 @@
     const MessageToast = window.vxweb.Components.MessageToast;
     const Filemanager = window.vxweb.Components.Filemanager;
 
-    let app = new Vue({
+    Vue.createApp({
 
-        el: "#file-picker",
         components: { 'message-toast': MessageToast, 'filemanager': Filemanager },
 
         routes: {
@@ -46,7 +45,7 @@
             maxUploadFilesize:  <?= $this->upload_max_filesize ?>
         },
 
-        data: {
+        data: () => ({
             cols: [
                 {
                     label: "Dateiname",
@@ -76,7 +75,7 @@
                 classname: "",
                 active: false
             }
-        },
+        }),
 
         created () {
             let lsValue = window.localStorage.getItem(window.location.origin + "/admin/files__sort__");
@@ -101,5 +100,5 @@
                 window.close();
             }
         }
-    });
+    }).mount('#app');
 </script>

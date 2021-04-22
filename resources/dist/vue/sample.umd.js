@@ -1965,23 +1965,24 @@ function form_selectvue_type_template_id_7295af77_render(_ctx, _cache, $props, $
 form_selectvue_type_script_lang_js.render = form_selectvue_type_template_id_7295af77_render
 
 /* harmony default export */ const form_select = (form_selectvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=6021bab4
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=6622bb0e
 
 
-const form_switchvue_type_template_id_6021bab4_hoisted_1 = { class: "form-switch" }
-const form_switchvue_type_template_id_6021bab4_hoisted_2 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("i", { class: "form-icon" }, null, -1)
+const form_switchvue_type_template_id_6622bb0e_hoisted_1 = { class: "form-switch" }
+const form_switchvue_type_template_id_6622bb0e_hoisted_2 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("i", { class: "form-icon" }, null, -1)
 
-function form_switchvue_type_template_id_6021bab4_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("label", form_switchvue_type_template_id_6021bab4_hoisted_1, [
+function form_switchvue_type_template_id_6622bb0e_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("label", form_switchvue_type_template_id_6622bb0e_hoisted_1, [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("input", (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)({
       value: "1",
       type: "checkbox",
       onChange: _cache[1] || (_cache[1] = $event => (_ctx.$emit('update:modelValue', $event.target.checked)))
     }, _ctx.$attrs, { checked: $props.modelValue }), null, 16, ["checked"]),
-    form_switchvue_type_template_id_6021bab4_hoisted_2
+    form_switchvue_type_template_id_6622bb0e_hoisted_2,
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderSlot)(_ctx.$slots, "default")
   ]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=6021bab4
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-switch.vue?vue&type=template&id=6622bb0e
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-switch.vue?vue&type=script&lang=js
 
@@ -1998,9 +1999,46 @@ function form_switchvue_type_template_id_6021bab4_render(_ctx, _cache, $props, $
 
 
 
-form_switchvue_type_script_lang_js.render = form_switchvue_type_template_id_6021bab4_render
+form_switchvue_type_script_lang_js.render = form_switchvue_type_template_id_6622bb0e_render
 
 /* harmony default export */ const form_switch = (form_switchvue_type_script_lang_js);
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=6b569d2a
+
+
+const form_checkboxvue_type_template_id_6b569d2a_hoisted_1 = { class: "form-checkbox" }
+const form_checkboxvue_type_template_id_6b569d2a_hoisted_2 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("i", { class: "form-icon" }, null, -1)
+
+function form_checkboxvue_type_template_id_6b569d2a_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("label", form_checkboxvue_type_template_id_6b569d2a_hoisted_1, [
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("input", (0,external_commonjs_vue_commonjs2_vue_root_Vue_.mergeProps)({
+      value: "1",
+      type: "checkbox",
+      onChange: _cache[1] || (_cache[1] = $event => (_ctx.$emit('update:modelValue', $event.target.checked)))
+    }, _ctx.$attrs, { checked: $props.modelValue }), null, 16, ["checked"]),
+    form_checkboxvue_type_template_id_6b569d2a_hoisted_2,
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderSlot)(_ctx.$slots, "default")
+  ]))
+}
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=template&id=6b569d2a
+
+;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=script&lang=js
+
+  /* harmony default export */ const form_checkboxvue_type_script_lang_js = ({
+    name: 'form-checkbox',
+    inheritAttrs: false,
+    props: ['modelValue'],
+    emits: ['update:modelValue']
+  });
+
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-checkbox.vue?vue&type=script&lang=js
+ 
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-checkbox.vue
+
+
+
+form_checkboxvue_type_script_lang_js.render = form_checkboxvue_type_template_id_6b569d2a_render
+
+/* harmony default export */ const form_checkbox = (form_checkboxvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=f32da906
 
 
@@ -2476,27 +2514,6 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
     }
 });
 ;// CONCATENATED MODULE: ./vue/directives.js
-// simple directive to enable event bubbling
-
-const Bubble = {
-    beforeMount(el, binding, vnode) {
-        Object.keys(binding.modifiers).forEach(event => {
-            // Bubble events of Vue components
-            if (vnode.componentInstance) {
-                vnode.componentInstance.$off(event);
-                vnode.componentInstance.$on(event, (...args) => {
-                    vnode.context.$emit(event, ...args);
-                });
-                // Bubble events of native DOM elements
-            } else {
-                el.addEventListener(event, payload => {
-                    vnode.context.$emit(event, payload);
-                });
-            }
-        })
-    }
-};
-
 // focus an element upon insertion
 
 const Focus = { mounted: (el) => el.focus() };
@@ -2525,9 +2542,11 @@ const Focus = { mounted: (el) => el.focus() };
 
 
 
+
 const Components = {
     FormSelect: form_select,
     FormSwitch: form_switch,
+    FormCheckbox: form_checkbox,
     FormFileButton: form_file_button,
     PasswordInput: password_input,
     Autocomplete: autocomplete,
@@ -2537,12 +2556,11 @@ const Components = {
     MessageToast: message_toast,
     Pagination: pagination,
     Sortable: sortable,
-    CKEditor: vue_ckeditor,
+    CKEditor: vue_ckeditor
 };
 
 const Directives = {
-    Focus: Focus,
-    Bubble: Bubble
+    Focus: Focus
 };
 
 const Plugins = {

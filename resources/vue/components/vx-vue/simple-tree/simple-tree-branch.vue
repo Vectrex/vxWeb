@@ -7,7 +7,7 @@
     <strong v-if="branch.current">{{ branch.label }}</strong>
     <a :href="branch.path" @click.prevent="$emit('branch-selected', branch)" v-else>{{ branch.label }}</a>
     <ul v-if="branch.branches && branch.branches.length" v-show="expanded">
-      <simple-tree-branch v-for="child in branch.branches" :branch="child" :key="child.id"/>
+      <simple-tree-branch v-for="child in branch.branches" :branch="child" :key="child.id" @branch-selected="$emit('branch-selected', $event)" />
     </ul>
   </li>
 </template>
@@ -23,7 +23,7 @@ export default {
   },
 
   props: {
-    branch: {type: Object, default: () => ({})}
+    branch: { type: Object, default: {} }
   },
 
   mounted() {

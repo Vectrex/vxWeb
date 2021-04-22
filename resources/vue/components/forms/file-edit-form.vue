@@ -56,9 +56,11 @@ import SimpleFetch from "../../util/simple-fetch.js";
 import { formatFilesize } from '../../filters';
 
 export default {
+  name: 'file-edit-form',
+  emits: ['response-received'],
   props: {
-    initialData: {type: Object, default: () => ({})},
-    fileInfo: {type: Object, default: () => ({})},
+    initialData: {type: Object, default: {}},
+    fileInfo: {type: Object, default: {}},
     url: {type: String, default: ""}
   },
   data: () => ({

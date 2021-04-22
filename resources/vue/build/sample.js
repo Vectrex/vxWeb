@@ -7,6 +7,7 @@ import PasswordInput from '../components/vx-vue/formelements/password-input';
 import Pagination from '../components/vx-vue/pagination';
 import FormSelect from '../components/vx-vue/formelements/form-select';
 import FormSwitch from '../components/vx-vue/formelements/form-switch';
+import FormCheckbox from '../components/vx-vue/formelements/form-checkbox';
 import FormFileButton from '../components/vx-vue/formelements/form-file-button';
 import Sortable from '../components/vx-vue/sortable';
 import CKEditor from '../components/vue-ckeditor';
@@ -17,11 +18,12 @@ import UrlQuery from '../util/url-query';
 import DateFunctions from '../util/date-functions';
 import BytesToSize from '../util/bytes-to-size';
 
-import { Focus, Bubble } from '../directives';
+import { Focus } from '../directives';
 
 const Components = {
     FormSelect,
     FormSwitch,
+    FormCheckbox,
     FormFileButton,
     PasswordInput,
     Autocomplete,
@@ -35,8 +37,7 @@ const Components = {
 };
 
 const Directives = {
-    Focus,
-    Bubble
+    Focus
 };
 
 const Plugins = {

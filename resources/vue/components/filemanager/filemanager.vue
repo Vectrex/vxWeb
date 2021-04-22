@@ -134,7 +134,7 @@
         <span v-else>{{ slotProps.row.type }}</span>
       </template>
 
-      <template v-for="(_, name) in $scopedSlots" :slot="name" slot-scope="slotData">
+      <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
         <slot :name="name" v-bind="slotData"/>
       </template>
     </sortable>
@@ -169,7 +169,6 @@ import FilemanagerSearch from './filemanager-search';
 import FilemanagerBreadcrumbs from './filemanager-breadcrumbs';
 import FilemanagerFolderTree from './filemanager-folder-tree';
 import Sortable from '../vx-vue/sortable';
-import SimpleTree from '../vx-vue/simple-tree/simple-tree';
 import CircularProgress from '../circular-progress';
 import Confirm from '../vx-vue/confirm';
 import Alert from '../vx-vue/alert';
@@ -177,16 +176,15 @@ import FileEditForm from '../forms/file-edit-form';
 import SimpleFetch from "../../util/simple-fetch";
 import PromisedXhr from "../../util/promised-xhr";
 import UrlQuery from "../../util/url-query";
-import {formatFilesize} from '../../filters';
-import {Focus} from "../../directives";
 import FolderTree from "./filemanager-folder-tree";
+import { formatFilesize } from '../../filters';
+import { Focus } from "../../directives";
 
 export default {
   name: 'filemanager',
   components: {
     FolderTree,
     'sortable': Sortable,
-    'simple-tree': SimpleTree,
     'circular-progress': CircularProgress,
     'confirm': Confirm,
     'alert': Alert,

@@ -1,6 +1,6 @@
 <template>
   <ul class="vx-tree">
-    <simple-tree-branch :branch="branch" />
+    <simple-tree-branch :branch="branch" @branch-selected="$emit('branch-selected', $event)" />
   </ul>
 </template>
 
