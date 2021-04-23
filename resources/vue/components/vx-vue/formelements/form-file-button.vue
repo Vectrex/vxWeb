@@ -1,6 +1,6 @@
 <template>
     <label :for="id">
-      {{ label }}
+      <slot>Upload</slot>
       <input
           type="file"
           :id="id"
@@ -20,7 +20,6 @@ export default {
     accept: { type: String, default: "*" },
     multiple: { type: Boolean, default: false },
     name: { type: String, default: "file" },
-    label: { type: String, default: 'Upload' },
     id: { type: String, default: 'file_upload' }
   },
 

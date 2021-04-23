@@ -74,7 +74,7 @@
                 </div>
                 <div class="form-group">
                     <label for="upload-button">Upload Button</label>
-                    <file-button class="btn d-block" v-model="uploads" id="upload-button" :multiple="true"></file-button>
+                    <file-button class="btn d-block" v-model="uploads" id="upload-button" :multiple="true">Pick some files</file-button>
                     <div>
                         <span class="chip" v-for="upload in uploads">{{ upload.name }}, {{ formatSize(upload.size) }}</span>
                     </div>

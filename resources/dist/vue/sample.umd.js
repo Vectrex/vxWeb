@@ -2039,12 +2039,16 @@ function form_checkboxvue_type_template_id_6b569d2a_render(_ctx, _cache, $props,
 form_checkboxvue_type_script_lang_js.render = form_checkboxvue_type_template_id_6b569d2a_render
 
 /* harmony default export */ const form_checkbox = (form_checkboxvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=f32da906
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=802362d4
 
 
-function form_file_buttonvue_type_template_id_f32da906_render(_ctx, _cache, $props, $setup, $data, $options) {
+const form_file_buttonvue_type_template_id_802362d4_hoisted_1 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createTextVNode)("Upload")
+
+function form_file_buttonvue_type_template_id_802362d4_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("label", { for: $props.id }, [
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createTextVNode)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)($props.label) + " ", 1),
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderSlot)(_ctx.$slots, "default", {}, () => [
+      form_file_buttonvue_type_template_id_802362d4_hoisted_1
+    ]),
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("input", {
       type: "file",
       id: $props.id,
@@ -2055,7 +2059,7 @@ function form_file_buttonvue_type_template_id_f32da906_render(_ctx, _cache, $pro
     }, null, 40, ["id", "multiple", "accept"])
   ], 8, ["for"]))
 }
-;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=f32da906
+;// CONCATENATED MODULE: ./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=template&id=802362d4
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/formelements/form-file-button.vue?vue&type=script&lang=js
 
@@ -2066,7 +2070,6 @@ function form_file_buttonvue_type_template_id_f32da906_render(_ctx, _cache, $pro
     accept: { type: String, default: "*" },
     multiple: { type: Boolean, default: false },
     name: { type: String, default: "file" },
-    label: { type: String, default: 'Upload' },
     id: { type: String, default: 'file_upload' }
   },
 
@@ -2101,7 +2104,7 @@ function form_file_buttonvue_type_template_id_f32da906_render(_ctx, _cache, $pro
 
 
 
-form_file_buttonvue_type_script_lang_js.render = form_file_buttonvue_type_template_id_f32da906_render
+form_file_buttonvue_type_script_lang_js.render = form_file_buttonvue_type_template_id_802362d4_render
 
 /* harmony default export */ const form_file_button = (form_file_buttonvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/sortable.vue?vue&type=template&id=3d275eb2&scoped=true
