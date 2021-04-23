@@ -116,10 +116,10 @@
 
         methods: {
             async publish (row) {
-                this.$set(row, 'pub', !row.pub);
+                row.pub = !row.pub;
                 let response = await SimpleFetch(this.$options.routes.publish, 'POST', {}, JSON.stringify({id: row.key, state: row.pub }));
                 if(!response.success) {
-                    this.$set(row, 'pub', !row.pub);
+                    row.pub = !row.pub;
                 }
             },
             async del (row) {

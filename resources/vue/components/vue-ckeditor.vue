@@ -37,7 +37,7 @@ export default {
     }
   },
   watch: {
-    value(val) {
+    modelValue(val) {
       try {
         if (this.instance) {
           this.update(val);

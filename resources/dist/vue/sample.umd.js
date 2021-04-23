@@ -2270,13 +2270,13 @@ sortablevue_type_script_lang_js.render = sortablevue_type_template_id_3d275eb2_s
 sortablevue_type_script_lang_js.__scopeId = "data-v-3d275eb2"
 
 /* harmony default export */ const sortable = (sortablevue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vue-ckeditor.vue?vue&type=template&id=ecc1baaa
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vue-ckeditor.vue?vue&type=template&id=12f62f34
 
 
-const vue_ckeditorvue_type_template_id_ecc1baaa_hoisted_1 = { class: "ckeditor" }
+const vue_ckeditorvue_type_template_id_12f62f34_hoisted_1 = { class: "ckeditor" }
 
-function vue_ckeditorvue_type_template_id_ecc1baaa_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", vue_ckeditorvue_type_template_id_ecc1baaa_hoisted_1, [
+function vue_ckeditorvue_type_template_id_12f62f34_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", vue_ckeditorvue_type_template_id_12f62f34_hoisted_1, [
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("textarea", {
       name: $props.name,
       id: $props.id,
@@ -2287,7 +2287,7 @@ function vue_ckeditorvue_type_template_id_ecc1baaa_render(_ctx, _cache, $props, 
     }, "\n    ", 8, ["name", "id", "value", "types", "config", "disabled"])
   ]))
 }
-;// CONCATENATED MODULE: ./vue/components/vue-ckeditor.vue?vue&type=template&id=ecc1baaa
+;// CONCATENATED MODULE: ./vue/components/vue-ckeditor.vue?vue&type=template&id=12f62f34
 
 ;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vue-ckeditor.vue?vue&type=script&lang=js
 
@@ -2314,7 +2314,7 @@ let inc = new Date().getTime();
     }
   },
   watch: {
-    value(val) {
+    modelValue(val) {
       try {
         if (this.instance) {
           this.update(val);
@@ -2413,7 +2413,7 @@ let inc = new Date().getTime();
 
 
 
-vue_ckeditorvue_type_script_lang_js.render = vue_ckeditorvue_type_template_id_ecc1baaa_render
+vue_ckeditorvue_type_script_lang_js.render = vue_ckeditorvue_type_template_id_12f62f34_render
 
 /* harmony default export */ const vue_ckeditor = (vue_ckeditorvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./vue/util/simple-fetch.js
