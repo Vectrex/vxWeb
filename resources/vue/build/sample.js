@@ -10,7 +10,6 @@ import FormSwitch from '../components/vx-vue/formelements/form-switch';
 import FormCheckbox from '../components/vx-vue/formelements/form-checkbox';
 import FormFileButton from '../components/vx-vue/formelements/form-file-button';
 import Sortable from '../components/vx-vue/sortable';
-import CKEditor from '../components/vue-ckeditor';
 
 import SimpleFetch from '../util/simple-fetch';
 import PromisedXhr from '../util/promised-xhr';
@@ -33,7 +32,6 @@ const Components = {
     MessageToast,
     Pagination,
     Sortable,
-    CKEditor
 };
 
 const Directives = {

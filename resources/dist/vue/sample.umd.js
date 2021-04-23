@@ -2270,152 +2270,6 @@ sortablevue_type_script_lang_js.render = sortablevue_type_template_id_3d275eb2_s
 sortablevue_type_script_lang_js.__scopeId = "data-v-3d275eb2"
 
 /* harmony default export */ const sortable = (sortablevue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vue-ckeditor.vue?vue&type=template&id=12f62f34
-
-
-const vue_ckeditorvue_type_template_id_12f62f34_hoisted_1 = { class: "ckeditor" }
-
-function vue_ckeditorvue_type_template_id_12f62f34_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", vue_ckeditorvue_type_template_id_12f62f34_hoisted_1, [
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("textarea", {
-      name: $props.name,
-      id: $props.id,
-      value: $props.modelValue,
-      types: $props.types,
-      config: $props.config,
-      disabled: $props.readOnlyMode
-    }, "\n    ", 8, ["name", "id", "value", "types", "config", "disabled"])
-  ]))
-}
-;// CONCATENATED MODULE: ./vue/components/vue-ckeditor.vue?vue&type=template&id=12f62f34
-
-;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vue-ckeditor.vue?vue&type=script&lang=js
-
-let inc = new Date().getTime();
-
-/* harmony default export */ const vue_ckeditorvue_type_script_lang_js = ({
-  name: 'vue-ckeditor',
-  emits: ['blur', 'focus', 'contentDom', 'dialogDefinition', 'fileUploadRequest', 'fileUploadResponse', 'update:modelValue'],
-  props: {
-    modelValue: String,
-    name: { type: String, default: `editor-${++inc}` },
-    id: { type: String, default:`editor-${inc}` },
-    types: { type: String, default: `classic` },
-    config: { type: Object, default: {} },
-    instanceReadyCallback: Function,
-    readOnlyMode: { type: Boolean, default: false }
-  },
-  data: () => ({
-      instanceValue: ''
-  }),
-  computed: {
-    instance() {
-      return CKEDITOR.instances[this.id];
-    }
-  },
-  watch: {
-    modelValue(val) {
-      try {
-        if (this.instance) {
-          this.update(val);
-        }
-      } catch (e) {}
-    },
-    readOnlyMode(val) {
-      this.instance.setReadOnly(val);
-    }
-  },
-  mounted() {
-    if (typeof CKEDITOR === 'undefined') {
-      console.log('CKEDITOR is missing (http://ckeditor.com/)');
-    } else {
-      if (this.types === 'inline') {
-        CKEDITOR.inline(this.id, this.config);
-      } else {
-        CKEDITOR.replace(this.id, this.config);
-      }
-
-      this.instance.setData(this.modelValue);
-
-      this.instance.on('instanceReady', () => {
-        this.instance.setData(this.modelValue);
-      });
-
-      // Ckeditor change event
-      this.instance.on('change', this.onChange);
-
-      // Ckeditor mode html or source
-      this.instance.on('mode', this.onMode);
-
-      // Ckeditor blur event
-      this.instance.on('blur', evt => { this.$emit('blur', evt) });
-
-      // Ckeditor focus event
-      this.instance.on('focus', evt => { this.$emit('focus', evt) });
-
-      // Ckeditor contentDom event
-      this.instance.on('contentDom', evt => { this.$emit('contentDom', evt) });
-
-      // Ckeditor dialog definition event
-      CKEDITOR.on('dialogDefinition', evt => { this.$emit('dialogDefinition', evt) });
-
-      // Ckeditor file upload request event
-      this.instance.on('fileUploadRequest', evt => { this.$emit('fileUploadRequest', evt) });
-
-      // Ckditor file upload response event
-      this.instance.on('fileUploadResponse', evt => {
-        this.$nextTick( () => { this.onChange() });
-        this.$emit('fileUploadResponse', evt);
-      });
-
-      // Listen for instanceReady event
-      if (typeof this.instanceReadyCallback !== 'undefined') {
-        this.instance.on('instanceReady', this.instanceReadyCallback);
-      }
-    }
-  },
-  beforeUnmount() {
-    try {
-      let editor = window['CKEDITOR'];
-      if (editor.instances && editor.instances[this.id]) {
-        editor.instances[this.id].destroy();
-      }
-    } catch (e) {}
-  },
-  methods: {
-    update(val) {
-      if (this.instanceValue !== val) {
-        this.instance.setData(val, { internal: false });
-        this.instanceValue = val;
-      }
-    },
-    onMode() {
-      if (this.instance.mode === 'source') {
-        let editable = this.instance.editable();
-        editable.attachListener(editable, 'input', () => {
-          this.onChange();
-        });
-      }
-    },
-    onChange() {
-      let html = this.instance.getData();
-      if (html !== this.modelValue) {
-        this.$emit('update:modelValue', html);
-        this.instanceValue = html;
-      }
-    }
-  }
-});
-
-;// CONCATENATED MODULE: ./vue/components/vue-ckeditor.vue?vue&type=script&lang=js
- 
-;// CONCATENATED MODULE: ./vue/components/vue-ckeditor.vue
-
-
-
-vue_ckeditorvue_type_script_lang_js.render = vue_ckeditorvue_type_template_id_12f62f34_render
-
-/* harmony default export */ const vue_ckeditor = (vue_ckeditorvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./vue/util/simple-fetch.js
 async function SimpleFetch(url, method = 'GET', headers = {}, payload = null) {
 
@@ -2542,7 +2396,6 @@ const Focus = { mounted: (el) => el.focus() };
 
 
 
-
 const Components = {
     FormSelect: form_select,
     FormSwitch: form_switch,
@@ -2556,7 +2409,6 @@ const Components = {
     MessageToast: message_toast,
     Pagination: pagination,
     Sortable: sortable,
-    CKEditor: vue_ckeditor
 };
 
 const Directives = {

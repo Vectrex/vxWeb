@@ -1,7 +1,6 @@
 <!-- { extend: layout.php @ header_block } -->
 <script src="https://unpkg.com/vue@next"></script>
-<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
-<script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/sample.umd.js') ?>"></script>
+<script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/sample.umd.min.js') ?>"></script>
 <!-- { extend: layout.php @ content_block } -->
 <h1>vxWeb Vue3 Components</h1>
 
@@ -139,19 +138,13 @@
         </div>
     </div>
 
-    <div class="column col-4 col-sm-12 my-2">
-        <div class="card" style="height: 100%;">
-            <ckeditor v-model="ck.editorData" :config="ck.editorConfig"></ckeditor>
-        </div>
-    </div>
-
     <alert ref="alert"></alert>
     <confirm ref="confirm"></confirm>
     <message-toast v-bind="toast" ref="toast" @cancel="toast.active = false" @timeout="toast.active = false"></message-toast>
 </div>
 
 <script>
-    const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormCheckbox, FormFileButton, Sortable, CKEditor } = window.sample.Components;
+    const { Autocomplete, Datepicker, Confirm, Alert, MessageToast, PasswordInput, Pagination, FormSelect, FormSwitch, FormCheckbox, FormFileButton, Sortable } = window.sample.Components;
     const { SimpleFetch, UrlQuery, BytesToSize } = window.sample.Util;
     const { HandleDirective } = window.sample.Directives;
 
@@ -170,7 +163,6 @@
             'message-toast': MessageToast,
             'pagination': Pagination,
             'sortable': Sortable,
-            'ckeditor': CKEditor
         },
 
         routes: {
@@ -216,30 +208,7 @@
             },
             currentPage: 1,
             entriesPerPage: 10,
-            uploads: [],
-            ck: {
-                editorData: '<p>Content of the editor.</p>',
-                editorConfig: {
-                    allowedContent: true,
-                    autoParagraph: false,
-                    customConfig: "",
-                    toolbar:
-                        [
-                            ['Maximize', '-', 'Source'],
-                            ['Undo', 'Redo', '-', 'Cut','Copy','Paste','PasteText','PasteFromWord'],
-                            [ 'Find', 'Replace'],
-                            [ 'Bold', 'Italic', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat', '-', 'TextColor', 'BGColor'],
-                            ['NumberedList','BulletedList','-','Blockquote'],
-                            ['Link','Unlink'],
-                            ['Image','Table','SpecialChar'],
-                            ['Styles', 'Format'],
-                            ['ShowBlocks']
-                        ],
-                    height: "24rem", contentsCss: ['/css/site.css', '/css/site_edit.css'],
-                    filebrowserBrowseUrl: null,
-                    filebrowserImageBrowseUrl: null
-                }
-            }
+            uploads: []
         }),
 
         computed: {
@@ -286,10 +255,4 @@
             }
         }
     }).mount("#app");
-</script>
-<script>
-    import FormCheckbox from "../../resources/vue/components/vx-vue/formelements/form-checkbox";
-    export default {
-        components: {FormCheckbox}
-    }
 </script>
