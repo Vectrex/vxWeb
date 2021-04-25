@@ -10,6 +10,6 @@
 <?php if(\vxPHP\Application\Application::getInstance()->runsLocally()): ?>
     <script src="https://unpkg.com/vue@next"></script>
 <?php else: ?>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<script src="https://unpkg.com/vue@3.0.11/dist/vue.global.prod.js"></script>
 <?php endif; ?>
 <script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/vxweb.umd.min.js') ?>"></script>
