@@ -44,13 +44,12 @@ export default {
 
   props: {
     url: { type: String, required: true },
-    initialData: { type: Object, default: () => { return {} } },
-    options: { type: Object },
-    editorConfig: { type: Object }
+    initialData: { type: Object, default: () => ({}) },
+    options: Object,
+    editorConfig: Object
   },
 
-  data: function() {
-    return {
+  data() { return {
       elements: [
         { type: 'datepicker', model: 'article_date', label: 'Artikeldatum', attrs: {
             'input-format': "d.m.y",
@@ -80,8 +79,7 @@ export default {
       form: {},
       response: {},
       loading: false
-    }
-  },
+  }},
 
   computed: {
     errors () {
@@ -98,7 +96,7 @@ export default {
       this.setDates();
     },
     options (newValue) {
-      this.elements[this.elements.findIndex(item => item.model === 'articlecategoriesid')].options = newValue.categories;
+      this.elements[this.elements.findIndex(({model}) => model === 'articlecategoriesid')].options = newValue.categories;
     }
   },
 

@@ -40,7 +40,7 @@ export default {
         let current = this.items.findIndex(item => item.folder === this.currentFolder);
 
         if (this.items[current + 1]) {
-          let ndx = newValue.findIndex(item => item.id === this.items[current + 1].folder);
+          let ndx = newValue.findIndex(({id}) => id === this.items[current + 1].folder);
 
           // check for deletion
 

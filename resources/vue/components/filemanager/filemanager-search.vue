@@ -75,9 +75,9 @@ export default {
 
       if (search instanceof Promise) {
         this.loading = true;
-        search.then(results => {
-          this.results.files = results.files || [];
-          this.results.folders = results.folders || [];
+        search.then(({files, folders}) => {
+          this.results.files = files || [];
+          this.results.folders = folders || [];
           this.loading = false;
         });
       } else {

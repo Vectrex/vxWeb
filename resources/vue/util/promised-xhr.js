@@ -8,7 +8,7 @@ export default function PromisedXhr(url, method = 'GET', headers = {}, payload =
 
     let xhr = new XMLHttpRequest();
 
-    let xhrPromise = new Promise(function(resolve, reject) {
+    let xhrPromise = new Promise((resolve, reject) => {
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
                 if (xhr.status >= 200 && xhr.status < 300) {
@@ -35,7 +35,7 @@ export default function PromisedXhr(url, method = 'GET', headers = {}, payload =
 
         if (timeout) {
             xhr.timeout = timeout;
-            xhr.ontimeout = (e) => {reject({ status: 408, statusText: 'Request timeout.' });};
+            xhr.ontimeout = () => {reject({ status: 408, statusText: 'Request timeout.' });};
         }
 
         xhr.send(payload);

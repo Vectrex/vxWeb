@@ -72,7 +72,7 @@
 
         data() {
             return {
-                sortColumn: this.columns.find(item => item.prop === this.sortProp),
+                sortColumn: this.columns.find(({prop}) => prop === this.sortProp),
                 sortDir: this.sortDirection
             };
         },

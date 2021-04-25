@@ -79,7 +79,8 @@
         id="files-list"
     >
       <template v-slot:checked-header>
-        <label class="form-checkbox"><input type="checkbox" @click="toggleAll" v-check-indeterminate><i
+        <label class="form-checkbox"><input type="checkbox"
+          @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked);" v-check-indeterminate><i
             class="form-icon"></i></label>
       </template>
 
@@ -150,7 +151,7 @@
               :initial-data="editFormData"
               :file-info="editFileInfo"
               :url="routes.updateFile"
-              @response-received="(response) => $emit('response-received', response)"
+              @response-received="response => $emit('response-received', response)"
               ref="editForm"
           />
         </div>
@@ -198,22 +199,16 @@ export default {
 
   data() {
     return {
-      root: {},
       currentFolder: null,
       files: [],
       folders: [],
       breadcrumbs: [],
       toRename: null,
-      showEditForm: false,
       showAddActivities: false,
       indicateDrag: false,
-      upload: {
-        files: [],
-        progressing: false,
-        cancelToken: {}
-      },
-      cancelUploadToken: {},
-      progress: {total: null, loaded: null, file: null},
+      upload: { files: [], progressing: false, cancelToken: {} },
+      progress: { total: null, loaded: null, file: null },
+      showEditForm: false,
       editFormData: {},
       editFileInfo: {}
     }
@@ -231,10 +226,10 @@ export default {
       return [...folders, ...files];
     },
     checkedFiles() {
-      return this.files.filter(item => item.checked);
+      return this.files.filter(({checked}) => checked);
     },
     checkedFolders() {
-      return this.folders.filter(item => item.checked);
+      return this.folders.filter(({checked}) => checked);
     }
   },
 
@@ -271,9 +266,6 @@ export default {
     handleBodyClick() {
       this.showAddActivities = false;
     },
-    toggleAll(event) {
-      [...this.folders, ...this.files].forEach(item => item.checked = event.target.checked);
-    },
     async readFolder(id) {
       let response = await SimpleFetch(UrlQuery.create(this.routes.readFolder, {folder: id}));
 
@@ -288,8 +280,8 @@ export default {
     },
     async delSelection() {
       let response = await SimpleFetch(UrlQuery.create(this.routes.delSelection, {
-        files: this.checkedFiles.map(item => item.id).join(","),
-        folders: this.checkedFolders.map(item => item.id).join(",")
+        files: this.checkedFiles.map(({id}) => id).join(","),
+        folders: this.checkedFolders.map(({id}) => id).join(",")
       }), 'DELETE');
       if (response.success) {
         this.files = response.files || [];
@@ -305,8 +297,8 @@ export default {
 
       if (folder !== false) {
         let response = await SimpleFetch(UrlQuery.create(this.routes.moveSelection, {destination: folder.id}), 'POST', {}, JSON.stringify({
-          files: this.checkedFiles.map(item => item.id),
-          folders: this.checkedFolders.map(item => item.id)
+          files: this.checkedFiles.map(({id}) => id),
+          folders: this.checkedFolders.map(({id}) => id)
         }));
 
         if (response.success) {
@@ -319,7 +311,6 @@ export default {
         }
       }
     },
-
     async editFile(row) {
       this.showEditForm = true;
       let response = await SimpleFetch(UrlQuery.create(this.routes.getFile, {id: row.id}));
@@ -397,18 +388,11 @@ export default {
     },
     uploadDraggedFiles(event) {
       this.indicateDrag = false;
-      let files = event.dataTransfer.files;
-
-      if (!files) {
-        return;
-      }
-
-      this.uploadInputFiles(files);
+      this.uploadInputFiles(event.dataTransfer.files || []);
     },
     uploadInputFiles(files) {
       this.showAddActivities = false;
-
-      [...files].forEach(f => this.upload.files.push(f));
+      this.upload.files.push(...files);
       if (!this.upload.progressing) {
         this.upload.progressing = true;
         this.progress.loaded = 0;

@@ -67,8 +67,7 @@ export default {
     },
     cookieOptions: {
       type: Object,
-      default: () => {
-      },
+      default: () => ({}),
       required: false
     }
   },

@@ -44,8 +44,8 @@
 
         props: {
             url: { type: String, required: true },
-            initialData: { type: Object, default: () => { return {} } },
-            options: { type: Object }
+            initialData: { type: Object, default: () => ({}) },
+            options: Object
         },
 
         data: () => ({
@@ -76,7 +76,7 @@
                 this.form = newValue;
             },
             options (newValue) {
-              this.elements[this.elements.findIndex(item => item.model === 'admingroupsid')].options = newValue.admingroups;
+              this.elements[this.elements.findIndex(({model}) => model === 'admingroupsid')].options = newValue.admingroups;
             }
         },
 
