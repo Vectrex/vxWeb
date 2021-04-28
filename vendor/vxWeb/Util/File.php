@@ -11,12 +11,10 @@
 namespace vxWeb\Util;
 
 use vxPHP\File\FilesystemFolder;
-use vxPHP\File\Util;
 use vxPHP\File\Exception\FilesystemFileException;
 use vxPHP\File\FilesystemFile;
 use vxPHP\File\UploadedFile;
 use vxPHP\Application\Application;
-
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\MetaFile\MetaFolder;
 
@@ -29,8 +27,8 @@ use vxWeb\Model\MetaFile\MetaFolder;
  * @version 0.4.0, 2017-03-10
  *
  */
-class File {
-
+class File
+{
     /**
      * add metafolder entries for filesystem subfolders
      * add metafile entries for filesystem files
@@ -44,7 +42,7 @@ class File {
      * @throws \vxWeb\Model\MetaFile\Exception\MetaFileException
      * @throws \vxWeb\Model\MetaFile\Exception\MetaFolderException
      */
-	public static function cleanupMetaFolder(MetaFolder $metaFolder)
+	public static function cleanupMetaFolder(MetaFolder $metaFolder): void
     {
 		$application = Application::getInstance();
 
@@ -104,7 +102,7 @@ class File {
 
 		// add new filesystem files
 
-		$fsFiles = Util::getDir($metaFolder->getFullPath());
+		$fsFiles = self::getFsFiles($metaFolder->getFullPath());
 		$missing = array_diff($fsFiles, $existing);
 
 		foreach($missing as $m) {
@@ -123,8 +121,8 @@ class File {
      * @throws FilesystemFileException
      * @throws \Exception
      */
-	public static function processFileUpload(MetaFolder $metaFolder, UploadedFile $upload, array $metaData = [], $unpackArchives = FALSE) {
-
+	public static function processFileUpload(MetaFolder $metaFolder, UploadedFile $upload, array $metaData = [], $unpackArchives = false)
+    {
 		$metafiles = [];
 
 		// check for archive
@@ -151,7 +149,7 @@ class File {
 				// obscure file if folder has the Obscure_Files attribute set
 
 				if($metaFolder->obscuresFiles()) {
-					$metaFile->obscureTo(uniqid());
+                    $metaFile->obscureTo(bin2hex(random_bytes(16)));
 				}
 			}
 
@@ -159,18 +157,18 @@ class File {
 
 			catch(FilesystemFileException $e) {
 
-				if($e->getCode() == FilesystemFileException::METAFILE_ALREADY_EXISTS) {
+				if($e->getCode() === FilesystemFileException::METAFILE_ALREADY_EXISTS) {
 
 					preg_match('~^(.*?)(\((\d+)\))?(.[a-z0-9]*)?$~i', $upload->getFilename(), $matches);
-					$matches[2] = $matches[2] == '' ? 2 : $matches[2] + 1;
+					$matches[2] = $matches[2] === '' ? 2 : $matches[2] + 1;
 
 					// check for both alternative filesystem filename and metafile filename
 
-					while(file_exists("{$matches[1]}({$matches[2]}){$matches[4]}") || ! MetaFile::isFilenameAvailable("{$matches[1]}({$matches[2]}){$matches[4]}", $metaFolder)) {
+					while(file_exists(sprintf("%s(%d)%s", $matches[1], $matches[2], $matches[4])) || ! MetaFile::isFilenameAvailable(sprintf("%s(%d)%s", $matches[1], $matches[2], $matches[4]), $metaFolder)) {
 						++ $matches[2];
 					}
 
-					$upload->rename("{$matches[1]}({$matches[2]}){$matches[4]}");
+					$upload->rename(sprintf("%s(%d)%s", $matches[1], $matches[2], $matches[4]));
 
 					$metaFile = MetaFile::createMetaFile($upload);
 					$metaFile->setMetaData($metaData);
@@ -178,7 +176,7 @@ class File {
 					// obscure file if folder has the Obscure_Files attribute set
 
 					if($metaFolder->obscuresFiles()) {
-						$metaFile->obscureTo(uniqid());
+						$metaFile->obscureTo(bin2hex(random_bytes(16)));
 					}
 				}
 
@@ -196,9 +194,7 @@ class File {
 			$metafiles[] = $metaFile;
 		}
 
-
 		return $metafiles;
-
 	}
 
     /**
@@ -212,7 +208,6 @@ class File {
      */
     public static function extractZip($zipFilename, FilesystemFolder $folder)
     {
-
         $zip = new \ZipArchive();
         $files = [];
 
@@ -249,4 +244,25 @@ class File {
         return $files;
     }
 
+    private static function getFsFiles (string $path): ?array
+    {
+        $dir = rtrim($path, '/') . '/';
+
+        try {
+            $i = new \DirectoryIterator($dir);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        $files = [];
+
+        foreach($i as $file) {
+            $fn = $file->getFileName();
+            if($fn[0] !== '.' && !$file->isDot() && $file->isFile()) {
+                $files[] = $fn;
+            }
+        }
+
+        return $files;
+    }
 }
