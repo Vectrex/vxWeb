@@ -10,6 +10,7 @@
 
 namespace vxWeb\Model\ArticleCategory;
 
+use vxPHP\Application\Exception\ApplicationException;
 use vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException;
 use vxWeb\Model\Article\Article;
 use vxPHP\Application\Application;
@@ -19,11 +20,11 @@ use vxPHP\Database\Util;
  * Mapper class for articlecategories, stored in table `articlecategories`
  *
  * @author Gregor Kofler
- * @version 0.5.0 2018-04-11
+ * @version 0.6.0 2021-05-22
  */
 
-class ArticleCategory {
-
+class ArticleCategory
+{
 	/**
 	 * instances index by primary key
 	 * 
@@ -89,31 +90,28 @@ class ArticleCategory {
 	 */
 	private $parentCategory;
 
-	/**
-	 * create a new category
-	 * a freshly created category has no representation in the database
-	 * yet and persistence requires a save()
-	 *
-	 * @param string $title
-	 * @param ArticleCategory $parentCategory
-	 */
-	public function __construct($title, ArticleCategory $parentCategory = NULL) {
-
+    /**
+     * create a new category
+     * a freshly created category has no representation in the database
+     * yet and persistence requires a save()
+     *
+     * @param string $title
+     * @param ArticleCategory|null $parentCategory
+     */
+	public function __construct(string $title, ArticleCategory $parentCategory = null)
+    {
 		$this->parentCategory = $parentCategory;
 		$this->title = $title;
-
 	}
 
-	public function __toString() {
-
+	public function __toString()
+    {
 		return $this->alias;
-
 	}
 
-	public function __destruct() {
-
+	public function __destruct()
+    {
 		// @todo clean up nesting
-
 	}
 
 	/**
@@ -121,20 +119,19 @@ class ArticleCategory {
 	 *
 	 * @todo only INSERTs are supported, UPDATE has to be implemented
 	 */
-	public function save() {
-
-		$db = Application::getInstance()->getDb();
+	public function save(): self
+    {
+		$db = Application::getInstance()->getVxPDO();
 
 		if(is_null($this->parentCategory)) {
 
 			// prepare to insert top level category
 
-			$rows			= $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM articlecategories', []);
-			$this->l		= !isset($rows[0]['l']) ? 0 : $rows[0]['l'];
-			$this->r		= $rows[0]['l'] + 1;
-			$this->level	= 0;
+			$rows = $db->doPreparedQuery('SELECT MAX(r) + 1 AS l FROM articlecategories', []);
+			$this->l = $rows[0]['l'] ?? 0;
+			$this->r = $rows[0]['l'] + 1;
+			$this->level = 0;
 		}
-
 		else {
 
 			// prepare to insert subcategory
@@ -147,108 +144,113 @@ class ArticleCategory {
 
 			$nsData = $this->parentCategory->getNsData();
 
-			$this->l		= $nsData['r'];
-			$this->r		= $nsData['r'] + 1;
-			$this->level	= $nsData['level'] + 1;
+			$this->l = $nsData['r'];
+			$this->r = $nsData['r'] + 1;
+			$this->level = $nsData['level'] + 1;
 
-			$db->execute('UPDATE articlecategories SET r = r + 2 WHERE r >= ?', array($this->l));
-			$db->execute('UPDATE articlecategories SET l = l + 2 WHERE l > ?', array($this->r));
+			$db->execute('UPDATE articlecategories SET r = r + 2 WHERE r >= ?', [$this->l]);
+			$db->execute('UPDATE articlecategories SET l = l + 2 WHERE l > ?', [$this->r]);
 		}
 
 		// insert category data
 
 		$this->alias = Util::getAlias($db, $this->title, 'articlecategories');
 
-		$this->id = $db->insertRecord('articlecategories', array(
-			'alias'			=> $this->alias,
-			'l'				=> $this->l,
-			'r'				=> $this->r,
-			'level'			=> $this->level,
-			'title'			=> $this->title,
-			'customsort'	=> $this->customSort
-		));
+		$this->id = $db->insertRecord('articlecategories', [
+			'alias' => $this->alias,
+			'l' => $this->l,
+			'r' => $this->r,
+			'level' => $this->level,
+			'title' => $this->title,
+			'customsort' => $this->customSort
+		]);
 
-		self::$instancesByAlias	[$this->alias]	= $this;
-		self::$instancesById	[$this->id]		= $this;
+		self::$instancesByAlias [$this->alias] = $this;
+		self::$instancesById [$this->id] = $this;
+
+		return $this;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getId() {
-
+	public function getId(): ?int
+    {
 		return $this->id;
-
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getAlias() {
-
+	public function getAlias(): ?string
+    {
 		return $this->alias;
-
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getTitle() {
-
+	public function getTitle(): string
+    {
 		return $this->title;
-
 	}
 
-	public function setTitle($title) {
-
+	public function setTitle(string $title): self
+    {
 		$this->title = trim($title);
-
+		return $this;
 	}
 
 
 	/**
 	 * @return int
 	 */
-	public function getCustomSort() {
+	public function getCustomSort(): ?int
+    {
 		return $this->customSort;
 	}
 
-	public function setCustomSort($ndx) {
-		$this->customSort = (int) $ndx;
+	public function setCustomSort(int $ndx): self
+    {
+		$this->customSort = $ndx;
+		return $this;
 	}
 
-	/**
-	 * retrieves all articles assigned to this article category
-	 *
-	 * @return array
-	 */
-	public function getArticles() {
+    /**
+     * retrieves all articles assigned to this article category
+     *
+     * @return array
+     * @throws ApplicationException
+     * @throws ArticleCategoryException
+     */
+	public function getArticles(): array
+    {
 		if(is_null($this->articles)) {
 			$this->articles = Article::getArticlesForCategory($this);
 		}
 		return $this->articles;
 	}
 
-	public function setParent(ArticleCategory $parent) {
+	public function setParent(ArticleCategory $parent): self
+    {
 
 		// @todo update nesting of previous parent category
 
 		$this->parentCategory = $parent;
+		return $this;
 	}
 
-	private function getNsData() {
-
+	private function getNsData(): array
+    {
 		// re-read data for already stored categories, if not already retrieved
 
-		if(!is_null($this->id)) {
-			if(is_null($this->r) && is_null($this->l) && is_null($this->level)) {
-				$rows = Application::getInstance()->getDb()->doPreparedQuery('SELECT r, l, level FROM articlecategories c WHERE articlecategoriesid = ?', [(int) $this->id]);
-				$this->r		= $rows['r'];
-				$this->l		= $rows['l'];
-				$this->level	= $rows['level'];
-			}
-		}
-		return array('r' => $this->r, 'l' => $this->l, 'level' => $this->level);
+		if($this->id && is_null($this->r) && is_null($this->l) && is_null($this->level)) {
+            $rows = Application::getInstance()->getVxPDO()->doPreparedQuery('SELECT r, l, level FROM articlecategories c WHERE articlecategoriesid = ?', [$this->id]);
+            $this->r = $rows['r'];
+            $this->l = $rows['l'];
+            $this->level = $rows['level'];
+        }
+		return ['r' => $this->r, 'l' => $this->l, 'level' => $this->level];
 	}
 
     /**
@@ -256,11 +258,11 @@ class ArticleCategory {
      *
      * @param mixed $id
      * @return ArticleCategory
-     * @throws ArticleCategoryException
+     * @throws ArticleCategoryException|ApplicationException
      */
-	public static function getInstance($id) {
-
-		$db = Application::getInstance()->getDb();
+	public static function getInstance($id): self
+    {
+		$db = Application::getInstance()->getVxPDO();
 
 		if(is_numeric($id)) {
 			$id = (int) $id;
@@ -298,22 +300,22 @@ class ArticleCategory {
 				throw new ArticleCategoryException(sprintf("Category '%s' not properly nested.", $row['title']), ArticleCategoryException::ARTICLECATEGORY_NOT_NESTED);
 			}
 			else {
-				$cat = new self($row['title'], ArticleCategory::getInstance($row['parentid']));
+				$cat = new self($row['title'], self::getInstance($row['parentid']));
 			}
 		}
 		else {
 			$cat = new self($row['title']);
 		}
 
-		$cat->id			= $row['articlecategoriesid'];
-		$cat->alias			= $row['alias'];
-		$cat->r				= $row['r'];
-		$cat->l				= $row['l'];
-		$cat->level			= $row['level'];
-		$cat->customSort	= $row['customsort'];
+		$cat->id = $row['articlecategoriesid'];
+		$cat->alias = $row['alias'];
+		$cat->r = $row['r'];
+		$cat->l = $row['l'];
+		$cat->level = $row['level'];
+		$cat->customSort = $row['customsort'];
 
-		self::$instancesByAlias[$cat->alias]	= $cat;
-		self::$instancesById[$cat->id]			= $cat;
+		self::$instancesByAlias[$cat->alias] = $cat;
+		self::$instancesById[$cat->id] = $cat;
 
 		return $cat;
 	}
@@ -322,15 +324,15 @@ class ArticleCategory {
 	 * returns array of ArticleCategory objects identified by numeric id or alias
 	 *
 	 * @param array $ids contains mixed category ids or alias
-	 * @throws ArticleCategoryException
-	 * @return array
+	 * @return ArticleCategory[]
+	 *@throws ArticleCategoryException|ApplicationException
 	 */
-	public static function getInstances(array $ids) {
+	public static function getInstances(array $ids): array
+    {
+		$db = Application::getInstance()->getVxPDO();
 
-		$db = Application::getInstance()->getDb();
-
-		$toRetrieveById		= [];
-		$toRetrieveByAlias	= [];
+		$toRetrieveById = [];
+		$toRetrieveByAlias = [];
 
 		foreach($ids as $id) {
 
@@ -342,13 +344,11 @@ class ArticleCategory {
 				}
 			}
 
-			else {
-				if(!isset(self::$instancesByAlias[$id])) {
-					$toRetrieveByAlias[] = $id;
-				}
-			}
+			else if(!isset(self::$instancesByAlias[$id])) {
+                $toRetrieveByAlias[] = $id;
+            }
 
-			$where = array();
+			$where = [];
 
 			if(count($toRetrieveById)) {
 				$where[] = 'c.articlecategoriesid IN (' . implode(',', array_fill(0, count($toRetrieveById), '?')). ')';
@@ -378,22 +378,22 @@ class ArticleCategory {
 							throw new ArticleCategoryException(sprintf("Category '%s' not properly nested.", $row['title']), ArticleCategoryException::ARTICLECATEGORY_NOT_NESTED);
 						}
 						else {
-							$cat = new self($row['title'], ArticleCategory::getInstance($row['parentid']));
+							$cat = new self($row['title'], self::getInstance($row['parentid']));
 						}
 					}
 					else {
 						$cat = new self($row['title']);
 					}
 
-					$cat->id			= $row['articlecategoriesid'];
-					$cat->alias			= $row['alias'];
-					$cat->r				= $row['r'];
-					$cat->l				= $row['l'];
-					$cat->level			= $row['level'];
-					$cat->customSort	= $row['customsort'];
+					$cat->id = $row['articlecategoriesid'];
+					$cat->alias = $row['alias'];
+					$cat->r = $row['r'];
+					$cat->l = $row['l'];
+					$cat->level = $row['level'];
+					$cat->customSort = $row['customsort'];
 
-					self::$instancesByAlias[$cat->alias]	= $cat;
-					self::$instancesById[$cat->id]			= $cat;
+					self::$instancesByAlias[$cat->alias] = $cat;
+					self::$instancesById[$cat->id] = $cat;
 				}
 			}
 		}
@@ -412,15 +412,15 @@ class ArticleCategory {
 	 * retrieve all available categories sorted by $sortCallback
 	 *
 	 * @param mixed $sortCallback
-	 * @throws ArticleCategoryException
 	 * @return array categories
+	 *@throws ArticleCategoryException|ApplicationException
 	 */
-	public static function getArticleCategories($sortCallback = NULL) {
-
+	public static function getArticleCategories($sortCallback = null): array
+    {
 		$cat = [];
 
 		foreach(
-			Application::getInstance()->getDb()->doPreparedQuery('SELECT articlecategoriesID FROM articlecategories', [])
+			Application::getInstance()->getVxPDO()->doPreparedQuery('SELECT articlecategoriesID FROM articlecategories', [])
 		as $r) {
 			$cat[] = self::getInstance($r['articlecategoriesid']);
 		}
@@ -440,29 +440,5 @@ class ArticleCategory {
 		}
 
 		throw new ArticleCategoryException(sprintf("'%s' is not callable.", $sortCallback), ArticleCategoryException::ARTICLECATEGORY_SORT_CALLBACK_NOT_CALLABLE);
-	}
-
-    /**
-     * various callback functions for sorting categories
-     *
-     * @param ArticleCategory $a
-     * @param ArticleCategory $b
-     * @return int
-     */
-	private static function sortByCustomSort(ArticleCategory $a, ArticleCategory $b) {
-
-		$csa = $a->getCustomSort();
-		$csb = $b->getCustomSort();
-
-		if($csa === $csb) {
-			return $a->getTitle() < $b->getTitle() ? -1 : 1;
-		}
-		if(is_null($csa)) {
-			return 1;
-		}
-		if(is_null($csb)) {
-			return -1;
-		}
-		return $csa < $csb ? -1 : 1;
 	}
 }

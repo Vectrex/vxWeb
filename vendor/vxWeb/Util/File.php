@@ -48,7 +48,7 @@ class File
 
 		$nestingInfo = $metaFolder->getNestingInformation();
 
-		$db = $application->getDb();
+		$db = $application->getVxPDO();
 		$fileRoot = $application->getAbsoluteAssetsPath();
 
 		$mFolders = $db->doPreparedQuery('

@@ -10,8 +10,10 @@
 
 namespace vxWeb\Model\MetaFile;
 
+use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\File\Exception\FilesystemFileException;
+use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\Orm\Query;
-use vxPHP\Orm\QueryInterface;
 use vxPHP\Database\DatabaseInterface;
 
 use vxWeb\Model\Article\Article;
@@ -29,33 +31,31 @@ use vxWeb\Model\Article\Article;
  *
  * @author Gregor Kofler
  * 
- * @version 0.2.0 2014-09-19
+ * @version 0.3.0 2021-05-22
  */
-class MetaFileQuery extends Query implements QueryInterface {
-
+class MetaFileQuery extends Query
+{
 	/**
 	 * initialize a query
 	 * 
 	 * @param DatabaseInterface $dbConnection
 	 */
-	public function __construct(DatabaseInterface $dbConnection) {
-
+	public function __construct(DatabaseInterface $dbConnection)
+    {
 		$this->table = 'files f';
 		parent::__construct($dbConnection);
-
 	}
 
-	/**
-	 * add appropriate WHERE clause that filters for $metaFolder
-	 *
-	 * @param MetaFolder $category
-	 * @return MetaFileQuery
-	 */
-	public function filterByFolder(MetaFolder $folder) {
-
+    /**
+     * add appropriate WHERE clause that filters for $metaFolder
+     *
+     * @param MetaFolder $folder
+     * @return MetaFileQuery
+     */
+	public function filterByFolder(MetaFolder $folder): self
+    {
 		$this->addCondition("f.foldersid = ?", $folder->getId());
 		return $this;
-
 	}
 
 	/**
@@ -65,15 +65,14 @@ class MetaFileQuery extends Query implements QueryInterface {
 	 * @return MetaFileQuery
 	 */
 
-	public function filterByArticle(Article $article) {
-
+	public function filterByArticle(Article $article): self
+    {
 		if($article->getId()) {
 			$this->innerJoin('articles_files af', 'af.filesid = f.filesid');
 			$this->addCondition("af.articlesid = ?", $article->getId());
 		}
 			
 		return $this;
-
 	}
 
 	/**
@@ -81,8 +80,8 @@ class MetaFileQuery extends Query implements QueryInterface {
 	 *
 	 * @return array
 	 */
-	public function select() {
-
+	public function select(): array
+    {
 		$this->buildQueryString();
 		$this->buildValuesArray();
 		$rows = $this->executeQuery();
@@ -94,21 +93,25 @@ class MetaFileQuery extends Query implements QueryInterface {
 		}
 
 		return MetaFile::getInstancesByIds($ids);
-
 	}
 
-	/**
-	 * adds LIMIT clause, executes query and returns array of MetaFile instances
-	 *
-	 * @param number $rows
-	 * @return array
-	 */
-	public function selectFirst($rows = 1) {
-
+    /**
+     * adds LIMIT clause, executes query and returns array of MetaFile instances
+     *
+     * @param int $count
+     * @return array
+     * @throws Exception\MetaFileException
+     * @throws Exception\MetaFolderException
+     * @throws ApplicationException
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     */
+	public function selectFirst(int $count = 1): array
+    {
 		$this->buildQueryString();
 		$this->buildValuesArray();
 
-		$this->sql .= ' LIMIT ' . $rows;
+		$this->sql .= ' LIMIT ' . $count;
 
 		$rows = $this->executeQuery();
 
@@ -119,22 +122,24 @@ class MetaFileQuery extends Query implements QueryInterface {
 		}
 
 		return MetaFile::getInstancesByIds($ids);
-
 	}
 
 	/**
 	/* (non-PHPdoc)
 	 * @see \vxPHP\Orm\Query::selectFromTo()
 	 */
-	public function selectFromTo($from, $to) {
+	public function selectFromTo(int $from, int $to): array
+    {
 		// TODO: Auto-generated method stub
+        return [];
 	}
 
 	/**
 	 * (non-PHPdoc)
 	 * @see \vxPHP\Orm\Query::count()
 	 */
-	public function count() {
+	public function count(): int {
 		// TODO: Auto-generated method stub
+        return 0;
 	}
 }

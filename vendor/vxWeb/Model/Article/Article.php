@@ -28,11 +28,11 @@ use vxPHP\Database\Util;
  * Mapper class for articles, stored in table articles
  *
  * @author Gregor Kofler
- * @version 1.1.0 2020-09-12
+ * @version 1.1.1 2021-05-21
  */
 
-class Article implements PublisherInterface {
-
+class Article implements PublisherInterface
+{
 	/**
 	 * cached instances identified by their id
 	 * 
@@ -252,13 +252,13 @@ class Article implements PublisherInterface {
 	 * evaluates to TRUE for a new article
 	 * if $evaluateAll is TRUE, attributes in notIndicatingChange are still checked
 	 *
-	 * @todo changes of linked files are currently ignored
-	 * 
 	 * @param boolean $evaluateAll
 	 *
 	 * @return boolean
+	 *@todo changes of linked files are currently ignored
+	 *
 	 */
-	public function wasChanged($evaluateAll = false): bool
+	public function wasChanged(bool $evaluateAll = false): bool
     {
 		if(is_null($this->previouslySavedValues)) {
 			return true;
@@ -306,7 +306,7 @@ class Article implements PublisherInterface {
      */
 	public function save(): void
     {
-		$db = Application::getInstance()->getDb();
+		$db = Application::getInstance()->getVxPDO();
 
 		// a headline is a required attribute
 
@@ -446,7 +446,7 @@ class Article implements PublisherInterface {
 				
 			// delete record
 
-			$db = Application::getInstance()->getDb(); 
+			$db = Application::getInstance()->getVxPDO(); 
 			$db->deleteRecord('articles', $this->id);
 
 			// delete instance references
@@ -602,10 +602,10 @@ class Article implements PublisherInterface {
 	 * @param integer $userId
 	 * @return Article
 	 */
-	public function setCreatedById($userId): self
+	public function setCreatedById(int $userId): self
     {
 		if(is_null($this->createdById)) {
-			$this->createdById = (int) $userId ?: null;
+			$this->createdById = $userId ?: null;
 		}
 		return $this;
 	}
@@ -626,9 +626,9 @@ class Article implements PublisherInterface {
 	 * @param integer $userId
 	 * @return Article
 	 */
-	public function setUpdatedById($userId): self
+	public function setUpdatedById(int $userId): self
     {
-		$this->updatedById = (int) $userId ?: null;
+		$this->updatedById = $userId ?: null;
 		return $this;
 	}
 	
@@ -1090,7 +1090,7 @@ class Article implements PublisherInterface {
      */
 	public static function getInstance($id): Article
     {
-		$db = Application::getInstance()->getDb();
+		$db = Application::getInstance()->getVxPDO();
 
 		if(is_numeric($id)) {
 			$id = (int) $id;
@@ -1139,15 +1139,15 @@ class Article implements PublisherInterface {
      * returns array of Article objects identified by numeric id or alias
      * when $ids is not set, all available articles are instantiated
      *
-     * @param array $ids contains mixed article ids or alias
+     * @param array|null $ids contains mixed article ids or alias
      * @return array
-     * @throws ArticleException
      * @throws ApplicationException
      * @throws ArticleCategoryException
+     * @throws ArticleException
      */
 	public static function getInstances(array $ids = null) {
 
-		$db = Application::getInstance()->getDb();
+		$db = Application::getInstance()->getVxPDO();
 
 		$articles = [];
 
@@ -1240,7 +1240,7 @@ class Article implements PublisherInterface {
 
 		$articles = [];
 
-		$rows = Application::getInstance()->getDb()->doPreparedQuery('SELECT * FROM articles WHERE articlecategoriesID = ?', array($category->getId()));
+		$rows = Application::getInstance()->getVxPDO()->doPreparedQuery('SELECT * FROM articles WHERE articlecategoriesID = ?', array($category->getId()));
 
 		foreach($rows as $r) {
 			if(!isset(self::$instancesById[$r['articlesid']])) {
@@ -1274,7 +1274,7 @@ class Article implements PublisherInterface {
     {
         $result = [];
 
-        $rows = Application::getInstance()->getDb()->doPreparedQuery("
+        $rows = Application::getInstance()->getVxPDO()->doPreparedQuery("
 			SELECT
 				f.filesid,
 				af.hidden

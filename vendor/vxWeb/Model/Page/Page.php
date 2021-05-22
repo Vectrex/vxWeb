@@ -3,6 +3,7 @@
 namespace vxWeb\Model\Page;
 
 use vxPHP\Application\Application;
+use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Observer\EventDispatcher;
 use vxPHP\Observer\PublisherInterface;
 use vxPHP\Observer\GenericEvent;
@@ -11,12 +12,12 @@ use vxPHP\Observer\GenericEvent;
  * Mapper class to handle revisioned pages, stored in table `pages`
  *
  * @author Gregor Kofler
- * @version 0.2.6 2018-11-21
+ * @version 0.3.0 2021-05-22
  * 
  * @todo creation of new pages (several setters are superfluous ATM)
  */
-class Page implements PublisherInterface {
-	
+class Page implements PublisherInterface
+{
 	/**
 	 * map of page instances indexed by their primary key
 	 * 
@@ -69,7 +70,8 @@ class Page implements PublisherInterface {
 	/**
 	 * constructor, currently unused
 	 */
-	public function __construct() {
+	public function __construct()
+    {
 	}
 
     /**
@@ -78,10 +80,10 @@ class Page implements PublisherInterface {
      * @param string|int $id
      * @return Page
      * @throws PageException
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws ApplicationException
      */
-	public static function getInstance($id) {
-		
+	public static function getInstance($id): self
+    {
 		if(is_numeric($id)) {
 			$id = (int) $id;
 			if(isset(self::$instancesById[$id])) {
@@ -101,7 +103,7 @@ class Page implements PublisherInterface {
 			$col = 'LOWER(Alias)';
 		}
 
-		$rows =  Application::getInstance()->getDb()->doPreparedQuery("
+		$rows =  Application::getInstance()->getVxPDO()->doPreparedQuery("
 				SELECT
 					*
 				FROM
@@ -117,56 +119,54 @@ class Page implements PublisherInterface {
 
 		$page = self::createInstance($rows->current());
 
-		self::$instancesByAlias	[$page->alias]	= $page;
-		self::$instancesById	[$page->id]		= $page;
+		self::$instancesByAlias [$page->alias] = $page;
+		self::$instancesById [$page->id] = $page;
 
 		return $page;
-
 	}
 
     /**
      * retrieve all currently stored pages
      *
-     * @return Page[] :Page
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @return Page[]
+     * @throws ApplicationException
      */
-	public static function getInstances() {
-
-		foreach(Application::getInstance()->getDb()->doPreparedQuery("
+	public static function getInstances(): array
+    {
+		foreach(Application::getInstance()->getVxPDO()->doPreparedQuery("
 			SELECT
 				*
 			FROM
 				pages
-		") as $row) {
+		", []) as $row) {
 
 			if(!isset(self::$instancesById[(int) $row['pagesid']])) {
 
 				$page = self::createInstance($row);
 
-				self::$instancesByAlias	[$page->alias]	= $page;
-				self::$instancesById	[$page->id]		= $page;
-
+				self::$instancesByAlias [$page->alias] = $page;
+				self::$instancesById [$page->id] = $page;
 			}
 		}
-		
+
 		return self::$instancesById;
-		
 	}
 
-	/**
-	 * create page and set all attributes stored in $data
-	 * 
-	 * @param array $data
-	 * @return Page
-	 */
-	private static function createInstance(array $data) {
-
+    /**
+     * create page and set all attributes stored in $data
+     *
+     * @param array $data
+     * @return Page
+     * @throws \Exception
+     */
+	private static function createInstance(array $data): self
+    {
 		$page = new self();
 
 		// set identification
 		
-		$page->id		= (int) $data['pagesid'];
-		$page->alias	= $data['alias'];
+		$page->id = (int) $data['pagesid'];
+		$page->alias = $data['alias'];
 
 		// set dates
 
@@ -190,61 +190,60 @@ class Page implements PublisherInterface {
 
 	}
 
-	/**
-	 * get all revisions
-	 * 
-	 * @return multitype:Revision
-	 */
-	public function getRevisions() {
-
+    /**
+     * get all revisions
+     *
+     * @return Revision[]
+     * @throws ApplicationException
+     */
+	public function getRevisions(): array
+    {
 		return Revision::getInstancesForPage($this);
-
 	}
 
-	/**
-	 * get active revision
-	 * returns NULL when no active revision is found
-	 * 
-	 * @return Revision
-	 */
-	public function getActiveRevision() {
-
+    /**
+     * get active revision
+     * returns NULL when no active revision is found
+     *
+     * @return null|Revision
+     * @throws ApplicationException
+     */
+	public function getActiveRevision(): ?Revision
+    {
 		$revisions = $this->getRevisions();
 		
 		// proceed when revisions were found at all
 		
 		if($revisions) {
-		
 			foreach($revisions as $revision)  {
 
 				if($revision->isActive()) {
 					return $revision;
 				}
-
 			}
-
 		}
 
+		return null;
 	}
 
-	/**
-	 * sort revisions and return revision with latest creation date
-	 * @return Revision
-	 * 
-	 * @todo do sorting only once 
-	 */
-	public function getNewestRevision() {
-		
+    /**
+     * sort revisions and return revision with latest creation date
+     * @return null|Revision
+     *
+     * @throws ApplicationException
+     * @todo do sorting only once
+     */
+	public function getNewestRevision(): ?Revision
+    {
 		$revisions = $this->getRevisions();
 
 		// proceed when revisions were found at all
 
 		if($revisions) {
 
-			usort($revisions, function (Revision $a, Revision $b) {
-	
-				$tsa = $a->getFirstCreated()->format(\DateTime::W3C);
-				$tsb = $b->getFirstCreated()->format(\DateTime::W3C);
+			usort($revisions, static function (Revision $a, Revision $b) {
+                $tsa = $a->getFirstCreated()->format('U');
+				$tsb = $b->getFirstCreated()->format('U');
 				if($tsa === $tsb) {
 					return 0;
 				}
@@ -252,33 +251,32 @@ class Page implements PublisherInterface {
 				// sort descending
 	
 				return $tsa < $tsb ? 1 : -1;
-	
 			});
 			
 			return $revisions[0];
-
 		}
 
+		return null;
 	}
 
-	/**
-	 * sort revisions and return revision with earliest creation date
-	 * @return Revision
-	 * 
-	 * @todo do sorting only once
-	 */
-	public function getOldestRevision() {
-
+    /**
+     * sort revisions and return revision with earliest creation date
+     * @return null|Revision
+     *
+     * @throws ApplicationException
+     * @todo do sorting only once
+     */
+	public function getOldestRevision(): ?Revision
+    {
 		$revisions = $this->getRevisions();
 
 		// proceed when revisions were found at all
 
 		if($revisions) {
 
-			usort($revisions, function (Revision $a, Revision $b) {
-			
-				$tsa = $a->getFirstCreated()->format(\DateTime::W3C);
-				$tsb = $b->getFirstCreated()->format(\DateTime::W3C);
+			usort($revisions, static function (Revision $a, Revision $b) {
+				$tsa = $a->getFirstCreated()->format('U');
+				$tsb = $b->getFirstCreated()->format('U');
 				if($tsa === $tsb) {
 					return 0;
 				}
@@ -286,30 +284,28 @@ class Page implements PublisherInterface {
 				// sort ascending
 			
 				return $tsa > $tsb ? 1 : -1;
-
 			});
 
 			return $revisions[0];
-
 		}
 
+		return null;
 	}
 
-	/**
-	 * retrieve a revision identified by a creation timestamp 
-	 * @param \DateTime $dateTime
-	 * @return Revision
-	 */
-	public function getRevisionByDateTime(\DateTime $dateTime) {
-		
+    /**
+     * retrieve a revision identified by a creation timestamp
+     * @param \DateTime $dateTime
+     * @return Revision|null
+     * @throws ApplicationException
+     */
+	public function getRevisionByDateTime(\DateTime $dateTime): ?Revision
+    {
 		foreach($this->getRevisions() as $revision) {
-			
-			if($revision->getFirstCreated() && $revision->getFirstCreated()->format(\DateTime::W3C) === $dateTime->format(\DateTime::W3C)) {
+			if($revision->getFirstCreated() && $revision->getFirstCreated()->format(DATE_W3C) === $dateTime->format(DATE_W3C)) {
 				return $revision;
 			}
-
 		}
-
+		return null;
 	}
 
     /**
@@ -318,15 +314,15 @@ class Page implements PublisherInterface {
      * the modification timestamp of the generated file is set to creation timestamp of the active revision
      *
      * @throws PageException
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws ApplicationException
      */
-	public function exportActiveRevision() {
-
+	public function exportActiveRevision(): void
+    {
 		// dispatch 'beforePageRevisionExport' event to inform optional listeners
 
 		EventDispatcher::getInstance()->dispatch(new GenericEvent('beforePageRevisionExport', $this));
 
-		$app	= Application::getInstance();
+		$app = Application::getInstance();
 		$config	= $app->getConfig();
 		
 		if(is_null($config->paths['editable_tpl_path'])) {
@@ -347,7 +343,7 @@ class Page implements PublisherInterface {
 			($locale ? $locale->getLocaleId() . DIRECTORY_SEPARATOR : '') .
 			$this->getTemplate();
 
-		if(!($handle = fopen($path, 'w'))) {
+		if(!($handle = fopen($path, 'wb'))) {
 			throw new PageException(sprintf("Cannot export template '%s'. '%s' not writable.", $this->getAlias(), $path));
 		}
 
@@ -364,81 +360,73 @@ class Page implements PublisherInterface {
 		// dispatch 'afterPageRevisionExport' event to inform optional listeners
 
 		EventDispatcher::getInstance()->dispatch(new GenericEvent('afterPageRevisionExport', $this));
-
 	}
 
 	/**
 	 * get id
-	 * @return integer
+	 * @return null|integer
 	 */
-	public function getId() {
-
+	public function getId(): ?int
+    {
 		return $this->id;
-
 	}
 	
 	/**
 	 * get alias
-	 * @return string
+	 * @return null|string
 	 */
-	public function getAlias() {
-
+	public function getAlias(): ?string
+    {
 		return $this->alias;
-
 	}
 	
 	/**
 	 * get title
 	 * @return string
 	 */
-	public function getTitle() {
-
+	public function getTitle(): ?string
+    {
 		return $this->title;
-
 	}
 
 	/**
 	 * set title
-	 * @param string $title
+	 * @param string|null $title
 	 * @return Page
 	 */
-	public function setTitle($title) {
-
+	public function setTitle(?string $title): self
+    {
 		$this->title = $title;
 		return $this;
-
 	}
 	
 	/**
 	 * get keywords
-	 * @return string
+	 * @return null|string
 	 */
-	public function getKeywords() {
-
+	public function getKeywords(): ?string
+    {
 		return $this->keywords;
-
 	}
 
-	/**
-	 * set keywords
-	 * @param string $keywords
-	 * @return Page
-	 */
-	public function setKeywords($keywords) {
-
+    /**
+     * set keywords
+     * @param string|null $keywords
+     * @return Page
+     */
+	public function setKeywords(?string $keywords): self
+    {
 		$this->keywords = $keywords;
 		return $this;
-
 	}
 
 	/**
 	 * get template filename
-	 * @return string
+	 * @return null|string
 	 */
-	public function getTemplate() {
-
+	public function getTemplate(): ?string
+    {
 		return $this->template;
-
 	}
 	
 	/**
@@ -446,11 +434,9 @@ class Page implements PublisherInterface {
 	 * @param string $template
 	 * @return Page
 	 */
-	public function setTemplate($template) {
-
+	public function setTemplate(string $template): self
+    {
 		$this->template = $template;
 		return $this;
-
 	}
-
 }

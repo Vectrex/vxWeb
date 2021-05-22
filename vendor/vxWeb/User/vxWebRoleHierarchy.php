@@ -16,14 +16,14 @@ use vxPHP\User\RoleHierarchy;
  * Represents the custom role hierarchy used with vxWeb
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.1.0 2017-02-12
+ * @version 0.1.1 2021-05-22
  */
-class vxWebRoleHierarchy extends RoleHierarchy {
-
-	const AUTH_SUPERADMIN		= 1;
-	const AUTH_PRIVILEGED		= 16;
-	const AUTH_OBSERVE_TABLE	= 256;
-	const AUTH_OBSERVE_ROW		= 4096;
+class vxWebRoleHierarchy extends RoleHierarchy
+{
+	public const AUTH_SUPERADMIN = 1;
+    public const AUTH_PRIVILEGED = 16;
+    public const AUTH_OBSERVE_TABLE = 256;
+    public const AUTH_OBSERVE_ROW = 4096;
 	
 	private $roles = [
 		'superadmin' => [
@@ -43,9 +43,8 @@ class vxWebRoleHierarchy extends RoleHierarchy {
 	 *
 	 * @see \vxPHP\User\RoleHierarchy::__construct()
 	 */
-	public function __construct() {
-		
+	public function __construct()
+    {
 		parent::__construct ($this->roles);
-
 	}
 }

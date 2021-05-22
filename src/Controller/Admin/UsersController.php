@@ -35,7 +35,7 @@ class UsersController extends Controller {
             if(Application::getInstance()->getCurrentUser()->getAttribute('adminid') === $id) {
                 return new JsonResponse(null, Response::HTTP_FORBIDDEN);
             }
-            Application::getInstance()->getDb()->deleteRecord('admin', $id);
+            Application::getInstance()->getVxPDO()->deleteRecord('admin', $id);
         }
         catch(ArticleException $e) {
             return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -56,7 +56,7 @@ class UsersController extends Controller {
             return new Response('', Response::HTTP_FORBIDDEN);
         }
 
-        $db = Application::getInstance()->getDb();
+        $db = Application::getInstance()->getVxPDO();
         $userRow = $db->doPreparedQuery(sprintf("SELECT adminid AS id, username, name FROM %s WHERE adminid = ?", $db->quoteIdentifier('admin')), [$id])->current();
 
         if(!$userRow) {
@@ -93,7 +93,7 @@ class UsersController extends Controller {
     {
         $app = Application::getInstance();
         $admin = $app->getCurrentUser();
-        $db = $app->getDb();
+        $db = $app->getVxPDO();
 
         $users = $db->doPreparedQuery("SELECT a.*, ag.alias, a.adminid AS " . $db->quoteIdentifier('key') . " FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
 

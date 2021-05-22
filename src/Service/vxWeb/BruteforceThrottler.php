@@ -185,7 +185,7 @@ class BruteforceThrottler implements ServiceInterface
      */
     public function registerAttempt($ip, $data): BruteforceThrottler {
 
-        Application::getInstance()->getDb()->insertRecord('bruteforce_attempts', [
+        Application::getInstance()->getVxPDO()->insertRecord('bruteforce_attempts', [
             'ip' => $ip,
             'action' => 'admin_login',
             'when' => time(),
@@ -202,7 +202,7 @@ class BruteforceThrottler implements ServiceInterface
      */
     public function clearAttempts($ip, $action): BruteforceThrottler {
 
-        Application::getInstance()->getDb()->deleteRecord('bruteforce_attempts', [
+        Application::getInstance()->getVxPDO()->deleteRecord('bruteforce_attempts', [
             'ip' => $ip,
             'action' => $action
         ]);
@@ -217,7 +217,7 @@ class BruteforceThrottler implements ServiceInterface
      */
     public function getAttempts($ip, $action = 'admin_login'): int {
 
-        $db = Application::getInstance()->getDb();
+        $db = Application::getInstance()->getVxPDO();
         $params = [$ip, $action];
 
         // only observe attempts dating back a specified time when cutoff is set

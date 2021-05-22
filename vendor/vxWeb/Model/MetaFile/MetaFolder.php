@@ -153,7 +153,7 @@ class MetaFolder
         // build and execute query, if necessary
 
         if(count($toRetrieveById)) {
-            $rows = Application::getInstance()->getDb()->doPreparedQuery(
+            $rows = Application::getInstance()->getVxPDO()->doPreparedQuery(
                 'SELECT * FROM folders WHERE foldersid IN (' . implode(',', array_fill(0, count($toRetrieveById), '?')) . ')',
                 $toRetrieveById
             );
@@ -220,7 +220,7 @@ class MetaFolder
 			$altPath = $this->fullPath;
 		}
 
-		$rows = Application::getInstance()->getDb()->doPreparedQuery(
+		$rows = Application::getInstance()->getVxPDO()->doPreparedQuery(
 			"SELECT * FROM folders WHERE path = ? OR path = ? LIMIT 1",
 			[(string) $path, (string) $altPath]
 		);
@@ -233,7 +233,7 @@ class MetaFolder
 
 	private function getDbEntryById(int $id): array
     {
-		$rows = Application::getInstance()->getDb()->doPreparedQuery(
+		$rows = Application::getInstance()->getVxPDO()->doPreparedQuery(
 			"SELECT * FROM folders WHERE foldersid = ? LIMIT 1",
 			[(int) $id]
 		);
@@ -250,7 +250,7 @@ class MetaFolder
 	private static function refreshNestings(): void
     {
         if ($ids = array_keys (self::$instancesById)) {
-            $rows = Application::getInstance()->getDb()->doPreparedQuery(
+            $rows = Application::getInstance()->getVxPDO()->doPreparedQuery(
                 sprintf("SELECT foldersid, l, r, level FROM folders WHERE foldersid IN (%s)", implode(',', array_fill(0, count($ids), '?'))),
                 $ids
             );
@@ -350,7 +350,7 @@ class MetaFolder
 			$this->metaFiles = [];
 
 			foreach(
-				Application::getInstance()->getDb()->doPreparedQuery(
+				Application::getInstance()->getVxPDO()->doPreparedQuery(
 					'SELECT filesID FROM files WHERE foldersid = ?',
 					[(int) $this->id]
 				)
@@ -398,7 +398,7 @@ class MetaFolder
 	    $metaFolders = [];
 
         foreach(
-            Application::getInstance()->getDb()->doPreparedQuery(
+            Application::getInstance()->getVxPDO()->doPreparedQuery(
                 'SELECT * from folders WHERE l > ? AND r < ? AND level = ?',
                 [$this->l, $this->r, $this->level + 1]
             )
@@ -467,7 +467,7 @@ class MetaFolder
 			$f->delete($keepFilesystemFiles);
 		}
 
-		$db = Application::getInstance()->getDb();
+		$db = Application::getInstance()->getVxPDO();
 
 		$db->beginTransaction();
 		$db->deleteRecord('folders', $this->id);
@@ -526,7 +526,7 @@ class MetaFolder
 
         // metafile updates
 
-        $db = Application::getInstance()->getDb();
+        $db = Application::getInstance()->getVxPDO();
 
         // handle nesting, kudos to https://rogerkeays.com/how-to-move-a-node-in-nested-sets-with-sql
 
@@ -607,7 +607,7 @@ class MetaFolder
         try {
             // update path of complete tree beneath renamed folder
 
-            Application::getInstance()->getDb()->execute(
+            Application::getInstance()->getVxPDO()->execute(
                 'UPDATE folders SET path = REPLACE(path, ?, ?) WHERE POSITION(? IN path) = 1',
                 [
                     rtrim($this->getRelativePath(), DIRECTORY_SEPARATOR),
@@ -637,7 +637,7 @@ class MetaFolder
 	public static function instantiateAllExistingMetaFolders(bool $force = false): array
     {
 		foreach(
-			Application::getInstance()->getDb()->doPreparedQuery(
+			Application::getInstance()->getVxPDO()->doPreparedQuery(
 				'SELECT * FROM folders', []
 			)
 		as $r) {
@@ -717,7 +717,7 @@ class MetaFolder
 
 			$metaData = array_change_key_case($metaData, CASE_LOWER);
 
-			$db = Application::getInstance()->getDb();
+			$db = Application::getInstance()->getVxPDO();
 
 			if(strpos($f->getPath(), Application::getInstance()->getAbsoluteAssetsPath()) === 0) {
 				$metaData['path'] = trim(substr($f->getPath(), strlen(Application::getInstance()->getAbsoluteAssetsPath())), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;

@@ -44,7 +44,7 @@ class ArticlesController extends Controller {
         $categories = [];
         $articles = [];
 
-        foreach(ArticleCategoryQuery::create(Application::getInstance()->getDb())->sortBy('customsort')->sortBy('title')->select() as $cat) {
+        foreach(ArticleCategoryQuery::create(Application::getInstance()->getVxPDO())->sortBy('customsort')->sortBy('title')->select() as $cat) {
             $categories[$cat->getId()] = [
                 'id' => $cat->getId(),
                 'alias' => $cat->getAlias(),
@@ -52,7 +52,7 @@ class ArticlesController extends Controller {
             ];
         }
 
-        foreach(ArticleQuery::create(Application::getInstance()->getDb())->select() as $article) {
+        foreach(ArticleQuery::create(Application::getInstance()->getVxPDO())->select() as $article) {
             $articles[] = [
                 'key' => $article->getId(),
                 'title' => $article->getHeadline(),

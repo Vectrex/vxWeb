@@ -11,5 +11,6 @@
 
 namespace vxWeb\Model\MetaFile\Exception;
 
-class MetaFileException extends \Exception {
+class MetaFileException extends \Exception
+{
 }

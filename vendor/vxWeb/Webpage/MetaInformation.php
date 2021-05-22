@@ -14,7 +14,8 @@ class MetaInformation implements \Countable, \IteratorAggregate
 {
 	private $metaData = [];
 
-	public function __construct() {
+	public function __construct()
+    {
 	}
 
 	public static function createFromDb($pageId): MetaInformation

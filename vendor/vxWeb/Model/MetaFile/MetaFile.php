@@ -27,7 +27,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFileException;
  *
  * @author Gregor Kofler
  *
- * @version 1.7.0 2020-09-11
+ * @version 1.7.1 2021-05-22
  *
  * @todo merge rename() with commit()
  * @todo allow update of createdBy user
@@ -146,7 +146,7 @@ class MetaFile implements PublisherInterface
 
 		if(count($toRetrieveById)) {
 
-			$rows = Application::getInstance()->getDb()->doPreparedQuery('
+			$rows = Application::getInstance()->getVxPDO()->doPreparedQuery('
 				SELECT
 					f.*,
 					CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath
@@ -214,7 +214,7 @@ class MetaFile implements PublisherInterface
 
 		if(count($toRetrieveByPath)) {
 
-			$rows = Application::getInstance()->getDb()->doPreparedQuery(
+			$rows = Application::getInstance()->getVxPDO()->doPreparedQuery(
 				sprintf("
 					SELECT
 						f.*,
@@ -269,9 +269,9 @@ class MetaFile implements PublisherInterface
 
 		$result = [];
 
-		$files = Application::getInstance()->getDb()->doPreparedQuery("SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON f.foldersid = fo.foldersid WHERE fo.foldersid = ?", [(int) $folder->getId()]);
+		$files = Application::getInstance()->getVxPDO()->doPreparedQuery("SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON f.foldersid = fo.foldersid WHERE fo.foldersid = ?", [(int) $folder->getId()]);
 
-		foreach($files as &$f) {
+		foreach($files as $f) {
 			if(isset(self::$instancesById[$f['filesid']])) {
 				$file = self::$instancesById[$f['filesid']];
 			}
@@ -309,7 +309,7 @@ class MetaFile implements PublisherInterface
     {
 		// $filename is not available, if metafile with $filename is already instantiated
 
-		if(isset(self::$instancesByPath[$f->getFullPath().$filename])) {
+		if(isset(self::$instancesByPath[$f->getFullPath() . $filename])) {
 			return false;
 		}
 
@@ -386,7 +386,7 @@ class MetaFile implements PublisherInterface
     {
 		$pathinfo = pathinfo($path);
 
-		$rows = Application::getInstance()->getDb()->doPreparedQuery(
+		$rows = Application::getInstance()->getVxPDO()->doPreparedQuery(
 			"SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON fo.foldersid = f.foldersid WHERE f.file = ? AND fo.path IN(?, ?) LIMIT 1",
 			[
 				$pathinfo['basename'],
@@ -412,7 +412,7 @@ class MetaFile implements PublisherInterface
      */
 	private function getDbEntryById(int $id): array
     {
-		$rows = Application::getInstance()->getDb()->doPreparedQuery(
+		$rows = Application::getInstance()->getVxPDO()->doPreparedQuery(
 			"SELECT f.*, CONCAT(fo.path, COALESCE(f.obscured_filename, f.file)) as fullpath FROM files f INNER JOIN folders fo ON fo.foldersid = f.foldersid WHERE f.filesid = ?",
 			[(int) $id]
 		);
@@ -456,7 +456,7 @@ class MetaFile implements PublisherInterface
 	 * @param bool $force forces re-read of mime type
 	 * @return string
 	 */
-	public function getMimetype($force = false): string
+	public function getMimetype(bool $force = false): string
     {
         if (!$this->mimetype || $force) {
             $this->mimetype = $this->filesystemFile->getMimetype($force);
@@ -507,7 +507,7 @@ class MetaFile implements PublisherInterface
      * @return string
      * @throws ApplicationException
      */
-	public function getRelativePath($force = false): string
+	public function getRelativePath(bool $force = false): string
     {
 		return $this->filesystemFile->getRelativePath($force);
 	}
@@ -579,7 +579,7 @@ class MetaFile implements PublisherInterface
 		}
 
 		try {
-			Application::getInstance()->getDb()->execute('UPDATE files SET file = ? WHERE filesid = ?', array($to, $this->id));
+			Application::getInstance()->getVxPDO()->execute('UPDATE files SET file = ? WHERE filesid = ?', array($to, $this->id));
 		}
 
 		catch(\Exception $e) {
@@ -598,38 +598,35 @@ class MetaFile implements PublisherInterface
 	 * @param MetaFolder $destination
 	 * @throws MetaFileException
 	 */
-	public function move(MetaFolder $destination) {
+	public function move(MetaFolder $destination): void
+    {
+		// anything to do?
 
-		// nothing to do
+		if($destination !== $this->metaFolder) {
 
-		if($destination === $this->metaFolder) {
-			return;
-		}
+            // move filesystem file first
 
-		// move filesystem file first
+            try {
+                $this->filesystemFile->move($destination->getFilesystemFolder());
+            } catch (FilesystemFileException $e) {
+                throw new MetaFileException(sprintf("Moving '%s' to '%s' failed.", $this->getFilename(), $destination->getFullPath()));
+            }
 
-		try {
-			$this->filesystemFile->move($destination->getFilesystemFolder());
-		}
-		catch(FilesystemFileException $e) {
-			throw new MetaFileException(sprintf("Moving '%s' to '%s' failed.",$this->getFilename(), $destination->getFullPath()));
-		}
+            // update reference in db
 
-		// update reference in db
+            try {
+                Application::getInstance()->getVxPDO()->execute('UPDATE files SET foldersid = ? WHERE filesid = ?', [$destination->getId(), $this->id]);
+            } catch (\Exception $e) {
+                throw new MetaFileException(sprintf("Moving '%s' to '%s' failed.", $this->getFilename(), $destination->getFullPath()));
+            }
 
-		try {
-			Application::getInstance()->getDb()->execute('UPDATE files SET foldersid = ? WHERE filesid = ?', array($destination->getId(), $this->id));
-		}
-		catch(\Exception $e) {
-			throw new MetaFileException(sprintf("Moving '%s' to '%s' failed.",$this->getFilename(), $destination->getFullPath()));
-		}
+            // update instance lookup
 
-		// update instance lookup
-
-		unset(self::$instancesByPath[$this->getPath()]);
-		$this->metaFolder = $destination;
-		self::$instancesByPath[$this->getPath()] = $this;
-	}
+            unset(self::$instancesByPath[$this->getPath()]);
+            $this->metaFolder = $destination;
+            self::$instancesByPath[$this->getPath()] = $this;
+        }
+    }
 
     /**
      * deletes both filesystem file and metafile and removes instance from lookup array
@@ -641,15 +638,14 @@ class MetaFile implements PublisherInterface
      * @throws MetaFileException
      * @throws ApplicationException
      */
-	public function delete($keepFilesystemFile = false): void
+	public function delete(bool $keepFilesystemFile = false): void
     {
 		MetaFileEvent::create(MetaFileEvent::BEFORE_METAFILE_DELETE, $this)->trigger();
 
-		if(Application::getInstance()->getDb()->deleteRecord('files', $this->id)) {
-			unset(self::$instancesById[$this->id]);
-			unset(self::$instancesByPath[$this->filesystemFile->getPath()]);
+		if(Application::getInstance()->getVxPDO()->deleteRecord('files', $this->id)) {
+            unset(self::$instancesById[$this->id], self::$instancesByPath[$this->filesystemFile->getPath()]);
 
-			if(!$keepFilesystemFile) {
+            if(!$keepFilesystemFile) {
 				$this->filesystemFile->delete();
 			}
 		}
@@ -711,7 +707,7 @@ class MetaFile implements PublisherInterface
 	private function commit(): void
     {
 		try {
-			Application::getInstance()->getDb()->updateRecord('files', $this->id, $this->data);
+			Application::getInstance()->getVxPDO()->updateRecord('files', $this->id, $this->data);
 		}
 		catch (\PDOException $e) {
 			throw new MetaFileException(sprintf("Data commit of file '%s' failed. PDO reports %s", $this->filesystemFile->getFilename(), $e->getMessage()));
@@ -731,7 +727,7 @@ class MetaFile implements PublisherInterface
      */
 	public static function createMetaFile(FilesystemFile $file): MetaFile
     {
-		$db = Application::getInstance()->getDb();
+		$db = Application::getInstance()->getVxPDO();
 	
 		if(count($db->doPreparedQuery("
 			SELECT

@@ -11,7 +11,6 @@
 namespace vxWeb\Model\Article;
 
 use vxPHP\Orm\Query;
-use vxWeb\Model\Article\Article;
 use vxWeb\Model\ArticleCategory\ArticleCategory;
 
 use vxPHP\Database\DatabaseInterface;
@@ -30,23 +29,22 @@ use vxPHP\Database\DatabaseInterface;
  * 				selectFirst(2);
  *
  * @author Gregor Kofler
- * @version 0.6.0 2018-06-25
+ * @version 0.6.1 2021-05-21
  */
-class ArticleQuery extends Query {
-
+class ArticleQuery extends Query
+{
 	/**
 	 * provide initial database connection
 	 *
 	 * @param DatabaseInterface $dbConnection
 	 */
-	public function __construct(DatabaseInterface $dbConnection) {
-
+	public function __construct(DatabaseInterface $dbConnection)
+    {
 		$this->table		= 'articles';
 		$this->alias		= 'a';
 		$this->columns		= ['a.articlesid'];
 
 		parent::__construct($dbConnection);
-
 	}
 
 	/**
@@ -56,11 +54,10 @@ class ArticleQuery extends Query {
 	 * 
 	 * @return self
 	 */
-	public function filterByCategory(ArticleCategory $category) {
-
+	public function filterByCategory(ArticleCategory $category): ArticleQuery
+    {
 		$this->addCondition("a.articlecategoriesid = ?", $category->getId());
 		return $this;
-
 	}
 
     /**
@@ -70,11 +67,10 @@ class ArticleQuery extends Query {
      * @param int $mask
      * @return $this
      */
-	public function filterByCustomFlags($mask) {
-
+	public function filterByCustomFlags($mask): ArticleQuery
+    {
 	    $this->addCondition("a.customflags & ?", $mask);
 	    return $this;
-
     }
 
 	/**
@@ -84,8 +80,8 @@ class ArticleQuery extends Query {
 	 * @return self
 	 * @throws \InvalidArgumentException
 	 */
-	public function filterByCategories(array $categories) {
-		
+	public function filterByCategories(array $categories): ArticleQuery
+    {
 		$ids = [];
 
 		foreach($categories as $category) {
@@ -99,7 +95,6 @@ class ArticleQuery extends Query {
 		$this->addCondition('a.articlecategoriesid', $ids, 'IN');
 
 		return $this;
-		
 	}
 
 	/**
@@ -107,11 +102,10 @@ class ArticleQuery extends Query {
 	 * 
 	 * @return self
 	 */
-	public function filterPublished() {
-
+	public function filterPublished(): ArticleQuery
+    {
 		$this->addCondition("a.published = 1");
 		return $this;
-
 	}
 
 	/**
@@ -119,11 +113,10 @@ class ArticleQuery extends Query {
 	 * 
 	 * @return self
 	 */
-	public function filterUnPublished() {
-
+	public function filterUnPublished(): ArticleQuery
+    {
 		$this->addCondition("(a.published = 0 OR a.published IS NULL)");
 		return $this;
-
 	}
 
 	/**
@@ -133,12 +126,11 @@ class ArticleQuery extends Query {
 	 * 
 	 * @return self
 	 */
-	public function filterByCategoryNames(array $categoryNames) {
-
+	public function filterByCategoryNames(array $categoryNames): ArticleQuery
+    {
 		$this->innerJoin('articlecategories c', 'c.articlecategoriesid = a.articlecategoriesid');
 		$this->addCondition('c.alias', $categoryNames, 'IN');
 		return $this;
-
 	}
 	
 	/**
@@ -149,8 +141,8 @@ class ArticleQuery extends Query {
 	 * 
 	 * @return self
 	 */
-	public function filterByDisplayFromToUntil(\DateTime $date = NULL) {
-
+	public function filterByDisplayFromToUntil(\DateTime $date = null): ArticleQuery
+    {
 		if(!$date) {
 			$date = new \DateTime();
 		}
@@ -159,7 +151,6 @@ class ArticleQuery extends Query {
 		$this->addCondition("a.display_until IS NULL OR a.display_until >= ?", $date->format('Y-m-d'));
 
 		return $this;
-
 	}
 
     /**
@@ -171,8 +162,8 @@ class ArticleQuery extends Query {
      * @throws \vxPHP\Application\Exception\ApplicationException
      * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
      */
-	public function select() {
-
+	public function select(): array
+    {
 		$this->buildQueryString();
 		$this->buildValuesArray();
 
@@ -195,8 +186,8 @@ class ArticleQuery extends Query {
      * @throws \vxPHP\Application\Exception\ApplicationException
      * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
      */
-	public function selectFirst($rows = 1) {
-
+	public function selectFirst($rows = 1): array
+    {
 		if(empty($this->columnSorts)) {
 			throw new \RangeException("'" . __METHOD__ . "' requires a SORT criteria.");
 		}
@@ -215,8 +206,8 @@ class ArticleQuery extends Query {
      * @throws \vxPHP\Application\Exception\ApplicationException
      * @throws \vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException
      */
-	public function selectFromTo($from, $to) {
-
+	public function selectFromTo($from, $to): array
+    {
 		if(empty($this->columnSorts)) {
 			throw new \RangeException("'" . __METHOD__ . "' requires a SORT criteria.");
 		}
@@ -236,15 +227,15 @@ class ArticleQuery extends Query {
 		}
 
 		return Article::getInstances($ids);
-
 	}
 
 	/**
 	 * (non-PHPdoc)
 	 * @see \vxPHP\Orm\Query::count()
 	 */
-	public function count() {
+	public function count(): int
+    {
 		// TODO: Auto-generated method stub
-
+        return 0;
 	}
 }

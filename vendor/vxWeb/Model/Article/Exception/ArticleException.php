@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-
 namespace vxWeb\Model\Article\Exception;
 
-class ArticleException extends \Exception {
-	const ARTICLE_DOES_NOT_EXIST	= 1;
-	const ARTICLE_HEADLINE_NOT_SET	= 2;
-	const ARTICLE_CATEGORY_NOT_SET	= 3;
+class ArticleException extends \Exception
+{
+	public const ARTICLE_DOES_NOT_EXIST	= 1;
+    public const ARTICLE_HEADLINE_NOT_SET	= 2;
+    public const ARTICLE_CATEGORY_NOT_SET	= 3;
 }

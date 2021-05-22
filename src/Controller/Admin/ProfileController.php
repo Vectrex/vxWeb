@@ -129,7 +129,7 @@ class ProfileController extends Controller {
         if(!($errors = $form->getFormErrors())) {
 
             try {
-                Application::getInstance()->getDb()->updateRecord('admin', ['username' => $admin->getUsername()], $v->all());
+                Application::getInstance()->getVxPDO()->updateRecord('admin', ['username' => $admin->getUsername()], $v->all());
 
                 $notifications = $v->get('notifications', []);
 

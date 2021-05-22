@@ -25,11 +25,11 @@ use vxPHP\User\SimpleSessionUserProvider;
  * session after initialization
  * 
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.5.1, 2020-08-02
+ * @version 0.5.2, 2021-05-22
  *        
  */
-class SessionUserProvider extends SimpleSessionUserProvider implements UserProviderInterface {
-	
+class SessionUserProvider extends SimpleSessionUserProvider
+{
 	/**
 	 * @var DatabaseInterface
 	 */
@@ -48,7 +48,7 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 	 *
 	 * @see \vxPHP\User\UserProviderInterface::refreshUser()
 	 */
-	public function refreshUser(UserInterface $user)
+	public function refreshUser(UserInterface $user): UserInterface
     {
 	    $u = $this->getUserRows($user->getUsername())->current();
 
@@ -90,7 +90,7 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
     }
 
     /**
-     * @param $email
+     * @param string $email
      * @return SessionUser
      * @throws UserException
      */
@@ -115,7 +115,7 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
      */
 	private function getUserRows(string $value, string $column = 'username'): RecordsetIteratorInterface
     {
-        $rows = $this->db->doPreparedQuery(sprintf("
+        return $this->db->doPreparedQuery(sprintf("
 			SELECT
 				a.*,
 				ag.privilege_Level,
@@ -128,8 +128,6 @@ class SessionUserProvider extends SimpleSessionUserProvider implements UserProvi
 			WHERE
 				%s = ?", $this->db->quoteIdentifier($column)), [$value]
         );
-
-        return $rows;
     }
 
     /**

@@ -3,14 +3,14 @@
 namespace vxWeb\Model\Page;
 
 use vxPHP\Application\Application;
+use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Application\Locale\Locale;
-use vxPHP\User\User;
 
 /**
  * Mapper class for page revisions, stored in table `revisions`
  *
  * @author Gregor Kofler
- * @version 0.4.1 2018-10-03
+ * @version 0.4.2 2021-05-22
  * 
  * @todo retrieve and save locale
  * @todo attribute sanitation
@@ -110,9 +110,9 @@ class Revision {
      * @param integer $id
      * @return Revision
      * @throws PageException
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws ApplicationException
      */
-	public static function getInstance($id) {
+	public static function getInstance(int $id): self {
 		
 		// return instance when previously instantiated
 		
@@ -124,7 +124,7 @@ class Revision {
 		
 		// get db data
 
-		$rows = Application::getInstance()->getDb()->doPreparedQuery("
+		$rows = Application::getInstance()->getVxPDO()->doPreparedQuery("
 			SELECT
 				*
 			FROM
@@ -154,25 +154,22 @@ class Revision {
      * instantiate all revisions of a page
      *
      * @param Page $page
-     * @param Locale $locale
-     * @return Revision|Revision[]
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @param Locale|null $locale
+     * @return Revision[]
+     * @throws ApplicationException
      */
-	public static function getInstancesForPage(Page $page, Locale $locale = NULL) {
-		
-		$pageId = $page->getId();
+	public static function getInstancesForPage(Page $page, Locale $locale = null): array
+    {
+        $pageId = $page->getId();
 
-		if(is_null($pageId) || isset(self::$instancesByPage[$pageId])) {
-			
+		if($pageId && isset(self::$instancesByPage[$pageId])) {
 			return self::$instancesByPage[$pageId];
-
 		}
 
 		// get all revisions
 
 		if(is_null($locale)) {
-
-			$rows = Application::getInstance()->getDb()->doPreparedQuery("
+			$rows = Application::getInstance()->getVxPDO()->doPreparedQuery("
 				SELECT
 					*
 				FROM
@@ -180,14 +177,12 @@ class Revision {
 				WHERE
 					pagesID = ?", [$pageId]
 			);
-
 		}
 		
 		// get revisions for specified locale
 
 		else {
-
-			$rows = Application::getInstance()->getDb()->doPreparedQuery("
+			$rows = Application::getInstance()->getVxPDO()->doPreparedQuery("
 				SELECT
 					*
 				FROM
@@ -196,7 +191,6 @@ class Revision {
 					locale = ? AND
 					pagesID = ?", [$locale->getLocaleId(), $pageId]
 			);
-
 		}
 
 		$instances = [];
@@ -214,34 +208,33 @@ class Revision {
 			}
 
 			$instances[] = $revision;
-
 		}
 		
 		self::$instancesByPage[$pageId] = $instances;
 		
 		return $instances;
-
 	}
-	
-	/**
-	 * create a new revision "linked" to $page
-	 * 
-	 * @param Page $page
-	 * @param array $data
-	 * @return Revision
-	 */
-	private static function createRevision (Page $page, array $data) {
 
+    /**
+     * create a new revision "linked" to $page
+     *
+     * @param Page $page
+     * @param array $data
+     * @return Revision
+     * @throws \Exception
+     */
+	private static function createRevision (Page $page, array $data): self
+    {
 		$data = array_change_key_case($data, CASE_LOWER);
 		
 		$revision = new self($page);
 
-		$revision->id				= (int) $data['revisionsid'];
-		$revision->active			= !!$data['active'];
-		$revision->authorId			= $data['authorid'] ?: NULL;
+		$revision->id = (int) $data['revisionsid'];
+		$revision->active = (bool) $data['active'];
+		$revision->authorId = $data['authorid'] ?: null;
 
-		$revision->firstCreated		= $data['firstcreated'] ? new \DateTime($data['firstcreated']) : NULL;
-		$revision->lastUpdated		= $data['lastupdated'] ? new \DateTime($data['lastupdated']) : NULL;
+		$revision->firstCreated = $data['firstcreated'] ? new \DateTime($data['firstcreated']) : null;
+		$revision->lastUpdated = $data['lastupdated'] ? new \DateTime($data['lastupdated']) : null;
 
 		if(!is_null($data['locale'])) {
 			$revision->locale = new Locale($data['locale']);
@@ -254,7 +247,6 @@ class Revision {
 		$revision->updateHash();
 
 		return $revision;
-
 	}
 
 	/**
@@ -263,24 +255,22 @@ class Revision {
 	 * 
 	 * @param Page $page
 	 */
-	public function __construct(Page $page) {
-
+	public function __construct(Page $page)
+    {
 		$this->page = $page;
-
 	}
 	
 	/**
 	 * clone revision
 	 * unset id, to allow subsequent saving
 	 */
-	public function __clone() {
-		
-		$this->id			= NULL;
-		$this->lastUpdated	= NULL;
-		$this->firstCreated	= NULL;
+	public function __clone()
+    {
+		$this->id = null;
+		$this->lastUpdated = null;
+		$this->firstCreated = null;
 
 		$this->updateHash();
-		
 	}
 	
 	/**
@@ -289,8 +279,8 @@ class Revision {
 	 * make change persistent, if revision is already saved
 	 * a previously active revision is automatically deactivated
 	 */
-	public function activate() {
-		
+	public function activate(): self
+    {
 		$currentlyActive = $this->page->getActiveRevision();
 
 		if($this !== $currentlyActive) {
@@ -299,24 +289,20 @@ class Revision {
 				$currentlyActive->deActivate();
 			}
 
-			$this->active = TRUE;
+			$this->active = true;
 			
 			if($this->id) {
-					
-				Application::getInstance()->getDb()->updateRecord(
+				Application::getInstance()->getVxPDO()->updateRecord(
 					'revisions',
 					$this->id,
-					array (
-						'active' => (int) $this->active
-					)
+					[
+						'active' => 1
+					]
 				);
-			
 			}
-
 		}
 		
 		return $this;
-
 	}
 
 	/**
@@ -324,24 +310,20 @@ class Revision {
 	 * 
 	 * make change persistent, if revision is already saved
 	 */
-	public function deactivate() {
-
-		$this->active = FALSE;
+	public function deactivate(): self
+    {
+		$this->active = false;
 
 		if($this->id) {
 			
-			Application::getInstance()->getDb()->updateRecord(
+			Application::getInstance()->getVxPDO()->updateRecord(
 				'revisions',
 				$this->id,
-				array (
-					'active' => NULL
-				)
+				['active' => null]
 			);
-
 		}
 		
 		return $this;
-
 	}
 
     /**
@@ -351,10 +333,10 @@ class Revision {
      *
      * @return Revision
      * @throws PageException
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws ApplicationException
      */
-	public function save() {
-		
+	public function save(): self
+    {
 		if(isset($this->id)) {
 			throw new PageException('Cannot save a previously saved revision.');
 		}
@@ -371,7 +353,7 @@ class Revision {
 
 		// save by inserting new revision record
 
-		$this->id = (int) Application::getInstance()->getDb()->insertRecord('revisions', array_merge(
+		$this->id = (int) Application::getInstance()->getVxPDO()->insertRecord('revisions', array_merge(
 			$toSave,
 			[
 				'pagesID'		=> $this->page->getId(),
@@ -399,10 +381,10 @@ class Revision {
 	 * remove record in database (when already saved)
 	 * and entries in both id an page map 
 	 */
-	public function delete() {
-		
+	public function delete(): void
+    {
 		if($this->id) {
-			Application::getInstance()->getDb()->deleteRecord('revisions', $this->id);
+			Application::getInstance()->getVxPDO()->deleteRecord('revisions', $this->id);
 			unset(self::$instancesById[$this->id]);
 		}
 
@@ -414,38 +396,34 @@ class Revision {
 				}
 			}
 		} 
-		
 	}
 
 	/**
 	 * get primary key of revision
-	 * @return integer
+	 * @return null|integer
 	 */
-	public function getId() {
-
+	public function getId(): ?int
+    {
 		return $this->id;
-
 	}
 
 	/**
 	 * get "parent" page of revision
 	 * @return Page
 	 */
-	public function getPage() {
-
+	public function getPage(): Page
+    {
 		return $this->page;
-
 	}
 
 	/**
 	 * get author id of revision
 	 * 
-	 * @return integer
+	 * @return null|integer
 	 */
-	public function getAuthorId() {
-
+	public function getAuthorId(): ?int
+    {
 		return $this->authorId;
-
 	}
 
 	/**
@@ -454,34 +432,31 @@ class Revision {
 	 * @param integer $authorId
 	 * @return Revision
 	 */
-	public function setAuthorId($authorId) {
-
-		$this->authorId = (int) $authorId;
+	public function setAuthorId(int $authorId): self
+    {
+		$this->authorId = $authorId;
 		return $this;
-
 	}
 
 	/**
 	 * get stored timestamp of last update
 	 * this timestamp is set by DB wrapper or db itself
      *
-	 * @return \DateTime
+	 * @return null|\DateTime
 	 */
-	public function getLastUpdated() {
-
+	public function getLastUpdated(): ?\DateTime
+    {
 		return $this->lastUpdated;
-
 	}
 
 	/**
 	 * get stored timestamp of record creation
 	 * this timestamp is set by DB wrapper upon saving, if not set explicitly
-	 * @return \DateTime
+	 * @return null|\DateTime
 	 */
-	public function getFirstCreated() {
-
+	public function getFirstCreated(): ?\DateTime
+    {
 		return $this->firstCreated;
-
 	}
 
 	/**
@@ -491,11 +466,10 @@ class Revision {
      * @param \DateTime $firstCreated
 	 * @return Revision
 	 */
-	public function setFirstCreated(\DateTime $firstCreated) {
-
+	public function setFirstCreated(\DateTime $firstCreated): self
+    {
 		$this->firstCreated = $firstCreated;
 		return $this;
-
 	}
 
 	/**
@@ -503,21 +477,19 @@ class Revision {
 	 * so that the DB wrapper can set the attribute value
 	 * @return Revision
 	 */
-	public function clearFirstCreated() {
-	
-		$this->firstCreated = NULL;
+	public function clearFirstCreated(): self
+    {
+        $this->firstCreated = null;
 		return $this;
-	
 	}
 
 	/**
 	 * get active status of revision
-	 * @return boolean
+	 * @return null|boolean
 	 */
-	public function isActive() {
-
+	public function isActive(): ?bool
+    {
 		return $this->active;
-
 	}
 
 	/**
@@ -525,8 +497,7 @@ class Revision {
 	 * @param boolean $active
 	 * @return Revision
 	 */
-	public function setActive($active) {
-		
+	public function setActive(bool $active): self {
 		if($active) {
 			$this->activate();
 		}
@@ -534,35 +505,32 @@ class Revision {
 			$this->deactivate();
 		}
 		return $this;
-
 	}
 
 	/**
 	 * returns TRUE when markup contains PHP code 
 	 * @return boolean
 	 */
-	public function containsPHP() {
-
+	public function containsPHP(): bool
+    {
 		if(is_null($this->containsPHP)) {
 			$this->setContainsPHP();
 		}
 
 		return $this->containsPHP;
-
 	}
-	
-	/**
-	 * get title
-	 * @param string $default
-	 * @return string
-	 */
-	public function getTitle($default = NULL) {
 
+    /**
+     * get title
+     * @param string|null $default
+     * @return null|string
+     */
+	public function getTitle(string $default = null): ?string
+    {
 		if(!is_null($this->title)) {
 			return $this->title;
 		}
 		return $default;
-
 	}
 
 	/**
@@ -570,25 +538,23 @@ class Revision {
 	 * @param string $title
 	 * @return Revision
 	 */
-	public function setTitle($title) {
-
+	public function setTitle(string $title): self
+    {
 		$this->title = $title;
 		return $this;
-
 	}
 
 	/**
 	 * get keywords
-	 * @param string $default
-	 * @return string
+	 * @param string|null $default
+	 * @return string|null
 	 */
-	public function getKeywords($default = NULL) {
-
+	public function getKeywords(string $default = null): ?string
+    {
 		if(!is_null($this->keywords)) {
 			return $this->keywords;
 		}
 		return $default;
-
 	}
 
 	/**
@@ -596,24 +562,23 @@ class Revision {
 	 * @param string $keywords
 	 * @return Revision
 	 */
-	public function setKeywords($keywords) {
-
+	public function setKeywords(string $keywords): self
+    {
 		$this->keywords = $keywords;
 		return $this;
-
 	}
 
-	/**
-	 * get description
-	 * @param string $default
-	 * @return string
-	 */
-	public function getDescription($default = NULL) {
-
+    /**
+     * get description
+     * @param string|null $default
+     * @return string|null
+     */
+	public function getDescription(string $default = null): ?string
+    {
 		if(!is_null($this->description)) {
 			return $this->description;
 		}
-
+		return $default;
 	}
 
 	/**
@@ -621,21 +586,19 @@ class Revision {
 	 * @param string $description
 	 * @return Revision
 	 */
-	public function setDescription($description) {
-
+	public function setDescription(string $description): self
+    {
 		$this->description = $description;
 		return $this;
-
 	}
 
 	/**
 	 * get locale
-	 * @return Locale
+	 * @return Locale|null
 	 */
-	public function getLocale() {
-
+	public function getLocale(): ?Locale
+    {
 		return $this->locale;
-
 	}
 
 	/**
@@ -643,21 +606,19 @@ class Revision {
 	 * @param Locale $locale
 	 * @return Revision
 	 */
-	public function setLocale(Locale $locale) {
-
+	public function setLocale(Locale $locale): self
+    {
 		$this->locale = $locale;
 		return $this;
-
 	}
 
 	/**
 	 * get markup
-	 * @return string
+	 * @return string|null
 	 */
-	public function getMarkup() {
-
+	public function getMarkup(): ?string
+    {
 		return $this->markup;
-
 	}
 
 	/**
@@ -665,13 +626,12 @@ class Revision {
 	 * @param string $markup
 	 * @return Revision
 	 */
-	public function setMarkup($markup) {
-
+	public function setMarkup(string $markup): self
+    {
 		$this->markup = $markup;
 		$this->setContainsPHP();
 
 		return $this;
-
 	}
 
 	/**
@@ -681,8 +641,8 @@ class Revision {
 	 * 
 	 * @return boolean
 	 */
-	public function wasChanged() {
-		
+	public function wasChanged(): bool
+    {
 		$hash = '';
 		
 		foreach($this->monitoredAttributes as $attr) {
@@ -690,14 +650,13 @@ class Revision {
 		}
 		
 		return $this->savedDataHash !== sha1($hash);
-		
 	}
 
 	/**
 	 * calculate hash to detect changes to monitoredAttributes
 	 */
-	private function updateHash() {
-
+	private function updateHash(): void
+    {
 		$hash = '';
 
 		foreach($this->monitoredAttributes as $attr) {
@@ -710,10 +669,8 @@ class Revision {
 	/**
 	 * check markup whether it contains <? or <?php and an optional closing tag
 	 */
-	private function setContainsPHP() {
-
+	private function setContainsPHP(): void
+    {
 		$this->containsPHP = preg_match('~\\<\\?(\\s+|php).*?(\\?\\>)~is', $this->markup);
-
 	}
-
 }

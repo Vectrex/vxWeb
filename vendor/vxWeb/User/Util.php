@@ -10,8 +10,7 @@
 
 namespace vxWeb\User;
 
-use vxPHP\User\User;
-use vxPHP\User\Exception\UserException;
+use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Application\Application;
 
 /**
@@ -21,20 +20,19 @@ use vxPHP\Application\Application;
  * @version 1.4.1 2018-07-14
  */
 
-class Util {
-
+class Util
+{
     /**
      * check whether a user email is already assigned
      *
      * @param string $email
      * @return boolean availability
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws ApplicationException
      */
-	public static function isAvailableEmail($email) {
-
-	    $db = Application::getInstance()->getDb();
-		return !count($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE LOWER(email) = ?', array(strtolower($email))));
-
+	public static function isAvailableEmail(string $email): bool
+    {
+	    $db = Application::getInstance()->getVxPDO();
+		return !($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE LOWER(email) = ?', array(strtolower($email)))->count());
 	}
 
     /**
@@ -42,13 +40,11 @@ class Util {
      *
      * @param string $username
      * @return boolean availability
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws ApplicationException
      */
-	public static function isAvailableUsername($username) {
-
-        $db = Application::getInstance()->getDb();
-		return !count($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE username = ?', array((string) $username)));
-	
+	public static function isAvailableUsername(string $username): bool
+    {
+        $db = Application::getInstance()->getVxPDO();
+		return !($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE username = ?', array((string) $username))->count());
 	}
-
 }

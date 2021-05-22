@@ -3,6 +3,6 @@
 namespace vxWeb\Model\Page;
 
 
-class PageException extends \Exception{
-
+class PageException extends \Exception
+{
 }

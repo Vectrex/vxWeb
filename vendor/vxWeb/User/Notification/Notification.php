@@ -12,6 +12,7 @@
 namespace vxWeb\User\Notification;
 
 use vxPHP\Application\Application;
+use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\User\User;
 
 /**
@@ -19,11 +20,11 @@ use vxPHP\User\User;
  *  
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.3.0 2019-12-06
+ * @version 0.4.0 2021-05-22
  * 
  */
-class Notification {
-	
+class Notification
+{
 	/**
 	 * the primary key of the stored notification
 	 * 
@@ -102,7 +103,7 @@ class Notification {
 	 * 
 	 * @param string $alias
 	 */
-	public function __construct($alias)
+	public function __construct(string $alias)
     {
 		if(!isset(self::$cachedNotificationData)) {
 			self::queryAllNotifications();
@@ -118,30 +119,53 @@ class Notification {
 		}
 	}
 
-	/**
-	 * expose private properties
-	 * 
-	 * @param string $p
-	 */	
-	public function __get($p)
+    /**
+     * expose private properties
+     *
+     * @param string $property
+     * @return mixed
+     */
+	public function __get(string $property)
     {
-		if(property_exists($this, $p)) {
-			return $this->$p;
-		}
+        return $this->$property ?? null;
 	}
+
+    /**
+     * expose private properties
+     *
+     * @param string $property
+     * @param $value
+     */
+	public function __set(string $property, $value): void
+    {
+        if(property_exists($this, $property)) {
+            $this->$property = $value;
+        }
+    }
+
+    /**
+     * expose private properties
+     *
+     * @param string $property
+     * @return bool
+     */
+    public function __isset(string $property): bool
+    {
+        return property_exists($this, $property);
+    }
 
 	public function __toString()
     {
 		return $this->alias;
 	}
 
-	/**
-	 * get all notification instances assigned to an admingroup identified by $groupAlias
-	 * 
-	 * @param string $groupAlias
-	 * @return Notification[]
-	 */
-	public static function getAvailableNotifications($groupAlias = null): array
+    /**
+     * get all notification instances assigned to an admingroup identified by $groupAlias
+     *
+     * @param string|null $groupAlias
+     * @return Notification[]
+     */
+	public static function getAvailableNotifications(string $groupAlias = null): array
     {
 		if(!isset(self::$cachedNotificationData)) {
 			self::queryAllNotifications();
@@ -150,7 +174,7 @@ class Notification {
 		$result = [];
 
 		foreach(self::$cachedNotificationData as $v) {
-			if(!isset($groupAlias) || strtoupper($v['group_alias']) == strtoupper($groupAlias)) {
+			if(!isset($groupAlias) || strtoupper($v['group_alias']) === strtoupper($groupAlias)) {
 				$n = new Notification($v['alias']);
 				$result[(string) $n] = $n;
 			}
@@ -159,7 +183,7 @@ class Notification {
 		return $result;
 	}
 
-	private static function queryAllNotifications()
+	private static function queryAllNotifications(): void
     {
 		$db = Application::getInstance()->getVxPDO();
 		
@@ -210,7 +234,7 @@ class Notification {
      */
 	public function notifies(User $user): bool
     {
-		return ($id = $user->getAttribute('id')) && in_array($id, $this->notifies);
+		return ($id = $user->getAttribute('id')) && in_array($id, $this->notifies, true);
 	}
 
     /**
@@ -220,14 +244,14 @@ class Notification {
      * does no further checking of insertion result
      *
      * @param User $user
-     * @return \vxWeb\User\Notification\Notification
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @return Notification
+     * @throws ApplicationException
      */
 	public function subscribe(User $user): Notification
     {
-		if(($id = $user->getAttribute('id')) && !in_array($id, $this->notifies)) {
+		if(($id = $user->getAttribute('id')) && !in_array($id, $this->notifies, true)) {
 			
-			Application::getInstance()->getDb()->insertRecord('admin_notifications', ['adminID' => $id, 'notificationsID' => $this->id]);
+			Application::getInstance()->getVxPDO()->insertRecord('admin_notifications', ['adminID' => $id, 'notificationsID' => $this->id]);
 			$this->notifies[] = $id;
 
 		}
@@ -242,15 +266,15 @@ class Notification {
      * does no further checking of insertion result
      *
      * @param User $user
-     * @return \vxWeb\User\Notification\Notification
-     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @return Notification
+     * @throws ApplicationException
      */
 	public function unSubscribe(User $user): Notification
     {
-		if(($id = $user->getAttribute('id')) && in_array($id, $this->notifies)) {
+		if(($id = $user->getAttribute('id')) && in_array($id, $this->notifies, true)) {
 				
-			Application::getInstance()->getDb()->deleteRecord('admin_notifications', ['adminID' => $id, 'notificationsID' => $this->id]);
-			array_splice($this->notifies, array_search($id, $this->notifies));
+			Application::getInstance()->getVxPDO()->deleteRecord('admin_notifications', ['adminID' => $id, 'notificationsID' => $this->id]);
+			array_splice($this->notifies, array_search($id, $this->notifies, true));
 	
 		}
 	
@@ -273,7 +297,7 @@ class Notification {
 		}
 
 		foreach ($fieldValues as $key => $val) {
-			$txt = preg_replace('/{\\s*' . preg_quote($key) . '\\s*}/i', $val, $txt);
+			$txt = preg_replace('/{\\s*' . preg_quote($key, '/') . '\\s*}/i', $val, $txt);
 		}
 		return $txt;
 	}

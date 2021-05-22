@@ -10,42 +10,44 @@
 
 namespace vxWeb\Model\ArticleCategory;
 
+use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Orm\Query;
-use vxPHP\Orm\QueryInterface;
 use vxPHP\Database\DatabaseInterface;
+use vxWeb\Model\Article\Article;
 
 /**
  * query object which returns an array of ArticleCategory objects
  *
  * @author Gregor Kofler
- * @version 0.1.0 2017-04-26
+ * @version 0.2.0 2021-05-22
  */
-class ArticleCategoryQuery extends Query {
-
+class ArticleCategoryQuery extends Query
+{
 	/**
 	 * provide initial database connection
 	 *
 	 * @param DatabaseInterface $dbConnection
 	 */
-	public function __construct(DatabaseInterface $dbConnection) {
-		
-		$this->table		= 'articlecategories';
-		$this->alias		= 'ac';
-		$this->columns		= ['ac.articlecategoriesid'];
+	public function __construct(DatabaseInterface $dbConnection)
+    {
+		$this->table = 'articlecategories';
+		$this->alias = 'ac';
+		$this->columns = ['ac.articlecategoriesid'];
 		
 		parent::__construct($dbConnection);
-
 	}
-	
-	
-	/**
-	 * executes query and returns array of ArticleCategory instances
-	 *
-	 * @see \vxPHP\Orm\Query::select()
-	 * @return ArticleCategory[]
-	 */
-	public function select() {
-		
+
+
+    /**
+     * executes query and returns array of ArticleCategory instances
+     *
+     * @return ArticleCategory[]
+     * @throws Exception\ArticleCategoryException
+     * @throws ApplicationException
+     * @see \vxPHP\Orm\Query::select()
+     */
+	public function select(): array
+    {
 		$this->buildQueryString();
 		$this->buildValuesArray();
 		
@@ -66,8 +68,8 @@ class ArticleCategoryQuery extends Query {
 	 * @return ArticleCategory[]
 	 * @throws \RangeException
 	 */
-	public function selectFirst($rows = 1) {
-		
+	public function selectFirst($rows = 1): array
+    {
 		if(empty($this->columnSorts)) {
 			throw new \RangeException("'" . __METHOD__ . "' requires a SORT criteria.");
 		}
@@ -81,8 +83,8 @@ class ArticleCategoryQuery extends Query {
 	 * @return ArticleCategory[]
 	 * @throws \RangeException
 	 */
-	public function selectFromTo($from, $to) {
-		
+	public function selectFromTo($from, $to): array
+    {
 		if(empty($this->columnSorts)) {
 			throw new \RangeException("'" . __METHOD__ . "' requires a SORT criteria.");
 		}
@@ -102,7 +104,6 @@ class ArticleCategoryQuery extends Query {
 		}
 		
 		return Article::getInstances($ids);
-		
 	}
 	
 	/**
@@ -111,8 +112,8 @@ class ArticleCategoryQuery extends Query {
 	 *
 	 * @see \vxPHP\Orm\Query::count()
 	 */
-	public function count() {
+	public function count(): int
+    {
 		// TODO Auto-generated method stub
 	}
-
 }
