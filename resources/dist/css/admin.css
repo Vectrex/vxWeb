@@ -5633,47 +5633,47 @@ a.text-error:visited
 
 @font-face
 {
-    font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2');
+    font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2'); font-display: swap;
 }
 
 @font-face
 {
-    font-family: 'IBMPlexSansCondensed'; font-weight: normal; font-style: normal; src: url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Regular.woff') format('woff'), url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Regular.woff2') format('woff2');
+    font-family: 'IBMPlexSansCondensed'; font-weight: normal; font-style: normal; src: url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Regular.woff') format('woff'), url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Regular.woff2') format('woff2'); font-display: swap;
 }
 
 @font-face
 {
-    font-family: 'IBMPlexSansCondensed'; font-weight: normal; font-style: italic; src: url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Italic.woff') format('woff'), url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Italic.woff2') format('woff2');
+    font-family: 'IBMPlexSansCondensed'; font-weight: normal; font-style: italic; src: url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Italic.woff') format('woff'), url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Italic.woff2') format('woff2'); font-display: swap;
 }
 
 @font-face
 {
-    font-family: 'IBMPlexSansCondensed'; font-weight: bold; font-style: normal; src: url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Bold.woff') format('woff'), url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Bold.woff2') format('woff2');
+    font-family: 'IBMPlexSansCondensed'; font-weight: bold; font-style: normal; src: url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Bold.woff') format('woff'), url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-Bold.woff2') format('woff2'); font-display: swap;
 }
 
 @font-face
 {
-    font-family: 'IBMPlexSansCondensed'; font-weight: bold; font-style: italic; src: url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-BoldItalic.woff') format('woff'), url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-BoldItalic.woff2') format('woff2');
+    font-family: 'IBMPlexSansCondensed'; font-weight: bold; font-style: italic; src: url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-BoldItalic.woff') format('woff'), url('../fonts/IBM Plex Sans Condensed/IBMPlexSansCondensed-BoldItalic.woff2') format('woff2'); font-display: swap;
 }
 
 @font-face
 {
-    font-family: 'IBMPlexSans'; font-weight: normal; font-style: normal; src: url('../fonts/IBM Plex Sans/IBMPlexSans-Regular.woff') format('woff'), url('../fonts/IBM Plex Sans/IBMPlexSans-Regular.woff2') format('woff2');
+    font-family: 'IBMPlexSans'; font-weight: normal; font-style: normal; src: url('../fonts/IBM Plex Sans/IBMPlexSans-Regular.woff') format('woff'), url('../fonts/IBM Plex Sans/IBMPlexSans-Regular.woff2') format('woff2'); font-display: swap;
 }
 
 @font-face
 {
-    font-family: 'IBMPlexSans'; font-weight: normal; font-style: italic; src: url('../fonts/IBM Plex Sans/IBMPlexSans-Italic.woff') format('woff'), url('../fonts/IBM Plex Sans/IBMPlexSans-Italic.woff2') format('woff2');
+    font-family: 'IBMPlexSans'; font-weight: normal; font-style: italic; src: url('../fonts/IBM Plex Sans/IBMPlexSans-Italic.woff') format('woff'), url('../fonts/IBM Plex Sans/IBMPlexSans-Italic.woff2') format('woff2'); font-display: swap;
 }
 
 @font-face
 {
-    font-family: 'IBMPlexSans'; font-weight: bold; font-style: normal; src: url('../fonts/IBM Plex Sans/IBMPlexSans-Bold.woff') format('woff'), url('../fonts/IBM Plex Sans/IBMPlexSans-Bold.woff2') format('woff2');
+    font-family: 'IBMPlexSans'; font-weight: bold; font-style: normal; src: url('../fonts/IBM Plex Sans/IBMPlexSans-Bold.woff') format('woff'), url('../fonts/IBM Plex Sans/IBMPlexSans-Bold.woff2') format('woff2'); font-display: swap;
 }
 
 @font-face
 {
-    font-family: 'IBMPlexSans'; font-weight: bold; font-style: italic; src: url('../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic.woff') format('woff'), url('../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic.woff2') format('woff2');
+    font-family: 'IBMPlexSans'; font-weight: bold; font-style: italic; src: url('../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic.woff') format('woff'), url('../fonts/IBM Plex Sans/IBMPlexSans-BoldItalic.woff2') format('woff2'); font-display: swap;
 }
 
 [v-cloak] > *

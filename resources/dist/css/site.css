@@ -5214,7 +5214,7 @@ a.text-error:visited
 
 @font-face
 {
-    font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2');
+    font-family: 'icomoon'; src: url('../fonts/icomoon/icomoon.woff') format('woff'), url('../fonts/icomoon/icomoon.woff2') format('woff2'); font-display: swap;
 }
 
 #messageBox
