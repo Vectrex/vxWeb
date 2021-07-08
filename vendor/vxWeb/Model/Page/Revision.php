@@ -10,7 +10,7 @@ use vxPHP\Application\Locale\Locale;
  * Mapper class for page revisions, stored in table `revisions`
  *
  * @author Gregor Kofler
- * @version 0.4.2 2021-05-22
+ * @version 0.5.0 2021-07-08
  * 
  * @todo retrieve and save locale
  * @todo attribute sanitation
@@ -214,6 +214,24 @@ class Revision {
 		
 		return $instances;
 	}
+
+    /**
+     * purge all revisions belonging to a page from the database
+     * and reset all references
+     *
+     * @param Page $page
+     * @throws ApplicationException
+     */
+	public static function purge (Page $page): void
+    {
+        $db = Application::getInstance()->getVxPDO();
+        $revisionIds = array_column((array) $db->doPreparedQuery('SELECT revisionsid FROM revisions WHERE pagesid = ?', [$page->getId()]), 'revisionsid');
+        $db->deleteRecord('revisions', ['pagesid' => $page->getId()]);
+        unset (self::$instancesByPage[$page->getId()]);
+        foreach($revisionIds as $id) {
+            unset (self::$instancesById[$id]);
+        }
+    }
 
     /**
      * create a new revision "linked" to $page

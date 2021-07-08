@@ -85,6 +85,19 @@ class PagesController extends Controller
         ]);
     }
 
+    protected function del (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            Page::getInstance($id)->delete();
+            return new JsonResponse(['success' => 1]);
+        } catch (PageException $e) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+    }
+
     protected function update (): JsonResponse
     {
         try {

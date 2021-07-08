@@ -14,6 +14,8 @@
 
 		<route id="pages" controller="admin/pages" auth="superadmin" />
 		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
+		<route id="page_add" controller="admin/pages" auth="superadmin" method="add" />
+		<route id="page_del" controller="admin/pages" auth="superadmin" method="del" request_methods="DELETE" />
 		<route id="page_edit" controller="admin/pages" auth="superadmin" method="edit" />
 		<route id="page_init" controller="admin/pages" auth="superadmin" method="editInit" />
 		<route id="page_update" controller="admin/pages" auth="superadmin" method="update" request_methods="POST" />

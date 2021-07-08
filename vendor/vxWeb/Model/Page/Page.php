@@ -4,6 +4,7 @@ namespace vxWeb\Model\Page;
 
 use vxPHP\Application\Application;
 use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Locale\Locale;
 use vxPHP\Observer\EventDispatcher;
 use vxPHP\Observer\PublisherInterface;
 use vxPHP\Observer\GenericEvent;
@@ -12,7 +13,7 @@ use vxPHP\Observer\GenericEvent;
  * Mapper class to handle revisioned pages, stored in table `pages`
  *
  * @author Gregor Kofler
- * @version 0.3.0 2021-05-22
+ * @version 0.4.0 2021-07-07
  * 
  * @todo creation of new pages (several setters are superfluous ATM)
  */
@@ -187,8 +188,28 @@ class Page implements PublisherInterface
 		// get revisions
 
 		return $page;
-
 	}
+
+    /**
+     * delete a page, all its revisions and the exported file
+     *
+     * @throws ApplicationException|PageException
+     */
+	public function delete (): void
+    {
+        EventDispatcher::getInstance()->dispatch(new GenericEvent('beforePageDelete', $this));
+
+        $this->deleteExport ();
+        $db = Application::getInstance()->getVxPDO();
+        $db->beginTransaction();
+        Revision::purge ($this);
+        $db->deleteRecord ('pages', $this->getId());
+        $db->commit();
+
+        unset (self::$instancesById[$this->getId()], self::$instancesByAlias[$this->getAlias()]);
+
+        EventDispatcher::getInstance()->dispatch(new GenericEvent('afterPageDelete', $this));
+    }
 
     /**
      * get all revisions
@@ -308,6 +329,23 @@ class Page implements PublisherInterface
 		return null;
 	}
 
+	public function deleteExport (): void
+    {
+        $app = Application::getInstance();
+        $config	= $app->getConfig();
+
+        if(is_null($config->paths['editable_tpl_path'])) {
+            throw new PageException('No export path for templates defined.');
+        }
+        $revision = $this->getActiveRevision();
+
+        if(is_null($revision)) {
+            throw new PageException(sprintf("No active revision for template '%s' found.", $this->getAlias()));
+        }
+
+        @unlink($this->getExportPath($revision->getLocale()));
+    }
+
     /**
      * exports the active revision of the page to its template file
      * path information is retrieved from the config object
@@ -322,26 +360,13 @@ class Page implements PublisherInterface
 
 		EventDispatcher::getInstance()->dispatch(new GenericEvent('beforePageRevisionExport', $this));
 
-		$app = Application::getInstance();
-		$config	= $app->getConfig();
-		
-		if(is_null($config->paths['editable_tpl_path'])) {
-			throw new PageException('No export path for templates defined.');
-		}
-		
-		$revision = $this->getActiveRevision();
-		
-		if(is_null($revision)) {
-			throw new PageException(sprintf("No active revision for template '%s' found.", $this->getAlias()));
-		}
+        $revision = $this->getActiveRevision();
 
-		$locale = $revision->getLocale();
+        if(is_null($revision)) {
+            throw new PageException(sprintf("No active revision for template '%s' found.", $this->getAlias()));
+        }
 
-		$path =
-			rtrim($app->getRootPath(), DIRECTORY_SEPARATOR) .
-			$config->paths['editable_tpl_path']['subdir'] .
-			($locale ? $locale->getLocaleId() . DIRECTORY_SEPARATOR : '') .
-			$this->getTemplate();
+        $path = $this->getExportPath($revision->getLocale());
 
 		if(!($handle = fopen($path, 'wb'))) {
 			throw new PageException(sprintf("Cannot export template '%s'. '%s' not writable.", $this->getAlias(), $path));
@@ -361,6 +386,30 @@ class Page implements PublisherInterface
 
 		EventDispatcher::getInstance()->dispatch(new GenericEvent('afterPageRevisionExport', $this));
 	}
+
+    /**
+     * get full path of template file
+     *
+     * @param Locale|null $locale
+     * @return string
+     * @throws ApplicationException
+     * @throws PageException
+     */
+	private function getExportPath (Locale $locale = null): string
+    {
+        $app = Application::getInstance();
+        $config	= $app->getConfig();
+
+        if(is_null($config->paths['editable_tpl_path'])) {
+            throw new PageException('No export path for templates defined.');
+        }
+
+        return
+            rtrim($app->getRootPath(), DIRECTORY_SEPARATOR) .
+            $config->paths['editable_tpl_path']['subdir'] .
+            ($locale ? $locale->getLocaleId() . DIRECTORY_SEPARATOR : '') .
+            $this->getTemplate();
+    }
 
 	/**
 	 * get id
