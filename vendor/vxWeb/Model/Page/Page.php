@@ -13,7 +13,7 @@ use vxPHP\Observer\GenericEvent;
  * Mapper class to handle revisioned pages, stored in table `pages`
  *
  * @author Gregor Kofler
- * @version 0.4.0 2021-07-07
+ * @version 0.4.1 2021-07-12
  * 
  * @todo creation of new pages (several setters are superfluous ATM)
  */
@@ -24,14 +24,14 @@ class Page implements PublisherInterface
 	 * 
 	 * @var Page[]
 	 */
-	private static $instancesById;
+	private static $instancesById = [];
 
 	/**
 	 * map of page instances indexed by their alias
 	 * 
 	 * @var Page[]
 	 */
-	private static $instancesByAlias;
+	private static $instancesByAlias = [];
 
 	/**
 	 * @var integer
