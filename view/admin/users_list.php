@@ -18,8 +18,8 @@
             id="users-list"
     >
         <template v-slot:action="slotProps">
-            <a v-if="currentUser.username !== slotProps.row.username" class="btn webfont-icon-only tooltip mr-1" data-tooltip="Bearbeiten" :href="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_edit')->getUrl()?>?id=' + slotProps.row.key">&#xe002;</a>
-            <a v-if="currentUser.username !== slotProps.row.username" class="btn webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" href="#" @click.prevent="del(slotProps.row)">&#xe011;</a>
+            <a v-if="currentUser.username !== slotProps.row.username" class="btn btn-link webfont-icon-only tooltip" data-tooltip="Bearbeiten" :href="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('user_edit')->getUrl()?>?id=' + slotProps.row.key">&#xe002;</a>
+            <a v-if="currentUser.username !== slotProps.row.username" class="btn btn-link webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" href="#" @click.prevent="del(slotProps.row)">&#xe011;</a>
         </template>
     </sortable>
     <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>

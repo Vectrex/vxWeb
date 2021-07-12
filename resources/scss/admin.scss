@@ -275,6 +275,23 @@ table#users-list {
 }
 
 table#files-list {
+  $widths: 20% 20% 25% 15% 10% 10%;
+  $alignments: left, left, left, right, center, right;
+
+  tr {
+    @for $i from 1 through length($widths) {
+      th:nth-child(#{$i}) {
+        text-align: nth($alignments, $i);
+        width: nth($widths, $i);
+      }
+      td:nth-child(#{$i}) {
+        text-align: nth($alignments, $i);
+      }
+    }
+  }
+}
+
+table#pages-list {
   $widths: 0% 45% 10% 15% 15% 15%;
   $alignments: center, left, right, center, right, right;
 

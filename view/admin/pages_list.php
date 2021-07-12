@@ -3,6 +3,10 @@
 <div id="app">
     <h1>Seiten</h1>
 
+    <div class="vx-button-bar">
+        <a class="btn with-webfont-icon-right btn-primary" data-icon="&#xe018;" href="<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('page_add')->getUrl() ?>">Seite anlegen</a>
+    </div>
+
     <sortable
         :rows="pages"
         :columns="cols"
@@ -13,21 +17,24 @@
         id="pages-list"
     >
         <template v-slot:action="slotProps">
-            <a class="btn webfont-icon-only tooltip" data-tooltip="Bearbeiten" :href="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('page_edit')->getUrl()?>?id=' + slotProps.row.key">&#xe002;</a>
+            <a class="btn btn-link webfont-icon-only tooltip" data-tooltip="Bearbeiten" :href="'<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('page_edit')->getUrl()?>?id=' + slotProps.row.key">&#xe002;</a>
+            <a class="btn btn-link webfont-icon-only tooltip tooltip-left" data-tooltip="Löschen" href="#" @click.prevent="del(slotProps.row)">&#xe011;</a>
         </template>
     </sortable>
+    <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
 </div>
 
 <script>
-    const Sortable = window.vxweb.Components.Sortable;
+    const { Sortable, Confirm } = window.vxweb.Components;
     const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
     Vue.createApp({
 
-        components: {"sortable": Sortable},
+        components: { "sortable": Sortable, "confirm": Confirm },
 
         routes: {
-            init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('pages_init')->getUrl() ?>"
+            init: "<?= vxPHP\Application\Application::getInstance()->getRouter()->getRoute('pages_init')->getUrl() ?>",
+            delete: "<?= \vxPHP\Application\Application::getInstance()->getRouter()->getRoute('page_del')->getUrl()?>"
         },
 
         data: () => ({
@@ -55,6 +62,14 @@
         },
 
         methods: {
+            async del (row) {
+                if(await this.$refs.confirm.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?")) {
+                    let response = await SimpleFetch(this.$options.routes.delete + '?id=' + row.key, 'DELETE');
+                    if(response.success) {
+                        this.pages.splice(this.pages.findIndex(item => row === item), 1);
+                    }
+                }
+            },
             storeSort () {
                 window.localStorage.setItem(window.location.origin + "/admin/pages__sort__", JSON.stringify({ column: this.$refs.sortable.sortColumn.prop, dir: this.$refs.sortable.sortDir }));
             }

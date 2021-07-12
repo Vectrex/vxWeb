@@ -3,8 +3,9 @@
         <div class="columns">
             <div class="column col-8">
                 <div class="form-group">
-                    <label class="form-label" for="alias_input">Eindeutiger Name (automatisch generiert)</label>
-                    <input id="alias_input" v-model="form.alias" class="form-input" disabled="disabled" maxlength="64">
+                    <label class="form-label" for="alias_input">Eindeutiger Name</label>
+                    <input id="alias_input" :value="form.alias" @input="form.alias = $event.target.value.toUpperCase()" class="form-input" :disabled="mode === 'edit'" maxlength="64">
+                  <p v-if="errors.alias" class="form-input-hint vx-error-box error">{{ errors.alias }}</p>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="title_input">Titel</label>
@@ -51,13 +52,17 @@
     import RevisionTable from "./revision-table";
 
     export default {
+        name: 'page-form',
+
         components: {
             'vue-ckeditor': VueCkeditor,
             'revision-table': RevisionTable
         },
         props: {
+            mode: { type: String, default: "edit" },
             url: { type: String, required: true },
-            initialData: { type: Object, default: () => {{}} }
+            formData: { type: Object, default: () => {{}} },
+            revisionsData: { type: Array, default: () => {[]}}
         },
 
         data: () => ({
@@ -97,9 +102,11 @@
         },
 
         watch: {
-            initialData (newValue) {
-                this.form = newValue.form || this.form;
-                this.revisions = newValue.revisions || this.revisions;
+            formData (newValue) {
+              this.form = Object.assign({}, this.form, newValue);
+            },
+            revisionsData (newValue) {
+              this.revisions = newValue.slice();
             }
         },
 
@@ -114,7 +121,7 @@
                 this.$emit("request-sent");
                 this.response = await SimpleFetch(this.url, 'post', {}, JSON.stringify(this.form));
                 this.loading = false;
-                this.$emit("response-received");
+                this.$emit("response-received", this.response);
             }
         }
     }

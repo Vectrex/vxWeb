@@ -9,8 +9,9 @@
     </div>
     <page-form
         :url="formUrl"
-        :initial-data="{ form: formProps.form, revisions: formProps.revisions }"
-        :options="formProps.options"
+        :form-data="formProps.form"
+        :revisions-data="formProps.revisions"
+        :mode="instanceId ? 'edit': 'add'"
         @response-received="responseReceived"
         @activate-revision="activateRevision"
         @load-revision="loadRevision"
@@ -30,7 +31,7 @@
         components: { "message-toast": MessageToast, "page-form": PageForm, "confirm": Confirm },
 
         data: () => ({
-            instanceId: <?= $this->id ?>,
+            instanceId: <?= $this->id ?? 'null' ?>,
             formProps: {
                 form: {},
                 revisions: [],
@@ -46,7 +47,10 @@
 
         computed: {
             formUrl () {
-                return this.formProps.url + "?id=" + this.instanceId;
+                if (this.instanceId) {
+                    return this.formProps.url + "?id=" + this.instanceId;
+                }
+                return this.formProps.url;
             }
         },
 
@@ -60,19 +64,30 @@
         },
 
         async created () {
-            let response = await SimpleFetch(this.$options.routes.init + "?id=" + this.instanceId);
+            this.formProps.url = this.$options.routes.update;
 
-            this.formProps = Object.assign({}, this.formProps, {
-                options: response.options || {},
-                form: response.form || {},
-                revisions: (response.revisions || []).map(item => { item.firstCreated = new Date(item.firstCreated); return item }),
-                url: this.$options.routes.update
-            });
+            if(this.instanceId) {
+                let response = await SimpleFetch(this.$options.routes.init + "?id=" + this.instanceId);
+
+                this.formProps = Object.assign({}, this.formProps, {
+                    options: response.options || {},
+                    form: response.form || {},
+                    revisions: (response.revisions || []).map(item => {
+                        item.firstCreated = new Date(item.firstCreated);
+                        return item
+                    })
+                });
+            }
         },
 
         methods: {
-            responseReceived () {
-                let response = this.$refs.form.response;
+            responseReceived (response) {
+
+                // switch from add to edit
+
+                if(response.instanceId) {
+                    this.instanceId = response.instanceId;
+                }
                 this.toastProps = {
                     message: response.message,
                     classname: response.success ? 'toast-success' : 'toast-error',
@@ -88,13 +103,13 @@
                 let response = await SimpleFetch(UrlQuery.create(this.$options.routes.activate, { id: rev.id }), 'POST');
                 if(response.success) {
                     this.formProps.revisions = (response.revisions || []).map(item => { item.firstCreated = new Date(item.firstCreated); return item }),
-                    this.formProps.form = response.form || {}
+                    this.formProps.form = response.form || {};
                 }
             },
             async loadRevision (rev) {
                 let response = await SimpleFetch(UrlQuery.create(this.$options.routes.load, { id: rev.id }));
                 if(response.success) {
-                    this.formProps.form = response.form || {}
+                    this.formProps.form = response.form || {};
                 }
             },
             async deleteRevision (rev) {

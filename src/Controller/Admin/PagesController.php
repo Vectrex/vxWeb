@@ -63,6 +63,23 @@ class PagesController extends Controller
         return new Response(null, Response::HTTP_NOT_FOUND);
     }
 
+    protected function add (): Response
+    {
+        MenuGenerator::setForceActiveMenu(true);
+
+        return new Response(
+            SimpleTemplate::create('admin/page_edit.php')->display()
+        );
+    }
+
+    protected function addInit (): JsonResponse
+    {
+        return new JsonResponse([
+            'form' => new \stdClass(),
+            'revisions' => []
+        ]);
+    }
+
     protected function editInit (): JsonResponse
     {
         if(!($id = $this->request->query->getInt('id'))) {
@@ -100,19 +117,8 @@ class PagesController extends Controller
 
     protected function update (): JsonResponse
     {
-        try {
-            $page = Page::getInstance($this->request->query->getInt('id'));
-            $revision = $page->getActiveRevision();
-            if (!$revision) {
-                $revision = $page->getNewestRevision();
-            }
-        }
-        catch (PageException $e) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
-
+        $id = $this->request->query->getInt('id');
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
-
         $form = $this->buildEditForm();
 
         $v = $form
@@ -121,16 +127,64 @@ class PagesController extends Controller
             ->validate()
             ->getValidFormValues()
         ;
+
+        if ($id) {
+            try {
+                $page = Page::getInstance($this->request->query->getInt('id'));
+            } catch (PageException $e) {
+                return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            }
+        }
+
+        $errors = $form->getFormErrors();
+
+        // add a page
+
+        if (!$id && !isset($errors['alias'])) {
+
+            // check for valid alias
+
+            if (!$v['alias']) {
+                $form->setError('alias', null,'Ein eindeutiger Seitenname ist erforderlich.');
+            }
+            else {
+                try {
+                    Page::getInstance($v['alias']);
+                    $form->setError('alias', null, 'Ein Seite mit diesem Seitennamen existiert bereits.');
+                } catch (PageException $e) {}
+            }
+
+            // set and export inital revision
+
+            if(!$errors = $form->getFormErrors()) {
+                Application::getInstance()->getVxPDO()->execute('INSERT INTO pages (alias, template) VALUES (?, ?)', [$v['alias'], strtolower($v['alias']) . '.php']);
+                $page = Page::getInstance($v['alias']);
+                $revisionToAdd = new Revision($page);
+                $revisionToAdd
+                    ->setTitle($v['title'])
+                    ->setDescription($v['description'])
+                    ->setKeywords($v['keywords'])
+                    ->setMarkup($v['markup'])
+                    ->setActive(true)
+                    ->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
+                    ->save();
+                $revisionToAdd->getPage()->exportActiveRevision();
+                return new JsonResponse(['success' => true, 'instanceId' => $page->getId(), 'revisions' => $this->getRevisions($page), 'message' => 'Neue Seite angelegt und Revisionierung aktiviert.']);
+            }
+        }
+
+        // create new revision for existing page
+
         if(!($errors = $form->getFormErrors())) {
+            $revision = $page->getActiveRevision() ?: $page->getNewestRevision();
 
             $revision
                 ->setTitle($v['title'])
                 ->setDescription($v['description'])
                 ->setKeywords($v['keywords'])
-                ->setMarkup($v['markup'])
-            ;
+                ->setMarkup($v['markup']);
 
-            if($revision->wasChanged()) {
+            if ($revision->wasChanged()) {
 
                 $revision->deactivate();
 
@@ -263,10 +317,11 @@ class PagesController extends Controller
         ];
     }
 
-	private function buildEditForm() {
+	private function buildEditForm(): HtmlForm
+    {
 		return HtmlForm::create()
 			->addElement(FormElementFactory::create('input', 'title', null, [], [], false, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-			->addElement(FormElementFactory::create('input', 'alias', null, [], [], false, ['trim', 'uppercase']))
+			->addElement(FormElementFactory::create('input', 'alias', null, [], [], false, ['trim', 'uppercase'], [new RegularExpression('/^[a-z][a-z0-9_-]+$/i')], 'Der Name muss mit einem Buchstaben beginnen und darf nur die Zeichen A-Z, 0-9, sowie "_" und "-" enthalten.'))
 			->addElement(FormElementFactory::create('textarea', 'keywords', null, [], [], false, ['trim']))
 			->addElement(FormElementFactory::create('textarea', 'description', null, [], [], false, ['trim']))
 			->addElement(FormElementFactory::create('textarea', 'markup', null, [], [], false, ['trim']))
