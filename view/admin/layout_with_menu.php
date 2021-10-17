@@ -5,7 +5,7 @@
         <?= $this->includeFile('admin/snippets/html_head.php') ?>
 	</head>
 
-	<body>
+	<body class="<?= str_replace('_', '-', \vxPHP\Application\Application::getInstance()->getCurrentRoute()->getRouteId())  ?>">
 		<div id="page">
 			<header class="vx-navbar p-2">
                 <section class="navbar-section">

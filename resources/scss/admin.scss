@@ -39,6 +39,7 @@ $sidebar-width: 10rem;
   & > * {
     display: none !important;
   }
+
   &:before {
     content: '...'
   }
@@ -80,6 +81,7 @@ $sidebar-width: 10rem;
   & > span {
     padding: $unit-1 $unit-2;
   }
+
   &.active > span {
     font-weight: bold;
   }
@@ -200,6 +202,7 @@ table.table-striped tbody td.active,
 table.table-striped tbody tr.active {
   background: lighten($accent-color, 40%);
 }
+
 table.table-striped tbody tr:nth-of-type(2n+1) td.active,
 table.table-striped tbody tr:nth-of-type(2n+1).active {
   background: lighten($accent-color, 25%);
@@ -342,6 +345,22 @@ table#pages-list {
           text-align: nth($alignments, $i);
         }
       }
+    }
+  }
+}
+
+.page-edit #app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .columns {
+      flex: 1;
     }
   }
 }

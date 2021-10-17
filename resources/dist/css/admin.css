@@ -6311,3 +6311,18 @@ table#pages-list tr td:nth-child(6)
 {
     text-align: right;
 }
+
+.page-edit #app
+{
+    display: flex; flex-direction: column; min-height: 100%;
+}
+
+.page-edit #app form
+{
+    display: flex; flex-direction: column; flex: 1;
+}
+
+.page-edit #app form .columns
+{
+    flex: 1;
+}

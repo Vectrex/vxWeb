@@ -80,7 +80,7 @@ class LoginController extends Controller
             }
 
 			if($throttler) {
-                $throttler->registerAttempt($this->request->getClientIp(), [$username, $password])->throttle($this->request->getClientIp(), 'admin_login');
+                $throttler->registerAttempt($this->request->getClientIp(), [$username, substr($password, 0, 2) . '...' . substr($password, -2)])->throttle($this->request->getClientIp(), 'admin_login');
             }
 
 			return new JsonResponse(['error' => true, 'message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);

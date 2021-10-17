@@ -14,32 +14,36 @@ use vxPHP\Service\ServiceInterface;
  * @see <https://github.com/nextcloud/server/blob/master/lib/private/User/Session.php>
  *
  * @author Gregor Kofler
- * @version 0.1.0 2018-04-14
+ * @version 0.2.0 2021-10-17
  */
 
 class BruteforceThrottler implements ServiceInterface
 {
+    /**
+     * the maximum throttling delay in seconds
+     */
+    public const MAX_THROTTLE_DELAY = 30;
 
     /**
      * white listed IPs won't be throttled
      *
      * @var array
      */
-    protected $whiteListedIps;
+    protected array $whiteListedIps;
 
     /**
      *
      *
      * @param \DateInterval
      */
-    protected $cutoff;
+    protected \DateInterval $cutoff;
 
     /**
      * @param array $parameters
      * @throws \Exception
      */
-    public function setParameters(array $parameters) {
-
+    public function setParameters(array $parameters): void
+    {
         $this->whiteListedIps = [];
 
         // parse IP whitelist
@@ -92,40 +96,38 @@ class BruteforceThrottler implements ServiceInterface
             $this->cutoff = new \DateInterval('PT6H');
 
         }
-
     }
 
     /**
-     * @param $ip
+     * throttle by sleeping depending on detected action count
+     * maximum delay is limited to 30 seconds
+     *
+     * @param string $ip
      * @param string $action
      * @return BruteforceThrottler
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxPHP\Application\Exception\ConfigException
      */
-    public function throttle($ip, $action = 'admin_login'): BruteforceThrottler {
-
+    public function throttle(string $ip, string $action = 'admin_login'): self
+    {
         if(!$this->isIpWhiteListed($ip)) {
-
 
             $attempts = $this->getAttempts($ip, $action);
 
             if ($attempts) {
-
-                $delay = 0.1 * pow(2, $attempts);
-
-                usleep(min($delay, 30000) * 1000);
+                usleep(min(0.1 * 2 ** $attempts, self::MAX_THROTTLE_DELAY * 1000) * 1000);
             }
-
         }
 
         return $this;
-
     }
 
     /**
      * @param $ip
      * @return bool
      */
-    private function isIpWhiteListed($ip): bool {
-
+    private function isIpWhiteListed($ip): bool
+    {
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             $type = 4;
         }
@@ -150,12 +152,8 @@ class BruteforceThrottler implements ServiceInterface
 
             // no mask? compare raw IPs
 
-            if(!$entry['mask']) {
-
-                if($ipBinary === $wlBinary) {
-                    return true;
-                }
-
+            if(!$entry['mask'] && $ipBinary === $wlBinary) {
+                return true;
             }
 
             // compare masked IPs
@@ -175,16 +173,17 @@ class BruteforceThrottler implements ServiceInterface
         }
 
         return false;
-
     }
 
     /**
      * @param string $ip
      * @param mixed $data
      * @return BruteforceThrottler
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxPHP\Application\Exception\ConfigException
      */
-    public function registerAttempt($ip, $data): BruteforceThrottler {
-
+    public function registerAttempt(string $ip, $data): self
+    {
         Application::getInstance()->getVxPDO()->insertRecord('bruteforce_attempts', [
             'ip' => $ip,
             'action' => 'admin_login',
@@ -196,12 +195,16 @@ class BruteforceThrottler implements ServiceInterface
     }
 
     /**
+     * clear all specified actions that came from a given ip address
+     *
      * @param string $ip
      * @param string $action
      * @return BruteforceThrottler
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxPHP\Application\Exception\ConfigException
      */
-    public function clearAttempts($ip, $action): BruteforceThrottler {
-
+    public function clearAttempts(string $ip, string $action): self
+    {
         Application::getInstance()->getVxPDO()->deleteRecord('bruteforce_attempts', [
             'ip' => $ip,
             'action' => $action
@@ -211,12 +214,16 @@ class BruteforceThrottler implements ServiceInterface
     }
 
     /**
+     * get count of attempts of a specified action by a given ip address
+     *
      * @param string $ip
      * @param string $action
      * @return int
+     * @throws \vxPHP\Application\Exception\ApplicationException
+     * @throws \vxPHP\Application\Exception\ConfigException
      */
-    public function getAttempts($ip, $action = 'admin_login'): int {
-
+    public function getAttempts(string $ip, string $action = 'admin_login'): int
+    {
         $db = Application::getInstance()->getVxPDO();
         $params = [$ip, $action];
 
@@ -241,7 +248,5 @@ class BruteforceThrottler implements ServiceInterface
             AND action = ?
             %s
         ", $where ?? ''), $params)->current()['cnt'];
-
     }
-
 }
