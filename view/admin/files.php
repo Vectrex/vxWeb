@@ -4,7 +4,10 @@
 <div id="app" v-cloak>
     <filemanager :limits="$options.limits" :routes="$options.routes" :columns="cols" :init-sort="initSort" ref="fm" @response-received="handleResponse" @after-sort="storeSort">
         <template v-slot:action="slotProps">
-            <button v-if="slotProps.row.isFolder" class="btn btn-link webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
+            <template v-if="slotProps.row.isFolder">
+                <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFolder(slotProps.row)">&#xe002;</button>
+                <button class="btn btn-link webfont-icon-only tooltip delFolder" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">&#xe008;</button>
+            </template>
             <template v-else>
                 <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFile(slotProps.row)">&#xe002;</button>
                 <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.moveFile(slotProps.row)">&#xe02d;&#xe032;&#xe00e;</button>
@@ -37,6 +40,8 @@
             getFoldersTree: "<?= $router->getRoute('folders_tree')->getUrl() ?>",
             delFolder: "<?= $router->getRoute('folder_del')->getUrl() ?>",
             renameFolder: "<?= $router->getRoute('folder_rename')->getUrl() ?>",
+            getFolder: "<?= $router->getRoute('folder_get')->getUrl() ?>",
+            updateFolder: "<?= $router->getRoute('folder_update')->getUrl() ?>",
             addFolder: "<?= $router->getRoute('folder_add')->getUrl() ?>",
             search:  "<?= $router->getRoute('files_search')->getUrl() ?>",
             delSelection: "<?= $router->getRoute('selection_del')->getUrl() ?>",

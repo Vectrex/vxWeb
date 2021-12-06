@@ -11,10 +11,12 @@
 namespace vxWeb\Model\MetaFile;
 
 use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
 use vxPHP\File\Exception\FilesystemFileException;
 use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\File\FilesystemFolder;
 use vxPHP\Application\Application;
+use vxWeb\Model\MetaFile\Exception\MetaFileException;
 use vxWeb\Model\MetaFile\Exception\MetaFolderException;
 
 /**
@@ -24,7 +26,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.8.0 2020-09-15
+ * @version 1.9.0 2021-12-06
  *
  * @todo compatibility checks on windows systems
  */
@@ -33,41 +35,41 @@ class MetaFolder
 	/**
 	 * @var MetaFolder[]
 	 */
-	private static $instancesById = [];
+	private static array $instancesById = [];
 
 	/**
 	 * @var MetaFolder[]
 	 */
-	private static $instancesByPath = [];
+	private static array $instancesByPath = [];
 
 	/**
 	 * @var FilesystemFolder
 	 */
-	private $filesystemFolder;
+	private FilesystemFolder $filesystemFolder;
 	
 	/**
 	 * @var string
 	 */
-	private	$fullPath;
+	private	string $fullPath;
 
 	/**
 	 * @var string
 	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * primary key of metafolder row
 	 * 
 	 * @var integer
 	 */
-	private	$id;
+	private	int $id;
 	
 	/**
 	 * all stored additional data
 	 * 
 	 * @var array
 	 */
-	private $data;
+	private array $data = [];
 	
 	/**
 	 * data required for nesting
@@ -76,19 +78,19 @@ class MetaFolder
 	 * @var integer $l
 	 * @var integer $r
 	 */
-	private	$level, $l, $r;
+	private	int $level, $l, $r;
 	
 	/**
 	 * flag to indicate, that contained files should be obscured
 	 * 
 	 * @var boolean
 	 */
-	private $obscure_files;
+	private bool $obscureFiles;
 
 	/**
 	 * @var MetaFile[]
 	 */
-	private $metaFiles;
+	private array $metaFiles = [];
 
     /**
      * retrieve metafolder instance by either primary key of db entry
@@ -130,9 +132,7 @@ class MetaFolder
      * @param array $ids
      *
      * @return MetaFolder[]
-     * @throws ApplicationException
-     * @throws Exception\MetaFolderException
-     * @throws FilesystemFolderException
+     * @throws ApplicationException|MetaFolderException|FilesystemFolderException|ConfigException
      */
     public static function getInstancesByIds(array $ids): array
     {
@@ -203,7 +203,7 @@ class MetaFolder
 		$this->level = $this->data['level'];
 		$this->l = $this->data['l'];
 		$this->r = $this->data['r'];
-		$this->obscure_files = (boolean) $this->data['obscure_files'];
+		$this->obscureFiles = (boolean) $this->data['obscure_files'];
 		$this->name = basename($this->fullPath);
 
         self::$instancesByPath[$this->fullPath] = $this;
@@ -222,7 +222,7 @@ class MetaFolder
 
 		$rows = Application::getInstance()->getVxPDO()->doPreparedQuery(
 			"SELECT * FROM folders WHERE path = ? OR path = ? LIMIT 1",
-			[(string) $path, (string) $altPath]
+			[$path, $altPath]
 		);
 
 		if($rows->count()) {
@@ -235,7 +235,7 @@ class MetaFolder
     {
 		$rows = Application::getInstance()->getVxPDO()->doPreparedQuery(
 			"SELECT * FROM folders WHERE foldersid = ? LIMIT 1",
-			[(int) $id]
+			[$id]
 		);
 
         if($rows->count()) {
@@ -264,7 +264,7 @@ class MetaFolder
         }
 	}
 
-	/**
+    /**
 	 * several getters
 	 */
 	public function getFullPath(): string
@@ -293,7 +293,7 @@ class MetaFolder
      * @param string|null $ndx
      * @return mixed
      */
-	public function getData(string $ndx = NULL)
+	public function getData(string $ndx = null)
     {
         if(is_null($ndx)) {
 			return $this->data;
@@ -303,6 +303,28 @@ class MetaFolder
 
         return $this->data[$ndx] ?? null;
 	}
+
+    /**
+     * updates meta data of metafolder
+     *
+     * @param array $data new data
+     * @throws ApplicationException|ConfigException|MetaFolderException
+     */
+    public function setMetaData(array $data): void
+    {
+        $data = array_change_key_case($data, CASE_LOWER);
+
+        //@todo sanitize attributes
+
+        $this->data = $data + $this->data;
+
+        try {
+            Application::getInstance()->getVxPDO()->updateRecord('folders', $this->id, $this->data);
+        }
+        catch (\PDOException $e) {
+            throw new MetaFolderException(sprintf("Data commit of folder '%s' failed. PDO reports %s", $this->filesystemFolder->getPath(), $e->getMessage()));
+        }
+    }
 
 	/**
 	 * @return FilesystemFolder
@@ -317,7 +339,7 @@ class MetaFolder
 	 */
 	public function obscuresFiles(): bool
     {
-		return $this->obscure_files;
+		return $this->obscureFiles;
 	}
 
     /**
@@ -327,7 +349,7 @@ class MetaFolder
      * @return string
      * @throws ApplicationException
      */
-	public function getRelativePath($force = false): string
+	public function getRelativePath(bool $force = false): string
     {
 		return $this->filesystemFolder->getRelativePath($force);
 	}
@@ -338,13 +360,9 @@ class MetaFolder
      * @param boolean $force forces re-reading of metafolder
      *
      * @return MetaFile[]
-     * @throws ApplicationException
-     * @throws Exception\MetaFileException
-     * @throws FilesystemFileException
-     * @throws FilesystemFolderException
-     * @throws MetaFolderException
+     * @throws ApplicationException|MetaFileException|FilesystemFileException|FilesystemFolderException|MetaFolderException|ConfigException
      */
-	public function getMetaFiles($force = false): array
+	public function getMetaFiles(bool $force = false): array
     {
 		if(!isset($this->metaFiles) || $force) {
 			$this->metaFiles = [];
@@ -368,13 +386,9 @@ class MetaFolder
      *
      * @param bool $force
      * @return MetaFile[]
-     * @throws ApplicationException
-     * @throws Exception\MetaFileException
-     * @throws FilesystemFileException
-     * @throws FilesystemFolderException
-     * @throws MetaFolderException
+     * @throws ApplicationException|MetaFileException|FilesystemFileException|FilesystemFolderException|MetaFolderException|ConfigException
      */
-	public function getMetaImages($force = false): array
+	public function getMetaImages(bool $force = false): array
     {
         $files = $this->getMetaFiles($force);
         array_filter(
@@ -390,8 +404,7 @@ class MetaFolder
      * return all metafolders within this folder
      *
      * @return MetaFolder[]
-     * @throws MetaFolderException
-     * @throws ApplicationException|FilesystemFolderException
+     * @throws MetaFolderException|ApplicationException|FilesystemFolderException|ConfigException
      */
 	public function getMetaFolders(): array
     {
@@ -433,9 +446,7 @@ class MetaFolder
      *
      * @param string $path
      * @return MetaFolder
-     * @throws MetaFolderException
-     * @throws ApplicationException
-     * @throws FilesystemFolderException
+     * @throws MetaFolderException|ApplicationException|FilesystemFolderException|ConfigException
      */
 	public function createFolder(string $path): MetaFolder
     {
@@ -451,11 +462,7 @@ class MetaFolder
      * warning: any references to this instance still exists and will yield invalid results
      *
      * @param boolean $keepFilesystemFiles
-     * @throws Exception\MetaFileException
-     * @throws MetaFolderException
-     * @throws ApplicationException
-     * @throws FilesystemFolderException
-     * @throws FilesystemFileException
+     * @throws MetaFileException|MetaFolderException|ApplicationException|FilesystemFolderException|FilesystemFileException|ConfigException
      */
 	public function delete(bool $keepFilesystemFiles = false): void
     {
@@ -500,9 +507,7 @@ class MetaFolder
      *
      * @param MetaFolder $destination
      * @return $this
-     * @throws ApplicationException
-     * @throws FilesystemFolderException
-     * @throws MetaFolderException
+     * @throws ApplicationException|FilesystemFolderException|MetaFolderException|ConfigException
      */
 	public function move (MetaFolder $destination): MetaFolder
     {
@@ -632,7 +637,7 @@ class MetaFolder
      * @return array|MetaFolder[]
      * @throws MetaFolderException
      * @throws ApplicationException
-     * @throws FilesystemFolderException
+     * @throws FilesystemFolderException|ConfigException
      */
 	public static function instantiateAllExistingMetaFolders(bool $force = false): array
     {
@@ -658,7 +663,7 @@ class MetaFolder
      *
      * @return MetaFolder[]
      * @throws MetaFolderException
-     * @throws ApplicationException|FilesystemFolderException
+     * @throws ApplicationException|FilesystemFolderException|ConfigException
      */
 	public static function getRootFolders(): array
     {
@@ -690,7 +695,7 @@ class MetaFolder
      * @return MetaFolder
      * @throws MetaFolderException
      * @throws ApplicationException
-     * @throws FilesystemFolderException
+     * @throws FilesystemFolderException|ConfigException
      */
 	public static function createMetaFolder(FilesystemFolder $f, array $metaData = []): MetaFolder
     {
@@ -772,7 +777,7 @@ class MetaFolder
 				}
 			}
 
-			$id = $db->insertRecord('folders', $metaData);
+			$db->insertRecord('folders', $metaData);
 
 			// refresh nesting for all active metafolder instances
 

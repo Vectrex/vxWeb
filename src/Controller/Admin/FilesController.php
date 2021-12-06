@@ -30,6 +30,7 @@ class FilesController extends Controller
     use AdminControllerTrait;
 
     private const FILE_ATTRIBUTES = ['title', 'subtitle', 'description', 'customsort'];
+    private const FOLDER_ATTRIBUTES = ['title', 'description'];
 
     /**
      * depending on route fill response with appropriate template
@@ -346,6 +347,46 @@ class FilesController extends Controller
         }
         catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    protected function folderGet (): JsonResponse
+    {
+        if(!($id = $this->request->query->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $mf = MetaFolder::getInstance(null, $id);
+
+            return new JsonResponse([
+                'form' => array_intersect_key($mf->getData(), array_fill_keys(self::FOLDER_ATTRIBUTES, null)),
+                'folderInfo' => [
+                    'path' => $mf->getRelativePath(),
+                ]
+            ]);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected function folderUpdate (): JsonResponse
+    {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+
+        if (!($id = $bag->getInt('id'))) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $mf = MetaFolder::getInstance(null, $id);
+            $mf->setMetaData(array_intersect_key($bag->all(), array_fill_keys(self::FOLDER_ATTRIBUTES, null)));
+
+            return new JsonResponse(['success' => true, 'message' => 'Daten übernommen.']);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
     }
 

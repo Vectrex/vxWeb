@@ -1,5 +1,5 @@
 <template>
-  <form action="/" id="events-edit-form" @submit.prevent>
+  <form action="/" @submit.prevent>
     <div class="columns">
       <div class="column">
         <img :src="fileInfo.thumb" v-if="fileInfo.thumb" class="img-responsive">

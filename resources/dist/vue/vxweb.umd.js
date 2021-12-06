@@ -3063,15 +3063,15 @@ simple_tree_branchvue_type_script_lang_js.render = simple_tree_branchvue_type_te
 simple_treevue_type_script_lang_js.render = simple_treevue_type_template_id_d2c9e362_render
 
 /* harmony default export */ const simple_tree = (simple_treevue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/filemanager/filemanager.vue?vue&type=template&id=2953e4d8
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/filemanager/filemanager.vue?vue&type=template&id=42f6cf2c
 
 
-const filemanagervue_type_template_id_2953e4d8_hoisted_1 = { class: "vx-button-bar navbar" }
-const filemanagervue_type_template_id_2953e4d8_hoisted_2 = { class: "navbar-section" }
-const filemanagervue_type_template_id_2953e4d8_hoisted_3 = { class: "popup-container" }
-const filemanagervue_type_template_id_2953e4d8_hoisted_4 = { class: "card" }
-const filemanagervue_type_template_id_2953e4d8_hoisted_5 = { class: "card-body" }
-const filemanagervue_type_template_id_2953e4d8_hoisted_6 = { class: "navbar-section" }
+const filemanagervue_type_template_id_42f6cf2c_hoisted_1 = { class: "vx-button-bar navbar" }
+const filemanagervue_type_template_id_42f6cf2c_hoisted_2 = { class: "navbar-section" }
+const filemanagervue_type_template_id_42f6cf2c_hoisted_3 = { class: "popup-container" }
+const filemanagervue_type_template_id_42f6cf2c_hoisted_4 = { class: "card" }
+const filemanagervue_type_template_id_42f6cf2c_hoisted_5 = { class: "card-body" }
+const filemanagervue_type_template_id_42f6cf2c_hoisted_6 = { class: "navbar-section" }
 const _hoisted_7 = { class: "d-inline-block mr-2" }
 const _hoisted_8 = {
   key: 1,
@@ -3101,7 +3101,7 @@ const _hoisted_20 = { class: "modal-container" }
 const _hoisted_21 = { class: "modal-header" }
 const _hoisted_22 = { class: "modal-body" }
 
-function filemanagervue_type_template_id_2953e4d8_render(_ctx, _cache, $props, $setup, $data, $options) {
+function filemanagervue_type_template_id_42f6cf2c_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_filemanager_breadcrumbs = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("filemanager-breadcrumbs")
   const _component_filemanager_add = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("filemanager-add")
   const _component_filemanager_actions = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("filemanager-actions")
@@ -3109,6 +3109,7 @@ function filemanagervue_type_template_id_2953e4d8_render(_ctx, _cache, $props, $
   const _component_filemanager_search = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("filemanager-search")
   const _component_sortable = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("sortable")
   const _component_file_edit_form = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("file-edit-form")
+  const _component_folder_edit_form = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("folder-edit-form")
   const _component_confirm = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("confirm")
   const _component_alert = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("alert")
   const _component_folder_tree = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveComponent)("folder-tree")
@@ -3116,13 +3117,13 @@ function filemanagervue_type_template_id_2953e4d8_render(_ctx, _cache, $props, $
   const _directive_focus = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveDirective)("focus")
 
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", {
-    onDrop: _cache[13] || (_cache[13] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)((...args) => ($options.uploadDraggedFiles && $options.uploadDraggedFiles(...args)), ["prevent"])),
-    onDragover: _cache[14] || (_cache[14] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)($event => ($data.indicateDrag = true), ["prevent"])),
-    onDragleave: _cache[15] || (_cache[15] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)($event => ($data.indicateDrag = false), ["prevent"])),
+    onDrop: _cache[14] || (_cache[14] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)((...args) => ($options.uploadDraggedFiles && $options.uploadDraggedFiles(...args)), ["prevent"])),
+    onDragover: _cache[15] || (_cache[15] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)($event => ($data.indicateDrag = true), ["prevent"])),
+    onDragleave: _cache[16] || (_cache[16] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)($event => ($data.indicateDrag = false), ["prevent"])),
     class: {'dragged-over': $data.indicateDrag}
   }, [
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", filemanagervue_type_template_id_2953e4d8_hoisted_1, [
-      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("section", filemanagervue_type_template_id_2953e4d8_hoisted_2, [
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", filemanagervue_type_template_id_42f6cf2c_hoisted_1, [
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("section", filemanagervue_type_template_id_42f6cf2c_hoisted_2, [
         (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)(_component_filemanager_breadcrumbs, {
           breadcrumbs: $data.breadcrumbs,
           "current-folder": $data.currentFolder,
@@ -3137,9 +3138,9 @@ function filemanagervue_type_template_id_2953e4d8_render(_ctx, _cache, $props, $
             type: "button",
             onClick: _cache[1] || (_cache[1] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)($event => ($data.showAddActivities = !$data.showAddActivities), ["stop"]))
           }, "  "),
-          (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", filemanagervue_type_template_id_2953e4d8_hoisted_3, [
-            (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", filemanagervue_type_template_id_2953e4d8_hoisted_4, [
-              (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", filemanagervue_type_template_id_2953e4d8_hoisted_5, [
+          (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", filemanagervue_type_template_id_42f6cf2c_hoisted_3, [
+            (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", filemanagervue_type_template_id_42f6cf2c_hoisted_4, [
+              (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", filemanagervue_type_template_id_42f6cf2c_hoisted_5, [
                 (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)(_component_filemanager_add, {
                   onUpload: $options.uploadInputFiles,
                   onCreateFolder: $options.createFolder
@@ -3155,7 +3156,7 @@ function filemanagervue_type_template_id_2953e4d8_render(_ctx, _cache, $props, $
           folders: $options.checkedFolders
         }, null, 8, ["onDeleteSelection", "onMoveSelection", "files", "folders"])
       ]),
-      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("section", filemanagervue_type_template_id_2953e4d8_hoisted_6, [
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("section", filemanagervue_type_template_id_42f6cf2c_hoisted_6, [
         ($data.upload.progressing)
           ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(external_commonjs_vue_commonjs2_vue_root_Vue_.Fragment, { key: 0 }, [
               (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("button", {
@@ -3304,7 +3305,7 @@ function filemanagervue_type_template_id_2953e4d8_render(_ctx, _cache, $props, $
         }
       })
     ]), 1032, ["rows", "columns", "sort-prop", "sort-direction"]),
-    ($data.showEditForm)
+    ($data.showFileForm || $data.showFolderForm)
       ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("div", _hoisted_18, [
           _hoisted_19,
           (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", _hoisted_20, [
@@ -3313,17 +3314,28 @@ function filemanagervue_type_template_id_2953e4d8_render(_ctx, _cache, $props, $
                 href: "#close",
                 class: "btn btn-clear float-right",
                 "aria-label": "Close",
-                onClick: _cache[11] || (_cache[11] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)($event => ($data.showEditForm = false), ["prevent"]))
+                onClick: _cache[11] || (_cache[11] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)($event => ($data.showFileForm = $data.showFolderForm = false), ["prevent"]))
               })
             ]),
             (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", _hoisted_22, [
-              (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)(_component_file_edit_form, {
-                "initial-data": $data.editFormData,
-                "file-info": $data.editFileInfo,
-                url: $props.routes.updateFile,
-                onResponseReceived: _cache[12] || (_cache[12] = response => _ctx.$emit('response-received', response)),
-                ref: "editForm"
-              }, null, 8, ["initial-data", "file-info", "url"])
+              ($data.showFileForm)
+                ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(_component_file_edit_form, {
+                    key: 0,
+                    "initial-data": $data.editFormData,
+                    "file-info": $data.editMetaData,
+                    url: $props.routes.updateFile,
+                    onResponseReceived: _cache[12] || (_cache[12] = response => _ctx.$emit('response-received', response))
+                  }, null, 8, ["initial-data", "file-info", "url"]))
+                : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true),
+              ($data.showFolderForm)
+                ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)(_component_folder_edit_form, {
+                    key: 1,
+                    "initial-data": $data.editFormData,
+                    "folder-info": $data.editMetaData,
+                    url: $props.routes.updateFolder,
+                    onResponseReceived: _cache[13] || (_cache[13] = response => _ctx.$emit('response-received', response))
+                  }, null, 8, ["initial-data", "folder-info", "url"]))
+                : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true)
             ])
           ])
         ]))
@@ -3339,7 +3351,7 @@ function filemanagervue_type_template_id_2953e4d8_render(_ctx, _cache, $props, $
     (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)(_component_folder_tree, { ref: "folder-tree" }, null, 512)
   ], 34))
 }
-;// CONCATENATED MODULE: ./vue/components/filemanager/filemanager.vue?vue&type=template&id=2953e4d8
+;// CONCATENATED MODULE: ./vue/components/filemanager/filemanager.vue?vue&type=template&id=42f6cf2c
 
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/filemanager/filemanager-add.vue?vue&type=template&id=67362ebb
 
@@ -4081,43 +4093,42 @@ function alertvue_type_template_id_9bfcbb82_render(_ctx, _cache, $props, $setup,
 alertvue_type_script_lang_js.render = alertvue_type_template_id_9bfcbb82_render
 
 /* harmony default export */ const vx_vue_alert = (alertvue_type_script_lang_js);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/forms/file-edit-form.vue?vue&type=template&id=78133a66
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/forms/file-edit-form.vue?vue&type=template&id=90373e08
 
 
-const file_edit_formvue_type_template_id_78133a66_hoisted_1 = { class: "columns" }
-const file_edit_formvue_type_template_id_78133a66_hoisted_2 = { class: "column" }
-const file_edit_formvue_type_template_id_78133a66_hoisted_3 = { class: "column" }
-const file_edit_formvue_type_template_id_78133a66_hoisted_4 = { class: "table" }
-const file_edit_formvue_type_template_id_78133a66_hoisted_5 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("td", null, "Typ", -1)
-const file_edit_formvue_type_template_id_78133a66_hoisted_6 = { key: 0 }
-const file_edit_formvue_type_template_id_78133a66_hoisted_7 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("td", null, "Cache", -1)
-const file_edit_formvue_type_template_id_78133a66_hoisted_8 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("td", null, "Link", -1)
-const file_edit_formvue_type_template_id_78133a66_hoisted_9 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", {
+const file_edit_formvue_type_template_id_90373e08_hoisted_1 = { class: "columns" }
+const file_edit_formvue_type_template_id_90373e08_hoisted_2 = { class: "column" }
+const file_edit_formvue_type_template_id_90373e08_hoisted_3 = { class: "column" }
+const file_edit_formvue_type_template_id_90373e08_hoisted_4 = { class: "table" }
+const file_edit_formvue_type_template_id_90373e08_hoisted_5 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("td", null, "Typ", -1)
+const file_edit_formvue_type_template_id_90373e08_hoisted_6 = { key: 0 }
+const file_edit_formvue_type_template_id_90373e08_hoisted_7 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("td", null, "Cache", -1)
+const file_edit_formvue_type_template_id_90373e08_hoisted_8 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("td", null, "Link", -1)
+const file_edit_formvue_type_template_id_90373e08_hoisted_9 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", {
   class: "divider",
   "data-content": "Metadaten der Datei"
 }, null, -1)
-const file_edit_formvue_type_template_id_78133a66_hoisted_10 = { class: "form-group" }
-const file_edit_formvue_type_template_id_78133a66_hoisted_11 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "title_input" }, "Titel", -1)
-const file_edit_formvue_type_template_id_78133a66_hoisted_12 = { class: "form-group" }
-const file_edit_formvue_type_template_id_78133a66_hoisted_13 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "subtitle_input" }, "Untertitel", -1)
-const file_edit_formvue_type_template_id_78133a66_hoisted_14 = { class: "form-group" }
-const file_edit_formvue_type_template_id_78133a66_hoisted_15 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "description_input" }, "Beschreibung", -1)
-const file_edit_formvue_type_template_id_78133a66_hoisted_16 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", {
+const file_edit_formvue_type_template_id_90373e08_hoisted_10 = { class: "form-group" }
+const file_edit_formvue_type_template_id_90373e08_hoisted_11 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "title_input" }, "Titel", -1)
+const file_edit_formvue_type_template_id_90373e08_hoisted_12 = { class: "form-group" }
+const file_edit_formvue_type_template_id_90373e08_hoisted_13 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "subtitle_input" }, "Untertitel", -1)
+const file_edit_formvue_type_template_id_90373e08_hoisted_14 = { class: "form-group" }
+const file_edit_formvue_type_template_id_90373e08_hoisted_15 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "description_input" }, "Beschreibung", -1)
+const file_edit_formvue_type_template_id_90373e08_hoisted_16 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", {
   class: "divider",
   "data-content": "Erweiterte Einstellungen"
 }, null, -1)
-const file_edit_formvue_type_template_id_78133a66_hoisted_17 = { class: "form-group" }
-const file_edit_formvue_type_template_id_78133a66_hoisted_18 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "customsort_input" }, "Sortierziffer", -1)
-const file_edit_formvue_type_template_id_78133a66_hoisted_19 = { class: "form-group" }
+const file_edit_formvue_type_template_id_90373e08_hoisted_17 = { class: "form-group" }
+const file_edit_formvue_type_template_id_90373e08_hoisted_18 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "customsort_input" }, "Sortierziffer", -1)
+const file_edit_formvue_type_template_id_90373e08_hoisted_19 = { class: "form-group" }
 
-function file_edit_formvue_type_template_id_78133a66_render(_ctx, _cache, $props, $setup, $data, $options) {
+function file_edit_formvue_type_template_id_90373e08_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("form", {
     action: "/",
-    id: "events-edit-form",
     onSubmit: _cache[6] || (_cache[6] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)(() => {}, ["prevent"]))
   }, [
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_78133a66_hoisted_1, [
-      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_78133a66_hoisted_2, [
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_90373e08_hoisted_1, [
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_90373e08_hoisted_2, [
         ($props.fileInfo.thumb)
           ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("img", {
               key: 0,
@@ -4126,20 +4137,20 @@ function file_edit_formvue_type_template_id_78133a66_render(_ctx, _cache, $props
             }, null, 8, ["src"]))
           : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true)
       ]),
-      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_78133a66_hoisted_3, [
-        (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("table", file_edit_formvue_type_template_id_78133a66_hoisted_4, [
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_90373e08_hoisted_3, [
+        (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("table", file_edit_formvue_type_template_id_90373e08_hoisted_4, [
           (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("tr", null, [
-            file_edit_formvue_type_template_id_78133a66_hoisted_5,
+            file_edit_formvue_type_template_id_90373e08_hoisted_5,
             (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("td", null, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)($props.fileInfo.mimetype), 1)
           ]),
           ($props.fileInfo.cache)
-            ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("tr", file_edit_formvue_type_template_id_78133a66_hoisted_6, [
-                file_edit_formvue_type_template_id_78133a66_hoisted_7,
+            ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("tr", file_edit_formvue_type_template_id_90373e08_hoisted_6, [
+                file_edit_formvue_type_template_id_90373e08_hoisted_7,
                 (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("td", null, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)($props.fileInfo.cache.count) + " Files, " + (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)($options.formatFilesize($props.fileInfo.cache.totalSize, ',')), 1)
               ]))
             : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true),
           (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("tr", null, [
-            file_edit_formvue_type_template_id_78133a66_hoisted_8,
+            file_edit_formvue_type_template_id_90373e08_hoisted_8,
             (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("td", null, [
               (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("a", {
                 href: '/' + $props.fileInfo.path,
@@ -4150,9 +4161,9 @@ function file_edit_formvue_type_template_id_78133a66_render(_ctx, _cache, $props
         ])
       ])
     ]),
-    file_edit_formvue_type_template_id_78133a66_hoisted_9,
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_78133a66_hoisted_10, [
-      file_edit_formvue_type_template_id_78133a66_hoisted_11,
+    file_edit_formvue_type_template_id_90373e08_hoisted_9,
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_90373e08_hoisted_10, [
+      file_edit_formvue_type_template_id_90373e08_hoisted_11,
       (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withDirectives)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("input", {
         id: "title_input",
         class: ["form-input", {'is-error': $options.errors.title}],
@@ -4162,8 +4173,8 @@ function file_edit_formvue_type_template_id_78133a66_render(_ctx, _cache, $props
         [external_commonjs_vue_commonjs2_vue_root_Vue_.vModelText, _ctx.form.title]
       ])
     ]),
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_78133a66_hoisted_12, [
-      file_edit_formvue_type_template_id_78133a66_hoisted_13,
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_90373e08_hoisted_12, [
+      file_edit_formvue_type_template_id_90373e08_hoisted_13,
       (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withDirectives)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("input", {
         id: "subtitle_input",
         class: ["form-input", {'is-error': $options.errors.subtitle}],
@@ -4173,8 +4184,8 @@ function file_edit_formvue_type_template_id_78133a66_render(_ctx, _cache, $props
         [external_commonjs_vue_commonjs2_vue_root_Vue_.vModelText, _ctx.form.subtitle]
       ])
     ]),
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_78133a66_hoisted_14, [
-      file_edit_formvue_type_template_id_78133a66_hoisted_15,
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_90373e08_hoisted_14, [
+      file_edit_formvue_type_template_id_90373e08_hoisted_15,
       (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withDirectives)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("textarea", {
         rows: "2",
         id: "description_input",
@@ -4184,9 +4195,9 @@ function file_edit_formvue_type_template_id_78133a66_render(_ctx, _cache, $props
         [external_commonjs_vue_commonjs2_vue_root_Vue_.vModelText, _ctx.form.description]
       ])
     ]),
-    file_edit_formvue_type_template_id_78133a66_hoisted_16,
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_78133a66_hoisted_17, [
-      file_edit_formvue_type_template_id_78133a66_hoisted_18,
+    file_edit_formvue_type_template_id_90373e08_hoisted_16,
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_90373e08_hoisted_17, [
+      file_edit_formvue_type_template_id_90373e08_hoisted_18,
       (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withDirectives)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("input", {
         id: "customsort_input",
         class: ["form-input col-4", {'is-error': $options.errors.customsort}],
@@ -4196,7 +4207,7 @@ function file_edit_formvue_type_template_id_78133a66_render(_ctx, _cache, $props
         [external_commonjs_vue_commonjs2_vue_root_Vue_.vModelText, _ctx.form.customsort]
       ])
     ]),
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_78133a66_hoisted_19, [
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", file_edit_formvue_type_template_id_90373e08_hoisted_19, [
       (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("button", {
         type: "button",
         onClick: _cache[5] || (_cache[5] = (...args) => ($options.submit && $options.submit(...args))),
@@ -4206,7 +4217,7 @@ function file_edit_formvue_type_template_id_78133a66_render(_ctx, _cache, $props
     ])
   ], 32))
 }
-;// CONCATENATED MODULE: ./vue/components/forms/file-edit-form.vue?vue&type=template&id=78133a66
+;// CONCATENATED MODULE: ./vue/components/forms/file-edit-form.vue?vue&type=template&id=90373e08
 
 ;// CONCATENATED MODULE: ./vue/filters.js
 
@@ -4275,9 +4286,123 @@ function formatFilesize (size, sep) {
 
 
 
-file_edit_formvue_type_script_lang_js.render = file_edit_formvue_type_template_id_78133a66_render
+file_edit_formvue_type_script_lang_js.render = file_edit_formvue_type_template_id_90373e08_render
 
 /* harmony default export */ const file_edit_form = (file_edit_formvue_type_script_lang_js);
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/forms/folder-edit-form.vue?vue&type=template&id=3e0187ca
+
+
+const folder_edit_formvue_type_template_id_3e0187ca_hoisted_1 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", {
+  class: "divider",
+  "data-content": "Metadaten des Ordners"
+}, null, -1)
+const folder_edit_formvue_type_template_id_3e0187ca_hoisted_2 = { class: "form-group" }
+const folder_edit_formvue_type_template_id_3e0187ca_hoisted_3 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "title_input" }, "Titel", -1)
+const folder_edit_formvue_type_template_id_3e0187ca_hoisted_4 = { class: "form-group" }
+const folder_edit_formvue_type_template_id_3e0187ca_hoisted_5 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("label", { for: "description_input" }, "Beschreibung", -1)
+const folder_edit_formvue_type_template_id_3e0187ca_hoisted_6 = { class: "form-group" }
+
+function folder_edit_formvue_type_template_id_3e0187ca_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)("form", {
+    action: "/",
+    onSubmit: _cache[4] || (_cache[4] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)(() => {}, ["prevent"]))
+  }, [
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", null, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)($props.folderInfo.path), 1),
+    folder_edit_formvue_type_template_id_3e0187ca_hoisted_1,
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", folder_edit_formvue_type_template_id_3e0187ca_hoisted_2, [
+      folder_edit_formvue_type_template_id_3e0187ca_hoisted_3,
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withDirectives)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("input", {
+        id: "title_input",
+        class: ["form-input", {'is-error': $options.errors.title}],
+        "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => (_ctx.form.title = $event)),
+        autocomplete: "off"
+      }, null, 2), [
+        [external_commonjs_vue_commonjs2_vue_root_Vue_.vModelText, _ctx.form.title]
+      ])
+    ]),
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", folder_edit_formvue_type_template_id_3e0187ca_hoisted_4, [
+      folder_edit_formvue_type_template_id_3e0187ca_hoisted_5,
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withDirectives)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("textarea", {
+        rows: "2",
+        id: "description_input",
+        class: ["form-input", {'is-error': $options.errors.description}],
+        "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => (_ctx.form.description = $event))
+      }, null, 2), [
+        [external_commonjs_vue_commonjs2_vue_root_Vue_.vModelText, _ctx.form.description]
+      ])
+    ]),
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("div", folder_edit_formvue_type_template_id_3e0187ca_hoisted_6, [
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createVNode)("button", {
+        type: "button",
+        onClick: _cache[3] || (_cache[3] = (...args) => ($options.submit && $options.submit(...args))),
+        class: ["btn btn-success col-12", {'loading': _ctx.loading}],
+        disabled: _ctx.loading
+      }, "Änderungen speichern ", 10, ["disabled"])
+    ])
+  ], 32))
+}
+;// CONCATENATED MODULE: ./vue/components/forms/folder-edit-form.vue?vue&type=template&id=3e0187ca
+
+;// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/forms/folder-edit-form.vue?vue&type=script&lang=js
+
+
+
+/* harmony default export */ const folder_edit_formvue_type_script_lang_js = ({
+  name: 'folder-edit-form',
+  emits: ['response-received'],
+  props: {
+    initialData: {type: Object, default: {}},
+    folderInfo: {type: Object, default: {}},
+    url: {type: String, default: ""}
+  },
+  data: () => ({
+    form: {},
+    response: {},
+    loading: false
+  }),
+  computed: {
+    errors() {
+      return this.response ? (this.response.errors || {}) : {};
+    },
+    message() {
+      return this.response ? this.response.message : "";
+    }
+  },
+  watch: {
+    initialData(newValue) {
+      this.form = Object.assign({}, this.form, newValue);
+    }
+  },
+  methods: {
+    async submit() {
+      this.loading = true;
+
+      /* avoid strings "null" with null values */
+
+      let formData = {};
+
+      Object.keys(this.form).forEach(key => {
+        if (this.form[key] !== null) {
+          formData[key] = this.form[key];
+        }
+      });
+
+      this.response = await SimpleFetch(this.url, 'POST', {}, JSON.stringify(formData));
+      this.$emit('response-received', this.response);
+      this.loading = false;
+    }
+  }
+});
+
+;// CONCATENATED MODULE: ./vue/components/forms/folder-edit-form.vue?vue&type=script&lang=js
+ 
+;// CONCATENATED MODULE: ./vue/components/forms/folder-edit-form.vue
+
+
+
+folder_edit_formvue_type_script_lang_js.render = folder_edit_formvue_type_template_id_3e0187ca_render
+
+/* harmony default export */ const folder_edit_form = (folder_edit_formvue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./vue/util/promised-xhr.js
 function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout = null, progressCallback = null, cancelToken = null) {
 
@@ -4346,6 +4471,7 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
 
 
 
+
 /* harmony default export */ const filemanagervue_type_script_lang_js = ({
   name: 'filemanager',
   components: {
@@ -4355,6 +4481,7 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
     'confirm': vx_vue_confirm,
     'alert': vx_vue_alert,
     'file-edit-form': file_edit_form,
+    'folder-edit-form': folder_edit_form,
     'filemanager-add': filemanager_add,
     'filemanager-search': filemanager_search,
     'filemanager-actions': filemanager_actions,
@@ -4373,9 +4500,10 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
       indicateDrag: false,
       upload: { files: [], progressing: false, cancelToken: {} },
       progress: { total: null, loaded: null, file: null },
-      showEditForm: false,
+      showFileForm: false,
+      showFolderForm: false,
       editFormData: {},
-      editFileInfo: {}
+      editMetaData: {}
     }
   },
 
@@ -4477,10 +4605,17 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
       }
     },
     async editFile(row) {
-      this.showEditForm = true;
+      this.showFileForm = true;
       let response = await SimpleFetch(url_query.create(this.routes.getFile, {id: row.id}));
       this.editFormData = response.form || {};
-      this.editFileInfo = response.fileInfo || {};
+      this.editMetaData = response.fileInfo || {};
+      this.editFormData.id = row.id;
+    },
+    async editFolder(row) {
+      this.showFolderForm = true;
+      let response = await SimpleFetch(url_query.create(this.routes.getFolder, {id: row.id}));
+      this.editFormData = response.form || {};
+      this.editMetaData = response.folderInfo || {};
       this.editFormData.id = row.id;
     },
     async delFile(row) {
@@ -4645,7 +4780,7 @@ function PromisedXhr(url, method = 'GET', headers = {}, payload = null, timeout 
 
 
 
-filemanagervue_type_script_lang_js.render = filemanagervue_type_template_id_2953e4d8_render
+filemanagervue_type_script_lang_js.render = filemanagervue_type_template_id_42f6cf2c_render
 
 /* harmony default export */ const filemanager = (filemanagervue_type_script_lang_js);
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/cache-loader/dist/cjs.js??ruleSet[0].use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[1]!./vue/components/vx-vue/tab.vue?vue&type=template&id=e613b9ee

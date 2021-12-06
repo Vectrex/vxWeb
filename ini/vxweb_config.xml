@@ -62,6 +62,8 @@
 		<route id="file_del" controller="admin/files" method="fileDel" auth="privileged" request_methods="DELETE" />
 		<route id="file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
 		<route id="folder_read" controller="admin/files" method="folderRead" auth="privileged" />
+		<route id="folder_get" controller="admin/files" method="folderGet" auth="privileged" />
+		<route id="folder_update" controller="admin/files" method="folderUpdate" auth="privileged" request_methods="POST" />
 		<route id="folder_add" controller="admin/files" method="folderAdd" auth="privileged" request_methods="POST" />
 		<route id="folder_rename" controller="admin/files" method="folderRename" auth="privileged" request_methods="POST" />
 		<route id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />

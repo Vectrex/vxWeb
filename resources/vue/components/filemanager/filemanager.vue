@@ -139,20 +139,27 @@
         <slot :name="name" v-bind="slotData"/>
       </template>
     </sortable>
-    <div class="modal active" v-if="showEditForm">
+    <div class="modal active" v-if="showFileForm || showFolderForm">
       <div class="modal-overlay"></div>
       <div class="modal-container">
         <div class="modal-header">
           <a href="#close" class="btn btn-clear float-right" aria-label="Close"
-             @click.prevent="showEditForm = false"></a>
+             @click.prevent="showFileForm = showFolderForm = false"></a>
         </div>
         <div class="modal-body">
           <file-edit-form
               :initial-data="editFormData"
-              :file-info="editFileInfo"
+              :file-info="editMetaData"
               :url="routes.updateFile"
               @response-received="response => $emit('response-received', response)"
-              ref="editForm"
+              v-if="showFileForm"
+          />
+          <folder-edit-form
+              :initial-data="editFormData"
+              :folder-info="editMetaData"
+              :url="routes.updateFolder"
+              @response-received="response => $emit('response-received', response)"
+              v-if="showFolderForm"
           />
         </div>
       </div>
@@ -174,6 +181,7 @@ import CircularProgress from '../circular-progress';
 import Confirm from '../vx-vue/confirm';
 import Alert from '../vx-vue/alert';
 import FileEditForm from '../forms/file-edit-form';
+import FolderEditForm from '../forms/folder-edit-form';
 import SimpleFetch from "../../util/simple-fetch";
 import PromisedXhr from "../../util/promised-xhr";
 import UrlQuery from "../../util/url-query";
@@ -190,6 +198,7 @@ export default {
     'confirm': Confirm,
     'alert': Alert,
     'file-edit-form': FileEditForm,
+    'folder-edit-form': FolderEditForm,
     'filemanager-add': FilemanagerAdd,
     'filemanager-search': FilemanagerSearch,
     'filemanager-actions': FilemanagerActions,
@@ -208,9 +217,10 @@ export default {
       indicateDrag: false,
       upload: { files: [], progressing: false, cancelToken: {} },
       progress: { total: null, loaded: null, file: null },
-      showEditForm: false,
+      showFileForm: false,
+      showFolderForm: false,
       editFormData: {},
-      editFileInfo: {}
+      editMetaData: {}
     }
   },
 
@@ -312,10 +322,17 @@ export default {
       }
     },
     async editFile(row) {
-      this.showEditForm = true;
+      this.showFileForm = true;
       let response = await SimpleFetch(UrlQuery.create(this.routes.getFile, {id: row.id}));
       this.editFormData = response.form || {};
-      this.editFileInfo = response.fileInfo || {};
+      this.editMetaData = response.fileInfo || {};
+      this.editFormData.id = row.id;
+    },
+    async editFolder(row) {
+      this.showFolderForm = true;
+      let response = await SimpleFetch(UrlQuery.create(this.routes.getFolder, {id: row.id}));
+      this.editFormData = response.form || {};
+      this.editMetaData = response.folderInfo || {};
       this.editFormData.id = row.id;
     },
     async delFile(row) {
