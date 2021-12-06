@@ -144,17 +144,15 @@ class InstallerController extends Controller {
      */
     private function writeDbStructure(\PDO $connection): void
     {
-	    $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
-	    $path = Application::getInstance()->getRootPath() . 'resources' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR;
-        $dump = @file_get_contents( $path . $drivername . '_structure.sql');
+        $drivername = strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
+        $path = Application::getInstance()->getRootPath() . 'resources' . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR;
+        $dump = @file_get_contents($path . $drivername . '_structure.sql');
 
-        if(false === $dump) {
+        if (false === $dump) {
             throw new \RuntimeException($drivername . '_structure.sql not found.');
         }
 
-        $connection->beginTransaction();
         $connection->exec($dump);
-        $connection->commit();
     }
 
     /**
