@@ -26,7 +26,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.9.0 2021-12-06
+ * @version 1.9.1 2021-12-07
  *
  * @todo compatibility checks on windows systems
  */
@@ -88,9 +88,9 @@ class MetaFolder
 	private bool $obscureFiles;
 
 	/**
-	 * @var MetaFile[]
+	 * @var MetaFile[]|null
 	 */
-	private array $metaFiles = [];
+	private ?array $metaFiles = null;
 
     /**
      * retrieve metafolder instance by either primary key of db entry
@@ -364,7 +364,7 @@ class MetaFolder
      */
 	public function getMetaFiles(bool $force = false): array
     {
-		if(!isset($this->metaFiles) || $force) {
+		if($this->metaFiles === null || $force) {
 			$this->metaFiles = [];
 
 			foreach(
