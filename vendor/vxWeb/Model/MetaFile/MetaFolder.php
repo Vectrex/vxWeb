@@ -26,7 +26,7 @@ use vxWeb\Model\MetaFile\Exception\MetaFolderException;
  *
  * @author Gregor Kofler
  *
- * @version 1.9.1 2021-12-07
+ * @version 1.9.2 2021-12-08
  *
  * @todo compatibility checks on windows systems
  */
@@ -391,13 +391,12 @@ class MetaFolder
 	public function getMetaImages(bool $force = false): array
     {
         $files = $this->getMetaFiles($force);
-        array_filter(
+        return array_filter(
             $files,
             static function($file) {
                 return $file->isWebImage();
             }
         );
-        return $files;
     }
 
     /**
