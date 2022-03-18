@@ -30,6 +30,6 @@
     "last 3 safari versions"
   ],
   "dependencies": {
-    "ckeditor4": "^4.16.0"
+    "ckeditor4": "^4.18.0"
   }
 }
