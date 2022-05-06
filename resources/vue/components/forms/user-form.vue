@@ -1,4 +1,4 @@
-<template>
+ <template>
     <form action="/" class="form-horizontal" @submit.prevent>
 
         <div class="form-sect">
