@@ -2,11 +2,14 @@
   "name": "vxweb",
   "scripts": {
     "vue-backend-build": "vue-cli-service build --no-clean --target lib --dest 'dist/vue' --name vxweb vue/build/vxweb.js",
-    "vue-sample-build": "vue-cli-service build --no-clean --target lib --dest 'dist/vue' --name sample vue/build/sample.js"
+    "vue-sample-build": "vue-cli-service build --no-clean --target lib --dest 'dist/vue' --name sample vue/build/sample.js",
+    "vite-dev": "vite",
+    "vite-build": "vite build",
+    "vite-serve": "vite preview"
   },
   "devDependencies": {
-    "@vue/cli-service": "^5.0.0-alpha.8",
-    "@vue/compiler-sfc": "^3.0.11",
+    "@vue/cli-service": "^5.0.0-rc.3",
+    "@vue/compiler-sfc": "^3.2.33",
     "browserslist": "^4.16.3",
     "gulp": "latest",
     "gulp-autoprefixer": "latest",
@@ -19,9 +22,11 @@
     "sass-loader": "^10.1.1",
     "spectre.css": "^0.5.9",
     "style-resources-loader": "^1.4.1",
-    "vue": "^3.0.11",
+    "vue": "^3.2.33",
     "vue-cli-plugin-style-resources-loader": "~0.1.5",
-    "vue-slicksort": "^2.0.0-alpha.4"
+    "vue-slicksort": "^2.0.0-alpha.4",
+    "vite": "^2.9.8",
+    "@vitejs/plugin-vue": "^2.3.2"
   },
   "browserslist": [
     "last 3 chrome versions",
