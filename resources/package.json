@@ -8,6 +8,7 @@
     "vite-serve": "vite preview"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.2",
     "@vue/cli-service": "^5.0.0-rc.3",
     "@vue/compiler-sfc": "^3.2.33",
     "browserslist": "^4.16.3",
@@ -22,11 +23,14 @@
     "sass-loader": "^10.1.1",
     "spectre.css": "^0.5.9",
     "style-resources-loader": "^1.4.1",
+    "vite": "^2.9.8",
     "vue": "^3.2.33",
     "vue-cli-plugin-style-resources-loader": "~0.1.5",
     "vue-slicksort": "^2.0.0-alpha.4",
-    "vite": "^2.9.8",
-    "@vitejs/plugin-vue": "^2.3.2"
+    "vx-vue": "^0.2.1",
+    "postcss": "^8.4.13",
+    "tailwindcss": "^3.0.24",
+    "@tailwindcss/forms": "^0.5.1"
   },
   "browserslist": [
     "last 3 chrome versions",

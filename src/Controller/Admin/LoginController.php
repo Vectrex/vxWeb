@@ -85,7 +85,7 @@ class LoginController extends Controller
 
 			return new JsonResponse(['error' => true, 'message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);
 		}
-
+        return new Response(SimpleTemplate::create('admin/layout_without_menu.php')->assign('csrf_token', (new CsrfTokenManager())->refreshToken('login'))->display());
         return new Response(SimpleTemplate::create('admin/login.php')->assign('csrf_token', (new CsrfTokenManager())->refreshToken('login'))->display());
 	}
 }
