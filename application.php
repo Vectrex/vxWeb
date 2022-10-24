@@ -68,10 +68,15 @@ try {
 }
 catch(HttpException $e) {
     try {
-        $tpl = SimpleTemplate::create('errordocs/' . $e->getStatusCode() . '.php');
+        $tpl = SimpleTemplate::create('errordocs/' . $e->getStatusCode() . '.php')->assign('exception', $e);
     }
     catch(SimpleTemplateException $ste) {
-        $tpl = SimpleTemplate::create()->setRawContents('<h1>' . $e->getStatusCode() . '</h1>');
+        try {
+            $tpl = SimpleTemplate::create('errordocs/catchall.php')->assign('exception', $e);
+        }
+        catch(SimpleTemplateException $ste) {
+            $tpl = SimpleTemplate::create()->setRawContents('<h1>' . $e->getStatusCode() . '</h1>');
+        }
     }
 
     (new Response($tpl->display(), $e->getStatusCode()))->send();
