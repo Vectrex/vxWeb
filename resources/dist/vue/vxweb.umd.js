@@ -5917,36 +5917,36 @@ function profile_formvue_type_template_id_1e77d4c6_render(_ctx, _cache, $props, 
 const profile_form_exports_ = /*#__PURE__*/(0,exportHelper/* default */.Z)(profile_formvue_type_script_lang_js, [['render',profile_formvue_type_template_id_1e77d4c6_render]])
 
 /* harmony default export */ const profile_form = (profile_form_exports_);
-;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vue/components/forms/user-form.vue?vue&type=template&id=7f01d0af
+;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vue/components/forms/user-form.vue?vue&type=template&id=dfcbcf7a
 
 
-const user_formvue_type_template_id_7f01d0af_hoisted_1 = { class: "form-sect" }
-const user_formvue_type_template_id_7f01d0af_hoisted_2 = { class: "form-group" }
-const user_formvue_type_template_id_7f01d0af_hoisted_3 = ["for"]
-const user_formvue_type_template_id_7f01d0af_hoisted_4 = { class: "col-9" }
-const user_formvue_type_template_id_7f01d0af_hoisted_5 = {
+const user_formvue_type_template_id_dfcbcf7a_hoisted_1 = { class: "form-sect" }
+const user_formvue_type_template_id_dfcbcf7a_hoisted_2 = { class: "form-group" }
+const user_formvue_type_template_id_dfcbcf7a_hoisted_3 = ["for"]
+const user_formvue_type_template_id_dfcbcf7a_hoisted_4 = { class: "col-9" }
+const user_formvue_type_template_id_dfcbcf7a_hoisted_5 = {
   key: 0,
   class: "form-input-hint vx-error-box error"
 }
-const user_formvue_type_template_id_7f01d0af_hoisted_6 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", { class: "divider" }, null, -1)
-const user_formvue_type_template_id_7f01d0af_hoisted_7 = { class: "form-base" }
-const user_formvue_type_template_id_7f01d0af_hoisted_8 = { class: "form-group off-3" }
-const user_formvue_type_template_id_7f01d0af_hoisted_9 = ["disabled"]
+const user_formvue_type_template_id_dfcbcf7a_hoisted_6 = /*#__PURE__*/(0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", { class: "divider" }, null, -1)
+const user_formvue_type_template_id_dfcbcf7a_hoisted_7 = { class: "form-base" }
+const user_formvue_type_template_id_dfcbcf7a_hoisted_8 = { class: "form-group off-3" }
+const user_formvue_type_template_id_dfcbcf7a_hoisted_9 = ["disabled"]
 
-function user_formvue_type_template_id_7f01d0af_render(_ctx, _cache, $props, $setup, $data, $options) {
+function user_formvue_type_template_id_dfcbcf7a_render(_ctx, _cache, $props, $setup, $data, $options) {
   return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementBlock)("form", {
     action: "/",
     class: "form-horizontal",
     onSubmit: _cache[1] || (_cache[1] = (0,external_commonjs_vue_commonjs2_vue_root_Vue_.withModifiers)(() => {}, ["prevent"]))
   }, [
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", user_formvue_type_template_id_7f01d0af_hoisted_1, [
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", user_formvue_type_template_id_dfcbcf7a_hoisted_1, [
       ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(true), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementBlock)(external_commonjs_vue_commonjs2_vue_root_Vue_.Fragment, null, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.renderList)(_ctx.elements, (element) => {
-        return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementBlock)("div", user_formvue_type_template_id_7f01d0af_hoisted_2, [
+        return ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementBlock)("div", user_formvue_type_template_id_dfcbcf7a_hoisted_2, [
           (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("label", {
             class: (0,external_commonjs_vue_commonjs2_vue_root_Vue_.normalizeClass)(["form-label col-3",  { required: element.required, 'text-error': $options.errors[element.model] }]),
             for: element.model + '_' + element.type
-          }, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)(element.label), 11, user_formvue_type_template_id_7f01d0af_hoisted_3),
-          (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", user_formvue_type_template_id_7f01d0af_hoisted_4, [
+          }, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)(element.label), 11, user_formvue_type_template_id_dfcbcf7a_hoisted_3),
+          (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", user_formvue_type_template_id_dfcbcf7a_hoisted_4, [
             ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createBlock)((0,external_commonjs_vue_commonjs2_vue_root_Vue_.resolveDynamicComponent)(element.type || 'form-input'), {
               id: element.model + '_' + element.type,
               name: element.model,
@@ -5955,27 +5955,27 @@ function user_formvue_type_template_id_7f01d0af_render(_ctx, _cache, $props, $se
               options: element.options
             }, null, 8, ["id", "name", "modelValue", "onUpdate:modelValue", "options"])),
             ($options.errors[element.model])
-              ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementBlock)("p", user_formvue_type_template_id_7f01d0af_hoisted_5, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)($options.errors[element.model]), 1))
+              ? ((0,external_commonjs_vue_commonjs2_vue_root_Vue_.openBlock)(), (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementBlock)("p", user_formvue_type_template_id_dfcbcf7a_hoisted_5, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)($options.errors[element.model]), 1))
               : (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createCommentVNode)("", true)
           ])
         ]))
       }), 256))
     ]),
-    user_formvue_type_template_id_7f01d0af_hoisted_6,
-    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", user_formvue_type_template_id_7f01d0af_hoisted_7, [
-      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", user_formvue_type_template_id_7f01d0af_hoisted_8, [
+    user_formvue_type_template_id_dfcbcf7a_hoisted_6,
+    (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", user_formvue_type_template_id_dfcbcf7a_hoisted_7, [
+      (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("div", user_formvue_type_template_id_dfcbcf7a_hoisted_8, [
         (0,external_commonjs_vue_commonjs2_vue_root_Vue_.createElementVNode)("button", {
           name: "submit_user",
           type: "button",
           class: (0,external_commonjs_vue_commonjs2_vue_root_Vue_.normalizeClass)(["btn btn-success", {'loading': _ctx.loading}]),
           disabled: _ctx.loading,
           onClick: _cache[0] || (_cache[0] = (...args) => ($options.submit && $options.submit(...args)))
-        }, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)(_ctx.form.id ? 'Daten übernehmen' : 'User anlegen'), 11, user_formvue_type_template_id_7f01d0af_hoisted_9)
+        }, (0,external_commonjs_vue_commonjs2_vue_root_Vue_.toDisplayString)(_ctx.form.id ? 'Daten übernehmen' : 'User anlegen'), 11, user_formvue_type_template_id_dfcbcf7a_hoisted_9)
       ])
     ])
   ], 32))
 }
-;// CONCATENATED MODULE: ./vue/components/forms/user-form.vue?vue&type=template&id=7f01d0af
+;// CONCATENATED MODULE: ./vue/components/forms/user-form.vue?vue&type=template&id=dfcbcf7a
 
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vue/components/vx-vue/formelements/form-select.vue?vue&type=template&id=7295af77
 
@@ -6090,7 +6090,7 @@ const form_select_exports_ = /*#__PURE__*/(0,exportHelper/* default */.Z)(form_s
 
 
 ;
-const user_form_exports_ = /*#__PURE__*/(0,exportHelper/* default */.Z)(user_formvue_type_script_lang_js, [['render',user_formvue_type_template_id_7f01d0af_render]])
+const user_form_exports_ = /*#__PURE__*/(0,exportHelper/* default */.Z)(user_formvue_type_script_lang_js, [['render',user_formvue_type_template_id_dfcbcf7a_render]])
 
 /* harmony default export */ const user_form = (user_form_exports_);
 ;// CONCATENATED MODULE: ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vue/components/forms/article-form.vue?vue&type=template&id=2a5a57c8
