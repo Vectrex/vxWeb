@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import SimpleTree from '../vx-vue/simple-tree/simple-tree';
+  import SimpleTree from '../vx-vue/simple-tree/simple-tree.vue';
   import SimpleFetch from "../../util/simple-fetch";
   import UrlQuery from "../../util/url-query";
 

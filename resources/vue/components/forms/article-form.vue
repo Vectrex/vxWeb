@@ -24,13 +24,13 @@
 </template>
 <script>
 
-import SimpleFetch from "../../util/simple-fetch.js";
-import VueCkeditor from "../vue-ckeditor";
-import Datepicker from "../vx-vue/formelements/datepicker";
-import FormInput from "../vx-vue/formelements/form-input";
-import FormTextarea from "../vx-vue/formelements/form-textarea";
-import FormSelect from "../vx-vue/formelements/form-select";
-import FormCheckbox from "../vx-vue/formelements/form-checkbox";
+import SimpleFetch from "../../util/simple-fetch";
+import VueCkeditor from "../vue-ckeditor.vue";
+import Datepicker from "../vx-vue/formelements/datepicker.vue";
+import FormInput from "../vx-vue/formelements/form-input.vue";
+import FormTextarea from "../vx-vue/formelements/form-textarea.vue";
+import FormSelect from "../vx-vue/formelements/form-select.vue";
+import FormCheckbox from "../vx-vue/formelements/form-checkbox.vue";
 
 export default {
   components: {

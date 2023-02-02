@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import DateInput from './date-input';
+import DateInput from './date-input.vue';
 
 export default {
   name: 'date-picker',
