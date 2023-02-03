@@ -47,9 +47,9 @@
 </template>
 
 <script>
-    import SimpleFetch from "../../util/simple-fetch.js";
-    import VueCkeditor from "../vue-ckeditor";
-    import RevisionTable from "./revision-table";
+    import SimpleFetch from "../../util/simple-fetch";
+    import VueCkeditor from "../vue-ckeditor.vue";
+    import RevisionTable from "./revision-table.vue";
 
     export default {
         name: 'page-form',

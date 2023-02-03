@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import SimpleTreeBranch from './simple-tree-branch';
+    import SimpleTreeBranch from './simple-tree-branch.vue';
 
     export default {
         name: 'simple-tree',

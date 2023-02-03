@@ -171,21 +171,21 @@
 </template>
 
 <script>
-import FilemanagerAdd from './filemanager-add';
-import FilemanagerActions from './filemanager-actions';
-import FilemanagerSearch from './filemanager-search';
-import FilemanagerBreadcrumbs from './filemanager-breadcrumbs';
-import FilemanagerFolderTree from './filemanager-folder-tree';
-import Sortable from '../vx-vue/sortable';
-import CircularProgress from '../circular-progress';
-import Confirm from '../vx-vue/confirm';
-import Alert from '../vx-vue/alert';
-import FileEditForm from '../forms/file-edit-form';
-import FolderEditForm from '../forms/folder-edit-form';
+import FilemanagerAdd from './filemanager-add.vue';
+import FilemanagerActions from './filemanager-actions.vue';
+import FilemanagerSearch from './filemanager-search.vue';
+import FilemanagerBreadcrumbs from './filemanager-breadcrumbs.vue';
+import FilemanagerFolderTree from './filemanager-folder-tree.vue';
+import Sortable from '../vx-vue/sortable.vue';
+import CircularProgress from '../circular-progress.vue';
+import Confirm from '../vx-vue/confirm.vue';
+import Alert from '../vx-vue/alert.vue';
+import FileEditForm from '../forms/file-edit-form.vue';
+import FolderEditForm from '../forms/folder-edit-form.vue';
 import SimpleFetch from "../../util/simple-fetch";
 import PromisedXhr from "../../util/promised-xhr";
 import UrlQuery from "../../util/url-query";
-import FolderTree from "./filemanager-folder-tree";
+import FolderTree from "./filemanager-folder-tree.vue";
 import { formatFilesize } from '../../filters';
 import { Focus } from "../../directives";
 

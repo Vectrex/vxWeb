@@ -12,4 +12,4 @@
 <?php else: ?>
 <script src="https://unpkg.com/vue@3.0.11/dist/vue.global.prod.js"></script>
 <?php endif; ?>
-<script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/vxweb.umd.min.js') ?>"></script>
+<script src="<?= \vxPHP\Application\Application::getInstance()->asset('js/vue/vxweb.umd.js') ?>"></script>

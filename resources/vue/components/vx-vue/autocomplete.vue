@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import FormInput from './formelements/form-input';
+  import FormInput from './formelements/form-input.vue';
 
   let uniqueId = function() {
     let counter = 0;

@@ -1,5 +1,5 @@
 let gulp = require('gulp');
-let sass = require('gulp-sass');
+let sass = require('gulp-sass')(require('sass'));
 let tildeImporter = require('node-sass-tilde-importer');
 let cleancss = require('gulp-clean-css');
 let csscomb = require('gulp-csscomb');
@@ -19,7 +19,7 @@ gulp.task('scssBuild', () => {
     return gulp.src(scssPaths.src)
         .pipe(sass(
             {
-                outputStyle: 'compact',
+//                outputStyle: 'compact',
                 precision: 10,
                 importer: tildeImporter
             })
