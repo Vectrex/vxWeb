@@ -10,11 +10,53 @@
     [v-cloak] {
         @apply hidden;
     }
+
+    @font-face {
+        font-family: 'IBM Plex Sans';
+        font-style: normal;
+        font-weight: 400;
+        src: local(''),
+        url('@/assets/fonts/IBM Plex Sans/IBMPlexSans-Regular.woff2') format('woff2'),
+        url('@/assets/fonts/IBM Plex Sans/IBMPlexSans-Regular.woff') format('woff');
+    }
+    @font-face {
+        font-family: 'IBM Plex Sans';
+        font-style: italic;
+        font-weight: 400;
+        src: local(''),
+        url('@/assets/fonts/IBM Plex Sans/IBMPlexSans-Italic.woff2') format('woff2'),
+        url('@/assets/fonts/IBM Plex Sans/IBMPlexSans-Italic.woff') format('woff');
+    }
+    @font-face {
+        font-family: 'IBM Plex Sans';
+        font-style: normal;
+        font-weight: 700;
+        src: local(''),
+        url('@/assets/fonts/IBM Plex Sans/IBMPlexSans-Bold.woff2') format('woff2'),
+        url('@/assets/fonts/IBM Plex Sans/IBMPlexSans-Bold.woff') format('woff');
+    }
+    @font-face {
+        font-family: 'IBM Plex Sans';
+        font-style: italic;
+        font-weight: 700;
+        src: local(''),
+        url('@/assets/fonts/IBM Plex Sans/IBMPlexSans-BoldItalic.woff2') format('woff2'),
+        url('@/assets/fonts/IBM Plex Sans/IBMPlexSans-BoldItalic.woff') format('woff');
+    }
 }
 
 @layer components {
     .autocomplete-item[aria-selected="true"] {
         @apply bg-vxvue-700 text-white;
+    }
+    .button {
+        @apply inline-flex items-center justify-center px-8 py-2 border border-transparent text-base font-medium rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2;
+    }
+    .disabled {
+        @apply text-stone-700 !bg-stone-200 hover:!text-stone-700 hover:!bg-stone-300;
+    }
+    .chip {
+        @apply rounded-l-full rounded-r-full bg-stone-300 py-1 px-4;
     }
 }
 
@@ -34,7 +76,14 @@
     --vxvue-color-900: #000000;
 
     --vxvue-highlight: #ff9400;
-    --vxvue-highlight-200: #ffe4bf;
+    --vxvue-highlight-50: #FFE1B8;
+    --vxvue-highlight-100: #FFD8A3;
+    --vxvue-highlight-200: #FFC77A;
+    --vxvue-highlight-300: #FFB652;
+    --vxvue-highlight-400: #FFA529;
     --vxvue-highlight-500: var(--vxvue-highlight);
-    --vxvue-highlight-800: #995900;
+    --vxvue-highlight-600: #C77300;
+    --vxvue-highlight-700: #8F5300;
+    --vxvue-highlight-800: #573200;
+    --vxvue-highlight-900: #1F1200;
 }

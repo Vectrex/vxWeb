@@ -1,33 +1,25 @@
 {
   "name": "vxweb",
   "scripts": {
-    "vue-backend-build": "vue-cli-service build --no-clean --target lib --dest 'dist/vue' --name vxweb vue/build/vxweb.js",
-    "vite-backend-build": "vite build",
-    "vue-sample-build": "vue-cli-service build --no-clean --target lib --dest 'dist/vue' --name sample vue/build/sample.js"
+    "serve": "vite preview",
+    "build": "vite build",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.0.13",
+    "ckeditor4": "^4.20.1",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6",
+    "vue-slicksort": "^2.0.3"
   },
   "devDependencies": {
-    "vite": "^4.1.0",
+    "@tailwindcss/forms": "^0.5.3",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/cli-service": "^5.0.8",
     "@vue/compiler-sfc": "^3.2.47",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
-    "gulp": "latest",
-    "gulp-autoprefixer": "latest",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-csscomb": "^3.1.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^5.1.0",
-    "node-sass-tilde-importer": "^1.0.2",
-    "sass": "^1.58.0",
-    "sass-loader": "^13.2.0",
-    "spectre.css": "^0.5.9",
-    "style-resources-loader": "^1.5.0",
-    "vue-cli-plugin-style-resources-loader": "~0.1.5",
-    "vue-slicksort": "^2.0.3"
-  },
-  "dependencies": {
-    "vue": "^3.2.47",
-    "ckeditor4": "^4.20.1"
+    "tailwindcss": "^3.2.4",
+    "vite": "^4.1.1"
   }
 }

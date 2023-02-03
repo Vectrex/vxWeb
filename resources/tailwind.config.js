@@ -1,13 +1,14 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
-    mode: 'jit',
     content: [
-        './src/**/*.{vue,js,html}',
-        './vue/**/*.vue',
-        './node_modules/vx-vue/src/**/*.vue'
+        './src/**/*.{vue,js,html}'
     ],
-    darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
+            fontFamily: {
+                sans: ['IBM Plex Sans', ...defaultTheme.fontFamily.sans],
+            },
             colors: {
                 'vxvue': {
                     DEFAULT: 'var(--vxvue-color)',
@@ -24,9 +25,6 @@ module.exports = {
                 },
             }
         }
-    },
-    variants: {
-        extend: {},
     },
     plugins: [
         require('@tailwindcss/forms')({strategy: 'class'})
