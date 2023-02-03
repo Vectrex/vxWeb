@@ -6,11 +6,11 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   build: {
-    outDir: resolve(__dirname, 'dist'),
+    outDir: resolve(__dirname, 'dist/vue'),
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(__dirname, 'vue/build/vxweb.js'),
-      name: 'vxWeb',
+      name: 'vxweb',
       // the proper extensions will be added
       fileName: 'vxweb',
     },
