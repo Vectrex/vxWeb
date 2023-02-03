@@ -3,6 +3,9 @@
 $assetsPath = getcwd();
 $rootPath = $assetsPath;
 
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: authorization,content-type");
+
 if(file_exists($rootPath . DIRECTORY_SEPARATOR . 'bootstrap.php')) {
 	require 'bootstrap.php';
 }

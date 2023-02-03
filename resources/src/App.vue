@@ -1,8 +1,16 @@
 <script setup>
   import { computed } from "vue";
+  import MessageToast from "@/components/message-toast.vue";
 </script>
 <template>
   <router-view @notify="notify" @authenticate="authenticate" class="pt-28"/>
+  <message-toast
+      :active="toast.active"
+      :class="toast.css"
+      :message="toast.message"
+      @close="toast.active = false"
+      @timeout="toast.active = false"
+  />
 </template>
 
 <script>
