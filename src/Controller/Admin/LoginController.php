@@ -19,73 +19,47 @@ class LoginController extends Controller
 {
     protected function execute()
     {
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
         $app = Application::getInstance();
-		$admin = $app->getCurrentUser();
 
-		if($admin && $admin->isAuthenticated()) {
+        $username = $bag->get('username');
+        $password = $bag->get('password');
 
-			foreach($app->getConfig()->routes['admin.php'] as $route) {
+        /** @var $throttler BruteforceThrottler */
 
-			    /* @var $route Route */
+         if($app->hasService('bruteforce_throttler')) {
+             $throttler = $app->getService('bruteforce_throttler');
+         }
+         else {
+             $throttler = null;
+         }
 
-				if(in_array($route->getRouteId(), ['login', 'logout', 'auth_violation'])) {
-					continue;
-				}
+        $userProvider = new SessionUserProvider();
+        $userProvider->unsetSessionUser();
 
-				return $this->redirect($route->getUrl());
-			}
-		}
-
-		// form was submitted by XHR
-
-		if($this->request->getMethod() === 'POST') {
-
-            $bag = new ParameterBag(json_decode($this->request->getContent(), true));
-            $app = Application::getInstance();
-
-            $username = $bag->get('username');
-            $password = $bag->get('pwd');
-
-            /** @var $throttler BruteforceThrottler */
-
-             if($app->hasService('bruteforce_throttler')) {
-                 $throttler = $app->getService('bruteforce_throttler');
-             }
-             else {
-                 $throttler = null;
-             }
-
-            $userProvider = new SessionUserProvider();
-			$userProvider->unsetSessionUser();
-
-			if(!(new CsrfTokenManager())->isTokenValid(new CsrfToken('admin', $this->request->headers->get('X-CSRF-Token')))) {
-			    return new JsonResponse(['error' => 1, 'message' => 'Possible malicious login attempt detected.']);
+        try {
+            $admin = $userProvider->instanceUserByUsername($username);
+        }
+        catch(UserException $e) {
+            try {
+                $admin = $userProvider->instanceUserByEmail($username);
             }
-
-			try {
-				$admin = $userProvider->instanceUserByUsername($username);
-			}
-			catch(UserException $e) {
-			    try {
-                    $admin = $userProvider->instanceUserByEmail($username);
-                }
-                catch(UserException $e) {}
+            catch(UserException $e) {
+                $admin = null;
             }
+        }
 
-            if($admin && $admin->authenticate($password)->isAuthenticated()) {
-                if($throttler) {
-                    $throttler->clearAttempts($this->request->getClientIp(), 'admin_login');
-                }
-                return new JsonResponse(['locationHref' => $this->request->getSchemeAndHttpHost() . $app->getRouter()->getRoute('profile')->getUrl()]);
+        if($admin && $admin->authenticate($password)->isAuthenticated()) {
+            if($throttler) {
+                $throttler->clearAttempts($this->request->getClientIp(), 'admin_login');
             }
+            return new JsonResponse(['locationHref' => $this->request->getSchemeAndHttpHost() . $app->getRouter()->getRoute('profile')->getUrl()]);
+        }
 
-			if($throttler) {
-                $throttler->registerAttempt($this->request->getClientIp(), [$username, substr($password, 0, 2) . '...' . substr($password, -2)])->throttle($this->request->getClientIp(), 'admin_login');
-            }
+        if($throttler) {
+            $throttler->registerAttempt($this->request->getClientIp(), [$username, substr($password, 0, 2) . '...' . substr($password, -2)])->throttle($this->request->getClientIp(), 'admin_login');
+        }
 
-			return new JsonResponse(['error' => true, 'message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);
-		}
-        return new Response(SimpleTemplate::create('admin/layout_without_menu.php')->assign('csrf_token', (new CsrfTokenManager())->refreshToken('login'))->display());
-        return new Response(SimpleTemplate::create('admin/login.php')->assign('csrf_token', (new CsrfTokenManager())->refreshToken('login'))->display());
+        return new JsonResponse(['error' => true, 'message' => 'Ungültiger Benutzername oder ungültiges Passwort!']);
 	}
 }

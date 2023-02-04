@@ -5,7 +5,7 @@
 	<routes script="admin.php" default_redirect="auth_violation">
 		<route id="auth_violation" controller="admin/authViolation" />
 
-		<route id="login" controller="admin/login" />
+		<route id="login" controller="admin/login" request_methods="POST" />
 		<route id="logout" controller="admin/logout" />
 
 		<route id="profile" controller="admin/profile" auth="observe_row" />

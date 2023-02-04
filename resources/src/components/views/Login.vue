@@ -60,7 +60,7 @@ export default {
     async submit () {
       if (this.form.username.trim() && this.form.password.trim()) {
         this.busy = true;
-        let response = await SimpleFetch(this.api + "authenticate", 'POST', {}, JSON.stringify(this.form));
+        let response = await SimpleFetch(this.api + "login", 'POST', {}, JSON.stringify(this.form));
         this.busy = false;
 
         if (response.bearerToken) {

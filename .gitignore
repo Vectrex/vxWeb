@@ -4,6 +4,4 @@ vendor
 !vendor/vxWeb
 resources/node_modules
 resources/package-lock.json
-
-resources/js/*
-!resources/vue/
+resources/dist/*
