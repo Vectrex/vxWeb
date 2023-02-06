@@ -20,5 +20,14 @@ else {
 }
 
 // place any custom initialisation code here
+ini_set('session.use_cookies', 0);
+
+$sessionId = \vxWeb\Session\JWTSession::getId(\vxPHP\Http\Request::createFromGlobals());
+
+if ($sessionId === false) {
+    $sessionId = bin2hex(random_bytes(32));
+}
+
+session_id ($sessionId);
 
 require $rootPath . DIRECTORY_SEPARATOR . 'application.php';

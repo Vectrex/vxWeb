@@ -15,22 +15,6 @@ use vxPHP\Routing\Router;
 
 $app = Application::getInstance();
 
-// if autoloading is not handled by composer, add namespaces explicitly 
-
-if(isset($loader)) {
-
-	$loader->addPrefix(
-		'vxWeb',
-		$app->getRootPath() . 'vendor/vxWeb'
-	);
-	
-	$loader->addPrefix(
-		$app->getApplicationNamespace(),
-		$app->getSourcePath()
-	);
-
-}
-
 // set role hierarchy
 
 $app->setRoleHierarchy(new vxWebRoleHierarchy());
@@ -60,11 +44,13 @@ $app->setCurrentRoute($route);
 // render output
 
 try {
-    Controller::createControllerFromRoute(
+    $response = Controller::createControllerFromRoute(
         $route,
         $app->getApplicationNamespace(),
         \vxPHP\Http\Request::createFromGlobals()
-    )->renderResponse();
+    )->getResponse();
+
+    $response->send();
 }
 catch(HttpException $e) {
     try {

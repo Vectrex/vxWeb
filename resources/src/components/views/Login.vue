@@ -39,7 +39,7 @@
 
 <script>
 export default {
-  name: "Login",
+  name: "LoginView",
   emits: ['authenticate', 'notify'],
   inject: ['api'],
   data () {
@@ -65,7 +65,8 @@ export default {
 
         if (response.bearerToken) {
           this.$emit('authenticate', response);
-          this.$router.push( { name: 'dashboard' } );
+          this.$router.push( { name: 'profile' } );
+          sessionStorage.setItem("bearerToken", response.bearerToken);
         }
         else {
           this.$emit('notify', response);

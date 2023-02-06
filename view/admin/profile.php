@@ -15,8 +15,8 @@
 
 <script>
     const MessageToast = window.vxweb.Components.MessageToast;
-    const ProfileForm =  window.vxweb.Components.ProfileForm;
-    const SimpleFetch =  window.vxweb.Util.SimpleFetch;
+    const ProfileForm = window.vxweb.Components.ProfileForm;
+    const SimpleFetch = window.vxweb.Util.SimpleFetch;
 
     Vue.createApp({
 

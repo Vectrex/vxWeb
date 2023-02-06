@@ -26,15 +26,12 @@ class ProfileController extends Controller {
 
 	public function execute(): Response
     {
-        return new Response(
-            SimpleTemplate::create('admin/profile.php')
-                ->display()
-        );
 	}
 
     protected function get(): JsonResponse
     {
         $admin = Application::getInstance()->getCurrentUser();
+
         $notifications = array_filter(
             Notification::getAvailableNotifications($admin->getRoles()[0]->getRoleName()),
             function($notification) {

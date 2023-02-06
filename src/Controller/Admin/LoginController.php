@@ -13,6 +13,7 @@ use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
+use vxWeb\Session\JWTSession;
 use vxWeb\User\SessionUserProvider;
 
 class LoginController extends Controller
@@ -53,7 +54,10 @@ class LoginController extends Controller
             if($throttler) {
                 $throttler->clearAttempts($this->request->getClientIp(), 'admin_login');
             }
-            return new JsonResponse(['locationHref' => $this->request->getSchemeAndHttpHost() . $app->getRouter()->getRoute('profile')->getUrl()]);
+
+            // create new JWT containing session id
+
+            return new JsonResponse(['bearerToken' => JWTSession::createToken(), 'username' => $admin->getUsername()]);
         }
 
         if($throttler) {
