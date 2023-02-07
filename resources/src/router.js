@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from "@/components/views/Login.vue";
+import Users from "@/components/views/Users.vue";
 import Profile from "@/components/views/Profile.vue";
 
 const router = createRouter({
@@ -13,7 +14,18 @@ const router = createRouter({
         {
             name: 'profile',
             path: '/profile',
-            component: Profile
+            component: Profile,
+            meta: {
+                label: 'Mein Profil'
+            }
+        },
+        {
+            name: 'users',
+            path: '/users',
+            component: Users,
+            meta: {
+                label: 'Benutzer'
+            }
         }
     ]
 });

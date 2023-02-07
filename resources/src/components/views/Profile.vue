@@ -5,43 +5,39 @@
 </script>
 
 <template>
-  <h1>Meine Einstellungen</h1>
-
-  <div class="form-sect">
-      <div class="form-sect">
-        <div v-for="element in elements" class="form-group">
-          <label class="form-label col-3" :for="element.model + '_' + (element.type || 'form-input')" :class=" { required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
-          <div class="col-9">
-            <input
-                v-if="!element.type"
-                :id="element.model + '_input'"
-                v-model="form[element.model]"
-            />
-            <password-input
-                v-if="element.type === 'password-input'"
-                :id="element.model + '_' + element.type"
-                v-model="form[element.model]"
-            />
-            <p v-if="errors[element.model]" class="form-input-hint vx-error-box error">{{ errors[element.model] }}</p>
-          </div>
+    <div class="space-y-4">
+      <div v-for="element in elements">
+        <label :for="element.model + '_' + (element.type || 'form-input')" :class=" { required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
+        <div>
+          <input
+              class="form-input w-96"
+              v-if="!element.type"
+              :id="element.model + '_input'"
+              v-model="form[element.model]"
+          />
+          <password-input
+              v-if="element.type === 'password-input'"
+              :id="element.model + '_' + element.type"
+              v-model="form[element.model]"
+              class="w-96"
+          />
+          <p v-if="errors[element.model]" class="text-sm text-red-600">{{ errors[element.model] }}</p>
         </div>
       </div>
-    <input v-model="form['username']" />
     </div>
 
     <template v-if="notifications.length">
-      <div class="divider text-center" data-content="Benachrichtigungen"></div>
 
-      <div class="form-sect off-3">
+      <div>Benachrichtigungen</div>
+
+      <div class="space-y-4">
         <div class="form-group" v-for="notification in notifications">
           <label class="form-switch"><input name="notification[]" v-bind:value="notification.alias" type="checkbox" v-model="form.notifications"><i class="form-icon"></i>{{ notification.label }}</label>
         </div>
       </div>
     </template>
 
-    <div class="divider"></div>
-
-    <div class="form-base">
+    <div class="mt-4 pt-4 border-t border-slate-700">
       <div class="form-group off-3">
         <spinner class="h-5 w-5" v-if="loading" /><button name="submit_profile" type='button' class='button' :disabled="loading" @click="submit">Änderungen speichern</button>
       </div>
