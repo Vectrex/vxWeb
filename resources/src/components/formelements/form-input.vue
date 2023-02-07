@@ -1,7 +1,6 @@
 <template>
     <input
         :value="modelValue"
-        class="form-input"
         @input="$emit('update:modelValue', $event.target.value)"
     >
 </template>

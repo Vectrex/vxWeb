@@ -3,7 +3,7 @@
   import MessageToast from "@/components/message-toast.vue";
 </script>
 <template>
-  <router-view @notify="notify" @authenticate="authenticate" class="pt-28"/>
+  <router-view @notify="notify" @authenticate="authenticate" />
   <message-toast
       :active="toast.active"
       :class="toast.css"
