@@ -11,6 +11,10 @@
 		<route id="profile_data_get" path="profile_data" controller="admin/profile" auth="observe_row" method="get" request_methods="GET" />
 		<route id="profile_data_post" path="profile_data" controller="admin/profile" auth="observe_row" method="post" request_methods="POST" />
 
+		<route id="users_init" controller="admin/users" auth="superadmin" method="init" request_methods="GET" />
+		<route id="user_del" controller="admin/users" path="users/{id}" auth="superadmin" method="del" request_methods="DELETE" />
+
+
 		<route id="pages" controller="admin/pages" auth="superadmin" />
 		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
 		<route id="page_add" controller="admin/pages" auth="superadmin" method="add" />
@@ -25,11 +29,9 @@
 
 		<route id="inline_edit" controller="admin/pages" method="inlineEdit" path="pages/inline" auth="superadmin" request_methods="POST"/>
 
-		<route id="users" controller="admin/users" path="users" auth="superadmin" />
-		<route id="users_init" controller="admin/users" auth="superadmin" method="init" />
+
 		<route id="user_init" controller="admin/users" auth="superadmin" method="editInit" />
 		<route id="user_add" controller="admin/users" auth="superadmin" method="add" />
-		<route id="user_del" controller="admin/users" auth="superadmin" method="del" request_methods="DELETE" />
 		<route id="user_edit" controller="admin/users" auth="superadmin" method="edit" />
 		<route id="user_update" controller="admin/users" auth="superadmin" method="update" request_methods="POST" />
 
@@ -75,15 +77,6 @@
 	<routes script="installer.php">
 		<route id="installer" controller="installer/installer"/>
 	</routes>
-
-	<menus>
-		<menu id="admin" script="admin.php" auth="privileged">
-			<menuentry page="articles" text="Artikel"/>
-			<menuentry page="files" text="Dateien"/>
-			<menuentry page="pages" text="Seiten" auth="superadmin"/>
-			<menuentry page="users" text="User" auth="superadmin"/>
-		</menu>
-	</menus>
 
 	<paths>
 		<path id="mysql_log_path" subdir="log"/>

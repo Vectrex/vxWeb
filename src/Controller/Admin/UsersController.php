@@ -18,18 +18,16 @@ use vxPHP\Security\Password\PasswordEncrypter;
 
 use vxWeb\User\Util;
 
-class UsersController extends Controller {
-
+class UsersController extends Controller
+{
 	protected function execute(): Response
     {
-		return new Response(SimpleTemplate::create('admin/users_list.php')->display());
+        return new Response();
 	}
 
     protected function del (): JsonResponse
     {
-        if(!($id = $this->request->query->getInt('id'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
+        $id = (int) $this->route->getPathParameter('id');
 
         try {
             if(Application::getInstance()->getCurrentUser()->getAttribute('adminid') === $id) {
@@ -41,7 +39,7 @@ class UsersController extends Controller {
             return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return new JsonResponse(['success' => true]);
+        return new JsonResponse(['success' => true, 'id' => $id]);
     }
 
     protected function edit (): Response

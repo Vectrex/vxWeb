@@ -1,7 +1,7 @@
 <script setup>
   import Sortable from "@/components/vx-vue/sortable.vue";
   import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
-  import Confirm from "@/components/vx-vue/confirm.vue";
+  import Alert from "@/components/vx-vue/alert.vue";
   import SimpleFetch from "@/util/simple-fetch";
 </script>
 
@@ -20,6 +20,16 @@
       </template>
     </sortable>
   </div>
+
+  <teleport to="body">
+    <alert
+        ref="delConfirm"
+        :buttons="[
+          { label: 'Löschen!', value: true, 'class': 'button alert' },
+          { label: 'Abbrechen', value: false, 'class': 'button' }
+        ]"
+    />
+  </teleport>
 </template>
 
 <script>
@@ -48,8 +58,20 @@ export default {
     edit (id) {
       console.log(id);
     },
-    del (id) {
-      console.log(id);
+    async del (id) {
+      if (await this.$refs.delConfirm.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
+        let response = await SimpleFetch(this.api + 'users/' + id, 'DELETE');
+        if (response.id) {
+          let ndx = this.users.findIndex(row => row.adminid === response.id);
+          if (ndx !== -1) {
+            this.users.splice(ndx, 1);
+            this.$emit('notify', { message: 'Benutzer wurde erfolgreich gelöscht.', success: true });
+          }
+        }
+        else {
+          this.$emit('notify', { message: response.message || 'Es ist ein Fehler aufgetreten!', success: false });
+        }
+      }
     }
   }
 }
