@@ -39,7 +39,8 @@
 
     <div class="mt-4 pt-4 border-t border-slate-700">
       <div class="form-group off-3">
-        <spinner class="h-5 w-5" v-if="loading" /><button name="submit_profile" type='button' class='button' :disabled="loading" @click="submit">Änderungen speichern</button>
+        <spinner class="h-5 w-5" v-if="loading" />
+        <button name="submit_profile" type='button' class="button success" :disabled="loading" @click="submit">Änderungen speichern</button>
       </div>
     </div>
 </template>

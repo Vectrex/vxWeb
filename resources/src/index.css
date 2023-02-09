@@ -48,11 +48,17 @@
     .button {
         @apply inline-flex items-center justify-center px-8 py-2 border border-transparent text-base font-medium rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2;
     }
+    .button.success {
+        @apply bg-green-600 hover:bg-green-500 focus:ring-green-500 text-white
+    }
     .disabled {
         @apply text-stone-700 !bg-stone-200 hover:!text-stone-700 hover:!bg-stone-300;
     }
     .chip {
         @apply rounded-l-full rounded-r-full bg-stone-300 py-1 px-4;
+    }
+    .icon-link {
+        @apply text-vxvue-700 border-2 p-1 rounded border-vxvue-700 hover:border-vxvue-500 transition duration-300;
     }
 }
 
@@ -82,4 +88,37 @@
     --vxvue-highlight-700: #8F5300;
     --vxvue-highlight-800: #573200;
     --vxvue-highlight-900: #1F1200;
+}
+
+/* animations */
+
+.appear-enter-from,
+.appear-leave-to
+{
+    @apply transform opacity-0 scale-95;
+}
+.appear-enter-to,
+.appear-leave-from {
+    @apply transform opacity-100 scale-100;
+}
+.appear-enter-active {
+    @apply transition ease-out duration-100;
+}
+.appear-leave-active {
+    @apply transition ease-out duration-75;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+    @apply translate-x-1/4 opacity-0;
+}
+.slide-enter-to,
+.slide-leave-from {
+    @apply translate-x-0 opacity-100;
+}
+.slide-enter-active {
+    @apply duration-300 ease-out;
+}
+.slide-leave-active {
+    @apply duration-200 ease-in;
 }

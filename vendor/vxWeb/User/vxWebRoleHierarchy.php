@@ -16,7 +16,7 @@ use vxPHP\User\RoleHierarchy;
  * Represents the custom role hierarchy used with vxWeb
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.1.1 2021-05-22
+ * @version 0.1.2 2022-02-08
  */
 class vxWebRoleHierarchy extends RoleHierarchy
 {
@@ -25,7 +25,7 @@ class vxWebRoleHierarchy extends RoleHierarchy
     public const AUTH_OBSERVE_TABLE = 256;
     public const AUTH_OBSERVE_ROW = 4096;
 	
-	private $roles = [
+	private array $roles = [
 		'superadmin' => [
 			'privileged'
 		],

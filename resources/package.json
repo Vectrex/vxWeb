@@ -2,7 +2,7 @@
   "name": "vxweb",
   "scripts": {
     "serve": "vite preview",
-    "build": "vite build",
+    "build": "vite build --mode production",
     "dev": "vite"
   },
   "dependencies": {

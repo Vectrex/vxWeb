@@ -2,11 +2,12 @@
   import { computed } from "vue";
   import MessageToast from "@/components/message-toast.vue";
   import Sidebar from "@/components/app/Sidebar.vue";
+  import Headerbar from "@/components/app/Headerbar.vue";
   import Logo from "@/components/misc/logo.vue";
 </script>
 <template>
   <div class="fixed inset-y-0 flex w-64 flex-col" v-if="$route.name !== 'login'">
-    <div class="flex flex-grow flex-col overflow-y-auto bg-slate-700 pt-5">
+    <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue pt-5">
       <div class="flex flex-shrink-0 items-center px-4">
         <logo class="h-8 text-white" />
       </div>
@@ -17,14 +18,20 @@
   </div>
 
   <main>
-    <h1 class="ml-64 px-8 pt-6 text-2xl font-semibold text-slate-900" v-if="$route.meta?.label">{{ $route.meta.label }}</h1>
-    <div :class="{ 'ml-64 max-w-7xl px-8' :  $route.name !== 'login' } ">
-      <router-view
-          @notify="notify"
-          @authenticate="authenticate"
-      />
+    <div :class="['flex flex-1 flex-col', { 'pl-64': $route.name !== 'login'}]">
+      <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow" v-if="$route.name !== 'login'">
+        <headerbar />
+      </div>
+      <h1 class="px-8 pt-6 text-2xl font-semibold text-slate-900" v-if="$route.meta?.label || $route.meta?.heading">{{ $route.meta.label || $route.meta.heading }}</h1>
+      <div :class="{ 'max-w-7xl px-8' :  $route.name !== 'login' } ">
+        <router-view
+            @notify="notify"
+            @authenticate="authenticate"
+        />
+      </div>
     </div>
   </main>
+
   <message-toast
       :active="toast.active"
       :class="toast.css"

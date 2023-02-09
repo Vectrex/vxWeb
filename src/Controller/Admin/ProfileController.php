@@ -26,11 +26,15 @@ class ProfileController extends Controller {
 
 	public function execute(): Response
     {
+        return new Response();
 	}
 
     protected function get(): JsonResponse
     {
         $admin = Application::getInstance()->getCurrentUser();
+        if (!$admin) {
+            return new JsonResponse(['message' => 'Authentication failed.'], Response::HTTP_UNAUTHORIZED);
+        }
 
         $notifications = array_filter(
             Notification::getAvailableNotifications($admin->getRoles()[0]->getRoleName()),
