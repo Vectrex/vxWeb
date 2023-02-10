@@ -3,12 +3,13 @@
         v-bind="$attrs"
         :value="modelValue"
         class="form-select"
-        @change="$emit('update:modelValue', $event.target.value)"
+        @change="emit($event.target)"
     >
+      <option v-if="disabledLabel" disabled value="">{{ disabledLabel }}</option>
       <option
           v-for="option in options"
-          :value="option.key || option.label || option"
-          :selected="(option.key || option.label || option) == modelValue"
+          :value="option.key !== undefined ? option.key : (option.label || option)"
+          :selected="(option.key !== undefined ? option.key : (option.label || option)) === modelValue"
       >{{ option.label || option }}
       </option>
     </select>
@@ -17,7 +18,12 @@
 <script>
     export default {
       name: 'form-select',
-      props: { options: Array, modelValue: [String, Number] },
-      emits: ['update:modelValue']
+      props: { options: Array, modelValue: [String, Number], disabledLabel: String },
+      emits: ['update:modelValue'],
+      methods: {
+        emit (target) {
+          this.$emit('update:modelValue', target.value);
+        }
+      }
     }
 </script>

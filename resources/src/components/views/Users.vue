@@ -1,11 +1,14 @@
 <script setup>
   import Sortable from "@/components/vx-vue/sortable.vue";
-  import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
   import Alert from "@/components/vx-vue/alert.vue";
+  import Headline from "@/components/app/Headline.vue";
+  import UserForm from "@/components/views/users/UserForm.vue";
+  import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid';
   import SimpleFetch from "@/util/simple-fetch";
 </script>
 
 <template>
+  <headline><span>Benutzer</span><a class="icon-link" href="#" @click.prevent="add"><plus-icon class="w-5 h-5" /></a></headline>
   <div class="rounded overflow-hidden">
     <sortable
         :rows="users"
@@ -20,6 +23,20 @@
       </template>
     </sortable>
   </div>
+
+  <teleport to="body">
+    <transition name="slide">
+      <user-form
+          v-if="showForm"
+          @cancel="showForm = false"
+          @notify="handleNotify"
+          :id="editData.id"
+          :data="editData.data"
+          :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
+          class="fixed right-0 top-16 bottom-0 shadow-gray shadow-lg bg-white"
+      />
+    </transition>
+  </teleport>
 
   <teleport to="body">
     <alert
@@ -47,7 +64,12 @@ export default {
         { label: "Email", prop: "email" },
         { label: "Gruppe", sortable: true, width: "w-1/6", prop: "alias" },
         { label: "", width: "w-1/12", prop: "action", cssClass: "text-right" }
-      ]
+      ],
+      showForm: false,
+      editData: {
+        id: null,
+        data: {}
+      }
     }
   },
   async created () {
@@ -57,6 +79,12 @@ export default {
   methods: {
     edit (id) {
       console.log(id);
+    },
+    add () {
+      this.showForm = true;
+    },
+    handleNotify (event) {
+      console.log(event);
     },
     async del (id) {
       if (await this.$refs.delConfirm.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {

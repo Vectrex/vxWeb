@@ -6,22 +6,22 @@
 
 <template>
     <div class="space-y-4">
-      <div v-for="element in elements">
-        <label :for="element.model + '_' + (element.type || 'form-input')" :class=" { required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
+      <div v-for="field in fields">
+        <label :for="field.model + '-' + (field.type || 'input')" :class=" { required: field.required, 'text-red-600': errors[field.model] }">{{ field.label }}</label>
         <div>
           <input
               class="form-input w-96"
-              v-if="!element.type"
-              :id="element.model + '_input'"
-              v-model="form[element.model]"
+              v-if="!field.type"
+              :id="field.model + '-input'"
+              v-model="form[field.model]"
           />
-          <password-input
-              v-if="element.type === 'password-input'"
-              :id="element.model + '_' + element.type"
-              v-model="form[element.model]"
+          <component :is="field.type"
+              v-else
+              :id="field.model + '-' + field.type"
+              v-model="form[field.model]"
               class="w-96"
           />
-          <p v-if="errors[element.model]" class="text-sm text-red-600">{{ errors[element.model] }}</p>
+          <p v-if="errors[field.model]" class="text-sm text-red-600">{{ errors[field.model] }}</p>
         </div>
       </div>
     </div>
@@ -39,8 +39,8 @@
 
     <div class="mt-4 pt-4 border-t border-slate-700">
       <div class="form-group off-3">
-        <spinner class="h-5 w-5" v-if="loading" />
-        <button name="submit_profile" type='button' class="button success" :disabled="loading" @click="submit">Änderungen speichern</button>
+        <spinner class="h-5 w-5" v-if="busy" />
+        <button name="submit_profile" type='button' class="button success" :disabled="busy" @click="submit">Änderungen speichern</button>
       </div>
     </div>
 </template>
@@ -48,15 +48,16 @@
 <script>
 
 export default {
+  components: {'password-input': PasswordInput },
   name: 'ProfileView',
   emits: ['notify'],
   inject: ['api'],
   data() {
     return {
       form: {},
-      loading: false,
+      busy: false,
       response: {},
-      elements: [
+      fields: [
         { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
         { model: 'email', label: 'E-Mail', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
         { model: 'name', label: 'Name', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
@@ -86,9 +87,9 @@ export default {
 
   methods: {
     async submit() {
-      this.loading = true;
+      this.busy = true;
       this.response = await SimpleFetch(this.api + 'profile_data', 'POST', {}, JSON.stringify(this.form));
-      this.loading = false;
+      this.busy = false;
     }
   }
 }

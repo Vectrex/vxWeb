@@ -2,6 +2,7 @@
   import { computed } from "vue";
   import MessageToast from "@/components/message-toast.vue";
   import Sidebar from "@/components/app/Sidebar.vue";
+  import Headline from "@/components/app/Headline.vue";
   import Headerbar from "@/components/app/Headerbar.vue";
   import Logo from "@/components/misc/logo.vue";
 </script>
@@ -17,13 +18,13 @@
     </div>
   </div>
 
-  <main>
-    <div :class="['flex flex-1 flex-col', { 'pl-64': $route.name !== 'login'}]">
-      <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow" v-if="$route.name !== 'login'">
-        <headerbar />
-      </div>
-      <h1 class="px-8 pt-6 text-2xl font-semibold text-slate-900" v-if="$route.meta?.label || $route.meta?.heading">{{ $route.meta.label || $route.meta.heading }}</h1>
-      <div :class="{ 'max-w-7xl px-8' :  $route.name !== 'login' } ">
+  <main :class="['flex flex-1 flex-col', { 'pl-64': $route.name !== 'login'}]">
+    <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow" v-if="$route.name !== 'login'">
+      <headerbar />
+    </div>
+    <div class="px-8 pt-6">
+      <headline v-if="$route.meta?.heading">{{ $route.meta.heading }}</headline>
+      <div>
         <router-view
             @notify="notify"
             @authenticate="authenticate"
