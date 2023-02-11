@@ -88,7 +88,12 @@ export default {
     },
     async del (id) {
       if (await this.$refs.delConfirm.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
-        let response = await SimpleFetch(this.api + 'users/' + id, 'DELETE');
+        try {
+          let response = await SimpleFetch(this.api + 'users/' + id, 'DELETE');
+        }
+        catch (e) {
+          console.log(e);
+        }
         if (response.id) {
           let ndx = this.users.findIndex(row => row.adminid === response.id);
           if (ndx !== -1) {

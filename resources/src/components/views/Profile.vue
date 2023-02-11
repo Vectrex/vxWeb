@@ -1,7 +1,6 @@
 <script setup>
   import PasswordInput from "@/components/formelements/password-input.vue";
   import Spinner from "@/components/misc/spinner.vue";
-  import SimpleFetch from "@/util/simple-fetch";
 </script>
 
 <template>
@@ -78,17 +77,16 @@ export default {
   },
 
   async created () {
-    let response = await SimpleFetch(this.api + 'profile_data')
+    let response = await this.$fetch(this.api + 'profile_data')
     this.notifications = response.notifications;
     if (response.formData) {
       this.form = response.formData;
     }
   },
-
   methods: {
     async submit() {
       this.busy = true;
-      this.response = await SimpleFetch(this.api + 'profile_data', 'POST', {}, JSON.stringify(this.form));
+      this.response = await this.$fetch(this.api + 'profile_data', 'POST', {}, JSON.stringify(this.form));
       this.busy = false;
     }
   }

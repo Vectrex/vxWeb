@@ -3,7 +3,6 @@
   import Spinner from "@/components/misc/spinner.vue";
   import Logo from "@/components/misc/logo.vue";
   import { HomeIcon } from '@heroicons/vue/20/solid';
-  import SimpleFetch from "@/util/simple-fetch";
 </script>
 
 <template>
@@ -64,13 +63,11 @@ export default {
     async submit () {
       if (this.form.username.trim() && this.form.password.trim()) {
         this.busy = true;
-        let response = await SimpleFetch(this.api + "login", 'POST', {}, JSON.stringify(this.form));
+        let response = await this.$fetch(this.api + "login", 'POST', {}, JSON.stringify(this.form));
         this.busy = false;
-
         if (response.bearerToken) {
           this.$emit('authenticate', response);
           this.$router.push( { name: 'profile' } );
-          sessionStorage.setItem("bearerToken", response.bearerToken);
           sessionStorage.setItem("currentUser", JSON.stringify(response.user));
         }
         else {

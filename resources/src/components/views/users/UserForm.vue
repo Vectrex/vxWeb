@@ -1,5 +1,4 @@
 <script setup>
-  import SimpleFetch from "@/util/simple-fetch";
   import Spinner from "@/components/misc/spinner.vue";
   import FormTitle from "@/components/views/shared/FormTitle.vue";
   import FormSelect from "@/components/formelements/form-select.vue";
@@ -97,7 +96,7 @@
     methods: {
       async submit() {
         this.busy = true;
-        let response = await SimpleFetch(this.api + 'user', this.id ? 'PUT' : 'POST', {}, JSON.stringify(this.form));
+        let response = await this.$fetch(this.api + 'user', this.id ? 'PUT' : 'POST', {}, JSON.stringify(this.form));
         this.busy = false;
 
         if (response.success) {
