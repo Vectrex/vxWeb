@@ -22,7 +22,7 @@
     <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow" v-if="$route.name !== 'login'">
       <headerbar />
     </div>
-    <div class="px-8 pt-6">
+    <div :class="[{'px-8 pt-6': $route.name !== 'login' }]">
       <headline v-if="$route.meta?.heading">{{ $route.meta.heading }}</headline>
       <div>
         <router-view

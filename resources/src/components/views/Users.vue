@@ -30,9 +30,8 @@
           @cancel="showForm = false"
           @notify="handleNotify"
           :id="editData.id"
-          :data="editData.data"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
-          class="fixed right-0 top-16 bottom-0 shadow-gray shadow-lg bg-white"
+          class="fixed right-0 top-16 bottom-0 shadow-gray shadow-lg bg-white w-sidebar"
       />
     </transition>
   </teleport>
@@ -66,24 +65,34 @@ export default {
       ],
       showForm: false,
       editData: {
-        id: null,
-        data: {}
+        id: null
       }
     }
   },
   async created () {
     this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-    this.users = (await SimpleFetch (this.api + 'users_init')).users || [];
+    this.users = (await this.$fetch(this.api + 'users_init')).users || [];
   },
   methods: {
     edit (id) {
-      console.log(id);
+      this.editData.id = id;
+      this.showForm = true;
     },
     add () {
+      this.editData.id = null;
       this.showForm = true;
     },
     handleNotify (event) {
-      console.log(event);
+      if (event.payload?.adminid) {
+        let ndx = this.users.findIndex(item => item.adminid === event.payload.adminid);
+        if (ndx !== -1) {
+          this.users[ndx] = event.payload;
+        }
+        else {
+          this.users.push(event.payload);
+        }
+      }
+      this.$emit('notify', event);
     },
     async del (id) {
       if (await this.$refs.delConfirm.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {

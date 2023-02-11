@@ -5,37 +5,39 @@
   import PasswordInput from "@/components/formelements/password-input.vue";
 </script>
 <template>
-  <div class="space-y-4">
-    <form-title @cancel="$emit('cancel')">Benutzer anlegen/bearbeiten</form-title>
-    <div class="space-y-2 pt-16">
-      <div v-for="field in fields" class="px-4">
-        <label
-            :class="{ 'text-red-500': [errors[field.model]], 'required': field.required }"
-            :for="field.model + '-' + field.type || 'input'"
-        >
-          {{ field.label }}
-        </label>
-        <input
-            v-if="!field.type"
-            :id="field.model + '-input'"
-            class="w-full form-input"
-            v-model="form[field.model]"
-        />
-        <component :is="field.type"
-            v-else
-           class="w-full"
-            :id="field.model + '-' + field.type"
-            v-model="form[field.model]"
-            :options="field.options"
-        />
-        <p v-if="errors[field.model]" class="text-sm text-red-600">{{ errors[field.model] }}</p>
+  <div>
+    <form-title @cancel="$emit('cancel')" class="w-sidebar">Benutzer anlegen/bearbeiten</form-title>
+    <div class="space-y-8 overflow-y-auto pt-8">
+      <div class="space-y-4 pt-16">
+        <div v-for="field in fields" class="px-4">
+          <label
+              :class="{ 'text-error': errors[field.model], 'required': field.required }"
+              :for="field.model + '-' + field.type || 'input'"
+          >
+            {{ field.label }}
+          </label>
+          <input
+              v-if="!field.type"
+              :id="field.model + '-input'"
+              class="w-full form-input"
+              v-model="form[field.model]"
+          />
+          <component :is="field.type"
+              v-else
+             class="w-full"
+              :id="field.model + '-' + field.type"
+              v-model="form[field.model]"
+              :options="options[field.model]"
+          />
+          <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
+        </div>
       </div>
-    </div>
-    <div class="flex justify-center space-x-2">
-      <button class="button success" type="button" @click="submit" :disabled="busy">
-        {{ form.id ? 'Daten übernehmen' : 'User anlegen' }}
-      </button>
-      <spinner v-if="busy" />
+      <div class="flex justify-center space-x-2">
+        <button class="button success" type="button" @click="submit" :disabled="busy">
+          {{ form.id ? 'Daten übernehmen' : 'User anlegen' }}
+        </button>
+        <spinner v-if="busy" />
+      </div>
     </div>
   </div>
 </template>
@@ -50,14 +52,13 @@
       'password-input': PasswordInput
     },
     props: {
-      id: { type: String, default: null },
-      data: { type: Object, default: {} },
-      options:  { type: Object, default: {} }
+      id: { type: String, default: null }
     },
 
     data: () => ({
         form: {},
         errors: {},
+        options: {},
         busy: false,
         fields: [
             { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
@@ -86,9 +87,11 @@
       }
     },
     watch: {
-      data: {
-        handler(newValue) {
-          this.form = newValue;
+      id: {
+        async handler(newValue) {
+          const response = await this.$fetch(this.api + 'user' + (newValue || ''));
+          this.options = response.options || {};
+          this.form = response.form || {};
         },
         immediate: true
       }
@@ -96,11 +99,12 @@
     methods: {
       async submit() {
         this.busy = true;
-        let response = await this.$fetch(this.api + 'user', this.id ? 'PUT' : 'POST', {}, JSON.stringify(this.form));
+        let response = await this.$fetch(this.api + 'user/' + (this.id || ''), this.id ? 'PUT' : 'POST', {}, JSON.stringify(this.form));
         this.busy = false;
 
         if (response.success) {
-          this.$emit('notify', { success: true, message: response.message });
+          this.errors = {};
+          this.$emit('notify', { success: true, message: response.message, payload: response.form || null});
         }
         else {
           this.errors = response.errors || {};

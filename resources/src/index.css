@@ -63,6 +63,9 @@
     .icon-link {
         @apply text-vxvue-700 border-2 p-1 rounded border-vxvue-700 hover:border-vxvue-500 transition duration-300;
     }
+    label.required {
+        @apply font-bold
+    }
 }
 
 /* define the default vx-vue color set */
@@ -91,6 +94,10 @@
     --vxvue-highlight-700: #8F5300;
     --vxvue-highlight-800: #573200;
     --vxvue-highlight-900: #1F1200;
+
+    --warn-color: #e2b625;
+    --error-color: #b51212;
+    --info-color: #0080f0;
 }
 
 /* animations */

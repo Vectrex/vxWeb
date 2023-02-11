@@ -25,6 +25,17 @@ class UsersController extends Controller
         return new Response();
 	}
 
+    protected function init (): JsonResponse
+    {
+        $app = Application::getInstance();
+        $admin = $app->getCurrentUser();
+        $db = $app->getVxPDO();
+
+        $users = $db->doPreparedQuery("SELECT a.*, ag.alias, a.adminid AS " . $db->quoteIdentifier('key') . " FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
+
+        return new JsonResponse(['users' => (array) $users, 'currentUser' => ['username' => $admin->getUsername()]]);
+    }
+
     protected function del (): JsonResponse
     {
         $id = (int) $this->route->getPathParameter('id');
@@ -42,60 +53,20 @@ class UsersController extends Controller
         return new JsonResponse(['success' => true, 'id' => $id]);
     }
 
-    protected function edit (): Response
-    {
-        if(!($id = $this->request->query->getInt('id'))) {
-            return new Response('', Response::HTTP_NOT_FOUND);
-        }
-
-        // editing own record is not allowed
-
-        if(Application::getInstance()->getCurrentUser()->getAttribute('adminid') === $id) {
-            return new Response('', Response::HTTP_FORBIDDEN);
-        }
-
-        $db = Application::getInstance()->getVxPDO();
-        $userRow = $db->doPreparedQuery(sprintf("SELECT adminid AS id, username, name FROM %s WHERE adminid = ?", $db->quoteIdentifier('admin')), [$id])->current();
-
-        if(!$userRow) {
-            return new Response('', Response::HTTP_NOT_FOUND);
-        }
-
-        MenuGenerator::setForceActiveMenu(true);
-        return new Response(SimpleTemplate::create('admin/users_edit.php')->assign('user', $userRow)->display());
-    }
-
-    protected function add ()
-    {
-        MenuGenerator::setForceActiveMenu(true);
-        return new Response(SimpleTemplate::create('admin/users_edit.php')->assign('user', [])->display());
-    }
-
     protected function editInit (): JsonResponse
     {
         $db = Application::getInstance()->getVxPDO();
 
-        if ($id = $this->request->query->getInt('id')) {
+        if ($id = (int) $this->route->getPathParameter('id')) {
             $formData = $db->doPreparedQuery("SELECT adminid as id, username, email, name, admingroupsid FROM " . $db->quoteIdentifier('admin') . " WHERE adminid = ?", [$id])->current();
         }
 
         return new JsonResponse([
             'form' => $formData ?? null,
             'options' => [
-                'admingroups' => (array) $db->doPreparedQuery("SELECT admingroupsid AS " . $db->quoteIdentifier('key') . ", name AS label FROM admingroups ORDER BY privilege_level")
+                'admingroupsid' => (array) $db->doPreparedQuery("SELECT admingroupsid AS " . $db->quoteIdentifier('key') . ", name AS label FROM admingroups ORDER BY privilege_level")
             ]
         ]);
-    }
-
-    protected function init (): JsonResponse
-    {
-        $app = Application::getInstance();
-        $admin = $app->getCurrentUser();
-        $db = $app->getVxPDO();
-
-        $users = $db->doPreparedQuery("SELECT a.*, ag.alias, a.adminid AS " . $db->quoteIdentifier('key') . " FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
-
-        return new JsonResponse(['users' => (array) $users, 'currentUser' => ['username' => $admin->getUsername()]]);
     }
 
     protected function update (): JsonResponse
@@ -151,9 +122,7 @@ class UsersController extends Controller
         }
 
         if(!($errors = $form->getFormErrors())) {
-
             try {
-
                 if($id) {
                     $db->updateRecord('admin', $id, $v->all());
                 } else {
@@ -162,7 +131,7 @@ class UsersController extends Controller
 
                 return new JsonResponse([
                     'success' => true,
-                    'instanceId' => $id,
+                    'form' => [...array_diff_key($v->all(), ['new_PWD' => '', 'new_PWD_verify' => '']), 'adminid' => $id],
                     'message' => 'Daten erfolgreich übernommen.'
                 ]);
 

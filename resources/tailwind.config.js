@@ -36,6 +36,13 @@ module.exports = {
                     '800': 'var(--vxvue-highlight-800)',
                     '900': 'var(--vxvue-highlight-900)',
                 },
+                success: 'var(--success-color)',
+                error:  'var(--error-color)',
+                warn:  'var(--warn-color)',
+                info:  'var(--info-color)',
+            },
+            spacing: {
+                sidebar: '32rem'
             }
         }
     },
