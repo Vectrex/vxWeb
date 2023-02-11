@@ -4,7 +4,6 @@
   import Headline from "@/components/app/Headline.vue";
   import UserForm from "@/components/views/users/UserForm.vue";
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid';
-  import SimpleFetch from "@/util/simple-fetch";
 </script>
 
 <template>
