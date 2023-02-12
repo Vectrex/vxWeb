@@ -7,7 +7,9 @@
 </script>
 
 <template>
-  <headline><span>Benutzer</span><a class="icon-link" href="#" @click.prevent="add"><plus-icon class="w-5 h-5" /></a></headline>
+  <teleport to="#tools">
+    <headline><span>Benutzer</span><a class="icon-link" href="#" @click.prevent="add"><plus-icon class="w-5 h-5" /></a></headline>
+  </teleport>
   <div class="rounded overflow-hidden">
     <sortable
         :rows="users"
