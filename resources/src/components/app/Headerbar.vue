@@ -3,6 +3,7 @@
 </script>
 <template>
   <div class="w-full flex justify-between items-center">
+    <div id="tools"></div>
     <div class="relative">
       <button
         type="button"
@@ -10,7 +11,7 @@
         id="user-menu-button"
         aria-expanded="false"
         aria-haspopup="true"
-        @click="showUserMenu = !showUserMenu"
+        @click.stop="showUserMenu = !showUserMenu"
       >
         <span class="sr-only">Open user menu</span>
         <user-icon class="h-8 w-8" />
@@ -41,7 +42,6 @@
         </div>
       </transition>
     </div>
-    <div id="tools" />
   </div>
 </template>
 
@@ -52,6 +52,17 @@ export default {
     return {
       showUserMenu: false
     }
+  },
+  mounted() {
+    document.body.addEventListener('click', this.handleBodyClick);
+  },
+  beforeUnmount() {
+    document.body.removeEventListener('click', this.handleBodyClick);
+  },
+  methods: {
+    handleBodyClick() {
+      this.showUserMenu = false;
+    },
   }
 }
 </script>

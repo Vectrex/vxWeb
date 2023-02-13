@@ -33,7 +33,7 @@
           @notify="handleNotify"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
-          class="fixed right-0 top-16 bottom-0 shadow-gray shadow-lg bg-white w-sidebar"
+          class="fixed left-64 top-16 bottom-0 shadow-gray shadow-lg bg-white w-sidebar"
       />
     </transition>
   </teleport>
