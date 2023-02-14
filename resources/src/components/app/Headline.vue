@@ -1,5 +1,5 @@
 <template>
-  <h1 class="text-2xl font-semibold text-slate-900 pb-2 flex space-x-2 items-center"><slot></slot></h1>
+  <div class="text-3xl font-semibold text-inherit flex space-x-2 items-center"><slot></slot></div>
 </template>
 
 <script>

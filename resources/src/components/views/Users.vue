@@ -8,7 +8,7 @@
 
 <template>
   <teleport to="#tools">
-    <headline><span>Benutzer</span><a class="icon-link" href="#" @click.prevent="add"><plus-icon class="w-5 h-5" /></a></headline>
+    <headline><span>Benutzer</span><a class="icon-link text-vxvue-100 border-vxvue-100 hover:border-vxvue-200" href="#" @click.prevent="add"><plus-icon class="w-5 h-5" /></a></headline>
   </teleport>
   <div class="rounded overflow-hidden">
     <sortable
@@ -33,7 +33,7 @@
           @notify="handleNotify"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
-          class="fixed left-64 top-16 bottom-0 shadow-gray shadow-lg bg-white w-sidebar"
+          class="fixed left-64 top-20 bottom-0 shadow-gray shadow-lg bg-white w-sidebar"
       />
     </transition>
   </teleport>

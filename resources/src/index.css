@@ -49,7 +49,7 @@
         @apply inline-flex items-center justify-center px-8 py-2 border border-transparent text-base font-medium rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2;
     }
     .button.success {
-        @apply bg-green-600 hover:bg-green-500 focus:ring-green-500 text-white
+        @apply bg-green-700 hover:bg-green-600 focus:ring-green-600 text-white
     }
     .button.alert {
         @apply bg-red-700 hover:bg-red-600 focus:ring-red-600 text-white

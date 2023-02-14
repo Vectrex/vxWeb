@@ -32,11 +32,11 @@
           <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
         </div>
       </div>
-      <div class="flex justify-center space-x-2">
+      <div class="flex justify-center space-x-2 items-center">
         <button class="button success" type="button" @click="submit" :disabled="busy">
           {{ form.id ? 'Daten übernehmen' : 'User anlegen' }}
         </button>
-        <spinner v-if="busy" />
+        <spinner v-if="busy" class="text-green-700" />
       </div>
     </div>
   </div>

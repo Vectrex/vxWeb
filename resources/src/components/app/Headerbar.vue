@@ -2,12 +2,12 @@
   import { UserIcon } from '@heroicons/vue/24/solid';
 </script>
 <template>
-  <div class="w-full flex justify-between items-center">
+  <div class="w-full flex justify-between items-center text-vxvue-100">
     <div id="tools"></div>
     <div class="relative">
       <button
         type="button"
-        class="flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        class="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-vxvue-200 focus:ring-offset-0"
         id="user-menu-button"
         aria-expanded="false"
         aria-haspopup="true"
