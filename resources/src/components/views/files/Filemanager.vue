@@ -1,3 +1,14 @@
+<script setup>
+  import Sortable from "@/components/vx-vue/sortable.vue";
+  import FileEditForm from "@/components/views/files/FileEditForm.vue";
+  import FilemanagerActions from "@/components/views/files/FilemanagerActions.vue";
+  import FilemanagerAdd from "@/components/views/files/FilemanagerAdd.vue";
+  import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue";
+  import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue";
+  import FolderTree from "@/components/views/files/FolderTree.vue";
+  import Confirm from "@/components/vx-vue/confirm.vue";
+  import CircularProgress from "@/components/misc/circular-progress.vue";
+</script>
 <template>
   <div
       v-cloak
@@ -165,46 +176,19 @@
       </div>
     </div>
     <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
-    <alert ref="alert" :config="{ label: 'Ok', buttonClass: 'btn-error' }"></alert>
+    <confirm ref="alert" :config="{ label: 'Ok', buttonClass: 'btn-error' }"></confirm>
     <folder-tree ref="folder-tree"/>
   </div>
 </template>
 
 <script>
-import FilemanagerAdd from './filemanager-add.vue';
-import FilemanagerActions from './filemanager-actions.vue';
-import FilemanagerSearch from './filemanager-search.vue';
-import FilemanagerBreadcrumbs from './filemanager-breadcrumbs.vue';
-import FilemanagerFolderTree from './filemanager-folder-tree.vue';
-import Sortable from '../vx-vue/sortable.vue';
-import CircularProgress from '../circular-progress.vue';
-import Confirm from '../vx-vue/confirm.vue';
-import Alert from '../vx-vue/alert.vue';
-import FileEditForm from '../forms/file-edit-form.vue';
-import FolderEditForm from '../forms/folder-edit-form.vue';
-import SimpleFetch from "../../../vue/util/simple-fetch";
 import PromisedXhr from "../../../vue/util/promised-xhr";
 import UrlQuery from "../../../vue/util/url-query";
-import FolderTree from "./filemanager-folder-tree.vue";
 import { formatFilesize } from '../../../vue/filters';
 import { Focus } from "../../../vue/directives";
 
 export default {
-  name: 'filemanager',
-  components: {
-    FolderTree,
-    'sortable': Sortable,
-    'circular-progress': CircularProgress,
-    'confirm': Confirm,
-    'alert': Alert,
-    'file-edit-form': FileEditForm,
-    'folder-edit-form': FolderEditForm,
-    'filemanager-add': FilemanagerAdd,
-    'filemanager-search': FilemanagerSearch,
-    'filemanager-actions': FilemanagerActions,
-    'filemanager-breadcrumbs': FilemanagerBreadcrumbs,
-    'filemanager-folder-tree': FilemanagerFolderTree
-  },
+  name: 'Filemanager',
 
   data() {
     return {
@@ -258,7 +242,7 @@ export default {
   },
 
   async created() {
-    let response = await SimpleFetch(UrlQuery.create(this.routes.init, {folder: this.folder}));
+    let response = await this.$fetch(UrlQuery.create(this.routes.init, {folder: this.folder}));
 
     this.breadcrumbs = response.breadcrumbs || [];
     this.files = response.files || [];
@@ -277,7 +261,7 @@ export default {
       this.showAddActivities = false;
     },
     async readFolder(id) {
-      let response = await SimpleFetch(UrlQuery.create(this.routes.readFolder, {folder: id}));
+      let response = await this.$fetch(UrlQuery.create(this.routes.readFolder, {folder: id}));
 
       if (response.success) {
         this.files = response.files || [];
@@ -289,7 +273,7 @@ export default {
       }
     },
     async delSelection() {
-      let response = await SimpleFetch(UrlQuery.create(this.routes.delSelection, {
+      let response = await this.$fetch(UrlQuery.create(this.routes.delSelection, {
         files: this.checkedFiles.map(({id}) => id).join(","),
         folders: this.checkedFolders.map(({id}) => id).join(",")
       }), 'DELETE');
@@ -306,7 +290,7 @@ export default {
       let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
 
       if (folder !== false) {
-        let response = await SimpleFetch(UrlQuery.create(this.routes.moveSelection, {destination: folder.id}), 'POST', {}, JSON.stringify({
+        let response = await this.$fetch(UrlQuery.create(this.routes.moveSelection, {destination: folder.id}), 'POST', {}, JSON.stringify({
           files: this.checkedFiles.map(({id}) => id),
           folders: this.checkedFolders.map(({id}) => id)
         }));
@@ -323,21 +307,21 @@ export default {
     },
     async editFile(row) {
       this.showFileForm = true;
-      let response = await SimpleFetch(UrlQuery.create(this.routes.getFile, {id: row.id}));
+      let response = await this.$fetch(UrlQuery.create(this.routes.getFile, {id: row.id}));
       this.editFormData = response.form || {};
       this.editMetaData = response.fileInfo || {};
       this.editFormData.id = row.id;
     },
     async editFolder(row) {
       this.showFolderForm = true;
-      let response = await SimpleFetch(UrlQuery.create(this.routes.getFolder, {id: row.id}));
+      let response = await this.$fetch(UrlQuery.create(this.routes.getFolder, {id: row.id}));
       this.editFormData = response.form || {};
       this.editMetaData = response.folderInfo || {};
       this.editFormData.id = row.id;
     },
     async delFile(row) {
       if (await this.$refs.confirm.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
-        let response = await SimpleFetch(UrlQuery.create(this.routes.delFile, {id: row.id}), 'DELETE');
+        let response = await this.$fetch(UrlQuery.create(this.routes.delFile, {id: row.id}), 'DELETE');
         if (response.success) {
           this.files.splice(this.files.findIndex(item => row === item), 1);
         }
@@ -346,7 +330,7 @@ export default {
     async renameFile(event) {
       let name = event.target.value.trim();
       if (name && this.toRename) {
-        let response = await SimpleFetch(this.routes.renameFile, 'POST', {}, JSON.stringify({
+        let response = await this.$fetch(this.routes.renameFile, 'POST', {}, JSON.stringify({
           name: name,
           id: this.toRename.id
         }));
@@ -359,7 +343,7 @@ export default {
     async renameFolder(event) {
       let name = event.target.value.trim();
       if (name && this.toRename) {
-        let response = await SimpleFetch(this.routes.renameFolder, 'POST', {}, JSON.stringify({
+        let response = await this.$fetch(this.routes.renameFolder, 'POST', {}, JSON.stringify({
           name: name,
           folder: this.toRename.id
         }));
@@ -371,7 +355,7 @@ export default {
     },
     async delFolder(row) {
       if (await this.$refs.confirm.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?", {cancelLabel: "Abbrechen"})) {
-        let response = await SimpleFetch(UrlQuery.create(this.routes.delFolder, {folder: row.id}), 'DELETE');
+        let response = await this.$fetch(UrlQuery.create(this.routes.delFolder, {folder: row.id}), 'DELETE');
         if (response.success) {
           this.folders.splice(this.folders.findIndex(item => row === item), 1);
         }
@@ -380,7 +364,7 @@ export default {
     async createFolder(name) {
       this.showAddActivities = false;
 
-      let response = await SimpleFetch(this.routes.addFolder, 'POST', {}, JSON.stringify({
+      let response = await this.$fetch(this.routes.addFolder, 'POST', {}, JSON.stringify({
         name: name,
         parent: this.currentFolder
       }));
@@ -392,7 +376,7 @@ export default {
       let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
 
       if (folder !== false) {
-        let response = await SimpleFetch(this.routes.moveFile, 'POST', {}, JSON.stringify({
+        let response = await this.$fetch(this.routes.moveFile, 'POST', {}, JSON.stringify({
           id: row.id,
           folderId: folder.id
         }));
@@ -470,7 +454,7 @@ export default {
     },
     doSearch(term) {
       if (term.trim().length > 2) {
-        return SimpleFetch(UrlQuery.create(this.routes.search, {search: term}));
+        return this.$fetch(UrlQuery.create(this.routes.search, {search: term}));
       }
       return {files: [], folders: []};
     },

@@ -7,11 +7,11 @@
 
 <script>
     export default {
-        name: 'filemanager-actions',
+        name: 'FilemanagerActions',
         emits: ['delete-selection', 'move-selection'],
         props: {
-            files: { type: Array, default: () => ([]) },
-            folders:  { type: Array, default: () => ([]) }
+            files: { type: Array, default: [] },
+            folders:  { type: Array, default: [] }
         },
         methods: {
             async confirmDelete () {

@@ -1,3 +1,8 @@
+<script setup>
+  import SimpleTree from "@/components/vx-vue/simple-tree/simple-tree.vue";
+  import UrlQuery from '@/util/url-query';
+</script>
+
 <template>
   <div ref="container" class="modal" :class="{ active: show }">
     <div class="modal-container">
@@ -13,15 +18,8 @@
 </template>
 
 <script>
-  import SimpleTree from '../vx-vue/simple-tree/simple-tree.vue';
-  import SimpleFetch from "../../../vue/util/simple-fetch";
-  import UrlQuery from "../../../vue/util/url-query";
-
   export default {
-    name: 'folder-tree',
-    components: {
-      'simple-tree': SimpleTree
-    },
+    name: 'FolderTree',
     data () {
         return {
           show: false,
@@ -36,7 +34,7 @@
     methods: {
       async open (route, currentFolder) {
 
-        this.root = await SimpleFetch(UrlQuery.create(route, { folder: currentFolder }));
+        this.root = await this.$fetch(UrlQuery.create(route, { folder: currentFolder }));
         this.show = true;
 
         return new Promise((resolve, reject) => {

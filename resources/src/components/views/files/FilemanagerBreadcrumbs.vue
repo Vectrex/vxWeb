@@ -12,10 +12,12 @@
 
 <script>
 export default {
-  name: 'filemanager-breadcrumbs',
+  name: 'FilemanagerBreadcrumbs',
   emits: ['breadcrumb-clicked'],
   data() {
-    return {items: []}
+    return {
+      items: []
+    }
   },
   props: {
     breadcrumbs: Array,

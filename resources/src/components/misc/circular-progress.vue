@@ -23,13 +23,13 @@
 
 <script>
 export default {
-  name: "circular-progress",
+  name: "CircularProgress",
 
   props: {
     progress: Number,
-    radius: {type: Number, default: 24},
-    strokeWidth: {type: Number, default: 8},
-    color: {type: String, default: 'white'}
+    radius: { type: Number, default: 24 },
+    strokeWidth: { type: Number, default: 8 },
+    color: { type: String, default: 'white' }
   },
 
   computed: {

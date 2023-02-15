@@ -1,3 +1,7 @@
+<script setup>
+  import {Focus} from "@/vue/directives";
+</script>
+
 <template>
   <div>
     <input
@@ -22,10 +26,8 @@
 </template>
 
 <script>
-import {Focus} from "../../../vue/directives";
-
 export default {
-  name: 'filemanager-add',
+  name: 'FilemanagerAdd',
   emits: ['upload', 'create-folder'],
   props: {
     multiple: {type: Boolean, default: true}

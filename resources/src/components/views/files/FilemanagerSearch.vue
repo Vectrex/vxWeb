@@ -30,7 +30,7 @@
 
 <script>
 export default {
-  name: 'filemanager-search',
+  name: 'FilemanagerSearch',
   data() {
     return {
       value: "",
@@ -44,8 +44,8 @@ export default {
   },
 
   props: {
-    placeholder: {type: String, default: 'Datei/Verzeichnis suchen...'},
-    search: {type: Function, required: true}
+    placeholder: { type: String, default: 'Datei/Verzeichnis suchen...' },
+    search: { type: Function, required: true }
   },
 
   computed: {

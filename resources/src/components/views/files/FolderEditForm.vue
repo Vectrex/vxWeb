@@ -19,21 +19,21 @@
 </template>
 
 <script>
-import SimpleFetch from "../../../vue/util/simple-fetch.js";
-
 export default {
-  name: 'folder-edit-form',
+  name: 'FolderEditForm',
   emits: ['response-received'],
   props: {
-    initialData: {type: Object, default: {}},
-    folderInfo: {type: Object, default: {}},
-    url: {type: String, default: ""}
+    initialData: { type: Object, default: {} },
+    folderInfo: { type: Object, default: {} },
+    url: { type: String, default: "" }
   },
-  data: () => ({
-    form: {},
-    response: {},
-    loading: false
-  }),
+  data () {
+    return {
+      form: {},
+      response: {},
+      loading: false
+    }
+  },
   computed: {
     errors() {
       return this.response ? (this.response.errors || {}) : {};
@@ -61,7 +61,7 @@ export default {
         }
       });
 
-      this.response = await SimpleFetch(this.url, 'POST', {}, JSON.stringify(formData));
+      this.response = await this.$fetch(this.url, 'POST', {}, JSON.stringify(formData));
       this.$emit('response-received', this.response);
       this.loading = false;
     }
