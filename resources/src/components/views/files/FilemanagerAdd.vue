@@ -1,5 +1,6 @@
 <script setup>
   import { Focus } from "@/directives/focus";
+  import { DocumentArrowUpIcon, FolderPlusIcon } from '@heroicons/vue/24/solid';
 </script>
 
 <template>
@@ -11,17 +12,24 @@
         @keydown.enter="addFolder"
         @keydown.esc="showAddFolderInput = false"
         @blur="showAddFolderInput = false"
-    >
+    />
     <button
-        v-if="!showAddFolderInput"
-        class="btn with-webfont-icon-left btn-link"
+        v-else
         type="button"
-        data-icon=""
         @click.stop="showAddFolderInput = true"
-    >Verzeichnis erstellen
+        class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex space-x-1 items-center"
+    >
+      <folder-plus-icon class="w-5 h-5" />
+      <span class="">Verzeichnis&nbsp;erstellen</span>
     </button>
-    <label class="btn with-webfont-icon-left btn-link" data-icon="" for="file_upload">Datei hochladen</label>
-    <input type="file" id="file_upload" class="d-none" :multiple="multiple" @change="fileChanged"/>
+    <label
+      for="file_upload"
+      class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex space-x-1 items-center"
+    >
+      <document-arrow-up-icon class="w-5 h-5" />
+      <span>Datei hochladen</span>
+    </label>
+    <input type="file" id="file_upload" class="hidden" :multiple="multiple" @change="fileChanged"/>
   </div>
 </template>
 
@@ -30,7 +38,7 @@ export default {
   name: 'FilemanagerAdd',
   emits: ['upload', 'create-folder'],
   props: {
-    multiple: {type: Boolean, default: true}
+    multiple: { type: Boolean, default: true }
   },
   data() {
     return {

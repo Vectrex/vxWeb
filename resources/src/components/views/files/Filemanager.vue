@@ -9,12 +9,41 @@
   import FolderTree from "@/components/views/files/FolderTree.vue";
   import Confirm from "@/components/vx-vue/confirm.vue";
   import CircularProgress from "@/components/misc/circular-progress.vue";
+  import { PencilSquareIcon, PlusIcon } from '@heroicons/vue/24/solid';
+  import Headline from "@/components/app/Headline.vue";
   import { urlQueryCreate } from '@/util/url-query';
   import { formatFilesize } from "@/util/format-filesize";
   import { Focus } from "@/directives/focus";
-  import { PencilSquareIcon } from '@heroicons/vue/24/solid';
 </script>
 <template>
+  <teleport to="#tools">
+    <div class="relative">
+      <headline>
+        <span>Dateien</span>
+        <button
+          type="button"
+          :class="['icon-link text-vxvue-100 border-vxvue-100 hover:border-vxvue-200']"
+          href="#" @click.stop="showAddActivities = !showAddActivities"
+        >
+          <plus-icon class="w-5 h-5" />
+        </button>
+      </headline>
+      <transition name="appear">
+          <div
+            v-if="showAddActivities"
+            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            role="menu"
+            aria-orientation="vertical"
+          >
+          <filemanager-add
+              @upload="uploadInputFiles"
+              @create-folder="createFolder"
+          />
+        </div>
+      </transition>
+    </div>
+  </teleport>
+
   <div
       v-cloak
       @drop.prevent="uploadDraggedFiles"
@@ -28,55 +57,41 @@
           :current-folder="currentFolder"
           :folders="folders"
           @breadcrumb-clicked="readFolder"
-      ></filemanager-breadcrumbs>
-      <div class="popup popup-bottom ml-1" :class="{ active: showAddActivities }">
-        <button class="btn webfont-icon-only" type="button" @click.stop="showAddActivities = !showAddActivities">
-          &#xe020;
+      />
+      <filemanager-actions
+          @delete-selection="delSelection"
+          @move-selection="moveSelection"
+          :files="checkedFiles"
+          :folders="checkedFolders"
+      />
+      <template v-if="upload.progressing">
+        <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Abbrechen" type="button"
+                @click="cancelUpload">&#xe01d;
         </button>
-        <div class="popup-container">
-          <div class="card">
-            <div class="card-body">
-              <filemanager-add
-                  @upload="uploadInputFiles"
-                  @create-folder="createFolder"
-              ></filemanager-add>
-            </div>
-          </div>
-        </div>
-        <filemanager-actions
-            @delete-selection="delSelection"
-            @move-selection="moveSelection"
-            :files="checkedFiles"
-            :folders="checkedFolders"
-        ></filemanager-actions>
-        <template v-if="upload.progressing">
-          <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Abbrechen" type="button"
-                  @click="cancelUpload">&#xe01d;
-          </button>
-          <label class="d-inline-block mr-2">{{ progress.file }}</label>
-          <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16"></circular-progress>
+        <label class="d-inline-block mr-2">{{ progress.file }}</label>
+        <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16"></circular-progress>
+      </template>
+      <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
+
+      <filemanager-search
+          :search="doSearch"
+      >
+        <template v-slot:folder="slotProps">
+          <span class="with-webfont-icon-left" data-icon=""><a :href="'#' + slotProps.folder.id"
+                                                                @click.prevent="readFolder(slotProps.folder.id)">{{
+              slotProps.folder.name
+            }}</a></span>
         </template>
-        <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
+        <template v-slot:file="slotProps">
+          <span class="with-webfont-icon-left" data-icon="">{{ slotProps.file.name }} ({{
+              slotProps.file.type
+            }})</span><br>
+          <a :href="'#' + slotProps.file.folder"
+             @click.prevent="readFolder(slotProps.file.folder)">{{ slotProps.file.path }}</a>
+        </template>
 
-        <filemanager-search
-            :search="doSearch"
-        >
-          <template v-slot:folder="slotProps">
-            <span class="with-webfont-icon-left" data-icon=""><a :href="'#' + slotProps.folder.id"
-                                                                  @click.prevent="readFolder(slotProps.folder.id)">{{
-                slotProps.folder.name
-              }}</a></span>
-          </template>
-          <template v-slot:file="slotProps">
-            <span class="with-webfont-icon-left" data-icon="">{{ slotProps.file.name }} ({{
-                slotProps.file.type
-              }})</span><br>
-            <a :href="'#' + slotProps.file.folder"
-               @click.prevent="readFolder(slotProps.file.folder)">{{ slotProps.file.path }}</a>
-          </template>
-
-        </filemanager-search>
-      </div>
+      </filemanager-search>
+    </div>
     </div>
 
     <sortable
@@ -186,7 +201,6 @@
     <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
     <confirm ref="alert" :config="{ label: 'Ok', buttonClass: 'btn-error' }"></confirm>
     <folder-tree ref="folder-tree"/>
-  </div>
 </template>
 
 <script>

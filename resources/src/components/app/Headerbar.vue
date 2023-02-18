@@ -1,5 +1,5 @@
 <script setup>
-  import { UserIcon } from '@heroicons/vue/24/solid';
+  import { UserIcon, PowerIcon, Cog6ToothIcon } from '@heroicons/vue/24/solid';
 </script>
 <template>
   <div class="w-full flex justify-between items-center text-vxvue-100">
@@ -27,18 +27,18 @@
         >
           <router-link
             :to="{ name: 'profile' }"
-            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex space-x-1 items-center"
             role="menuitem"
             tabindex="-1"
             @click="showUserMenu = false"
-          >Profileinstellungen</router-link>
+          ><cog-6-tooth-icon class="h-5 w-5" /><span>Profileinstellungen</span></router-link>
           <router-link
             :to="{ name: 'login' }"
-            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex space-x-1 items-center"
             role="menuitem"
             tabindex="-1"
             @click="showUserMenu = false"
-          >Abmelden</router-link>
+          ><power-icon class="h-5 w-5" /><span>Abmelden</span></router-link>
         </div>
       </transition>
     </div>
