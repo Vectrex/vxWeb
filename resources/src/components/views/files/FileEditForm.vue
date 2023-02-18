@@ -1,5 +1,5 @@
 <script setup>
-  import { formatFilesize } from '@/vue/filters';
+  import { formatFilesize } from '@/util/format-filesize';
 </script>
 <template>
   <div class="columns">

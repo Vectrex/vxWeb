@@ -1,21 +1,19 @@
 <template>
-  <form action="/" @submit.prevent>
-    <div>{{ folderInfo.path }}</div>
-    <div class="divider" data-content="Metadaten des Ordners"></div>
-    <div class="form-group">
-      <label for="title_input">Titel</label>
-      <input id="title_input" class="form-input" v-model="form.title" autocomplete="off" :class="{'is-error': errors.title}">
-    </div>
-    <div class="form-group">
-      <label for="description_input">Beschreibung</label>
-      <textarea rows="2" id="description_input" class="form-input" v-model="form.description" :class="{'is-error': errors.description}"></textarea>
-    </div>
-    <div class="form-group">
-      <button type='button' @click="submit" class='btn btn-success col-12' :class="{'loading': loading}"
-              :disabled="loading">Änderungen speichern
-      </button>
-    </div>
-  </form>
+  <div>{{ folderInfo.path }}</div>
+  <div class="divider" data-content="Metadaten des Ordners"></div>
+  <div class="form-group">
+    <label for="title_input">Titel</label>
+    <input id="title_input" class="form-input" v-model="form.title" autocomplete="off" :class="{'is-error': errors.title}">
+  </div>
+  <div class="form-group">
+    <label for="description_input">Beschreibung</label>
+    <textarea rows="2" id="description_input" class="form-input" v-model="form.description" :class="{'is-error': errors.description}"></textarea>
+  </div>
+  <div class="form-group">
+    <button type='button' @click="submit" class='btn btn-success col-12' :class="{'loading': loading}"
+            :disabled="loading">Änderungen speichern
+    </button>
+  </div>
 </template>
 
 <script>

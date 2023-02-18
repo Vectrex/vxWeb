@@ -1,6 +1,6 @@
 <script setup>
   import SimpleTree from "@/components/vx-vue/simple-tree/simple-tree.vue";
-  import UrlQuery from '@/util/url-query';
+  import { urlQueryCreate } from '@/util/url-query';
 </script>
 
 <template>
@@ -34,7 +34,7 @@
     methods: {
       async open (route, currentFolder) {
 
-        this.root = await this.$fetch(UrlQuery.create(route, { folder: currentFolder }));
+        this.root = await this.$fetch(urlQueryCreate(route, { folder: currentFolder }));
         this.show = true;
 
         return new Promise((resolve, reject) => {

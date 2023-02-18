@@ -61,7 +61,7 @@
         @apply rounded-l-full rounded-r-full bg-stone-300 py-1 px-4;
     }
     .icon-link {
-        @apply text-vxvue-700 border-2 p-1 rounded border-vxvue-700 hover:border-vxvue-500 transition duration-300;
+        @apply text-vxvue-700 border-2 border-transparent p-1 rounded hover:text-vxvue-500 hover:border-vxvue-500 transition duration-300;
     }
     label.required {
         @apply font-bold

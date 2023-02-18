@@ -73,7 +73,7 @@ export default {
   },
   async created () {
     this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-    this.users = (await this.$fetch(this.api + 'users_init')).users || [];
+    this.users = (await this.$fetch(this.api + 'users/init')).users || [];
   },
   methods: {
     edit (id) {

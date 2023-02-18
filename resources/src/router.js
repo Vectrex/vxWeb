@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/components/views/Login.vue'
 import Profile from "@/components/views/Profile.vue"
 import Users from "@/components/views/Users.vue"
+import Files from "@/components/views/Files.vue"
+import { UsersIcon, NewspaperIcon, DocumentIcon, PhotoIcon } from '@heroicons/vue/24/solid'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -20,19 +22,21 @@ const router = createRouter({
             }
         },
         {
+            name: 'files',
+            path: '/files',
+            component: Files,
+            meta: {
+                label: 'Dateien',
+                icon: PhotoIcon
+            }
+        },
+        {
             name: 'articles',
             path: '/articles',
             component:  Users,
             meta: {
-                label: 'Artikel'
-            }
-        },
-        {
-            name: 'files',
-            path: '/files',
-            component:  Users,
-            meta: {
-                label: 'Dateien'
+                label: 'Artikel',
+                icon: NewspaperIcon
             }
         },
         {
@@ -40,7 +44,8 @@ const router = createRouter({
             path: '/pages',
             component:  Users,
             meta: {
-                label: 'Seiten'
+                label: 'Seiten',
+                icon: DocumentIcon
             }
         },
         {
@@ -48,7 +53,8 @@ const router = createRouter({
             path: '/users',
             component:  Users,
             meta: {
-                label: 'Benutzer'
+                label: 'Benutzer',
+                icon: UsersIcon
             }
         }
     ]

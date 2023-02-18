@@ -1,10 +1,16 @@
 <template>
-    <span class="btn-group">
+    <span class="flex items-center">
         <button
             v-for="(breadcrumb, ndx) in items"
-            class="btn"
+            :class="[
+              'border-2 px-2 border-vxvue-500 text-vxvue-500',
+              {
+                'rounded-l': ndx === 0,
+                'rounded-r': ndx === items.length -1,
+                'bg-vxvue-500 !text-white': breadcrumb.folder === currentFolder
+              }
+            ]"
             :key="ndx"
-            :class="{ 'active': breadcrumb.folder === currentFolder }"
             @click="$emit('breadcrumb-clicked', breadcrumb.folder)">{{ breadcrumb.name }}
         </button>
     </span>

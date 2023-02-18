@@ -11,11 +11,31 @@
 		<route id="profile_data_get" path="profile_data" controller="admin/profile" auth="observe_row" method="get" request_methods="GET" />
 		<route id="profile_data_post" path="profile_data" controller="admin/profile" auth="observe_row" method="post" request_methods="POST" />
 
-		<route id="users_init" controller="admin/users" auth="superadmin" method="init" request_methods="GET" />
+		<route id="users_init" controller="admin/users" path="users/init" auth="superadmin" method="init" request_methods="GET" />
 		<route id="user_del" controller="admin/users" path="users/{id}" auth="superadmin" method="del" request_methods="DELETE" />
 		<route id="user_init" controller="admin/users" path="user/{id=}" auth="superadmin" method="editInit" request_methods="GET" />
 		<route id="user_add" controller="admin/users" path="user" auth="superadmin" method="update" request_methods="POST" />
 		<route id="user_edit" controller="admin/users" path="user/{id}" auth="superadmin" method="update" request_methods="PUT" />
+
+		<route id="files_init" controller="admin/files" path="files/init" method="init" auth="privileged" />
+		<route id="folder_read" controller="admin/files" path="files/folder" method="folderRead" auth="privileged" />
+
+		<route id="folder_get" controller="admin/files" method="folderGet" auth="privileged" />
+		<route id="files_search" controller="admin/files" method="search" auth="privileged" />
+		<route id="folders_tree" controller="admin/files" method="getFoldersTree" auth="privileged" />
+		<route id="file_get" controller="admin/files" method="fileGet" auth="privileged" />
+		<route id="file_update" controller="admin/files" method="fileUpdate" auth="privileged" request_methods="POST" />
+		<route id="file_rename" controller="admin/files" method="fileRename" auth="privileged" request_methods="POST" />
+		<route id="file_move" controller="admin/files" method="fileMove" auth="privileged" request_methods="POST" />
+		<route id="file_del" controller="admin/files" method="fileDel" auth="privileged" request_methods="DELETE" />
+		<route id="file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
+		<route id="folder_update" controller="admin/files" method="folderUpdate" auth="privileged" request_methods="POST" />
+		<route id="folder_add" controller="admin/files" method="folderAdd" auth="privileged" request_methods="POST" />
+		<route id="folder_rename" controller="admin/files" method="folderRename" auth="privileged" request_methods="POST" />
+		<route id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
+		<route id="selection_del" controller="admin/files" method="selectionDel" auth="privileged" request_methods="DELETE" />
+		<route id="selection_move" controller="admin/files" method="selectionMove" auth="privileged" request_methods="POST" />
+
 
 		<route id="pages" controller="admin/pages" auth="superadmin" />
 		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
@@ -47,25 +67,6 @@
 		<route id="article_files_init" controller="admin/files" method="init" auth="privileged" />
 		<route id="article_file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
 		<route id="article_folder_read" controller="admin/files" method="folderRead" auth="privileged" />
-
-		<route id="files" controller="admin/files" auth="privileged" />
-		<route id="files_init" controller="admin/files" method="init" auth="privileged" />
-		<route id="files_search" controller="admin/files" method="search" auth="privileged" />
-		<route id="folders_tree" controller="admin/files" method="getFoldersTree" auth="privileged" />
-		<route id="file_get" controller="admin/files" method="fileGet" auth="privileged" />
-		<route id="file_update" controller="admin/files" method="fileUpdate" auth="privileged" request_methods="POST" />
-		<route id="file_rename" controller="admin/files" method="fileRename" auth="privileged" request_methods="POST" />
-		<route id="file_move" controller="admin/files" method="fileMove" auth="privileged" request_methods="POST" />
-		<route id="file_del" controller="admin/files" method="fileDel" auth="privileged" request_methods="DELETE" />
-		<route id="file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
-		<route id="folder_read" controller="admin/files" method="folderRead" auth="privileged" />
-		<route id="folder_get" controller="admin/files" method="folderGet" auth="privileged" />
-		<route id="folder_update" controller="admin/files" method="folderUpdate" auth="privileged" request_methods="POST" />
-		<route id="folder_add" controller="admin/files" method="folderAdd" auth="privileged" request_methods="POST" />
-		<route id="folder_rename" controller="admin/files" method="folderRename" auth="privileged" request_methods="POST" />
-		<route id="folder_del" controller="admin/files" method="folderDel" auth="privileged" request_methods="DELETE" />
-		<route id="selection_del" controller="admin/files" method="selectionDel" auth="privileged" request_methods="DELETE" />
-		<route id="selection_move" controller="admin/files" method="selectionMove" auth="privileged" request_methods="POST" />
 
 		<route id="filepicker" controller="admin/files" auth="privileged" />
 	</routes>

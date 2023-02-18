@@ -1,5 +1,5 @@
 <script setup>
-  import {Focus} from "@/vue/directives";
+  import { Focus } from "@/directives/focus";
 </script>
 
 <template>

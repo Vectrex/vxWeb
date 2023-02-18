@@ -1,6 +1,7 @@
 <script setup>
   import Sortable from "@/components/vx-vue/sortable.vue";
   import FileEditForm from "@/components/views/files/FileEditForm.vue";
+  import FolderEditForm from "@/components/views/files/FolderEditForm.vue";
   import FilemanagerActions from "@/components/views/files/FilemanagerActions.vue";
   import FilemanagerAdd from "@/components/views/files/FilemanagerAdd.vue";
   import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue";
@@ -8,6 +9,10 @@
   import FolderTree from "@/components/views/files/FolderTree.vue";
   import Confirm from "@/components/vx-vue/confirm.vue";
   import CircularProgress from "@/components/misc/circular-progress.vue";
+  import { urlQueryCreate } from '@/util/url-query';
+  import { formatFilesize } from "@/util/format-filesize";
+  import { Focus } from "@/directives/focus";
+  import { PencilSquareIcon } from '@heroicons/vue/24/solid';
 </script>
 <template>
   <div
@@ -17,26 +22,24 @@
       @dragleave.prevent="indicateDrag = false"
       :class="{'dragged-over': indicateDrag}"
   >
-    <div class="vx-button-bar navbar">
-      <section class="navbar-section">
-        <filemanager-breadcrumbs
-            :breadcrumbs="breadcrumbs"
-            :current-folder="currentFolder"
-            :folders="folders"
-            @breadcrumb-clicked="readFolder"
-        ></filemanager-breadcrumbs>
-        <div class="popup popup-bottom ml-1" :class="{ active: showAddActivities }">
-          <button class="btn webfont-icon-only" type="button" @click.stop="showAddActivities = !showAddActivities">
-            &#xe020;
-          </button>
-          <div class="popup-container">
-            <div class="card">
-              <div class="card-body">
-                <filemanager-add
-                    @upload="uploadInputFiles"
-                    @create-folder="createFolder"
-                ></filemanager-add>
-              </div>
+    <div>
+      <filemanager-breadcrumbs
+          :breadcrumbs="breadcrumbs"
+          :current-folder="currentFolder"
+          :folders="folders"
+          @breadcrumb-clicked="readFolder"
+      ></filemanager-breadcrumbs>
+      <div class="popup popup-bottom ml-1" :class="{ active: showAddActivities }">
+        <button class="btn webfont-icon-only" type="button" @click.stop="showAddActivities = !showAddActivities">
+          &#xe020;
+        </button>
+        <div class="popup-container">
+          <div class="card">
+            <div class="card-body">
+              <filemanager-add
+                  @upload="uploadInputFiles"
+                  @create-folder="createFolder"
+              ></filemanager-add>
             </div>
           </div>
         </div>
@@ -46,9 +49,6 @@
             :files="checkedFiles"
             :folders="checkedFolders"
         ></filemanager-actions>
-      </section>
-
-      <section class="navbar-section">
         <template v-if="upload.progressing">
           <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Abbrechen" type="button"
                   @click="cancelUpload">&#xe01d;
@@ -57,9 +57,7 @@
           <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16"></circular-progress>
         </template>
         <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
-      </section>
 
-      <section class="navbar-section">
         <filemanager-search
             :search="doSearch"
         >
@@ -78,8 +76,9 @@
           </template>
 
         </filemanager-search>
-      </section>
+      </div>
     </div>
+
     <sortable
         :rows="directoryEntries"
         :columns="columns"
@@ -87,54 +86,61 @@
         :sort-direction="initSort.dir"
         @after-sort="$emit('after-sort', { sortColumn: $refs.sortable.sortColumn, sortDir: $refs.sortable.sortDir })"
         ref="sortable"
-        id="files-list"
     >
+
       <template v-slot:checked-header>
-        <label class="form-checkbox"><input type="checkbox"
-          @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked);" v-check-indeterminate><i
-            class="form-icon"></i></label>
+        <input type="checkbox"
+          class="form-checkbox"
+          @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked)"
+          ref="multiCheckbox"
+        />
       </template>
 
       <template v-slot:checked="slotProps">
-        <label class="form-checkbox"><input type="checkbox" v-model="slotProps.row.checked"><i
-            class="form-icon"></i></label>
+        <input type="checkbox" class="form-checkbox" v-model="slotProps.row.checked" />
       </template>
 
       <template v-slot:name="slotProps">
-        <template v-if="slotProps.row.isFolder">
-          <input
-              v-if="slotProps.row === toRename"
-              v-focus
-              class="form-input"
-              :value="slotProps.row.name"
-              @keydown.enter="renameFolder"
-              @keydown.esc="toRename = null"
-              @blur="toRename = null"
-          >
-          <template v-else>
-            <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row.id)">{{ slotProps.row.name }}</a>
-            <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2"
-                    data-tooltip="Umbenennen" @click="toRename = slotProps.row">&#xe001;
-            </button>
+        <div class="flex items-center space-x-1">
+          <template v-if="slotProps.row.isFolder">
+            <input
+                v-if="slotProps.row === toRename"
+                v-focus
+                class="form-input"
+                :value="slotProps.row.name"
+                @keydown.enter="renameFolder"
+                @keydown.esc="toRename = null"
+                @blur="toRename = null"
+            >
+            <template v-else>
+              <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row.id)">{{ slotProps.row.name }}</a>
+              <button
+                  class="icon-link"
+                  data-tooltip="Umbenennen"
+                  @click="toRename = slotProps.row"
+              >
+                <pencil-square-icon class="h-5 w-5" />
+              </button>
+            </template>
           </template>
-        </template>
-        <template v-else>
-          <input
-              v-if="slotProps.row === toRename"
-              v-focus
-              class="form-input"
-              :value="slotProps.row.name"
-              @keydown.enter="renameFile"
-              @keydown.esc="toRename = null"
-              @blur="toRename = null"
-          >
           <template v-else>
-            <span>{{ slotProps.row.name }}</span>
-            <button class="btn webfont-icon-only tooltip mr-1 rename display-only-on-hover ml-2"
-                    data-tooltip="Umbenennen" @click="toRename = slotProps.row">&#xe001;
-            </button>
+            <input
+                v-if="slotProps.row === toRename"
+                v-focus
+                class="form-input"
+                :value="slotProps.row.name"
+                @keydown.enter="renameFile"
+                @keydown.esc="toRename = null"
+                @blur="toRename = null"
+            >
+            <template v-else>
+              <span>{{ slotProps.row.name }}</span>
+              <button class="icon-link" data-tooltip="Umbenennen" @click="toRename = slotProps.row">
+                <pencil-square-icon class="h-5 w-5" />
+              </button>
+            </template>
           </template>
-        </template>
+        </div>
       </template>
 
       <template v-slot:size="slotProps">
@@ -149,12 +155,14 @@
       <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
         <slot :name="name" v-bind="slotData"/>
       </template>
+
     </sortable>
+
     <div class="modal active" v-if="showFileForm || showFolderForm">
       <div class="modal-overlay"></div>
       <div class="modal-container">
         <div class="modal-header">
-          <a href="#close" class="btn btn-clear float-right" aria-label="Close"
+          <a href="#" class="btn btn-clear float-right" aria-label="Close"
              @click.prevent="showFileForm = showFolderForm = false"></a>
         </div>
         <div class="modal-body">
@@ -182,16 +190,21 @@
 </template>
 
 <script>
-import PromisedXhr from "../../../vue/util/promised-xhr";
-import UrlQuery from "../../../vue/util/url-query";
-import { formatFilesize } from '../../../vue/filters';
-import { Focus } from "../../../vue/directives";
-
 export default {
   name: 'Filemanager',
 
+  inject: ['api'],
+
+  props: {
+    routes: { type: Object, required: true },
+    columns: { type: Array, required: true },
+    folder: { type: String, default: '' },
+    initSort: Object
+  },
+
   data() {
     return {
+      limits: {},
       currentFolder: null,
       files: [],
       folders: [],
@@ -209,7 +222,7 @@ export default {
   },
 
   computed: {
-    directoryEntries() {
+    directoryEntries () {
       let folders = this.folders;
       let files = this.files;
       folders.forEach(item => {
@@ -219,35 +232,42 @@ export default {
       files.forEach(item => item.key = item.id);
       return [...folders, ...files];
     },
-    checkedFiles() {
+    checkedFiles () {
       return this.files.filter(({checked}) => checked);
     },
-    checkedFolders() {
+    checkedFolders () {
       return this.folders.filter(({checked}) => checked);
     }
-  },
-
-  props: {
-    routes: { type: Object, required: true },
-    limits: { type: Object, default: () => ({}) },
-    columns: { type: Array, required: true },
-    folder: { type: String, default: '' },
-    initSort: Object
   },
 
   watch: {
     folder(newValue) {
       this.currentFolder = newValue;
+    },
+    checkedFiles (newValue) {
+      let filteredLength = this.checkedFolders.length + newValue.length;
+      if (!filteredLength) {
+        this.$refs.multiCheckbox.checked = false;
+      }
+      this.$refs.multiCheckbox.indeterminate = filteredLength && filteredLength !== this.files.length + this.folders.length;
+    },
+    checkedFolders (newValue) {
+      let filteredLength = this.checkedFiles.length + newValue.length;
+      if (!filteredLength) {
+        this.$refs.multiCheckbox.checked = false;
+      }
+      this.$refs.multiCheckbox.indeterminate = filteredLength && filteredLength !== this.files.length + this.folders.length;
     }
   },
 
   async created() {
-    let response = await this.$fetch(UrlQuery.create(this.routes.init, {folder: this.folder}));
+    let response = await this.$fetch(urlQueryCreate(this.api + this.routes.init, { folder: this.folder }));
 
     this.breadcrumbs = response.breadcrumbs || [];
     this.files = response.files || [];
     this.folders = response.folders || [];
     this.currentFolder = response.currentFolder || null;
+    this.limits = response.limits || {};
   },
   mounted() {
     document.body.addEventListener('click', this.handleBodyClick);
@@ -261,7 +281,7 @@ export default {
       this.showAddActivities = false;
     },
     async readFolder(id) {
-      let response = await this.$fetch(UrlQuery.create(this.routes.readFolder, {folder: id}));
+      let response = await this.$fetch(urlQueryCreate(this.api + this.routes.readFolder, {folder: id}));
 
       if (response.success) {
         this.files = response.files || [];
@@ -273,7 +293,7 @@ export default {
       }
     },
     async delSelection() {
-      let response = await this.$fetch(UrlQuery.create(this.routes.delSelection, {
+      let response = await this.$fetch(urlQueryCreate(this.routes.delSelection, {
         files: this.checkedFiles.map(({id}) => id).join(","),
         folders: this.checkedFolders.map(({id}) => id).join(",")
       }), 'DELETE');
@@ -290,7 +310,7 @@ export default {
       let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
 
       if (folder !== false) {
-        let response = await this.$fetch(UrlQuery.create(this.routes.moveSelection, {destination: folder.id}), 'POST', {}, JSON.stringify({
+        let response = await this.$fetch(urlQueryCreate(this.routes.moveSelection, {destination: folder.id}), 'POST', {}, JSON.stringify({
           files: this.checkedFiles.map(({id}) => id),
           folders: this.checkedFolders.map(({id}) => id)
         }));
@@ -307,21 +327,21 @@ export default {
     },
     async editFile(row) {
       this.showFileForm = true;
-      let response = await this.$fetch(UrlQuery.create(this.routes.getFile, {id: row.id}));
+      let response = await this.$fetch(urlQueryCreate(this.routes.getFile, {id: row.id}));
       this.editFormData = response.form || {};
       this.editMetaData = response.fileInfo || {};
       this.editFormData.id = row.id;
     },
     async editFolder(row) {
       this.showFolderForm = true;
-      let response = await this.$fetch(UrlQuery.create(this.routes.getFolder, {id: row.id}));
+      let response = await this.$fetch(urlQueryCreate(this.routes.getFolder, {id: row.id}));
       this.editFormData = response.form || {};
       this.editMetaData = response.folderInfo || {};
       this.editFormData.id = row.id;
     },
     async delFile(row) {
       if (await this.$refs.confirm.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
-        let response = await this.$fetch(UrlQuery.create(this.routes.delFile, {id: row.id}), 'DELETE');
+        let response = await this.$fetch(urlQueryCreate(this.routes.delFile, {id: row.id}), 'DELETE');
         if (response.success) {
           this.files.splice(this.files.findIndex(item => row === item), 1);
         }
@@ -355,7 +375,7 @@ export default {
     },
     async delFolder(row) {
       if (await this.$refs.confirm.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?", {cancelLabel: "Abbrechen"})) {
-        let response = await this.$fetch(UrlQuery.create(this.routes.delFolder, {folder: row.id}), 'DELETE');
+        let response = await this.$fetch(urlQueryCreate(this.routes.delFolder, {folder: row.id}), 'DELETE');
         if (response.success) {
           this.folders.splice(this.folders.findIndex(item => row === item), 1);
         }
@@ -410,8 +430,8 @@ export default {
         }
         this.progress.file = file.name;
         try {
-          response = await PromisedXhr(
-              UrlQuery.create(this.routes.uploadFile, {folder: this.currentFolder}),
+          response = await this.$promisedXhr(
+              urlQueryCreate(this.routes.uploadFile, {folder: this.currentFolder}),
               'POST',
               {
                 'Content-type': file.type || 'application/octet-stream',
@@ -454,7 +474,7 @@ export default {
     },
     doSearch(term) {
       if (term.trim().length > 2) {
-        return this.$fetch(UrlQuery.create(this.routes.search, {search: term}));
+        return this.$fetch(urlQueryCreate(this.routes.search, {search: term}));
       }
       return {files: [], folders: []};
     },
@@ -462,16 +482,7 @@ export default {
   },
 
   directives: {
-    focus: Focus,
-    checkIndeterminate: {
-      updated(el, binding, vnode) {
-        let filteredLength = binding.instance.checkedFolders.length + binding.instance.checkedFiles.length;
-        if (!filteredLength) {
-          el.checked = false;
-        }
-        el.indeterminate = filteredLength && filteredLength !== binding.instance.folders.length + binding.instance.files.length;
-      }
-    }
+    focus: Focus
   }
 }
 </script>

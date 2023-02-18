@@ -40,24 +40,7 @@ class FilesController extends Controller
      */
     protected function execute(): Response
     {
-        $uploadMaxFilesize = min(
-            $this->toBytes(ini_get('upload_max_filesize')),
-            $this->toBytes(ini_get('post_max_size'))
-        );
-        $maxExecutionTime = ini_get('max_execution_time');
-
-        if ($this->route->getRouteId() === 'filepicker') {
-            $tpl = 'admin/files_picker.php';
-        }
-        else {
-            $tpl = 'admin/files.php';
-        }
-
-        return new Response(
-            SimpleTemplate::create($tpl)
-                ->assign('upload_max_filesize', $uploadMaxFilesize)
-                ->assign('max_execution_time_ms', $maxExecutionTime * 900)// 10pct "safety margin"
-                ->display());
+        return new Response();
     }
 
     protected function init(): JsonResponse
@@ -76,7 +59,13 @@ class FilesController extends Controller
                 'files' => $this->getFileRows($folder, $this->request->query->get('filter')),
                 'folders' => $this->getFolderRows($folder),
                 'breadcrumbs' => $this->getBreadcrumbs($folder),
-                'currentFolder' => $folder->getId()
+                'currentFolder' => $folder->getId(),
+                'limits' => [
+                    'maxUploadSize' => min(
+                        $this->toBytes(ini_get('upload_max_filesize')),
+                        $this->toBytes(ini_get('post_max_size'))
+                    ),
+                    'maxExecutionTime' => ini_get('max_execution_time') * 900] /* 10% "safety margin" */
             ]);
 
         } catch (MetaFolderException $e) {
