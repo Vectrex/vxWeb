@@ -115,7 +115,7 @@
       </template>
 
       <template v-slot:name="slotProps">
-        <div class="flex items-center space-x-1">
+        <div class="flex items-center space-x-1 group">
           <template v-if="slotProps.row.isFolder">
             <input
                 v-if="slotProps.row === toRename"
@@ -129,7 +129,7 @@
             <template v-else>
               <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row.id)">{{ slotProps.row.name }}</a>
               <button
-                  class="icon-link"
+                  class="icon-link opacity-0 group-hover:opacity-100 transition-opacity tooltip"
                   data-tooltip="Umbenennen"
                   @click="toRename = slotProps.row"
               >
@@ -149,7 +149,11 @@
             >
             <template v-else>
               <span>{{ slotProps.row.name }}</span>
-              <button class="icon-link" data-tooltip="Umbenennen" @click="toRename = slotProps.row">
+              <button
+                class="icon-link opacity-0 group-hover:opacity-100 transition-opacity tooltip"
+                data-tooltip="Umbenennen"
+                @click="toRename = slotProps.row"
+              >
                 <pencil-square-icon class="h-5 w-5" />
               </button>
             </template>

@@ -2,17 +2,16 @@
   import { computed } from "vue";
   import MessageToast from "@/components/message-toast.vue";
   import Sidebar from "@/components/app/Sidebar.vue";
-  import Headline from "@/components/app/Headline.vue";
   import Headerbar from "@/components/app/Headerbar.vue";
   import Logo from "@/components/misc/logo.vue";
 </script>
 <template>
   <div class="fixed inset-y-0 flex w-64 flex-col" v-if="$route.name !== 'login'">
-    <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue pt-5">
-      <div class="flex flex-col justify-end p-4 items-start h-16">
-        <logo class="h-8 text-white" />
+    <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue">
+      <div class="flex flex-col justify-end p-4 items-start h-20 text-white">
+        <logo class="h-8 block" />
       </div>
-      <div class="mt-5 flex flex-1 flex-col">
+      <div class="flex flex-1 flex-col">
         <sidebar class="flex-1 space-y-1 px-2 pb-4" />
       </div>
     </div>
