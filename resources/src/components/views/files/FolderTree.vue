@@ -5,8 +5,8 @@
 </script>
 
 <template>
-    <form-title @cancel="cancel">Zielordner wählen</form-title>
-    <div>
+    <form-title @cancel="cancel" class="w-full">Zielordner wählen</form-title>
+    <div class="pt-20 px-4 pb-4">
       <simple-tree :branch="root" @branch-selected="folderSelected"></simple-tree>
     </div>
 </template>
