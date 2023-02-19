@@ -7,7 +7,7 @@
   import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue";
   import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue";
   import FolderTree from "@/components/views/files/FolderTree.vue";
-  import Confirm from "@/components/vx-vue/confirm.vue";
+  import Alert from "@/components/vx-vue/alert.vue";
   import CircularProgress from "@/components/misc/circular-progress.vue";
   import { PencilSquareIcon, PlusIcon } from '@heroicons/vue/24/solid';
   import Headline from "@/components/app/Headline.vue";
@@ -51,7 +51,7 @@
       @dragleave.prevent="indicateDrag = false"
       :class="{'dragged-over': indicateDrag}"
   >
-    <div>
+    <div class="flex pb-4 justify-between items-center">
       <filemanager-breadcrumbs
           :breadcrumbs="breadcrumbs"
           :current-folder="currentFolder"
@@ -89,7 +89,6 @@
           <a :href="'#' + slotProps.file.folder"
              @click.prevent="readFolder(slotProps.file.folder)">{{ slotProps.file.path }}</a>
         </template>
-
       </filemanager-search>
     </div>
     </div>
@@ -198,17 +197,30 @@
         </div>
       </div>
     </div>
-    <confirm ref="confirm" :config="{ cancelLabel: 'Abbrechen', okLabel: 'Löschen', okClass: 'btn-error' }"></confirm>
-    <confirm ref="alert" :config="{ label: 'Ok', buttonClass: 'btn-error' }"></confirm>
-    <folder-tree ref="folder-tree"/>
+  <teleport to="body">
+    <alert
+        ref="confirm"
+        :buttons="[
+            { label: 'Löschen!', value: true, 'class': 'button alert' },
+            { label: 'Abbrechen', value: false, 'class': 'button' }
+          ]"
+    />
+    <alert
+        ref="alert"
+        :buttons="[
+            { label: 'Ok!', value: true, 'class': 'button alert' },
+          ]"
+    />
+  </teleport>
+  <folder-tree ref="folder-tree"/>
 </template>
 
 <script>
 export default {
   name: 'Filemanager',
-
   inject: ['api'],
-
+  emits: ['response-received', 'after-sort'],
+  expose: ['delFile', 'delFolder', 'editFile', 'editFolder', 'moveFile'],
   props: {
     routes: { type: Object, required: true },
     columns: { type: Array, required: true },

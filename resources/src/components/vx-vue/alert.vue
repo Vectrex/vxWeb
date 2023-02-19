@@ -1,7 +1,5 @@
 <template>
-  <transition name="fade">
-    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 backdrop-blur-sm" aria-hidden="true" v-if="show"></div>
-  </transition>
+  <div class="fixed inset-0 bg-black bg-opacity-50 z-50 backdrop-blur-sm" aria-hidden="true" v-if="show" />
   <transition name="appear">
     <div class="fixed z-50 inset-0 overflow-y-auto" v-if="show">
       <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

@@ -1,9 +1,16 @@
 <script setup>
+  import { PencilSquareIcon, DocumentMinusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/vue/24/solid';
   import Filemanager from "@/components/views/files/Filemanager.vue";
-  import { PencilSquareIcon, FolderMinusIcon, DocumentMinusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/vue/24/solid';
 </script>
 <template>
-  <filemanager :routes="routes" :columns="cols" :init-sort="initSort" ref="fm" @response-received="$emit('notify', $event)" @after-sort="storeSort">
+  <filemanager
+    :routes="routes"
+    :columns="cols"
+    :init-sort="initSort"
+    @response-received="$emit('notify', $event)"
+    @after-sort="storeSort"
+    ref="fm"
+  >
     <template v-slot:action="slotProps">
       <div class="flex items-center space-x-1">
         <template v-if="slotProps.row.isFolder">
@@ -11,7 +18,7 @@
             <pencil-square-icon class="h-5 w-5" />
           </button>
           <button class="icon-link" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">
-            <folder-minus-icon class="h-5 w-5" />
+            <trash-icon class="h-5 w-5" />
           </button>
         </template>
         <template v-else>
@@ -36,6 +43,7 @@
 export default {
   name: "Files",
   inject: ['api'],
+  emits: ['notify'],
   data() {
     return {
       routes: {

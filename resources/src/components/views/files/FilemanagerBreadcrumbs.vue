@@ -3,11 +3,11 @@
         <button
             v-for="(breadcrumb, ndx) in items"
             :class="[
-              'border-2 px-2 border-vxvue-500 text-vxvue-500',
+              'border-t-2 border-b-2 border-l border-r px-4 py-2 border-vxvue-500 text-vxvue-500',
               {
-                'rounded-l': ndx === 0,
-                'rounded-r': ndx === items.length -1,
-                'bg-vxvue-500 !text-white': breadcrumb.folder === currentFolder
+                'rounded-l !border-l-2': ndx === 0,
+                'rounded-r !border-r-2': ndx === items.length -1,
+                'bg-vxvue-500 !text-white font-bold': breadcrumb.folder === currentFolder
               }
             ]"
             :key="ndx"

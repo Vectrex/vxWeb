@@ -9,7 +9,7 @@
 <template>
   <div class="fixed inset-y-0 flex w-64 flex-col" v-if="$route.name !== 'login'">
     <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue pt-5">
-      <div class="flex flex-shrink-0 items-center px-4">
+      <div class="flex flex-col justify-end p-4 items-start h-16">
         <logo class="h-8 text-white" />
       </div>
       <div class="mt-5 flex flex-1 flex-col">
