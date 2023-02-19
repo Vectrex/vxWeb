@@ -48,11 +48,8 @@ export default {
     return {
       routes: {
         init: 'files/init',
-        readFolder: 'files/folder'
-      },
-      limits: {
-        maxExecutionTime: 30000,
-        maxUploadFilesize: 500000
+        readFolder: 'files/folder',
+        getFoldersTree: 'folders/tree'
       },
       cols: [
         {

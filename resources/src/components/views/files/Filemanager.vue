@@ -7,10 +7,11 @@
   import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue";
   import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue";
   import FolderTree from "@/components/views/files/FolderTree.vue";
+  import Headline from "@/components/app/Headline.vue";
   import Alert from "@/components/vx-vue/alert.vue";
   import CircularProgress from "@/components/misc/circular-progress.vue";
+  import Modal from "@/components/vx-vue/modal.vue";
   import { PencilSquareIcon, PlusIcon } from '@heroicons/vue/24/solid';
-  import Headline from "@/components/app/Headline.vue";
   import { urlQueryCreate } from '@/util/url-query';
   import { formatFilesize } from "@/util/format-filesize";
   import { Focus } from "@/directives/focus";
@@ -215,8 +216,10 @@
             { label: 'Ok!', value: true, 'class': 'button alert' },
           ]"
     />
+    <modal :show="showFolderTree">
+      <folder-tree ref="folderTree" />
+    </modal>
   </teleport>
-  <folder-tree ref="folder-tree"/>
 </template>
 
 <script>
@@ -246,6 +249,7 @@ export default {
       progress: { total: null, loaded: null, file: null },
       showFileForm: false,
       showFolderForm: false,
+      showFolderTree: false,
       editFormData: {},
       editMetaData: {}
     }
@@ -423,8 +427,15 @@ export default {
       }
     },
     async moveFile(row) {
-      let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
+      this.showFolderTree = true;
+      this.$nextTick(
+          async () => {
+            let folder = await this.$refs.folderTree.open(this.api + this.routes.getFoldersTree, this.currentFolder);
+            this.showFolderTree = false;
+          }
+      );
 
+      /*
       if (folder !== false) {
         let response = await this.$fetch(this.routes.moveFile, 'POST', {}, JSON.stringify({
           id: row.id,
@@ -436,6 +447,7 @@ export default {
           this.$emit('response-received', response);
         }
       }
+       */
     },
     uploadDraggedFiles(event) {
       this.indicateDrag = false;

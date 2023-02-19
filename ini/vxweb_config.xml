@@ -19,10 +19,10 @@
 
 		<route id="files_init" controller="admin/files" path="files/init" method="init" auth="privileged" />
 		<route id="folder_read" controller="admin/files" path="files/folder" method="folderRead" auth="privileged" />
+		<route id="folders_tree" controller="admin/files" path="folders/tree" method="getFoldersTree" auth="privileged" />
 
 		<route id="folder_get" controller="admin/files" method="folderGet" auth="privileged" />
 		<route id="files_search" controller="admin/files" method="search" auth="privileged" />
-		<route id="folders_tree" controller="admin/files" method="getFoldersTree" auth="privileged" />
 		<route id="file_get" controller="admin/files" method="fileGet" auth="privileged" />
 		<route id="file_update" controller="admin/files" method="fileUpdate" auth="privileged" request_methods="POST" />
 		<route id="file_rename" controller="admin/files" method="fileRename" auth="privileged" request_methods="POST" />
