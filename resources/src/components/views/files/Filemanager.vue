@@ -432,22 +432,20 @@ export default {
           async () => {
             let folder = await this.$refs.folderTree.open(this.api + this.routes.getFoldersTree, this.currentFolder);
             this.showFolderTree = false;
+
+            if (folder !== false) {
+              let response = await this.$fetch(this.api + this.routes.moveFile, 'POST', {}, JSON.stringify({
+                id: row.id,
+                folderId: folder.id
+              }));
+              if (response.success) {
+                this.files.splice(this.files.findIndex(item => row === item), 1);
+              } else {
+                this.$emit('response-received', response);
+              }
+            }
           }
       );
-
-      /*
-      if (folder !== false) {
-        let response = await this.$fetch(this.routes.moveFile, 'POST', {}, JSON.stringify({
-          id: row.id,
-          folderId: folder.id
-        }));
-        if (response.success) {
-          this.files.splice(this.files.findIndex(item => row === item), 1);
-        } else {
-          this.$emit('response-received', response);
-        }
-      }
-       */
     },
     uploadDraggedFiles(event) {
       this.indicateDrag = false;

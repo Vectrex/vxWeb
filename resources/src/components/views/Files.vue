@@ -49,7 +49,8 @@ export default {
       routes: {
         init: 'files/init',
         readFolder: 'files/folder',
-        getFoldersTree: 'folders/tree'
+        getFoldersTree: 'folders/tree',
+        moveFile: 'files/move'
       },
       cols: [
         {
