@@ -50,7 +50,7 @@ export default {
         init: 'files/init',
         readFolder: 'files/folder',
         getFoldersTree: 'folders/tree',
-        moveFile: 'files/move'
+        moveFile: 'files/move',
       },
       cols: [
         {

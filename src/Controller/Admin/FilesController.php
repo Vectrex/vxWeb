@@ -327,18 +327,14 @@ class FilesController extends Controller
 
     protected function folderDel (): JsonResponse
     {
-        if(!($id = $this->request->query->getInt('folder'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
         try {
-            MetaFolder::getInstance(null, $id)->delete();
-            return new JsonResponse(['success' => true]);
+            MetaFolder::getInstance(null, $this->route->getPathParameter('id'))->delete();
+            return new JsonResponse(['success' => true, 'message' => 'Verzeichnis erfolgreich gelöscht.']);
         }
         catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
 
     protected function folderGet (): JsonResponse
     {
@@ -422,10 +418,14 @@ class FilesController extends Controller
                 }
             }
             $folder = $parentFolder->createFolder($name);
-            return new JsonResponse(['success' => true, 'folder' => [
-                'id' => $folder->getId(),
-                'name' => $folder->getName()
-            ]]);
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Ordner erfolgreich erstellt.',
+                'folder' => [
+                    'id' => $folder->getId(),
+                    'name' => $folder->getName()
+                ]
+            ]);
         }
         catch(\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);

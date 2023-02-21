@@ -75,6 +75,9 @@
     .tooltip:focus:after, .tooltip:hover:after {
         @apply opacity-100 -translate-y-1
     }
+    .form-input {
+        @apply text-vxvue-900
+    }
 }
 
 /* define the default vx-vue color set */

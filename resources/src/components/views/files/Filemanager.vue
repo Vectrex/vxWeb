@@ -32,7 +32,7 @@
       <transition name="appear">
           <div
             v-if="showAddActivities"
-            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            class="absolute right-0 z-10 mt-2 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
             role="menu"
             aria-orientation="vertical"
           >
@@ -409,22 +409,23 @@ export default {
     },
     async delFolder(row) {
       if (await this.$refs.confirm.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?", {cancelLabel: "Abbrechen"})) {
-        let response = await this.$fetch(urlQueryCreate(this.routes.delFolder, {folder: row.id}), 'DELETE');
+        let response = await this.$fetch(this.api + 'folder/' + row.id, 'DELETE');
         if (response.success) {
           this.folders.splice(this.folders.findIndex(item => row === item), 1);
         }
+        this.$emit('response-received', response);
       }
     },
     async createFolder(name) {
       this.showAddActivities = false;
-
-      let response = await this.$fetch(this.routes.addFolder, 'POST', {}, JSON.stringify({
+      let response = await this.$fetch(this.api + 'folder', 'POST', {}, JSON.stringify({
         name: name,
         parent: this.currentFolder
       }));
       if (response.folder) {
         this.folders.push(response.folder);
       }
+      this.$emit('response-received', response);
     },
     async moveFile(row) {
       this.showFolderTree = true;
@@ -434,15 +435,14 @@ export default {
             this.showFolderTree = false;
 
             if (folder !== false) {
-              let response = await this.$fetch(this.api + this.routes.moveFile, 'POST', {}, JSON.stringify({
+              let response = await this.$fetch(this.api + this.routes.moveFile, 'PUT', {}, JSON.stringify({
                 id: row.id,
                 folderId: folder.id
               }));
               if (response.success) {
                 this.files.splice(this.files.findIndex(item => row === item), 1);
-              } else {
-                this.$emit('response-received', response);
               }
+              this.$emit('response-received', response);
             }
           }
       );

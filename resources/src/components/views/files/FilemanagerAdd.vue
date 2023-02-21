@@ -4,15 +4,16 @@
 </script>
 
 <template>
-  <div>
-    <input
-        v-if="showAddFolderInput"
+    <div class="px-4 py-2" v-if="!showAddFolderInput">
+      <input
         v-focus
         class="form-input"
         @keydown.enter="addFolder"
         @keydown.esc="showAddFolderInput = false"
         @blur="showAddFolderInput = false"
+        @click.stop
     />
+    </div>
     <button
         v-else
         type="button"
@@ -30,7 +31,6 @@
       <span>Datei hochladen</span>
     </label>
     <input type="file" id="file_upload" class="hidden" :multiple="multiple" @change="fileChanged"/>
-  </div>
 </template>
 
 <script>
