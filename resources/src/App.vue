@@ -43,6 +43,7 @@
 <script>
 export default {
   name: 'App',
+  expose: ['notify'],
   data() {
     return {
       auth: {},
@@ -64,7 +65,7 @@ export default {
       this.toast = {
         active: true,
         message: data.message || (data.success ? 'Success!' : 'Failure!'),
-        css: data.success ? 'bg-green-800 text-white' : 'bg-red-800 text-white'
+        css: data.success ? 'bg-green-700 text-white' : 'bg-red-700 text-white'
       }
     }
   }

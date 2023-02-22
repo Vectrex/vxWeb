@@ -6,11 +6,9 @@
     button:focus-visible {
         @apply outline-black;
     }
-
     [v-cloak] {
         @apply hidden;
     }
-
     @font-face {
         font-family: 'Inter';
         font-style: normal;

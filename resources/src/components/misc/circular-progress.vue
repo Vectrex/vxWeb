@@ -9,7 +9,7 @@
         :cy="radius"
     />
     <circle
-        :stroke="color"
+        stroke="currentColor"
         fill="transparent"
         :stroke-dasharray="circumference + ' ' + circumference"
         :style="{ strokeDashoffset }"
@@ -28,8 +28,7 @@ export default {
   props: {
     progress: Number,
     radius: { type: Number, default: 24 },
-    strokeWidth: { type: Number, default: 8 },
-    color: { type: String, default: 'white' }
+    strokeWidth: { type: Number, default: 8 }
   },
 
   computed: {

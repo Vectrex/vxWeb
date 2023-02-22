@@ -222,7 +222,7 @@ class FilesController extends Controller
 
     protected function fileDel (): JsonResponse
     {
-        if(!($id = $this->request->query->getInt('id'))) {
+        if(!($id = $this->route->getPathParameter('id'))) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         try {
@@ -230,7 +230,7 @@ class FilesController extends Controller
             return new JsonResponse(['success' => true]);
         }
         catch (\Exception $e) {
-            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -267,7 +267,7 @@ class FilesController extends Controller
         try {
             $fsFolder = MetaFolder::getInstance(null, $id)->getFilesystemFolder();
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
 
         $filename = FilesystemFile::sanitizeFilename(urldecode($this->request->headers->get('x-file-name')), $fsFolder);
@@ -279,20 +279,18 @@ class FilesController extends Controller
 
         if($expectedSize !== strlen($contents)) {
             return new JsonResponse([
-                'error' => 1,
+                'success' => false,
                 'message' => sprintf("Mitgeteilte Dateigröße %d stimmt nicht mit jener der Datei überein (%d).", $expectedSize, strlen($contents)),
             ]);
         }
 
         // check content for possibly malicious PHP
 
-        if (strtolower(pathinfo($filename)['extension']) === 'php') {
-            if($this->checkForPHP($contents)) {
-                return new JsonResponse([
-                    'error' => 1,
-                    'message' => 'Datei enthält möglicherweise bösartigen ausführbaren PHP Code.',
-                ]);
-            }
+        if ((strtolower(pathinfo($filename)['extension']) === 'php') && $this->checkForPHP($contents)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Datei enthält möglicherweise bösartigen ausführbaren PHP Code.',
+            ]);
         }
 
         try {
@@ -313,7 +311,7 @@ class FilesController extends Controller
             }
         } catch (\Exception $e) {
             return new JsonResponse([
-                'error' => 1,
+                'success' => false,
                 'message' => sprintf("Upload von '%s' fehlgeschlagen: %s.", $filename, $e->getMessage()),
             ]);
         }

@@ -11,7 +11,7 @@
   import Alert from "@/components/vx-vue/alert.vue";
   import CircularProgress from "@/components/misc/circular-progress.vue";
   import Modal from "@/components/vx-vue/modal.vue";
-  import { PencilSquareIcon, PlusIcon } from '@heroicons/vue/24/solid';
+  import { PencilSquareIcon, PlusIcon, XIcon } from '@heroicons/vue/24/solid';
   import { urlQueryCreate } from '@/util/url-query';
   import { formatFilesize } from "@/util/format-filesize";
   import { Focus } from "@/directives/focus";
@@ -50,7 +50,7 @@
       @drop.prevent="uploadDraggedFiles"
       @dragover.prevent="indicateDrag = true"
       @dragleave.prevent="indicateDrag = false"
-      :class="{'dragged-over': indicateDrag}"
+      :class="{'border-4 border-vxvue-alt': indicateDrag }"
   >
     <div class="flex pb-4 justify-between items-center">
       <filemanager-breadcrumbs
@@ -65,13 +65,11 @@
           :files="checkedFiles"
           :folders="checkedFolders"
       />
-      <template v-if="upload.progressing">
-        <button class="btn btn-link webfont-icon-only tooltip" data-tooltip="Abbrechen" type="button"
-                @click="cancelUpload">&#xe01d;
-        </button>
-        <label class="d-inline-block mr-2">{{ progress.file }}</label>
-        <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16"></circular-progress>
-      </template>
+      <div v-if="upload.progressing" class="flex space-x-2 items-center">
+        <button class="icon-link" data-tooltip="Abbrechen" type="button" @click="cancelUpload"><x-icon class="h-5 w-5" /></button>
+        <strong>{{ progress.file }}</strong>
+        <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16" />
+      </div>
       <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
 
       <filemanager-search
@@ -91,7 +89,6 @@
              @click.prevent="readFolder(slotProps.file.folder)">{{ slotProps.file.path }}</a>
         </template>
       </filemanager-search>
-    </div>
     </div>
 
     <sortable
@@ -176,32 +173,34 @@
       </template>
 
     </sortable>
+  </div>
 
-    <div class="modal active" v-if="showFileForm || showFolderForm">
-      <div class="modal-overlay"></div>
-      <div class="modal-container">
-        <div class="modal-header">
-          <a href="#" class="btn btn-clear float-right" aria-label="Close"
-             @click.prevent="showFileForm = showFolderForm = false"></a>
-        </div>
-        <div class="modal-body">
-          <file-edit-form
-              :initial-data="editFormData"
-              :file-info="editMetaData"
-              :url="routes.updateFile"
-              @response-received="response => $emit('response-received', response)"
-              v-if="showFileForm"
-          />
-          <folder-edit-form
-              :initial-data="editFormData"
-              :folder-info="editMetaData"
-              :url="routes.updateFolder"
-              @response-received="response => $emit('response-received', response)"
-              v-if="showFolderForm"
-          />
-        </div>
+  <div class="modal active" v-if="showFileForm || showFolderForm">
+    <div class="modal-overlay"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <a href="#" class="btn btn-clear float-right" aria-label="Close"
+           @click.prevent="showFileForm = showFolderForm = false"></a>
+      </div>
+      <div class="modal-body">
+        <file-edit-form
+            :initial-data="editFormData"
+            :file-info="editMetaData"
+            :url="routes.updateFile"
+            @response-received="response => $emit('response-received', response)"
+            v-if="showFileForm"
+        />
+        <folder-edit-form
+            :initial-data="editFormData"
+            :folder-info="editMetaData"
+            :url="routes.updateFolder"
+            @response-received="response => $emit('response-received', response)"
+            v-if="showFolderForm"
+        />
       </div>
     </div>
+  </div>
+
   <teleport to="body">
     <alert
         ref="confirm"
@@ -375,7 +374,7 @@ export default {
     },
     async delFile(row) {
       if (await this.$refs.confirm.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
-        let response = await this.$fetch(urlQueryCreate(this.routes.delFile, {id: row.id}), 'DELETE');
+        let response = await this.$fetch(this.api + 'file/' + row.id, 'DELETE');
         if (response.success) {
           this.files.splice(this.files.findIndex(item => row === item), 1);
         }
@@ -471,7 +470,7 @@ export default {
         this.progress.file = file.name;
         try {
           response = await this.$promisedXhr(
-              urlQueryCreate(this.routes.uploadFile, {folder: this.currentFolder}),
+              this.api + "file?folder=" + this.currentFolder,
               'POST',
               {
                 'Content-type': file.type || 'application/octet-stream',
@@ -487,7 +486,12 @@ export default {
               },
               this.upload.cancelToken
           );
-          this.files = response.files || this.files;
+          if (response.status >= 400) {
+              this.$router.replace({ name: 'login' });
+          }
+          else {
+            this.files = response.files || this.files;
+          }
         } catch (err) {
           this.upload.files = [];
           this.upload.progressing = false;
@@ -503,7 +507,7 @@ export default {
       }
       this.upload.progressing = false;
       if (response) {
-        this.$emit('response-received', {success: true, message: response.message || 'File upload successful'});
+        this.$emit('response-received', { success: true, message: response.message || 'File upload successful' });
       }
     },
     cancelUpload() {

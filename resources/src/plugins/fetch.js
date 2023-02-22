@@ -28,7 +28,7 @@ export default {
                     options.router.replace(options.authFailureRoute);
                 }
                 else {
-                    throw {status: response.status};
+                    throw { status: response.status };
                 }
             }
             const decodedResponse = await response.json();

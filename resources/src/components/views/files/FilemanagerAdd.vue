@@ -4,7 +4,7 @@
 </script>
 
 <template>
-    <div class="px-4 py-2" v-if="!showAddFolderInput">
+    <div class="px-4 py-2" v-if="showAddFolderInput">
       <input
         v-focus
         class="form-input"
