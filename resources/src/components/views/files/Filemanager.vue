@@ -11,7 +11,7 @@
   import Alert from "@/components/vx-vue/alert.vue";
   import CircularProgress from "@/components/misc/circular-progress.vue";
   import Modal from "@/components/vx-vue/modal.vue";
-  import { PencilSquareIcon, PlusIcon, XIcon } from '@heroicons/vue/24/solid';
+  import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid';
   import { urlQueryCreate } from '@/util/url-query';
   import { formatFilesize } from "@/util/format-filesize";
   import { Focus } from "@/directives/focus";
@@ -66,7 +66,7 @@
           :folders="checkedFolders"
       />
       <div v-if="upload.progressing" class="flex space-x-2 items-center">
-        <button class="icon-link" data-tooltip="Abbrechen" type="button" @click="cancelUpload"><x-icon class="h-5 w-5" /></button>
+        <button class="icon-link" data-tooltip="Abbrechen" type="button" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
         <strong>{{ progress.file }}</strong>
         <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16" />
       </div>
