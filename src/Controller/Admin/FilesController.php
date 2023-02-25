@@ -180,15 +180,12 @@ class FilesController extends Controller
 
     protected function folderRead (): JsonResponse
     {
-        if(!($id = $this->request->query->getInt('folder'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
-
+        $id = $this->route->getPathParameter('id');
         try {
             $folder = MetaFolder::getInstance(null, $id);
         }
         catch (\Exception $e) {
-            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         File::cleanupMetaFolder($folder);

@@ -18,7 +18,7 @@
 		<route id="user_edit" controller="admin/users" path="user/{id}" auth="superadmin" method="update" request_methods="PUT" />
 
 		<route id="files_init" controller="admin/files" path="files/init" method="init" auth="privileged" />
-		<route id="folder_read" controller="admin/files" path="files/folder" method="folderRead" auth="privileged" />
+		<route id="folder_read" controller="admin/files" path="folder/{id}/read" method="folderRead" auth="privileged" />
 		<route id="folders_tree" controller="admin/files" path="folders/tree" method="getFoldersTree" auth="privileged" />
 		<route id="file_move" controller="admin/files" path="files/move" method="fileMove" auth="privileged" request_methods="PUT" />
 		<route id="file_del" controller="admin/files" path="file/{id}" method="fileDel" auth="privileged" request_methods="DELETE" />

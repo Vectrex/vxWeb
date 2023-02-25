@@ -48,7 +48,6 @@ export default {
     return {
       routes: {
         init: 'files/init',
-        readFolder: 'files/folder',
         getFoldersTree: 'folders/tree',
         moveFile: 'files/move',
       },

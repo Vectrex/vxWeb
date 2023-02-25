@@ -314,7 +314,7 @@ export default {
       this.showAddActivities = false;
     },
     async readFolder(id) {
-      let response = await this.$fetch(urlQueryCreate(this.api + this.routes.readFolder, {folder: id}));
+      let response = await this.$fetch(this.api + 'folder/' + id +'/read');
 
       if (response.success) {
         this.files = response.files || [];
