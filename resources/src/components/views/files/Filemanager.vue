@@ -175,33 +175,15 @@
     </sortable>
   </div>
 
-  <div class="modal active" v-if="showFileForm || showFolderForm">
-    <div class="modal-overlay"></div>
-    <div class="modal-container">
-      <div class="modal-header">
-        <a href="#" class="btn btn-clear float-right" aria-label="Close"
-           @click.prevent="showFileForm = showFolderForm = false"></a>
-      </div>
-      <div class="modal-body">
-        <file-edit-form
-            :initial-data="editFormData"
-            :file-info="editMetaData"
-            :url="routes.updateFile"
-            @response-received="response => $emit('response-received', response)"
-            v-if="showFileForm"
-        />
-        <folder-edit-form
-            :initial-data="editFormData"
-            :folder-info="editMetaData"
-            :url="routes.updateFolder"
-            @response-received="response => $emit('response-received', response)"
-            v-if="showFolderForm"
-        />
-      </div>
-    </div>
-  </div>
-
   <teleport to="body">
+    <transition name="slide-from-right">
+      <folder-edit-form
+        :id="pickedId"
+        v-if="formShown === 'editFolder'"
+        @cancel="formShown = null"
+        class="fixed top-20 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
+      />
+    </transition>
     <alert
         ref="confirm"
         :buttons="[
@@ -244,13 +226,11 @@ export default {
       toRename: null,
       showAddActivities: false,
       indicateDrag: false,
+      formShown: null,
+      pickedId: null,
       upload: { files: [], progressing: false, cancelToken: {} },
       progress: { total: null, loaded: null, file: null },
-      showFileForm: false,
-      showFolderForm: false,
-      showFolderTree: false,
-      editFormData: {},
-      editMetaData: {}
+      showFolderTree: false
     }
   },
 
@@ -358,19 +338,13 @@ export default {
         }
       }
     },
-    async editFile(row) {
-      this.showFileForm = true;
-      let response = await this.$fetch(urlQueryCreate(this.routes.getFile, {id: row.id}));
-      this.editFormData = response.form || {};
-      this.editMetaData = response.fileInfo || {};
-      this.editFormData.id = row.id;
+    editFile(row) {
+      this.formShown = 'editFile';
+      this.pickedId = row.id;
     },
-    async editFolder(row) {
-      this.showFolderForm = true;
-      let response = await this.$fetch(urlQueryCreate(this.routes.getFolder, {id: row.id}));
-      this.editFormData = response.form || {};
-      this.editMetaData = response.folderInfo || {};
-      this.editFormData.id = row.id;
+    editFolder(row) {
+      this.formShown = 'editFolder';
+      this.pickedId = row.id;
     },
     async delFile(row) {
       if (await this.$refs.confirm.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {

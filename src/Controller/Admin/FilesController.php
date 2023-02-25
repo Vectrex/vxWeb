@@ -333,21 +333,16 @@ class FilesController extends Controller
 
     protected function folderGet (): JsonResponse
     {
-        if(!($id = $this->request->query->getInt('id'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
         try {
-            $mf = MetaFolder::getInstance(null, $id);
+            $mf = MetaFolder::getInstance(null, $this->route->getPathParameter('id'));
 
             return new JsonResponse([
-                'form' => array_intersect_key($mf->getData(), array_fill_keys(self::FOLDER_ATTRIBUTES, null)),
-                'folderInfo' => [
-                    'path' => $mf->getRelativePath(),
-                ]
+                ...array_intersect_key($mf->getData(), array_fill_keys(self::FOLDER_ATTRIBUTES, null)),
+                'path' => $mf->getRelativePath(),
             ]);
         }
         catch (\Exception $e) {
-            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -355,18 +350,14 @@ class FilesController extends Controller
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
-        if (!($id = $bag->getInt('id'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
-
         try {
-            $mf = MetaFolder::getInstance(null, $id);
+            $mf = MetaFolder::getInstance(null, $this->route->getPathParameter('id'));
             $mf->setMetaData(array_intersect_key($bag->all(), array_fill_keys(self::FOLDER_ATTRIBUTES, null)));
 
             return new JsonResponse(['success' => true, 'message' => 'Daten übernommen.']);
         }
         catch (\Exception $e) {
-            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
     }
 

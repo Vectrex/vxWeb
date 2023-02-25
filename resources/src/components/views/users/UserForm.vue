@@ -54,7 +54,6 @@
     props: {
       id: { type: String, default: null }
     },
-
     data: () => ({
         form: {},
         errors: {},
@@ -69,7 +68,6 @@
             { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
         ]
     }),
-
     computed: {
       missingRequired () {
         return this.fields.some(item => item.required && (!this.form[item.prop] || !this.form[item.prop].trim()));
@@ -99,7 +97,7 @@
     methods: {
       async submit() {
         this.busy = true;
-        let response = await this.$fetch(this.api + 'user/' + (this.id || ''), this.id ? 'PUT' : 'POST', {}, JSON.stringify(this.form));
+        let response = await this.$fetch(this.api + 'user/' + (this.id || ''), this.id ? 'PUT' : 'POST', {}, JSON.stringify(this.sanitizedForm));
         this.busy = false;
 
         if (response.success) {

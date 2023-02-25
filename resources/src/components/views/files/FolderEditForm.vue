@@ -1,67 +1,99 @@
+<script setup>
+  import Spinner from "@/components/misc/spinner.vue";
+  import FormTitle from "@/components/views/shared/FormTitle.vue";
+</script>
 <template>
-  <div>{{ folderInfo.path }}</div>
-  <div class="divider" data-content="Metadaten des Ordners"></div>
-  <div class="form-group">
-    <label for="title_input">Titel</label>
-    <input id="title_input" class="form-input" v-model="form.title" autocomplete="off" :class="{'is-error': errors.title}">
-  </div>
-  <div class="form-group">
-    <label for="description_input">Beschreibung</label>
-    <textarea rows="2" id="description_input" class="form-input" v-model="form.description" :class="{'is-error': errors.description}"></textarea>
-  </div>
-  <div class="form-group">
-    <button type='button' @click="submit" class='btn btn-success col-12' :class="{'loading': loading}"
-            :disabled="loading">Änderungen speichern
-    </button>
+  <div>
+    <form-title @cancel="$emit('cancel')" class="w-sidebar">{{ form.path }}</form-title>
+    <div class="space-y-8 overflow-y-auto pt-8">
+      <div class="space-y-4 pt-16">
+        <div v-for="field in fields" class="px-4">
+          <label
+              :class="{ 'text-error': errors[field.model], 'required': field.required }"
+              :for="field.model + '-' + field.type || 'input'"
+          >
+            {{ field.label }}
+          </label>
+          <input
+              v-if="!field.type"
+              :id="field.model + '-input'"
+              class="w-full form-input"
+              v-model="form[field.model]"
+          />
+          <textarea
+             v-else-if="field.type === 'textarea'"
+             class="w-full form-textarea"
+             :id="field.model + '-' + field.type"
+             v-model="form[field.model]"
+          />
+          <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
+        </div>
+        <div class="flex justify-center space-x-2 items-center">
+          <button class="button success" type="button" @click="submit" :disabled="busy">
+            Daten übernehmen
+          </button>
+          <spinner v-if="busy" class="text-green-700" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'FolderEditForm',
-  emits: ['response-received'],
+  inject: ['api'],
+  emits: ['cancel', 'notify'],
   props: {
-    initialData: { type: Object, default: {} },
-    folderInfo: { type: Object, default: {} },
-    url: { type: String, default: "" }
+    id: Number
   },
   data () {
     return {
       form: {},
-      response: {},
-      loading: false
+      errors: {},
+      busy: false,
+      fields: [
+        { model: 'title', label: 'Titel' },
+        { type: 'textarea', model: 'description', label: 'Beschreibung' }
+      ]
     }
   },
   computed: {
-    errors() {
-      return this.response ? (this.response.errors || {}) : {};
-    },
-    message() {
-      return this.response ? this.response.message : "";
+    sanitizedForm () {
+      let sanitized = {};
+
+      for (const [key, value] of Object.entries(this.form)) {
+        if(value !== null) {
+          sanitized[key] = value;
+        }
+      }
+
+      return sanitized;
     }
   },
   watch: {
-    initialData(newValue) {
-      this.form = Object.assign({}, this.form, newValue);
+    id: {
+      async handler(newValue) {
+        const response = await this.$fetch(this.api + 'folder/' + newValue);
+        this.form = response;
+      },
+      immediate: true
     }
   },
   methods: {
     async submit() {
-      this.loading = true;
+      this.busy = true;
+      let response = await this.$fetch(this.api + 'folder/' + this.id, 'PUT', {}, JSON.stringify(this.sanitizedForm));
+      this.busy = false;
 
-      /* avoid strings "null" with null values */
-
-      let formData = {};
-
-      Object.keys(this.form).forEach(key => {
-        if (this.form[key] !== null) {
-          formData[key] = this.form[key];
-        }
-      });
-
-      this.response = await this.$fetch(this.url, 'POST', {}, JSON.stringify(formData));
-      this.$emit('response-received', this.response);
-      this.loading = false;
+      if (response.success) {
+        this.errors = {};
+        this.$emit('notify', { success: true, message: response.message, payload: response.form || null});
+      }
+      else {
+        this.errors = response.errors || {};
+        this.$emit('notify', { success: false, message: response.message });
+      }
     }
   }
 }
