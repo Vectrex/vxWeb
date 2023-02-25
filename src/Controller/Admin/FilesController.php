@@ -112,6 +112,8 @@ class FilesController extends Controller
 
     protected function fileGet (): JsonResponse
     {
+        $host = $this->request->getSchemeAndHttpHost();
+
         try {
             $mf = MetaFile::getInstance(null, $this->route->getPathParameter('id'));
 
@@ -144,9 +146,9 @@ class FilesController extends Controller
                 'form' => array_intersect_key($mf->getData(), array_fill_keys(self::FILE_ATTRIBUTES, null)),
                 'fileInfo' => [
                     'mimetype' => $mf->getMimetype(),
-                    'path' => $mf->getRelativePath(),
+                    'url' => $host . '/' . $mf->getRelativePath(),
                     'name' => $mf->getFilename(),
-                    'thumb' => isset($dest) ? htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) : null,
+                    'thumb' => isset($dest) ? $host . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) : null,
                     'cache' => $mf->getFilesystemFile()->getCacheInfo()
                 ]
             ]);

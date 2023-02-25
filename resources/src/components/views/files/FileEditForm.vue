@@ -7,8 +7,18 @@
 <template>
   <div>
     <form-title @cancel="$emit('cancel')" class="w-sidebar">{{ form.path }}</form-title>
-    <div class="space-y-8 overflow-y-auto pt-8">
-      <div class="space-y-4 pt-16">
+    <div class="pt-16 pb-4">
+      <img :src="fileInfo.thumb" v-if="(fileInfo.mimetype || '').startsWith('image')" class="w-full">
+      <div class="px-4 py-2 bg-slate-100 space-y-2">
+        <span class="w-1/3 inline-block">Typ</span><span class="w-2/3 inline-block">{{ fileInfo.mimetype }}</span>
+        <span class="w-1/3 inline-block">Link</span><span class="w-2/3 inline-block"><a :href="fileInfo.url" target="_blank">{{ fileInfo.name }}</a></span>
+        <template v-if="fileInfo.cache">
+          <span class="w-1/3 inline-block">Cache</span><span class="w-2/3 inline-block">{{ fileInfo.cache.count }} Dateien, {{ formatFilesize(fileInfo.cache.totalSize) }}</span>
+        </template>
+      </div>
+    </div>
+    <div class="space-y-8 overflow-y-auto">
+      <div class="space-y-4">
         <div v-for="field in fields" class="px-4">
           <label
               :class="{ 'text-error': errors[field.model], 'required': field.required }"
@@ -53,7 +63,7 @@ export default {
   data () {
     return {
       form: {},
-      fileinfo: {},
+      fileInfo: {},
       errors: {},
       busy: false,
       fields: [
@@ -82,7 +92,7 @@ export default {
       async handler(newValue) {
         const response = await this.$fetch(this.api + 'file/' + newValue);
         this.form = response.form || {};
-        this.fileinfo = response.fileinfo || {};
+        this.fileInfo = response.fileInfo || {};
       },
       immediate: true
     }
