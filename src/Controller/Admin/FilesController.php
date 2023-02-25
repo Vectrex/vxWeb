@@ -112,11 +112,8 @@ class FilesController extends Controller
 
     protected function fileGet (): JsonResponse
     {
-        if(!($id = $this->request->query->getInt('id'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
         try {
-            $mf = MetaFile::getInstance(null, $id);
+            $mf = MetaFile::getInstance(null, $this->route->getPathParameter('id'));
 
             if($mf->isWebImage()) {
                 $fsf = $mf->getFilesystemFile();
@@ -155,7 +152,7 @@ class FilesController extends Controller
             ]);
         }
         catch (\Exception $e) {
-            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -163,12 +160,8 @@ class FilesController extends Controller
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
-        if (!($id = $bag->getInt('id'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
-
         try {
-            $file = MetaFile::getInstance(null, $id);
+            $file = MetaFile::getInstance(null, $this->route->getPathParameter('id'));
             $file->setMetaData(array_intersect_key($bag->all(), array_fill_keys(self::FILE_ATTRIBUTES, null)));
 
             return new JsonResponse(['success' => true, 'message' => 'Daten übernommen.']);

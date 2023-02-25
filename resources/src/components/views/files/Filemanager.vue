@@ -179,6 +179,7 @@
     <transition name="appear">
       <div class="z-10 fixed right-0 bottom-0 top-24 left-64 bg-black/20 backdrop-blur-sm" v-if="formShown" />
     </transition>
+
     <transition name="slide-from-right">
       <folder-edit-form
         :id="pickedId"
@@ -187,6 +188,16 @@
         class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
       />
     </transition>
+
+    <transition name="slide-from-right">
+      <file-edit-form
+        :id="pickedId"
+        v-if="formShown === 'editFile'"
+        @cancel="formShown = null"
+        class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
+      />
+    </transition>
+
     <alert
         ref="confirm"
         :buttons="[
