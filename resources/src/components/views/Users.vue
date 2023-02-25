@@ -34,14 +34,18 @@
   </div>
 
   <teleport to="body">
-    <transition :name="isEdit ? 'slide-from-right' : 'slide-from-left'">
+    <transition name="appear">
+      <div class="z-10 fixed right-0 bottom-0 top-24 left-64 bg-black/20 backdrop-blur-sm" v-if="showForm" />
+    </transition>
+
+    <transition name="slide-from-right">
       <user-form
           v-if="showForm"
           @cancel="showForm = false"
           @notify="handleNotify"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
-          :class="['fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar', isEdit ? 'right-0' : 'left-64']"
+          class="z-20 fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0"
       />
     </transition>
   </teleport>
@@ -74,7 +78,6 @@ export default {
         { label: "", width: "w-1/12", prop: "action", cssClass: "text-right" }
       ],
       showForm: false,
-      isEdit: null,
       editData: {
         id: null
       }
@@ -86,12 +89,10 @@ export default {
   },
   methods: {
     edit (id) {
-      this.isEdit = true;
       this.editData.id = id;
       this.showForm = true;
     },
     add () {
-      this.isEdit = false;
       this.editData.id = null;
       this.showForm = true;
     },

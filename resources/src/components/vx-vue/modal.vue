@@ -1,4 +1,3 @@
-<script setup xmlns="http://www.w3.org/1999/html"></script>
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 z-20 backdrop-blur-sm" aria-hidden="true" v-if="show" />
   <transition name="appear">
