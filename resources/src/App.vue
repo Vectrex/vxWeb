@@ -26,7 +26,7 @@
       <div class="h-24 flex flex-1 items-center bg-white px-8 shadow" v-if="$route.name !== 'login'">
         <headerbar />
       </div>
-      <div class="overflow-hidden h-[calc(100vh-6rem)]">
+      <div :class="['overflow-hidden', $route.name === 'login' ? 'h-screen' : 'h-[calc(100vh-6rem)]']">
         <main class="w-full h-full overflow-y-auto flex flex-1 flex-col">
           <div :class="[{'px-8 pt-6': $route.name !== 'login' }]">
             <div>

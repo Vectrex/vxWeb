@@ -177,7 +177,11 @@
 
   <teleport to="body">
     <transition name="appear">
-      <div class="z-10 fixed right-0 bottom-0 top-24 left-64 bg-black/20 backdrop-blur-sm" v-if="formShown" />
+      <div
+        class="z-10 fixed right-0 bottom-0 top-24 left-64 bg-black/20 backdrop-blur-sm"
+        v-if="formShown"
+        @click.stop="formShown = null"
+      />
     </transition>
 
     <transition name="slide-from-right">

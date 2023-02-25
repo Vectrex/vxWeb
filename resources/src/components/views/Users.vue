@@ -34,14 +34,15 @@
   </div>
 
   <teleport to="body">
-    <transition name="appear">
-      <div class="z-10 fixed right-0 bottom-0 top-24 left-64 bg-black/20 backdrop-blur-sm" v-if="showForm" />
-    </transition>
-
+    <div
+        class="z-10 fixed right-0 bottom-0 top-24 left-64 bg-black/20 backdrop-blur-sm"
+        v-if="formShown"
+        @click.stop="formShown = null"
+    />
     <transition name="slide-from-right">
       <user-form
-          v-if="showForm"
-          @cancel="showForm = false"
+          v-if="formShown"
+          @cancel="formShown = null"
           @notify="handleNotify"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
@@ -77,7 +78,7 @@ export default {
         { label: "Gruppe", sortable: true, width: "w-1/6", prop: "alias" },
         { label: "", width: "w-1/12", prop: "action", cssClass: "text-right" }
       ],
-      showForm: false,
+      formShown: false,
       editData: {
         id: null
       }
@@ -90,11 +91,11 @@ export default {
   methods: {
     edit (id) {
       this.editData.id = id;
-      this.showForm = true;
+      this.formShown = true;
     },
     add () {
       this.editData.id = null;
-      this.showForm = true;
+      this.formShown = true;
     },
     handleNotify (event) {
       if (event.payload?.adminid) {
