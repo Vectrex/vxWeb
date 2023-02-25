@@ -22,8 +22,8 @@
       <headline>
         <span>Dateien</span>
         <button
+          class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
           type="button"
-          :class="['icon-link text-vxvue-100 border-vxvue-100 hover:border-vxvue-200']"
           href="#" @click.stop="showAddActivities = !showAddActivities"
         >
           <plus-icon class="w-5 h-5" />
@@ -181,7 +181,7 @@
         :id="pickedId"
         v-if="formShown === 'editFolder'"
         @cancel="formShown = null"
-        class="fixed top-20 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
+        class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
       />
     </transition>
     <alert

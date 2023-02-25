@@ -57,7 +57,13 @@ class LoginController extends Controller
 
             // create new JWT containing session id
 
-            return new JsonResponse(['bearerToken' => JWTSession::createToken(), 'user' => ['username' => $admin->getUsername()]]);
+            return new JsonResponse([
+                'bearerToken' => JWTSession::createToken(),
+                'user' => [
+                    'username' => $admin->getUsername(),
+                    'email' => $admin->getAttribute('email')
+                ]
+            ]);
         }
 
         if($throttler) {

@@ -56,9 +56,6 @@ export default {
       siteLabel: window.location.host
     }
   },
-  created () {
-    sessionStorage.removeItem("bearerToken");
-  },
   methods: {
     async submit () {
       if (this.form.username.trim() && this.form.password.trim()) {
@@ -67,8 +64,6 @@ export default {
         this.busy = false;
         if (response.bearerToken) {
           this.$emit('authenticate', response);
-          this.$router.push( { name: 'profile' } );
-          sessionStorage.setItem("currentUser", JSON.stringify(response.user));
         }
         else {
           this.$emit('notify', response);

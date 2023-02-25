@@ -23,6 +23,6 @@
 
 <script>
 export default {
-  name: "Sidebar"
+  name: "MainMenu"
 }
 </script>

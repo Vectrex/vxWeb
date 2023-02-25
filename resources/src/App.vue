@@ -1,35 +1,45 @@
 <script setup>
-  import { computed } from "vue";
   import MessageToast from "@/components/message-toast.vue";
-  import Sidebar from "@/components/app/Sidebar.vue";
+  import MainMenu from "@/components/app/MainMenu.vue";
+  import AccountInfo from "@/components/app/AccountInfo.vue";
   import Headerbar from "@/components/app/Headerbar.vue";
   import Logo from "@/components/misc/logo.vue";
 </script>
 <template>
-  <div class="fixed inset-y-0 flex w-64 flex-col" v-if="$route.name !== 'login'">
-    <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue">
-      <div class="flex flex-col justify-end p-4 items-start h-20 text-white">
-        <logo class="h-8 block" />
+  <div class="flex w-full">
+
+    <div class="min-h-screen flex w-64 flex-col" v-if="$route.name !== 'login'">
+      <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue">
+        <div class="p-4 h-24 bg-vxvue-600">
+          <logo class="text-vxvue-500"/>
+        </div>
+        <div class="flex flex-1 flex-col">
+          <main-menu class="flex-1 space-y-1 px-2 py-8" />
+        </div>
+        <div class="p-4 h-24 border-t border-t-white">
+          <account-info @authenticate="authenticate" :user="user" />
+        </div>
       </div>
-      <div class="flex flex-1 flex-col">
-        <sidebar class="flex-1 space-y-1 px-2 pb-4" />
+    </div>
+
+    <div class="flex-1 flex flex-col min-h-screen">
+      <div class="h-24 flex flex-1 items-center bg-white px-8 shadow" v-if="$route.name !== 'login'">
+        <headerbar />
+      </div>
+      <div class="overflow-hidden h-[calc(100vh-6rem)]">
+        <main class="w-full h-full overflow-y-auto flex flex-1 flex-col">
+          <div :class="[{'px-8 pt-6': $route.name !== 'login' }]">
+            <div>
+              <router-view
+                  @notify="notify"
+                  @authenticate="authenticate"
+              />
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   </div>
-
-  <main :class="['flex flex-1 flex-col', { 'pl-64': $route.name !== 'login'}]">
-    <div class="sticky top-0 z-10 flex h-20 flex-shrink-0 bg-vxvue-800 shadow px-8" v-if="$route.name !== 'login'">
-      <headerbar />
-    </div>
-    <div :class="[{'px-8 pt-6': $route.name !== 'login' }]">
-      <div>
-        <router-view
-            @notify="notify"
-            @authenticate="authenticate"
-        />
-      </div>
-    </div>
-  </main>
 
   <message-toast
       :active="toast.active"
@@ -43,23 +53,36 @@
 <script>
 export default {
   name: 'App',
-  expose: ['notify'],
   data() {
     return {
-      auth: {},
-      toast: {}
-    }
-  },
-  provide () {
-    return {
-      auth: computed(() => this.auth)
+      user: {},
+      toast: {},
+      intId: null
     }
   },
   created () {
+    let currentUser = sessionStorage.getItem("currentUser");
+    if (currentUser) {
+      this.user = JSON.parse(currentUser);
+    }
+    else {
+      this.user = {};
+      this.$router.push({ name: 'login' });
+    }
   },
   methods: {
     authenticate (event) {
-      this.auth = event;
+      if (!event) {
+        sessionStorage.removeItem("currentUser");
+        sessionStorage.removeItem("bearerToken");
+        this.user = {};
+        this.$router.push({ name: 'login' });
+      }
+      else {
+        sessionStorage.setItem("currentUser", JSON.stringify(event.user));
+        this.$router.push({ name: 'profile' });
+        this.user = event.user;
+      }
     },
     notify (data) {
       this.toast = {
