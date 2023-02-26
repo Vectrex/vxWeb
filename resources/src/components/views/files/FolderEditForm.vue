@@ -5,8 +5,9 @@
 <template>
   <div>
     <form-title @cancel="$emit('cancel')" class="w-sidebar">{{ form.path }}</form-title>
-    <div class="space-y-8 overflow-y-auto pt-8">
-      <div class="space-y-4 pt-16">
+    <div class="overflow-hidden h-[calc(100vh-6rem)]">
+      <div class="h-full overflow-y-auto">
+        <div class="space-y-4 pt-20 pb-4">
         <div v-for="field in fields" class="px-4">
           <label
               :class="{ 'text-error': errors[field.model], 'required': field.required }"
@@ -34,6 +35,7 @@
           </button>
           <spinner v-if="busy" class="text-green-700" />
         </div>
+      </div>
       </div>
     </div>
   </div>

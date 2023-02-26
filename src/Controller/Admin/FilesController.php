@@ -119,7 +119,7 @@ class FilesController extends Controller
 
             if($mf->isWebImage()) {
                 $fsf = $mf->getFilesystemFile();
-                $actions = ['resize 0 320'];
+                $actions = ['resize 480 0'];
                 $dest = sprintf('%s%s@%s.%s',
                     $fsf->getFolder()->createCache(),
                     $fsf->getFilename(),
@@ -644,7 +644,7 @@ class FilesController extends Controller
                     $imgEdit->export($dest);
                 }
 
-                $row['src'] = $host. htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest));
+                $row['src'] = $host . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest));
             }
 
             $files[] = $row;
