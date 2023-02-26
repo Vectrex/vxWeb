@@ -198,17 +198,17 @@ class FilesController extends Controller
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
-        if (!($id = $bag->getInt('id')) || !$folderId = $bag->getInt('folderId')) {
+        if (!($folderId = $bag->getInt('folderId'))) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
         try {
-            $file = MetaFile::getInstance(null, $id);
+            $file = MetaFile::getInstance(null, $this->route->getPathParameter('id'));
             $file->move(MetaFolder::getInstance(null, $folderId));
             return new JsonResponse(['success' => true, 'message' => 'Daten übernommen.']);
         }
         catch (\Exception $e) {
-            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
     }
 

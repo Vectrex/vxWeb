@@ -19,7 +19,7 @@
             </template>
           </div>
         </div>
-        <div class="space-y-8 overflow-y-auto">
+        <div class="space-y-8 overflow-y-auto pb-4">
           <div class="space-y-4">
             <div v-for="field in fields" class="px-4">
               <label

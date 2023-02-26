@@ -5,10 +5,16 @@
 </script>
 
 <template>
-    <form-title @cancel="cancel" class="w-full">Zielordner wählen</form-title>
-    <div class="pt-20 px-4 pb-4">
-      <simple-tree :branch="root" @branch-selected="folderSelected" />
+  <div>
+    <form-title @cancel="cancel" class="w-sidebar">Zielordner wählen</form-title>
+    <div class="overflow-hidden h-[calc(100vh-6rem)]">
+      <div class="h-full overflow-y-auto">
+        <div class="pt-20 px-4 pb-4">
+          <simple-tree :branch="root" @branch-selected="folderSelected" />
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>

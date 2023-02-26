@@ -7,8 +7,8 @@
     <form-title @cancel="$emit('cancel')" class="w-sidebar">{{ form.path }}</form-title>
     <div class="overflow-hidden h-[calc(100vh-6rem)]">
       <div class="h-full overflow-y-auto">
-        <div class="space-y-4 pt-20 pb-4">
-        <div v-for="field in fields" class="px-4">
+        <div class="space-y-4 pt-20 pb-4 px-4">
+        <div v-for="field in fields">
           <label
               :class="{ 'text-error': errors[field.model], 'required': field.required }"
               :for="field.model + '-' + field.type || 'input'"

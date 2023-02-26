@@ -48,8 +48,7 @@ export default {
     return {
       routes: {
         init: 'files/init',
-        getFoldersTree: 'folders/tree',
-        moveFile: 'files/move',
+        getFoldersTree: 'folders/tree'
       },
       cols: [
         {
@@ -73,10 +72,10 @@ export default {
             return a.name.toLowerCase() === b.name.toLowerCase() ? 0 : a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1;
           }
         },
-        {label: "Größe", sortable: true, prop: "size"},
-        {label: "Typ/Vorschau", sortable: true, prop: "type"},
-        {label: "Erstellt", sortable: true, prop: "modified"},
-        {label: "", prop: "action"}
+        { label: "Größe", sortable: true, prop: "size" },
+        { label: "Typ/Vorschau", sortable: true, prop: "type" },
+        { label: "Erstellt", sortable: true, prop: "modified" },
+        { label: "", prop: "action" }
       ],
       initSort: {},
     }

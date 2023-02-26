@@ -25,7 +25,7 @@
 		<route id="file_get" controller="admin/files" path="file/{id}" method="fileGet" auth="privileged" request_methods="GET" />
 		<route id="file_update" controller="admin/files" path="file/{id}" method="fileUpdate" auth="privileged" request_methods="PUT" />
 		<route id="file_del" controller="admin/files" path="file/{id}" method="fileDel" auth="privileged" request_methods="DELETE" />
-		<route id="file_move" controller="admin/files" path="files/move" method="fileMove" auth="privileged" request_methods="PUT" />
+		<route id="file_move" controller="admin/files" path="file/{id}/move" method="fileMove" auth="privileged" request_methods="PUT" />
 
 		<route id="folder_add" controller="admin/files" path="folder" method="folderAdd" auth="privileged" request_methods="POST" />
 		<route id="folder_get" controller="admin/files" path="folder/{id}" method="folderGet" auth="privileged" request_methods="GET" />

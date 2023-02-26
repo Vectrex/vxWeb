@@ -10,7 +10,6 @@
   import Headline from "@/components/app/Headline.vue";
   import Alert from "@/components/vx-vue/alert.vue";
   import CircularProgress from "@/components/misc/circular-progress.vue";
-  import Modal from "@/components/vx-vue/modal.vue";
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid';
   import { urlQueryCreate } from '@/util/url-query';
   import { formatFilesize } from "@/util/format-filesize";
@@ -202,6 +201,14 @@
       />
     </transition>
 
+    <transition name="slide-from-right">
+      <folder-tree
+        v-if="formShown === 'folderTree'"
+        class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
+        ref="folderTree"
+      />
+    </transition>
+
     <alert
         ref="confirm"
         :buttons="[
@@ -215,9 +222,6 @@
             { label: 'Ok!', value: true, 'class': 'button alert' },
           ]"
     />
-    <modal :show="showFolderTree">
-      <folder-tree ref="folderTree" />
-    </modal>
   </teleport>
 </template>
 
@@ -247,8 +251,7 @@ export default {
       formShown: null,
       pickedId: null,
       upload: { files: [], progressing: false, cancelToken: {} },
-      progress: { total: null, loaded: null, file: null },
-      showFolderTree: false
+      progress: { total: null, loaded: null, file: null }
     }
   },
 
@@ -341,7 +344,7 @@ export default {
       let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
 
       if (folder !== false) {
-        let response = await this.$fetch(urlQueryCreate(this.routes.moveSelection, {destination: folder.id}), 'POST', {}, JSON.stringify({
+        let response = await this.$fetch(urlQueryCreate(this.routes.moveSelection, { destination: folder.id }), 'POST', {}, JSON.stringify({
           files: this.checkedFiles.map(({id}) => id),
           folders: this.checkedFolders.map(({id}) => id)
         }));
@@ -419,15 +422,14 @@ export default {
       this.$emit('response-received', response);
     },
     async moveFile(row) {
-      this.showFolderTree = true;
+      this.formShown = 'folderTree';
       this.$nextTick(
           async () => {
             let folder = await this.$refs.folderTree.open(this.api + this.routes.getFoldersTree, this.currentFolder);
-            this.showFolderTree = false;
+            this.formShown = null;
 
             if (folder !== false) {
-              let response = await this.$fetch(this.api + this.routes.moveFile, 'PUT', {}, JSON.stringify({
-                id: row.id,
+              let response = await this.$fetch(this.api + 'file/' + row.id + '/move', 'PUT', {}, JSON.stringify({
                 folderId: folder.id
               }));
               if (response.success) {
