@@ -601,6 +601,7 @@ class FilesController extends Controller
         }
 
         $files = [];
+        $host = $this->request->getSchemeAndHttpHost();
 
         foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
             if ($filter === 'image' && !$f->isWebImage()) {
@@ -616,7 +617,7 @@ class FilesController extends Controller
                 'modified' => (new \DateTime())->setTimestamp($f->getFileInfo()->getMTime())->format('Y-m-d H:i:s'),
                 'type' => $f->getMimetype(),
                 'path' => '/'. $f->getRelativePath(),
-                'linked' => in_array($f, $linkedFiles)
+                'linked' => in_array($f, $linkedFiles, true)
             ];
 
             if($row['image']) {
@@ -643,7 +644,7 @@ class FilesController extends Controller
                     $imgEdit->export($dest);
                 }
 
-                $row['src'] = htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest));
+                $row['src'] = $host. htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest));
             }
 
             $files[] = $row;

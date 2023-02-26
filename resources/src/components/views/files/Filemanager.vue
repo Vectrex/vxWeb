@@ -37,7 +37,7 @@
             aria-orientation="vertical"
           >
           <filemanager-add
-              @upload="uploadInputFiles"
+              @file-picked="uploadInputFiles"
               @create-folder="createFolder"
           />
         </div>
@@ -176,7 +176,7 @@
   </div>
 
   <teleport to="body">
-    <transition name="appear">
+    <transition name="fade">
       <div
         class="z-10 fixed right-0 bottom-0 top-24 left-64 bg-black/20 backdrop-blur-sm"
         v-if="formShown"

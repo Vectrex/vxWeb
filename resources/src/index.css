@@ -112,6 +112,22 @@
 
 /* animations */
 
+.fade-enter-from,
+.fade-leave-to
+{
+    @apply opacity-0;
+}
+.fade-enter-to,
+.fade-leave-from {
+    @apply opacity-100;
+}
+.fade-enter-active {
+    @apply duration-150;
+}
+.fade-leave-active {
+    @apply duration-100;
+}
+
 .appear-enter-from,
 .appear-leave-to
 {

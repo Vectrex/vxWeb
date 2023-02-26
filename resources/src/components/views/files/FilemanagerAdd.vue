@@ -36,7 +36,7 @@
 <script>
 export default {
   name: 'FilemanagerAdd',
-  emits: ['upload', 'create-folder'],
+  emits: ['file-picked', 'create-folder'],
   props: {
     multiple: { type: Boolean, default: true }
   },
@@ -50,7 +50,7 @@ export default {
     fileChanged(event) {
       const files = event.target.files || event.dataTransfer.files;
       if (files) {
-        this.$emit('upload', files);
+        this.$emit('file-picked', files);
       }
     },
     addFolder(event) {
