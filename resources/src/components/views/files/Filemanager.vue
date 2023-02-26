@@ -295,12 +295,12 @@ export default {
   },
 
   async created() {
-    let response = await this.$fetch(urlQueryCreate(this.api + this.routes.init, { folder: this.folder }));
+    let response = await this.$fetch(this.api + 'folder/' + (this.folder || '-') + '/read');
 
-    this.breadcrumbs = response.breadcrumbs || [];
     this.files = response.files || [];
     this.folders = response.folders || [];
-    this.currentFolder = response.currentFolder || null;
+    this.currentFolder = response.currentFolder?.id || null;
+    this.breadcrumbs = response.breadcrumbs || [];
     this.limits = response.limits || {};
   },
   mounted() {

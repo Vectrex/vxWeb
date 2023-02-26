@@ -7,7 +7,6 @@ namespace App\Controller\Admin;
 use vxPHP\Http\ParameterBag;
 use vxPHP\File\FilesystemFile;
 use vxPHP\Image\ImageModifierFactory;
-use vxPHP\Template\SimpleTemplate;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
@@ -43,10 +42,11 @@ class FilesController extends Controller
         return new Response();
     }
 
-    protected function init(): JsonResponse
+    protected function folderRead (): JsonResponse
     {
+        $id = $this->route->getPathParameter('id');
         try {
-            if(($id = $this->request->query->getInt('folder'))) {
+            if (is_numeric($id)) {
                 $folder = MetaFolder::getInstance(null, $id);
             }
             else {
@@ -56,10 +56,11 @@ class FilesController extends Controller
             File::cleanupMetaFolder($folder);
 
             return new JsonResponse([
+                'success' => true,
                 'files' => $this->getFileRows($folder, $this->request->query->get('filter')),
                 'folders' => $this->getFolderRows($folder),
                 'breadcrumbs' => $this->getBreadcrumbs($folder),
-                'currentFolder' => $folder->getId(),
+                'currentFolder' => ['key' => $id, 'name' => $folder->getName()],
                 'limits' => [
                     'maxUploadSize' => min(
                         $this->toBytes(ini_get('upload_max_filesize')),
@@ -67,12 +68,11 @@ class FilesController extends Controller
                     ),
                     'maxExecutionTime' => ini_get('max_execution_time') * 900] /* 10% "safety margin" */
             ]);
-
-        } catch (MetaFolderException $e) {
-            return new JsonResponse(['error' => 1, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        catch (\Exception $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
     protected function search (): JsonResponse
     {
         $search = $this->request->query->get('search');
@@ -171,27 +171,6 @@ class FilesController extends Controller
         catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
-    }
-
-    protected function folderRead (): JsonResponse
-    {
-        $id = $this->route->getPathParameter('id');
-        try {
-            $folder = MetaFolder::getInstance(null, $id);
-        }
-        catch (\Exception $e) {
-            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        File::cleanupMetaFolder($folder);
-
-        return new JsonResponse([
-            'success' => true,
-            'files' => $this->getFileRows($folder, $this->request->query->get('filter')),
-            'folders' => $this->getFolderRows($folder),
-            'breadcrumbs' => $this->getBreadcrumbs($folder),
-            'currentFolder' => ['key' => $id, 'name' => $folder->getName()]
-        ]);
     }
 
     protected function fileMove (): JsonResponse

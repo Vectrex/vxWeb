@@ -47,7 +47,6 @@ export default {
   data() {
     return {
       routes: {
-        init: 'files/init',
         getFoldersTree: 'folders/tree'
       },
       cols: [
