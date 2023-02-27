@@ -209,21 +209,18 @@ class FilesController extends Controller
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
 
-        if (!($id = $bag->getInt('id'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
         try {
             $name = trim($bag->get('name'));
             if (!$name) {
                 throw new \InvalidArgumentException('Missing filename.');
             }
-            $file = MetaFile::getInstance(null, $id);
+            $file = MetaFile::getInstance(null, $this->route->getPathParameter('id'));
             $file->rename($name);
 
             return new JsonResponse(['success' => true, 'name' => $file->getFilename()]);
 
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 1, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR]);
         }
     }
 
@@ -338,10 +335,8 @@ class FilesController extends Controller
     protected function folderRename (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $id = $this->route->getPathParameter('id');
 
-        if (!($id = $bag->getInt('folder'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
         try {
             $name = trim($bag->get('name'));
             if (!$name) {

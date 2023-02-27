@@ -119,7 +119,7 @@
                 v-focus
                 class="form-input"
                 :value="slotProps.row.name"
-                @keydown.enter="renameFolder"
+                @keydown.enter="rename($event, 'folder')"
                 @keydown.esc="toRename = null"
                 @blur="toRename = null"
             >
@@ -140,7 +140,7 @@
                 v-focus
                 class="form-input"
                 :value="slotProps.row.name"
-                @keydown.enter="renameFile"
+                @keydown.enter="rename($event, 'file')"
                 @keydown.esc="toRename = null"
                 @blur="toRename = null"
             >
@@ -375,25 +375,11 @@ export default {
         }
       }
     },
-    async renameFile(event) {
+    async rename(event, type) {
       let name = event.target.value.trim();
       if (name && this.toRename) {
-        let response = await this.$fetch(this.routes.renameFile, 'POST', {}, JSON.stringify({
-          name: name,
-          id: this.toRename.id
-        }));
-        if (response.success) {
-          this.toRename.name = response.name || name;
-          this.toRename = null;
-        }
-      }
-    },
-    async renameFolder(event) {
-      let name = event.target.value.trim();
-      if (name && this.toRename) {
-        let response = await this.$fetch(this.routes.renameFolder, 'POST', {}, JSON.stringify({
-          name: name,
-          folder: this.toRename.id
+        let response = await this.$fetch(this.api + type + '/' + this.toRename.id + '/rename', 'PUT', {}, JSON.stringify({
+          name: name
         }));
         if (response.success) {
           this.toRename.name = response.name || name;
