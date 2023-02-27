@@ -52,6 +52,9 @@
     .button.alert {
         @apply bg-red-700 hover:bg-red-600 focus:ring-red-600 text-white
     }
+    .button.cancel {
+        @apply bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800
+    }
     .disabled {
         @apply text-stone-700 !bg-stone-200 hover:!text-stone-700 hover:!bg-stone-300;
     }

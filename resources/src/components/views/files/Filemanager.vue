@@ -216,15 +216,17 @@
 
     <alert
         ref="confirm"
+        header-class="bg-error text-white"
         :buttons="[
             { label: 'Löschen!', value: true, 'class': 'button alert' },
-            { label: 'Abbrechen', value: false, 'class': 'button' }
+            { label: 'Abbrechen', value: false, 'class': 'button cancel' }
           ]"
     />
     <alert
         ref="alert"
+        header-class="bg-error text-white"
         :buttons="[
-            { label: 'Ok!', value: true, 'class': 'button alert' },
+            { label: 'Ok!', value: true, 'class': 'button cancel' },
           ]"
     />
   </teleport>
@@ -299,14 +301,8 @@ export default {
     }
   },
 
-  async created() {
-    let response = await this.$fetch(this.api + 'folder/' + (this.folder || '-') + '/read');
-
-    this.files = response.files || [];
-    this.folders = response.folders || [];
-    this.currentFolder = response.currentFolder?.key || null;
-    this.breadcrumbs = response.breadcrumbs || [];
-    this.limits = response.limits || {};
+  created() {
+    this.readFolder('-');
   },
   mounted() {
     document.body.addEventListener('click', this.handleBodyClick);
@@ -320,15 +316,14 @@ export default {
       this.showAddActivities = false;
     },
     async readFolder(id) {
-      let response = await this.$fetch(this.api + 'folder/' + id +'/read');
+      let response = await this.$fetch(this.api + 'folder/' + id + '/read');
 
       if (response.success) {
         this.files = response.files || [];
         this.folders = response.folders || [];
-        this.currentFolder = id;
-        if (response.breadcrumbs) {
-          this.breadcrumbs = response.breadcrumbs;
-        }
+        this.currentFolder = response.currentFolder?.key || null;
+        this.breadcrumbs = response.breadcrumbs || this.breadcrumbs;
+        this.limits = response.limits || this.limits;
       }
     },
     async delSelection() {
@@ -453,8 +448,7 @@ export default {
     async handleUploads() {
       let file = null, response = null;
       while ((file = this.upload.files.shift()) !== undefined) {
-
-        if (this.limits.maxUploadFilesize && this.limits.maxUploadFilesize < file.size) {
+        if (this.limits.maxUploadSize && this.limits.maxUploadSize < file.size) {
           await this.$refs.alert.open('Datei zu groß', "'" + file.name + "' übersteigt die maximale Uploadgröße.");
           continue;
         }

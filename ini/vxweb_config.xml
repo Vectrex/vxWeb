@@ -20,6 +20,7 @@
 		<route id="folders_tree" controller="admin/files" path="folders/tree" method="getFoldersTree" auth="privileged" request_methods="GET" />
 		<route id="selection_move" controller="admin/files" path="filesfolders/moveto/{id}" method="selectionMove" auth="privileged" request_methods="PUT" />
 		<route id="selection_del" controller="admin/files" path="filesfolders/delete" method="selectionDel" auth="privileged" request_methods="DELETE" />
+		<route id="files_search" controller="admin/files" path="files/search" method="search" auth="privileged" request_methods="GET" />
 
 		<route id="file_upload" controller="admin/files" path="file" method="fileUpload" auth="privileged" request_methods="POST" />
 		<route id="file_get" controller="admin/files" path="file/{id}" method="fileGet" auth="privileged" request_methods="GET" />
@@ -34,8 +35,6 @@
 		<route id="folder_update" controller="admin/files" path="folder/{id}" method="folderUpdate" auth="privileged" request_methods="PUT" />
 		<route id="folder_del" controller="admin/files" path="folder/{id}" method="folderDel" auth="privileged" request_methods="DELETE" />
 		<route id="folder_rename" controller="admin/files" path="folder/{id}/rename" method="folderRename" auth="privileged" request_methods="PUT" />
-
-		<route id="files_search" controller="admin/files" method="search" auth="privileged" />
 
 		<route id="pages" controller="admin/pages" auth="superadmin" />
 		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />

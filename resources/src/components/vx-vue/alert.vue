@@ -6,8 +6,8 @@
         <div v-if="show">
           <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-          <div class="inline-block align-bottom bg-white rounded text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full">
-            <h3 :class="headerClass" v-if="title">
+          <div class="inline-block align-bottom bg-white rounded text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full lg:max-w-lg">
+            <h3 class="text-lg text-center font-medium pt-4 sm:py-6 py-4" :class="headerClass" v-if="title">
               <slot name="title" :title="title">{{ title }}</slot>
             </h3>
             <div class="mt-4 sm:mt-5 px-4 sm:px-6 pb-4 sm:pb-6">
@@ -41,7 +41,7 @@ export default {
     },
     headerClass: {
       type: String,
-      default: "text-lg text-center font-medium text-vxvue-alt-900 pt-4 sm:py-6 py-4 bg-vxvue-alt-400"
+      default: "text-vxvue-alt-900 bg-vxvue-alt-400"
     },
     buttonClass: {
       type: String,
