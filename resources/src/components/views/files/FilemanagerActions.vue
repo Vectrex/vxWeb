@@ -1,7 +1,26 @@
+<script setup>
+  import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/vue/24/solid';
+</script>
 <template>
-    <div class="mx-2" v-if="files.length || folders.length">
-        <button class="btn btn-link webfont-icon-only tooltip" :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner löschen'" type="button" @click="confirmDelete">&#xe011;</button>
-        <button class="btn btn-link webfont-icon-only tooltip" :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner verschieben'" type="button" @click="pickFolder">&#xe02d;&#xe032;&#xe00e;</button>
+    <div class="flex items-center space-x-2">
+      <button
+        class="icon-link flex items-center tooltip"
+        :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner verschieben'"
+        type="button"
+        @click="pickFolder"
+      >
+        <document-minus-icon class="h-5 w-5"/>
+        <play-icon class="h-3 w-3" />
+        <document-plus-icon class="h-5 w-5"/>
+      </button>
+      <button
+        class="icon-link tooltip"
+        :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner löschen'"
+        type="button"
+        @click="confirmDelete"
+      >
+        <trash-icon class="h-5 w-5" />
+      </button>
     </div>
 </template>
 
@@ -10,8 +29,8 @@
         name: 'FilemanagerActions',
         emits: ['delete-selection', 'move-selection'],
         props: {
-            files: { type: Array, default: [] },
-            folders:  { type: Array, default: [] }
+            files: Array,
+            folders: Array
         },
         methods: {
             async confirmDelete () {

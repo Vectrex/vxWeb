@@ -52,18 +52,21 @@
       :class="{'border-4 border-vxvue-alt': indicateDrag }"
   >
     <div class="flex pb-4 justify-between items-center">
-      <filemanager-breadcrumbs
-          :breadcrumbs="breadcrumbs"
-          :current-folder="currentFolder"
-          :folders="folders"
-          @breadcrumb-clicked="readFolder"
-      />
-      <filemanager-actions
-          @delete-selection="delSelection"
-          @move-selection="moveSelection"
-          :files="checkedFiles"
-          :folders="checkedFolders"
-      />
+      <div class="flex items-center space-x-4">
+        <filemanager-breadcrumbs
+            :breadcrumbs="breadcrumbs"
+            :current-folder="currentFolder"
+            :folders="folders"
+            @breadcrumb-clicked="readFolder"
+        />
+        <filemanager-actions
+            @delete-selection="delSelection"
+            @move-selection="moveSelection"
+            :files="checkedFiles"
+            :folders="checkedFolders"
+            v-if="checkedFolders.length || checkedFiles.length"
+        />
+      </div>
       <div v-if="upload.progressing" class="flex space-x-2 items-center">
         <button class="icon-link" data-tooltip="Abbrechen" type="button" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
         <strong>{{ progress.file }}</strong>
@@ -71,6 +74,7 @@
       </div>
       <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
 
+      <!--
       <filemanager-search
           :search="doSearch"
       >
@@ -88,6 +92,7 @@
              @click.prevent="readFolder(slotProps.file.folder)">{{ slotProps.file.path }}</a>
         </template>
       </filemanager-search>
+      -->
     </div>
 
     <sortable
@@ -299,7 +304,7 @@ export default {
 
     this.files = response.files || [];
     this.folders = response.folders || [];
-    this.currentFolder = response.currentFolder?.id || null;
+    this.currentFolder = response.currentFolder?.key || null;
     this.breadcrumbs = response.breadcrumbs || [];
     this.limits = response.limits || {};
   },
@@ -327,7 +332,7 @@ export default {
       }
     },
     async delSelection() {
-      let response = await this.$fetch(urlQueryCreate(this.routes.delSelection, {
+      let response = await this.$fetch(urlQueryCreate(this.api + "filesfolders/delete", {
         files: this.checkedFiles.map(({id}) => id).join(","),
         folders: this.checkedFolders.map(({id}) => id).join(",")
       }), 'DELETE');
@@ -340,24 +345,30 @@ export default {
         this.folders = response.folders || this.folders;
       }
     },
-    async moveSelection() {
-      let folder = await this.$refs['folder-tree'].open(this.routes.getFoldersTree, this.currentFolder);
+    moveSelection() {
+      this.formShown = 'folderTree';
+      this.$nextTick(
+        async () => {
+          let folder = await this.$refs['folderTree'].open(this.api + this.routes.getFoldersTree, this.currentFolder);
+          this.formShown = null;
 
-      if (folder !== false) {
-        let response = await this.$fetch(urlQueryCreate(this.routes.moveSelection, { destination: folder.id }), 'POST', {}, JSON.stringify({
-          files: this.checkedFiles.map(({id}) => id),
-          folders: this.checkedFolders.map(({id}) => id)
-        }));
+          if (folder !== false) {
+            let response = await this.$fetch(this.api + 'filesfolders/moveto/' + folder.id, 'PUT', {}, JSON.stringify({
+              files: this.checkedFiles.map(({id}) => id),
+              folders: this.checkedFolders.map(({id}) => id)
+            }));
 
-        if (response.success) {
-          this.files = response.files || [];
-          this.folders = response.folders || [];
-        } else if (response.error) {
-          this.$emit('response-received', response);
-          this.files = response.files || this.files;
-          this.folders = response.folders || this.folders;
+            if (response.success) {
+              this.files = response.files || [];
+              this.folders = response.folders || [];
+            } else if (response.error) {
+              this.$emit('response-received', response);
+              this.files = response.files || this.files;
+              this.folders = response.folders || this.folders;
+            }
+          }
         }
-      }
+      );
     },
     editFile(row) {
       this.formShown = 'editFile';
@@ -407,7 +418,7 @@ export default {
       }
       this.$emit('response-received', response);
     },
-    async moveFile(row) {
+    moveFile(row) {
       this.formShown = 'folderTree';
       this.$nextTick(
           async () => {

@@ -60,7 +60,7 @@ class FilesController extends Controller
                 'files' => $this->getFileRows($folder, $this->request->query->get('filter')),
                 'folders' => $this->getFolderRows($folder),
                 'breadcrumbs' => $this->getBreadcrumbs($folder),
-                'currentFolder' => ['key' => $id, 'name' => $folder->getName()],
+                'currentFolder' => ['key' => $folder->getId(), 'name' => $folder->getName()],
                 'limits' => [
                     'maxUploadSize' => min(
                         $this->toBytes(ini_get('upload_max_filesize')),
@@ -483,9 +483,7 @@ class FilesController extends Controller
 
     protected function selectionMove (): JsonResponse
     {
-        if(($destination = $this->getRequest()->query->getInt('destination')) === null) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
+        $destination = $this->route->getPathParameter('id');
 
         try {
             $destinationFolder = MetaFolder::getInstance(null, $destination);
