@@ -30,13 +30,13 @@
       </headline>
       <transition name="appear">
           <div
-            v-if="showAddActivities"
+            v-show="showAddActivities"
             class="absolute right-0 z-10 mt-2 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
             role="menu"
             aria-orientation="vertical"
           >
           <filemanager-add
-              @file-picked="uploadInputFiles"
+              @upload="uploadInputFiles"
               @create-folder="createFolder"
           />
         </div>
@@ -73,7 +73,6 @@
         <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16" />
       </div>
       <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
-
       <!--
       <filemanager-search
           :search="doSearch"

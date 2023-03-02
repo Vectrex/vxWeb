@@ -4,16 +4,15 @@
 </script>
 
 <template>
-    <div class="px-4 py-2" v-if="showAddFolderInput">
-      <input
-        v-focus
-        class="form-input"
-        @keydown.enter="addFolder"
-        @keydown.esc="showAddFolderInput = false"
-        @blur="showAddFolderInput = false"
-        @click.stop
+    <input
+      v-if="showAddFolderInput"
+      v-focus
+      class="form-input mx-4 my-2"
+      @keydown.enter="addFolder"
+      @keydown.esc="showAddFolderInput = false"
+      @blur="showAddFolderInput = false"
+      @click.stop
     />
-    </div>
     <button
         v-else
         type="button"
@@ -30,13 +29,13 @@
       <document-arrow-up-icon class="w-5 h-5" />
       <span>Datei hochladen</span>
     </label>
-    <input type="file" id="file_upload" class="hidden" :multiple="multiple" @change="fileChanged"/>
+    <input type="file" id="file_upload" class="hidden" :multiple="multiple" @change="fileChanged" />
 </template>
 
 <script>
 export default {
   name: 'FilemanagerAdd',
-  emits: ['file-picked', 'create-folder'],
+  emits: ['upload', 'create-folder'],
   props: {
     multiple: { type: Boolean, default: true }
   },
@@ -50,7 +49,7 @@ export default {
     fileChanged(event) {
       const files = event.target.files || event.dataTransfer.files;
       if (files) {
-        this.$emit('file-picked', files);
+        this.$emit('upload', files);
       }
     },
     addFolder(event) {
