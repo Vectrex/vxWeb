@@ -1,10 +1,13 @@
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 z-20 backdrop-blur-sm" aria-hidden="true" v-if="show" />
   <transition name="appear">
-    <div class="fixed inset-0 z-30 overflow-y-auto" v-if="show">
-      <div class="flex min-h-full items-end justify-center p-4 text-center items-center">
-        <div class="relative transform overflow-hidden rounded bg-white shadow-xl transition-all sm:w-full sm:max-w-sm">
-          <slot></slot>
+    <div class="fixed inset-0 z-30 my-4" v-if="show">
+      <div class="flex items-end justify-center items-center">
+        <div class="relative transform overflow-hidden rounded bg-white shadow-xl transition-all w-3/4 max-w-full xl:max-w-screen-lg">
+          <slot name="title" />
+          <div class="h-[calc(100vh-2rem)] py-4">
+            <div class="h-full overflow-y-auto"><slot /></div>
+          </div>
         </div>
       </div>
     </div>
