@@ -76,26 +76,8 @@
         </div>
       </div>
       <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
-      <div />
-      <!--
-      <filemanager-search
-          :search="doSearch"
-      >
-        <template v-slot:folder="slotProps">
-          <span class="with-webfont-icon-left" data-icon=""><a :href="'#' + slotProps.folder.id"
-                                                                @click.prevent="readFolder(slotProps.folder.id)">{{
-              slotProps.folder.name
-            }}</a></span>
-        </template>
-        <template v-slot:file="slotProps">
-          <span class="with-webfont-icon-left" data-icon="">{{ slotProps.file.name }} ({{
-              slotProps.file.type
-            }})</span><br>
-          <a :href="'#' + slotProps.file.folder"
-             @click.prevent="readFolder(slotProps.file.folder)">{{ slotProps.file.path }}</a>
-        </template>
-      </filemanager-search>
-      -->
+
+      <div id="search-input" />
     </div>
 
     <sortable
@@ -235,6 +217,30 @@
           ]"
     />
   </teleport>
+
+
+  <filemanager-search
+      :search="doSearch"
+  >
+    <template v-slot:folder="slotProps">
+          <span>
+            <a
+                :href="'#' + slotProps.folder.id"
+                @click.prevent="readFolder(slotProps.folder.id)"
+            >{{ slotProps.folder.name }}</a>
+          </span>
+    </template>
+    <template v-slot:file="slotProps">
+      <div class="flex flex-col space-y-1">
+        <span>{{ slotProps.file.name }} ({{ slotProps.file.type }})</span>
+        <a
+            :href="'#' + slotProps.file.folder"
+            @click.prevent="readFolder(slotProps.file.folder)"
+        >{{ slotProps.file.path }}</a>
+      </div>
+    </template>
+  </filemanager-search>
+
 </template>
 
 <script>
@@ -510,7 +516,7 @@ export default {
     },
     doSearch(term) {
       if (term.trim().length > 2) {
-        return this.$fetch(urlQueryCreate(this.routes.search, {search: term}));
+        return this.$fetch(urlQueryCreate(this.api + "files/search", { search: term }));
       }
       return {files: [], folders: []};
     },

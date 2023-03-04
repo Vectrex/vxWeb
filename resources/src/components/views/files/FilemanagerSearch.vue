@@ -1,34 +1,32 @@
 <script setup>
   import Spinner from "@/components/misc/spinner.vue";
+  import Modal from "@/components/vx-vue/modal.vue";
+  import FormTitle from "@/components/views/shared/FormTitle.vue";
 </script>
 <template>
-  <div>
-    <div>
+  <teleport to="#search-input">
+    <div class="flex items-center space-x-2">
+      <spinner class="h-5 w-5 text-vxvue" v-if="busy" />
       <input class="form-input" @keydown.esc="handleEsc" @input="handleInput" @focus="handleInput" v-bind="inputProps">
-      <spinner class="h-5 w-5" v-if="busy" />
     </div>
-    <div class="modal-container" v-if="showResults"
-         style="position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-      <div class="modal-header">
-        <a href="#close" class="btn btn-clear float-right" aria-label="Close" @click.prevent="showResults = false"></a>
-        <div class="modal-title h5">Gefundene Dateien und Ordner&hellip;</div>
+  </teleport>
+
+  <modal :show="showResults">
+    <form-title @cancel="handleEsc">Gefundene Dateien und Ordner&hellip;</form-title>
+    <div>
+      <div v-for="result in (results.folders || [])" :key="result.id">
+        <slot name="folder" :folder="result">
+          {{ result.name }}
+        </slot>
       </div>
-      <div class="modal-body">
-        <div v-for="result in (results.folders || [])" :key="result.id">
-          <slot name="folder" :folder="result">
-            {{ result.name }}
-          </slot>
-        </div>
-        <div class="divider" v-if="results.folders.length && results.files.length"></div>
-        <div v-for="result in (results.files || [])" :key="result.id">
-          <slot name="file" :file="result">
-            {{ result.name }} ({{ result.type }})<br>
-            <span class="text-gray">{{ result.path }}</span>
-          </slot>
-        </div>
+      <div v-for="result in (results.files || [])" :key="result.id">
+        <slot name="file" :file="result">
+          {{ result.name }} ({{ result.type }})<br>
+          <span class="text-gray">{{ result.path }}</span>
+        </slot>
       </div>
     </div>
-  </div>
+  </modal>
 </template>
 
 <script>
@@ -60,7 +58,7 @@ export default {
     },
     showResults: {
       get() {
-        return this.results.folders.length || this.results.files.length;
+        return this.results.folders.length > 0 || this.results.files.length > 0;
       },
       set(newValue) {
         if (!newValue) {
@@ -72,7 +70,7 @@ export default {
   },
 
   methods: {
-    handleInput(event) {
+    handleInput (event) {
       this.value = event.target.value;
       const search = this.search(this.value);
 
@@ -84,7 +82,7 @@ export default {
           this.busy = false;
         });
       } else {
-        this.results = Object.assign({}, this.results, search);
+        this.results = search;
       }
     },
     handleEsc() {
