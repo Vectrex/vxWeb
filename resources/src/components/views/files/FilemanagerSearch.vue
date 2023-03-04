@@ -1,8 +1,11 @@
+<script setup>
+  import Spinner from "@/components/misc/spinner.vue";
+</script>
 <template>
   <div>
-    <div class="has-icon-right">
-      <input class="text-input" @keydown.esc="handleEsc" @input="handleInput" @focus="handleInput" v-bind="inputProps">
-      <i class="form-icon loading" v-if="loading"></i>
+    <div>
+      <input class="form-input" @keydown.esc="handleEsc" @input="handleInput" @focus="handleInput" v-bind="inputProps">
+      <spinner class="h-5 w-5" v-if="busy" />
     </div>
     <div class="modal-container" v-if="showResults"
          style="position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);">
@@ -38,7 +41,7 @@ export default {
         files: [],
         folders: []
       },
-      loading: false,
+      busy: false,
       hideDialog: false
     }
   },
@@ -74,11 +77,11 @@ export default {
       const search = this.search(this.value);
 
       if (search instanceof Promise) {
-        this.loading = true;
+        this.busy = true;
         search.then(({files, folders}) => {
           this.results.files = files || [];
           this.results.folders = folders || [];
-          this.loading = false;
+          this.busy = false;
         });
       } else {
         this.results = Object.assign({}, this.results, search);

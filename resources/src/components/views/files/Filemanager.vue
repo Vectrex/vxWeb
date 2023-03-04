@@ -9,7 +9,6 @@
   import FolderTree from "@/components/views/files/FolderTree.vue";
   import Headline from "@/components/app/Headline.vue";
   import Alert from "@/components/vx-vue/alert.vue";
-  import CircularProgress from "@/components/misc/circular-progress.vue";
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid';
   import { urlQueryCreate } from '@/util/url-query';
   import { formatFilesize } from "@/util/format-filesize";
@@ -46,12 +45,12 @@
 
   <div
       v-cloak
-      @drop.prevent="uploadDraggedFiles"
-      @dragover.prevent="indicateDrag = true"
-      @dragleave.prevent="indicateDrag = false"
+      @drop.prevent.stop="uploadDraggedFiles"
+      @dragover.prevent.stop="indicateDrag = true"
+      @dragleave.prevent.stop="indicateDrag = false"
       :class="{'border-4 border-vxvue-alt': indicateDrag }"
   >
-    <div class="flex pb-4 justify-between items-center">
+    <div class="flex pb-4 justify-between items-center h-16">
       <div class="flex items-center space-x-4">
         <filemanager-breadcrumbs
             :breadcrumbs="breadcrumbs"
@@ -67,12 +66,17 @@
             v-if="checkedFolders.length || checkedFiles.length"
         />
       </div>
-      <div v-if="upload.progressing" class="flex space-x-2 items-center">
+      <div class="flex space-x-2 items-center" v-if="upload.progressing">
         <button class="icon-link" data-tooltip="Abbrechen" type="button" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
-        <strong>{{ progress.file }}</strong>
-        <circular-progress :progress="100 * progress.loaded / (progress.total || 1)" :radius="16" />
+        <div class="flex flex-col items-center space-y-2">
+          <div class="text-sm">{{ progress.file }}</div>
+          <div class="w-64 bg-slate-200 rounded-full h-2">
+            <div class="bg-vxvue-500 rounded-full h-full" :style="{ width: (100 * progress.loaded / (progress.total || 1)) + '%' }" />
+          </div>
+        </div>
       </div>
       <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
+      <div />
       <!--
       <filemanager-search
           :search="doSearch"
@@ -192,6 +196,7 @@
         :id="pickedId"
         v-if="formShown === 'editFolder'"
         @cancel="formShown = null"
+        @notify="$emit('response-received', $event)"
         class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
       />
     </transition>
@@ -201,6 +206,7 @@
         :id="pickedId"
         v-if="formShown === 'editFile'"
         @cancel="formShown = null"
+        @notify="$emit('response-received', $event)"
         class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
       />
     </transition>
@@ -334,10 +340,10 @@ export default {
         this.files = response.files || [];
         this.folders = response.folders || [];
       } else if (response.error) {
-        this.$emit('response-received', response);
         this.files = response.files || this.files;
         this.folders = response.folders || this.folders;
       }
+      this.$emit('response-received', response);
     },
     moveSelection() {
       this.formShown = 'folderTree';
@@ -356,10 +362,10 @@ export default {
               this.files = response.files || [];
               this.folders = response.folders || [];
             } else if (response.error) {
-              this.$emit('response-received', response);
               this.files = response.files || this.files;
               this.folders = response.folders || this.folders;
             }
+            this.$emit('response-received', response);
           }
         }
       );
@@ -378,6 +384,7 @@ export default {
         if (response.success) {
           this.files.splice(this.files.findIndex(item => row === item), 1);
         }
+        this.$emit('response-received', response);
       }
     },
     async rename(event, type) {
@@ -432,6 +439,7 @@ export default {
       );
     },
     uploadDraggedFiles(event) {
+      console.log(event);
       this.indicateDrag = false;
       this.uploadInputFiles(event.dataTransfer.files || []);
     },

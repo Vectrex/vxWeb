@@ -198,7 +198,7 @@ class FilesController extends Controller
         }
         try {
             MetaFile::getInstance(null, $id)->delete();
-            return new JsonResponse(['success' => true]);
+            return new JsonResponse(['success' => true, 'message' => 'Datei erfolgreich gelöscht.']);
         }
         catch (\Exception $e) {
             return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -375,7 +375,7 @@ class FilesController extends Controller
             $folder = $parentFolder->createFolder($name);
             return new JsonResponse([
                 'success' => true,
-                'message' => 'Ordner erfolgreich erstellt.',
+                'message' => 'Verzeichnis erfolgreich erstellt.',
                 'folder' => [
                     'id' => $folder->getId(),
                     'name' => $folder->getName()
@@ -477,7 +477,7 @@ class FilesController extends Controller
             ]);
         }
         return new JsonResponse([
-            'success' => true, 'files' => $files, 'folders' => $folders
+            'success' => true, 'files' => $files, 'folders' => $folders, 'message' => 'Dateien/Verzeichnisse erfolgreich gelöscht.'
         ]);
     }
 
@@ -504,7 +504,7 @@ class FilesController extends Controller
         // avoid moving folders into themselves
 
         if (in_array($destination, $folderIds, true)) {
-            return new JsonResponse(['success' => false, 'message' => 'Ordner kann nicht in sich selbst verschoben werden.']);
+            return new JsonResponse(['success' => false, 'message' => 'Verzeichnis kann nicht in sich selbst verschoben werden.']);
         }
 
         // do moving
@@ -542,7 +542,13 @@ class FilesController extends Controller
         }
 
         $currentFolder = MetaFolder::getInstance(null, $currentFolderId);
-        return new JsonResponse(['id' => $currentFolderId, 'success' => true, 'files' => $this->getFileRows($currentFolder), 'folders' => $this->getFolderRows($currentFolder)]);
+        return new JsonResponse([
+            'id' => $currentFolderId,
+            'success' => true,
+            'files' => $this->getFileRows($currentFolder),
+            'folders' => $this->getFolderRows($currentFolder),
+            'message' => 'Dateien/Verzeichnisse erfolgreich verschoben.'
+        ]);
     }
 
     /**
