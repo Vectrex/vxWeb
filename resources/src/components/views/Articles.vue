@@ -1,10 +1,12 @@
 <script setup>
   import Sortable from "@/components/vx-vue/sortable.vue";
   import Pagination from "@/components/vx-vue/pagination.vue";
+  import FilterForm from "@/components/views/articles/FilterForm.vue";
 </script>
 
 <template>
   <div class="h-16 flex items-center justify-between">
+    <filter-form v-model="filter" :options="{ categories: [ { key: 0, label: '(Alle Kategorien)' }, ...categories ] }" />
     <pagination class="w-1/3" :total="filteredArticles.length" :per-page="pagination.entriesPerPage" v-model:page="pagination.page" marker-position="below" />
   </div>
   <sortable
@@ -67,7 +69,6 @@ export default {
 
   computed: {
     filteredArticles () {
-      return this.articles;
       const titleFilter = this.filter.title.toLowerCase();
       return this.articles.filter(item => (!this.filter.cat || this.filter.cat === item.catId) && (!this.filter.title || item.title.toLowerCase().indexOf(titleFilter) !== -1));
     },
@@ -86,8 +87,7 @@ export default {
 
     this.categories = response.categories || [];
 
-    let catLookup = {};
-    this.categories.forEach(item => catLookup[item.id] = item);
+    this.categories.forEach(item => item.key = item.id);
     this.articles = response.articles || [];
   },
 
