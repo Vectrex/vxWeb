@@ -36,6 +36,8 @@
 		<route id="folder_del" controller="admin/files" path="folder/{id}" method="folderDel" auth="privileged" request_methods="DELETE" />
 		<route id="folder_rename" controller="admin/files" path="folder/{id}/rename" method="folderRename" auth="privileged" request_methods="PUT" />
 
+		<route id="articles" controller="admin/articles" path="articles" method="list" auth="privileged" request_methods="GET" />
+
 		<route id="pages" controller="admin/pages" auth="superadmin" />
 		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
 		<route id="page_add" controller="admin/pages" auth="superadmin" method="add" />
@@ -50,7 +52,6 @@
 
 		<route id="inline_edit" controller="admin/pages" method="inlineEdit" path="pages/inline" auth="superadmin" request_methods="POST"/>
 
-		<route id="articles" controller="admin/articles" auth="privileged" />
 		<route id="articles_init" controller="admin/articles" method="init" auth="privileged" />
 		<route id="article_init" controller="admin/articles" method="editInit" auth="privileged" />
 		<route id="article_add" controller="admin/articles" method="add" path="articles/add" auth="privileged" />

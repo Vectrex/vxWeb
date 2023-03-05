@@ -36,10 +36,10 @@ class ArticlesController extends Controller {
 
     protected function execute(): Response
     {
-		return new Response(SimpleTemplate::create('admin/articles_list.php')->display());
+        return new Response();
 	}
 
-	protected function init(): JsonResponse
+	protected function list(): JsonResponse
     {
         $categories = [];
         $articles = [];
@@ -54,7 +54,7 @@ class ArticlesController extends Controller {
 
         foreach(ArticleQuery::create(Application::getInstance()->getVxPDO())->select() as $article) {
             $articles[] = [
-                'key' => $article->getId(),
+                'id' => $article->getId(),
                 'title' => $article->getHeadline(),
                 'catId' => $article->getCategory()->getId(),
                 'pub' => $article->isPublished(),

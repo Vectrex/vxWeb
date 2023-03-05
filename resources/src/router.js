@@ -3,6 +3,7 @@ import Login from '@/components/views/Login.vue'
 import Profile from "@/components/views/Profile.vue"
 import Users from "@/components/views/Users.vue"
 import Files from "@/components/views/Files.vue"
+import Articles from "@/components/views/Articles.vue"
 import { UsersIcon, NewspaperIcon, DocumentIcon, PhotoIcon } from '@heroicons/vue/24/solid'
 
 const router = createRouter({
@@ -33,7 +34,7 @@ const router = createRouter({
         {
             name: 'articles',
             path: '/articles',
-            component:  Users,
+            component: Articles,
             meta: {
                 label: 'Artikel',
                 icon: NewspaperIcon
@@ -42,7 +43,7 @@ const router = createRouter({
         {
             name: 'pages',
             path: '/pages',
-            component:  Users,
+            component: Users,
             meta: {
                 label: 'Seiten',
                 icon: DocumentIcon

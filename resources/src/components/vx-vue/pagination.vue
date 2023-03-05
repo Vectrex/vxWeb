@@ -1,145 +1,104 @@
 <template>
-  <div>
-    <ul class="pagination">
-      <li v-if="showNavButtons" class="page-item" :class="{ disabled: currentPage <= 1 }">
-        <a tabindex="-1" @click="prevPage" class="menu-item">{{ prevText }}</a>
-      </li>
-      
-      <li 
-        v-for="(page, idx) in pagesToShow"
-        v-bind:key="idx"
-        class="page-item"
-        :class="{active: currentPage === page}"
+  <nav class="px-4 flex items-center justify-between sm:px-0">
+    <div class="-mt-px w-0 flex-1 flex">
+      <a
+          @click.prevent="prevPage"
+          v-if="showNavButtons"
+          href="#"
+          class="border-transparent pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+          :class="[{'cursor-default pointer-events-none': currentPage <=1 }, markerPositionClass]"
       >
-        <a @click="pageClick(page)" v-if="page !== 'dots'">{{ page }}</a>
-        <span v-else>&hellip;</span>
-      </li>
-
-      <li v-if="showNavButtons" class="page-item" :class="{ disabled: currentPage >= maxPage }">
-        <a tabindex="-1" @click="nextPage">{{ nextText }}</a>
-      </li>
-    </ul>
-  </div>
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        {{ prevText }}
+      </a>
+    </div>
+    <div class="hidden md:-mt-px md:flex">
+      <component
+          v-for="(page, idx) in pagesToShow"
+          :is="page !== 'dots' ? 'a' : 'span'"
+          @click.prevent="page !== 'dots' ? pageClick(page) : null"
+          :key="idx"
+          :href="page !== 'dots' ? '#' : null"
+          class="px-4 inline-flex items-center text-sm font-medium"
+          :class="[{
+          'border-vxvue-500 text-vxvue-700': page === currentPage,
+          'border-transparent text-gray-500': page !== currentPage,
+          'hover:text-gray-700 hover:border-gray-300': page !== 'dots'
+        }, markerPositionClass]"
+      >
+        {{ page !== 'dots' ? page : '...' }}
+      </component>
+    </div>
+    <div class="-mt-px w-0 flex-1 flex justify-end">
+      <a
+          @click.prevent="nextPage"
+          v-if="showNavButtons"
+          href="#"
+          class="border-transparent pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+          :class="[markerPositionClass, {'cursor-default pointer-events-none': currentPage >= maxPage }]"
+      >
+        {{ nextText }}
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+      </a>
+    </div>
+  </nav>
 </template>
 <script>
 
 export default {
   name: 'pagination',
-  emits: ['update:page', 'update:total'],
+  emits: ['update:page'],
   props: {
-    items: Array,
-    total: { type: Number, default: 1 },
     page: { type: Number, default: 1 },
-    perPage: { type: Number, default: 20 },
+    total: { type: Number, default: 1 },
+    perPage: { type: Number, default: 20, validator(v) { return v >= 1 } },
     showNavButtons: { type: Boolean, default: true },
     prevText: { type: String, default: 'Previous' },
     nextText: { type: String, default: 'Next' },
     showAllPages: { type: Boolean, default: false },
-    onPageChange: Function
+    markerPosition: { type: String, default: 'above', validator(v) { return ['above', 'below'].indexOf(v) !== -1 }}
   },
   data () {
     return {
       currentPage: 1,
-      maxPage: 0,
-      showPerPage: 20,
-      dataItems: undefined,
+      maxPage: 0
     };
   },
   created () {
-    this.currentPage = this.page;
-    this.totalResults = this.total;
-    this.showPerPage = this.perPage;
-
-    if (typeof this.items !== 'undefined') {
-      this.dataItems = this.items;
-      this.totalResults = this.items.length;
-    }
-
     this.countMaxPage();
-
-    if (typeof this.onPageChange === 'function') {
-      this.onPageChange.apply(null, [this.currentPage, this.dataResults, this.maxPage]);
-    }
+    this.currentPage = Math.min(Math.max(this.page, 1), this.maxPage);
   },
-  methods: {
-    pageClick(page) {
-      this.currentPage = page;
-      this.$emit('update:page', page);
 
-      if (typeof this.onPageChange === 'function') {
-        this.onPageChange.apply(null, [page, this.dataResults, this.maxPage]);
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.pageClick(this.currentPage - 1);
-      }
-    },
-    nextPage() {
-      if (this.currentPage < this.maxPage) {
-        this.pageClick(this.currentPage + 1);
-      }
-    },
-    countMaxPage() {
-      this.maxPage = Math.ceil(this.totalResults / this.showPerPage);
-    }
-  },
   watch: {
-    page(val) {
-      if (val < 1) {
-        val = 1;
-      } else if (val > this.maxPage) {
-        val = this.maxPage;
-      }
-      
-      this.currentPage = val;
 
-      if (typeof this.onPageChange === 'function') {
-        this.onPageChange.apply(null, [this.currentPage, this.dataResults, this.maxPage]);
-      }
+    page (val) {
+      this.currentPage = Math.min(Math.max(val, 1), this.maxPage);
     },
-    total(val) {
-      if (val < 0) {
-        val = 0;
-      }
 
-      this.totalResults = val;
-
-      this.countMaxPage();
-      // if total number of items has changed, go to page 1
-      this.pageClick(1);
-    },
-    perPage(val) {
-      if (val < 1) {
-        val = 20;
-      }
-      this.showPerPage = val;
-      
+    perPage () {
       this.countMaxPage();
       this.pageClick(1);
     },
-    items(val) {
-      this.dataItems = val;
 
-      this.totalResults = this.dataItems.length;
-      this.$emit('update:total', this.totalResults);
-
+    total () {
       this.countMaxPage();
-      this.pageClick(1);
+
+      // if current page is out of range set current page to first page
+
+      if(this.currentPage > this.maxPage) {
+        this.pageClick(1);
+      }
     }
   },
   computed: {
-    dataResults() {
-      if (typeof this.dataItems !== 'undefined' && this.dataItems.length > 0) {
-        let start = (this.currentPage - 1) * this.showPerPage;
-        let end = this.currentPage * this.showPerPage;
-
-        return this.dataItems.slice(start, end);
-      }
-
-      return null;
+    markerPositionClass () {
+      return this.markerPosition === 'above' ? 'border-t-2 pt-4' : 'border-b-2 pb-4';
     },
-    pagesToShow() {
+    pagesToShow () {
       let pages = [1];
 
       if (this.showAllPages === true || this.maxPage <= 7) {
@@ -180,10 +139,30 @@ export default {
 
       if (this.currentPage < this.maxPage) {
         pages.push(this.maxPage);
-      } 
+      }
 
       return pages;
     }
+  },
+
+  methods: {
+    pageClick(page) {
+      this.currentPage = page;
+      this.$emit('update:page', page);
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.pageClick(this.currentPage - 1);
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.maxPage) {
+        this.pageClick(this.currentPage + 1);
+      }
+    },
+    countMaxPage() {
+      this.maxPage = Math.ceil(this.total / this.perPage);
+    }
   }
-};
+}
 </script>
