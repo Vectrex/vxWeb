@@ -254,11 +254,8 @@ class ArticlesController extends Controller {
 
 	protected function del (): JsonResponse
     {
-        $id = $this->request->query->get('id');
+        $id = $this->route->getPathParameter('id');
 
-        if(!$id) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
         try {
             $article = Article::getInstance($id);
         }
@@ -281,7 +278,7 @@ class ArticlesController extends Controller {
             return new JsonResponse($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return new JsonResponse(['success' => true]);
+        return new JsonResponse(['success' => true, 'message' => 'Artikel erfolgreich gelöscht.']);
     }
 
     protected function add (): Response

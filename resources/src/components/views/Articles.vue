@@ -2,6 +2,7 @@
   import Sortable from "@/components/vx-vue/sortable.vue";
   import Pagination from "@/components/vx-vue/pagination.vue";
   import FilterForm from "@/components/views/articles/FilterForm.vue";
+  import Alert from "@/components/vx-vue/alert.vue";
   import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
 </script>
 
@@ -34,7 +35,7 @@
         <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link tooltip" data-tooltip="Bearbeiten">
           <pencil-square-icon class="h-5 w-5" />
         </router-link>
-        <button class="icon-link tooltip" data-tooltip="Löschen" type="button" @click.prevent>
+        <button class="icon-link tooltip" data-tooltip="Löschen" type="button" @click="del(slotProps.row)">
           <trash-icon class="h-5 w-5" />
         </button>
       </div>
@@ -42,6 +43,14 @@
 
   </sortable>
 
+  <alert
+      ref="confirm"
+      header-class="bg-error text-white"
+      :buttons="[
+            { label: 'Löschen!', value: true, 'class': 'button alert' },
+            { label: 'Abbrechen', value: false, 'class': 'button cancel' }
+          ]"
+  />
 </template>
 
 <script>
@@ -104,6 +113,16 @@ export default {
   },
 
   methods: {
+    async del (article) {
+      if (await this.$refs.confirm.open('Artikel löschen', "'" + article.title + "' wirklich löschen?")) {
+        let response = await this.$fetch(this.api + 'article/' + article.id, 'DELETE');
+        if (response.success) {
+          this.articles.splice(this.articles.findIndex(item => article === item), 1);
+        }
+        this.$emit('notify', response);
+      }
+
+    },
     storeSort () {
     },
     publish () {
