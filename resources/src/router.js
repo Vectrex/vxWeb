@@ -4,6 +4,7 @@ import Profile from "@/components/views/Profile.vue"
 import Users from "@/components/views/Users.vue"
 import Files from "@/components/views/Files.vue"
 import Articles from "@/components/views/Articles.vue"
+import ArticleEdit from "@/components/views/ArticleEdit.vue"
 import { UsersIcon, NewspaperIcon, DocumentIcon, PhotoIcon } from '@heroicons/vue/24/solid'
 
 const router = createRouter({
@@ -39,6 +40,12 @@ const router = createRouter({
                 label: 'Artikel',
                 icon: NewspaperIcon
             }
+        },
+        {
+            name: 'articleEdit',
+            path: '/articles/:id',
+            component: ArticleEdit,
+            props: true
         },
         {
             name: 'pages',

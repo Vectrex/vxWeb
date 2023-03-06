@@ -2,6 +2,7 @@
   import Sortable from "@/components/vx-vue/sortable.vue";
   import Pagination from "@/components/vx-vue/pagination.vue";
   import FilterForm from "@/components/views/articles/FilterForm.vue";
+  import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
 </script>
 
 <template>
@@ -28,6 +29,17 @@
     <template v-slot:marked="slotProps">
       <input type="checkbox" class="form-checkbox" disabled="disabled" :checked="slotProps.row.marked">
     </template>
+    <template v-slot:action="slotProps">
+      <div class="flex items-center space-x-1">
+        <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link tooltip" data-tooltip="Bearbeiten">
+          <pencil-square-icon class="h-5 w-5" />
+        </router-link>
+        <button class="icon-link tooltip" data-tooltip="Löschen" type="button" @click.prevent>
+          <trash-icon class="h-5 w-5" />
+        </button>
+      </div>
+    </template>
+
   </sortable>
 
 </template>
