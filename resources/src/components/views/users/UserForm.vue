@@ -1,8 +1,8 @@
 <script setup>
   import Spinner from "@/components/misc/spinner.vue";
   import FormTitle from "@/components/views/shared/FormTitle.vue";
-  import FormSelect from "@/components/formelements/form-select.vue";
-  import PasswordInput from "@/components/formelements/password-input.vue";
+  import FormSelect from "@/components/vx-vue/form-select.vue";
+  import PasswordInput from "@/components/vx-vue/password-input.vue";
 </script>
 <template>
   <div>

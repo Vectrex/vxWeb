@@ -1,5 +1,5 @@
 <script setup>
-  import PasswordInput from "@/components/formelements/password-input.vue";
+  import PasswordInput from "@/components/vx-vue/password-input.vue";
   import Spinner from "@/components/misc/spinner.vue";
   import Logo from "@/components/misc/logo.vue";
   import { HomeIcon } from '@heroicons/vue/20/solid';

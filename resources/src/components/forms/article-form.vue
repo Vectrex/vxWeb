@@ -29,7 +29,7 @@ import VueCkeditor from "../vue-ckeditor.vue";
 import Datepicker from "../formelements/datepicker.vue";
 import FormInput from "../formelements/form-input.vue";
 import FormTextarea from "../formelements/form-textarea.vue";
-import FormSelect from "../formelements/form-select.vue";
+import FormSelect from "../vx-vue/form-select.vue";
 import FormCheckbox from "../formelements/form-checkbox.vue";
 
 export default {

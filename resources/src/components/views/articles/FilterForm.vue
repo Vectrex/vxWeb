@@ -1,5 +1,5 @@
 <script setup>
-  import FormSelect from "@/components/formelements/form-select.vue";
+  import FormSelect from "@/components/vx-vue/form-select.vue";
 </script>
 
 <template>
