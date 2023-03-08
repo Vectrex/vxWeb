@@ -1,10 +1,14 @@
 <script setup>
+  import Headline from "@/components/app/Headline.vue";
   import { PencilSquareIcon, DocumentMinusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/vue/24/solid';
   import Filemanager from "@/components/views/files/Filemanager.vue";
 </script>
 <template>
+  <teleport to="#tools">
+    <headline>Dateien</headline>
+  </teleport>
+
   <filemanager
-    :routes="routes"
     :columns="cols"
     :init-sort="initSort"
     @response-received="$emit('notify', $event)"
@@ -46,9 +50,6 @@ export default {
   emits: ['notify'],
   data() {
     return {
-      routes: {
-        getFoldersTree: 'folders/tree'
-      },
       cols: [
         {
           label: "",

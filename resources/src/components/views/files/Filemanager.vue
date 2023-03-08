@@ -7,42 +7,13 @@
   import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue";
   import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue";
   import FolderTree from "@/components/views/files/FolderTree.vue";
-  import Headline from "@/components/app/Headline.vue";
   import Alert from "@/components/vx-vue/alert.vue";
-  import { PencilSquareIcon, PlusIcon, XMarkIcon, FolderIcon } from '@heroicons/vue/24/solid';
+  import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid';
   import { urlQueryCreate } from '@/util/url-query';
   import { formatFilesize } from "@/util/format-filesize";
   import { Focus } from "@/directives/focus";
 </script>
 <template>
-  <teleport to="#tools">
-    <div class="relative">
-      <headline>
-        <span>Dateien</span>
-        <button
-          class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
-          type="button"
-          href="#" @click.stop="showAddActivities = !showAddActivities"
-        >
-          <plus-icon class="w-5 h-5" />
-        </button>
-      </headline>
-      <transition name="appear">
-          <div
-            v-show="showAddActivities"
-            class="absolute right-0 z-10 mt-2 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-            role="menu"
-            aria-orientation="vertical"
-          >
-          <filemanager-add
-              @upload="uploadInputFiles"
-              @create-folder="createFolder"
-          />
-        </div>
-      </transition>
-    </div>
-  </teleport>
-
   <div
       v-cloak
       @drop.prevent.stop="uploadDraggedFiles"
@@ -58,6 +29,28 @@
             :folders="folders"
             @breadcrumb-clicked="readFolder"
         />
+        <div class="relative">
+          <button
+              class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
+              type="button"
+              href="#" @click.stop="showAddActivities = !showAddActivities"
+          >
+            <plus-icon class="w-5 h-5" />
+          </button>
+          <transition name="appear">
+            <div
+                v-show="showAddActivities"
+                class="absolute left-0 z-10 mt-2 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                role="menu"
+                aria-orientation="vertical"
+            >
+              <filemanager-add
+                  @upload="uploadInputFiles"
+                  @create-folder="createFolder"
+              />
+            </div>
+          </transition>
+        </div>
         <filemanager-actions
             @delete-selection="delSelection"
             @move-selection="moveSelection"
@@ -66,6 +59,7 @@
             v-if="checkedFolders.length || checkedFiles.length"
         />
       </div>
+
       <div class="flex space-x-2 items-center" v-if="upload.progressing">
         <button class="icon-link" data-tooltip="Abbrechen" type="button" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
         <div class="flex flex-col items-center space-y-2">
@@ -229,7 +223,6 @@ export default {
   emits: ['response-received', 'after-sort'],
   expose: ['delFile', 'delFolder', 'editFile', 'editFolder', 'moveFile'],
   props: {
-    routes: { type: Object, required: true },
     columns: { type: Array, required: true },
     folder: { type: String, default: '' },
     initSort: Object
@@ -334,7 +327,7 @@ export default {
       this.formShown = 'folderTree';
       this.$nextTick(
         async () => {
-          let folder = await this.$refs['folderTree'].open(this.api + this.routes.getFoldersTree, this.currentFolder);
+          let folder = await this.$refs['folderTree'].open(this.api + 'folders/tree', this.currentFolder);
           this.formShown = null;
 
           if (folder !== false) {
