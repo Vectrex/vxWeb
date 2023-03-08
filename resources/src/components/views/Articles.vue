@@ -125,7 +125,13 @@ export default {
     },
     storeSort () {
     },
-    publish () {
+    async publish (row) {
+      row.pub = !row.pub;
+      let response = await this.$fetch(this.api + 'article/' + row.id + (row.pub ? '/publish' : '/unpublish'), 'POST');
+      if(!response.success) {
+        row.pub = !row.pub;
+      }
+      this.$emit('notify', response);
     }
   }
 }

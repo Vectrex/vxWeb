@@ -222,34 +222,32 @@ class ArticlesController extends Controller {
 
 	protected function publish (): JsonResponse
     {
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
-		$id = $bag->getInt('id');
-		$state = $bag->getInt('state');
+		$id = $this->route->getPathParameter('id');
+		$state = $this->route->getRouteId() === 'article_publish';
 		$admin = Application::getInstance()->getCurrentUser();
 
-        if(!$id) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
         try {
             $article = Article::getInstance($id);
         }
         catch(ArticleException $e) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
-        if($state) {
+        if ($state) {
 
             // publish logs publishedById
 
             $article->publish($admin->getAttribute('id'))->save();
+            $message = 'Freigabe des Artikels zurückgezogen.';
         }
         else {
 
             // unpublish sets publishedById to null
 
             $article->unpublish()->save();
+            $message = 'Artikel freigegeben.';
         }
 
-        return new JsonResponse(['success' => true]);
+        return new JsonResponse(['success' => true, 'message' => $message]);
 	}
 
 	protected function del (): JsonResponse
