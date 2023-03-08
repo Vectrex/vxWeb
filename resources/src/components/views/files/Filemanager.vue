@@ -212,7 +212,7 @@
     />
   </teleport>
 
-  <filemanager-search @folder-picked="readFolder($event)" />
+  <filemanager-search @folder-picked="readFolder($event)" :is-mounted="isMounted" />
 
 </template>
 
@@ -230,6 +230,7 @@ export default {
 
   data() {
     return {
+      isMounted: false,
       limits: {},
       currentFolder: null,
       files: [],
@@ -289,6 +290,7 @@ export default {
   },
   mounted() {
     document.body.addEventListener('click', this.handleBodyClick);
+    this.isMounted = true;
   },
   beforeUnmount() {
     document.body.removeEventListener('click', this.handleBodyClick);

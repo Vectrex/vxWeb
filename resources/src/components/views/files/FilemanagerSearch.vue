@@ -7,7 +7,7 @@
 </script>
 
 <template>
-  <teleport to="#search-input">
+  <teleport to="#search-input" v-if="isMounted">
     <div class="flex items-center space-x-2">
       <spinner class="h-5 w-5 text-vxvue" v-if="busy" />
       <input
@@ -74,6 +74,7 @@ export default {
   },
 
   props: {
+    isMounted: { type: Boolean, default: false },
     placeholder: { type: String, default: 'Datei/Verzeichnis suchen...' },
     minLength: { type: Number, default: 3 }
   },
