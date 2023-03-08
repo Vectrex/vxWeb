@@ -1,21 +1,19 @@
 <script setup>
   import Tabs from "@/components/vx-vue/tabs.vue";
-  import DatePicker from "@/components/vx-vue/datepicker.vue";
+  import ArticleForm from "@/components/views/articles/ArticleForm.vue";
+  import ArticleFiles from "@/components/views/articles/ArticleFiles.vue";
 </script>
 
 <template>
-  <tabs :items="tabs.items" v-model:active-index="tabs.activeIndex" />
-  <date-picker
-      placeholder="dd.mm.yyyy"
-      class="w-2/3 inline-block"
-      id="date-picker-2"
-      v-model="form.article_date"
-      :day-names="'So Mo Di Mi Do Fr Sa'.split(' ')"
-      :start-of-week-index="1"
-      :month-names="'Jänner,Februar,März,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember'.split(',')"
-      input-format="d.m.y"
-      output-format="d mmm y"
-  />
+  <div class="mb-4">
+    <tabs :items="tabs.items" v-model:active-index="tabs.activeIndex" />
+  </div>
+  <div v-show="tabs.activeIndex === 0">
+    <article-form  />
+  </div>
+  <div v-show="tabs.activeIndex === 1">
+    <article-files />
+  </div>
 </template>
 
 <script>
@@ -28,7 +26,7 @@ export default {
         activeIndex: null,
         items: [
           { name: 'Artikel' },
-          { name: 'Verlinkte Dateien' },
+          { name: 'Verlinkte Dateien',badge: 10 },
           { name: 'Sortierung und Sichtbarkeit verlinkter Dateien' },
         ]
       },

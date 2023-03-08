@@ -1,17 +1,19 @@
 <script setup>
   import { PlusIcon, MinusIcon } from '@heroicons/vue/24/solid';
 </script>
-
 <template>
-  <li :class="{ 'terminates': !branch.branches || !branch.branches.length }">
-    <div class="flex items-center space-x-2 py-1">
-      <a href="" @click.prevent.stop="expanded = !expanded" v-if="branch.branches && branch.branches.length">
-        <div class="p-px border-2 rounded-sm"><component :is="expanded ? MinusIcon : PlusIcon" class="h-4 w-4" /></div>
-      </a>
+  <li :class="[!branch.branches || !branch.branches.length ? 'terminates' : '', $attrs['class']]">
+    <div class="flex items-center pb-1">
+      <template v-if="branch.branches && branch.branches.length">
+        <input type="checkbox" :id="'branch-' + branch.id" @click="expanded = !expanded" :checked="expanded" class="hidden">
+        <label :for="'branch-' + branch.id" class="mr-2">
+          <component :is="expanded ? MinusIcon : PlusIcon" class="h-4 w-4 border" />
+        </label>
+      </template>
       <strong v-if="branch.current">{{ branch.label }}</strong>
       <a :href="branch.path" @click.prevent="$emit('branch-selected', branch)" v-else>{{ branch.label }}</a>
     </div>
-    <ul class="pl-2" v-if="branch.branches && branch.branches.length" v-show="expanded">
+    <ul v-if="branch.branches && branch.branches.length" v-show="expanded" class="ml-6">
       <simple-tree-branch
           v-for="child in branch.branches"
           :branch="child"

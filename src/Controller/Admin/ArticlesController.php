@@ -237,14 +237,14 @@ class ArticlesController extends Controller {
             // publish logs publishedById
 
             $article->publish($admin->getAttribute('id'))->save();
-            $message = 'Freigabe des Artikels zurückgezogen.';
+            $message = 'Artikel freigegeben.';
         }
         else {
 
             // unpublish sets publishedById to null
 
             $article->unpublish()->save();
-            $message = 'Artikel freigegeben.';
+            $message = 'Freigabe des Artikels zurückgezogen.';
         }
 
         return new JsonResponse(['success' => true, 'message' => $message]);

@@ -403,7 +403,7 @@ export default {
       this.formShown = 'folderTree';
       this.$nextTick(
           async () => {
-            let folder = await this.$refs.folderTree.open(this.api + this.routes.getFoldersTree, this.currentFolder);
+            let folder = await this.$refs.folderTree.open(this.api + 'folders/tree', this.currentFolder);
             this.formShown = null;
 
             if (folder !== false) {

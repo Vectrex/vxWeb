@@ -2,8 +2,8 @@
   import SimpleTreeBranch from "@/components/vx-vue/simple-tree/simple-tree-branch.vue";
 </script>
 <template>
-  <ul>
-    <simple-tree-branch :branch="branch" @branch-selected="$emit('branch-selected', $event)" />
+  <ul class="flex">
+    <simple-tree-branch :branch="branch" @branch-selected="$emit('branch-selected', $event)" v-bind="$attrs" />
   </ul>
 </template>
 
