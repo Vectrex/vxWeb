@@ -40,6 +40,7 @@
 		<route id="article_del" controller="admin/articles" path="article/{id}" method="del" auth="privileged" request_methods="DELETE" />
 		<route id="article_publish" controller="admin/articles" path="article/{id}/publish" method="publish" auth="superadmin" request_methods="POST" />
 		<route id="article_unpublish" controller="admin/articles" path="article/{id}/unpublish" method="publish" auth="superadmin" request_methods="POST" />
+		<route id="article_categories" controller="admin/articles" path="article/categories" method="getCategories" auth="privileged" request_methods="GET" />
 
 		<route id="pages" controller="admin/pages" auth="superadmin" />
 		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />

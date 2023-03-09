@@ -12,6 +12,7 @@ use vxPHP\Controller\Controller;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 
+use vxWeb\Model\ArticleCategory\ArticleCategoryQuery;
 use vxWeb\Model\MetaFile\Exception\MetaFileException;
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\Article\ArticleQuery;
@@ -28,7 +29,6 @@ use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Constraint\Validator\Date;
 use vxPHP\Application\Locale\Locale;
 use vxPHP\Constraint\Validator\RegularExpression;
-use vxWeb\Model\ArticleCategory\ArticleCategoryQuery;
 
 class ArticlesController extends Controller {
 
@@ -141,6 +141,15 @@ class ArticlesController extends Controller {
                 'categories' => (array) $db->doPreparedQuery("SELECT articlecategoriesid AS " . $db->quoteIdentifier('key') . ", title AS label FROM articlecategories ORDER BY title")
             ]
         ]);
+    }
+
+    protected function getCategories (): JsonResponse
+    {
+        $db = Application::getInstance()->getVxPDO();
+
+        return new JsonResponse(
+            (array) $db->doPreparedQuery("SELECT articlecategoriesid AS " . $db->quoteIdentifier('key') . ", title AS label FROM articlecategories ORDER BY title")
+        );
     }
 
     protected function update (): JsonResponse

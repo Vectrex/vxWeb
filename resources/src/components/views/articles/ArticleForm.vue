@@ -7,10 +7,18 @@
   <div class="space-y-2">
     <div class="flex space-x-2 items-center" v-for="element in elements" :key="element.model">
       <label class="w-48" :for="element.model + '_' + element.type" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
+      <input
+        v-if="element.type === 'input'"
+        :id="element.model"
+        v-model="form[element.model]"
+        v-bind="element.attrs"
+        class="form-input"
+      />
       <component
+        v-else
         :is="element.type"
         :id="element.model"
-        :options="element.options"
+        :options="options[element.model] || []"
         v-model="form[element.model]"
         v-bind="element.attrs"
       />
@@ -29,6 +37,7 @@
 export default {
   components: { datepicker: DatePicker },
   name: "ArticleForm",
+  inject: ['api'],
   data() {
     let datepickerAttrs = {
       placeholder: 'dd.mm.yyyy',
@@ -40,16 +49,24 @@ export default {
           outputFormat: 'd mmm y'
     };
     return {
+      busy: false,
+      options: {
+        articlecategoriesid: []
+      },
       form: {},
       errors: {},
       elements: [
         { type: DatePicker, model: 'article_date', label: 'Artikeldatum', attrs: datepickerAttrs },
         { type: DatePicker, model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
         { type: DatePicker, model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}},
-        { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, options: [], attrs: { 'class': 'w-64' } },
+        { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, options: this.categories, attrs: { 'class': 'w-64' } },
+        { type: 'input', model: 'title', label: 'Überschrift/Titel', required: true },
 
       ]
     }
+  },
+  async created () {
+    this.options.articlecategoriesid = await this.$fetch(this.api +'article/categories');
   }
 }
 </script>
