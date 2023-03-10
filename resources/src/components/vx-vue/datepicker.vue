@@ -1,5 +1,5 @@
 <script setup>
-  import DateInput from './date-input.vue';
+  import DateInput from "@/components/vx-vue/date-input.vue";
 </script>
 
 <template>

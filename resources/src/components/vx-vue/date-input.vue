@@ -1,5 +1,5 @@
 <script setup>
-  import DateFunction from '@/util/date-functions';
+  import DateFunctions from '@/util/date-functions';
 </script>
 <template>
   <div class="relative inline-block" :class="$attrs['class']">
