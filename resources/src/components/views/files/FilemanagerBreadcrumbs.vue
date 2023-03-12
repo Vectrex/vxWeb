@@ -11,7 +11,7 @@
               }
             ]"
             :key="ndx"
-            @click="$emit('breadcrumb-clicked', breadcrumb.id)">{{ breadcrumb.name }}
+            @click="$emit('breadcrumb-clicked', breadcrumb)">{{ breadcrumb.name }}
         </button>
     </span>
 </template>

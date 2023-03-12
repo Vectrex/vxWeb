@@ -33,7 +33,7 @@
             <folder-icon class="h-5 w-5" />
             <a
                 :href="'#' + folder.id"
-                @click.prevent="pickFolder(folder.id)"
+                @click.prevent="pickFolder(folder)"
             >{{ folder.name }}</a>
           </div>
         </div>
@@ -46,9 +46,9 @@
             <div class="w-1/2 flex items-center space-x-2">
               <folder-icon class="h-5 w-5" />
               <a
-                  :href="'#' + file.folder"
+                  :href="'#' + file.folder.path"
                   @click.prevent="pickFolder(file.folder)"
-              >{{ file.path }}</a>
+              >{{ file.folder.path }}</a>
             </div>
           </div>
 

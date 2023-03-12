@@ -89,7 +89,7 @@ class FilesController extends Controller
                 $folders[] = [
                     'id' => $f->getId(),
                     'name' => $f->getName(),
-                    'path' => $f->getParentMetafolder() ? $f->getParentMetafolder()->getRelativePath() : '/'
+                    'path' => trim($f->getParentMetafolder() ? $f->getParentMetafolder()->getRelativePath() : '', '/')
                 ];
             }
         }
@@ -101,9 +101,12 @@ class FilesController extends Controller
             $files[] = [
                 'id' => $f->getId(),
                 'name' => $f->getMetaFilename(),
-                'path' => $f->getMetaFolder()->getRelativePath(),
-                'folder' => $f->getMetaFolder()->getId(),
-                'type' => $f->getFilesystemFile()->getMimetype()
+                'type' => $f->getFilesystemFile()->getMimetype(),
+                'folder' => [
+                    'id' => $f->getMetaFolder()->getId(),
+                    'name' => $f->getMetaFolder()->getName(),
+                    'path' => trim($f->getMetaFolder()->getRelativePath(), '/')
+                ],
             ];
         }
 

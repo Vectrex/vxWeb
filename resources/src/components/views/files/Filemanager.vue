@@ -108,7 +108,7 @@
                 @blur="toRename = null"
             >
             <template v-else>
-              <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row.id)">{{ slotProps.row.name }}</a>
+              <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row)">{{ slotProps.row.name }}</a>
               <button
                   class="icon-link opacity-0 group-hover:opacity-100 transition-opacity tooltip"
                   data-tooltip="Umbenennen"
@@ -286,7 +286,7 @@ export default {
   },
 
   created() {
-    this.readFolder('-');
+    this.readFolder();
   },
   mounted() {
     document.body.addEventListener('click', this.handleBodyClick);
@@ -300,8 +300,9 @@ export default {
     handleBodyClick() {
       this.showAddActivities = false;
     },
-    async readFolder(id) {
-      let response = await this.$fetch(this.api + 'folder/' + id + '/read');
+    async readFolder(folder) {
+
+      let response = await this.$fetch(this.api + 'folder/' + (folder?.id || '-') + '/read');
 
       if (response.success) {
         this.files = response.files || [];
