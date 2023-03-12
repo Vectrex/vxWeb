@@ -3,10 +3,23 @@
   import Pagination from "@/components/vx-vue/pagination.vue";
   import FilterForm from "@/components/views/articles/FilterForm.vue";
   import Alert from "@/components/vx-vue/alert.vue";
-  import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid';
+  import Headline from "@/components/app/Headline.vue";
+  import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid';
 </script>
 
 <template>
+  <teleport to="#tools">
+    <headline><span>Artikel</span>
+      <button
+          class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
+          type="button"
+          @click="$router.push({ name: 'articleEdit' })"
+      >
+        <plus-icon class="w-5 h-5" />
+      </button>
+    </headline>
+  </teleport>
+
   <div class="h-16 flex items-center justify-between">
     <filter-form v-model="filter" :options="{ categories: [ { key: 0, label: '(Alle Kategorien)' }, ...categories ] }" />
     <pagination class="w-1/3" :total="filteredArticles.length" :per-page="pagination.entriesPerPage" v-model:page="pagination.page" marker-position="below" />

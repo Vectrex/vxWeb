@@ -27,7 +27,7 @@ export default {
         activeIndex: 0,
         items: [
           { name: 'Artikel' },
-          { name: 'Verlinkte Dateien', badge: 10 },
+          { name: 'Verlinkte Dateien', badge: null },
           { name: 'Sortierung und Sichtbarkeit verlinkter Dateien' },
         ]
       }
