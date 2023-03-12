@@ -7,11 +7,11 @@
               {
                 'rounded-l !border-l-2': ndx === 0,
                 'rounded-r !border-r-2': ndx === items.length -1,
-                'bg-vxvue-500 !text-white font-bold': breadcrumb.folder === currentFolder
+                'bg-vxvue-500 !text-white font-bold': breadcrumb.id === currentFolder
               }
             ]"
             :key="ndx"
-            @click="$emit('breadcrumb-clicked', breadcrumb.folder)">{{ breadcrumb.name }}
+            @click="$emit('breadcrumb-clicked', breadcrumb.id)">{{ breadcrumb.name }}
         </button>
     </span>
 </template>
@@ -34,7 +34,7 @@ export default {
     breadcrumbs (newValue) {
       if (
           newValue.length >= this.items.length ||
-          this.items.map(item => item.folder).join().indexOf(newValue.map(item => item.folder).join()) !== 0
+          this.items.map(item => item.id).join().indexOf(newValue.map(item => item.id).join()) !== 0
       ) {
         this.items = newValue;
       }
@@ -45,10 +45,10 @@ export default {
 
         // find current folder
 
-        let current = this.items.findIndex(item => item.folder === this.currentFolder);
+        let current = this.items.findIndex(item => item.id === this.currentFolder);
 
         if (this.items[current + 1]) {
-          let ndx = newValue.findIndex(({id}) => id === this.items[current + 1].folder);
+          let ndx = newValue.findIndex(({id}) => id === this.items[current + 1].id);
 
           // check for deletion
 

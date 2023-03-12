@@ -638,7 +638,8 @@ class FilesController extends Controller
         foreach ($folder->getMetaFolders() as $f) {
             $folders[] = [
                 'id' => $f->getId(),
-                'name' => $f->getName()
+                'name' => $f->getName(),
+                'path' => trim($f->getRelativePath(), '/')
             ];
         }
 
@@ -647,10 +648,10 @@ class FilesController extends Controller
 
     private function getBreadcrumbs (MetaFolder $folder): array
     {
-        $breadcrumbs = [['name' => $folder->getName(), 'folder' => $folder->getId()]];
+        $breadcrumbs = [['id' => $folder->getId(), 'name' => $folder->getName(), 'path' => trim($folder->getRelativePath(), '/')]];
 
         while (($folder = $folder->getParentMetafolder())) {
-            array_unshift($breadcrumbs, ['name' => $folder->getName(), 'folder' => $folder->getId()]);
+            array_unshift($breadcrumbs, ['id' => $folder->getId(), 'name' => $folder->getName(), 'path' => trim($folder->getRelativePath(), '/')]);
         }
 
         return $breadcrumbs;
