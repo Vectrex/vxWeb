@@ -1,7 +1,7 @@
 <script setup>
   import PasswordInput from "@/components/vx-vue/password-input.vue";
-  import Spinner from "@/components/misc/spinner.vue";
   import Headline from "@/components/app/Headline.vue";
+  import SubmitButton from "@/components/app/SubmitButton.vue";
 </script>
 
 <template>
@@ -45,12 +45,7 @@
         </div>
       </template>
 
-    <div class="flex space-x-2 items-center">
-      <button class="button success" type="button" @click="submit" :disabled="busy">
-        Änderungen speichern
-      </button>
-      <spinner v-if="busy" class="text-green-700" />
-    </div>
+    <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
   </div>
 </template>
 

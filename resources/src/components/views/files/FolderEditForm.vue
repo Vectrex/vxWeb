@@ -1,5 +1,5 @@
 <script setup>
-  import Spinner from "@/components/misc/spinner.vue";
+  import SubmitButton from "@/components/app/SubmitButton.vue";
   import FormTitle from "@/components/views/shared/FormTitle.vue";
 </script>
 <template>
@@ -8,34 +8,29 @@
     <div class="overflow-hidden h-[calc(100vh-6rem)]">
       <div class="h-full overflow-y-auto">
         <div class="space-y-4 pt-20 pb-4 px-4">
-        <div v-for="field in fields">
-          <label
-              :class="{ 'text-error': errors[field.model], 'required': field.required }"
-              :for="field.model + '-' + field.type || 'input'"
-          >
-            {{ field.label }}
-          </label>
-          <input
-              v-if="!field.type"
-              :id="field.model + '-input'"
-              class="w-full form-input"
-              v-model="form[field.model]"
-          />
-          <textarea
-             v-else-if="field.type === 'textarea'"
-             class="w-full form-textarea"
-             :id="field.model + '-' + field.type"
-             v-model="form[field.model]"
-          />
-          <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
+          <div v-for="field in fields">
+            <label
+                :class="{ 'text-error': errors[field.model], 'required': field.required }"
+                :for="field.model + '-' + field.type || 'input'"
+            >
+              {{ field.label }}
+            </label>
+            <input
+                v-if="!field.type"
+                :id="field.model + '-input'"
+                class="w-full form-input"
+                v-model="form[field.model]"
+            />
+            <textarea
+               v-else-if="field.type === 'textarea'"
+               class="w-full form-textarea"
+               :id="field.model + '-' + field.type"
+               v-model="form[field.model]"
+            />
+            <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
+          </div>
+          <submit-button :busy="busy" @submit="submit">Daten übernehmen</submit-button>
         </div>
-        <div class="flex justify-center space-x-2 items-center">
-          <button class="button success" type="button" @click="submit" :disabled="busy">
-            Daten übernehmen
-          </button>
-          <spinner v-if="busy" class="text-green-700" />
-        </div>
-      </div>
       </div>
     </div>
   </div>

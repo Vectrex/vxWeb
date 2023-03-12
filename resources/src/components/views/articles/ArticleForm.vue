@@ -1,7 +1,7 @@
 <script setup>
   import DatePicker from "@/components/vx-vue/datepicker.vue";
   import FormSelect from "@/components/vx-vue/form-select.vue";
-  import spinner from "@/components/misc/spinner.vue";
+  import SubmitButton from "@/components/app/SubmitButton.vue";
 </script>
 
 <template>
@@ -42,12 +42,7 @@
       />
     </div>
 
-    <div class="flex space-x-2 items-center">
-      <button class="button success" type="button" @click="submit" :disabled="busy">
-        Änderungen speichern
-      </button>
-      <spinner v-if="busy" class="text-green-700" />
-    </div>
+    <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
   </div>
 </template>
 
@@ -98,6 +93,11 @@ export default {
         }
       });
       this.form = form;
+    }
+  },
+  methods: {
+    async submit () {
+      this.busy = true;
     }
   }
 }

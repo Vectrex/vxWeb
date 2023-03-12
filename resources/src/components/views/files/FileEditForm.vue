@@ -1,5 +1,5 @@
 <script setup>
-  import Spinner from "@/components/misc/spinner.vue";
+  import SubmitButton from "@/components/app/SubmitButton.vue";
   import FormTitle from "@/components/views/shared/FormTitle.vue";
   import { formatFilesize } from '@/util/format-filesize';
 </script>
@@ -43,11 +43,8 @@
               />
               <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
             </div>
-            <div class="flex justify-center space-x-2 items-center">
-              <button class="button success" type="button" @click="submit" :disabled="busy">
-                Daten übernehmen
-              </button>
-              <spinner v-if="busy" class="text-green-700" />
+            <div class="px-4">
+              <submit-button :busy="busy" @submit="submit">Daten übernehmen</submit-button>
             </div>
           </div>
         </div>

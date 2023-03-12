@@ -1,6 +1,6 @@
 <script setup>
   import PasswordInput from "@/components/vx-vue/password-input.vue";
-  import Spinner from "@/components/misc/spinner.vue";
+  import SubmitButton from "@/components/app/SubmitButton.vue";
   import Logo from "@/components/misc/logo.vue";
   import { HomeIcon } from '@heroicons/vue/20/solid';
 </script>
@@ -21,17 +21,7 @@
           <password-input v-model="form.password" class="w-full" placeholder="Passwort" />
 
           <div class="flex justify-between items-center">
-            <div class="flex space-x-2 items-center">
-              <button
-                  type="button"
-                  :disabled="busy"
-                  class="button success"
-                  @click="submit"
-              >
-                Anmelden
-              </button>
-              <spinner v-if="busy" class="text-green-500" />
-            </div>
+            <submit-button :busy="busy" @submit="submit">Anmelden</submit-button>
             <span class="flex space-x-1"><home-icon class="w-5 h-5"/><a :href="siteLink" class="link text-rose-600 hover:text-rose-500">{{ siteLabel }}</a></span>
           </div>
         </div>
