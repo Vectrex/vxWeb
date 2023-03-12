@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '@/components/views/Login.vue'
-import Profile from "@/components/views/Profile.vue"
-import Users from "@/components/views/Users.vue"
-import Files from "@/components/views/Files.vue"
-import Articles from "@/components/views/Articles.vue"
-import ArticleEdit from "@/components/views/ArticleEdit.vue"
 import { UsersIcon, NewspaperIcon, DocumentIcon, PhotoIcon } from '@heroicons/vue/24/solid'
+const Login = () => import('@/components/views/Login.vue')
+const Profile  = () => import("@/components/views/Profile.vue")
+const Users  = () => import("@/components/views/Users.vue")
+const Files  = () => import("@/components/views/Files.vue")
+const Articles  = () => import("@/components/views/Articles.vue")
+const ArticleEdit  = () => import("@/components/views/ArticleEdit.vue")
 
 const router = createRouter({
     history: createWebHistory(),
@@ -18,14 +18,14 @@ const router = createRouter({
         {
             name: 'profile',
             path: '/profile',
-            component:  Profile,
+            component: Profile,
             meta: {
                 heading: 'Meine Einstellungen'
             }
         },
         {
             name: 'files',
-            path: '/files',
+            path: '/files/:path*',
             component: Files,
             meta: {
                 label: 'Dateien',

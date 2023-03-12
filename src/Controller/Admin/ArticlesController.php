@@ -114,32 +114,27 @@ class ArticlesController extends Controller {
     {
         $db = Application::getInstance()->getVxPDO();
 
-        if ($id = $this->request->query->getInt('id')) {
-            $formData = $db->doPreparedQuery("
-                SELECT
-                    articlesid as id,
-                    articlecategoriesid,
-                    article_date,
-                    display_from,
-                    display_until,
-                    headline,
-                    subline,
-                    teaser,
-                    content,
-                    customsort,
-                    customflags,
-                    published
-                FROM
-                    articles
-                WHERE
-                    articlesid = ?", [$id])->current();
-        }
+        $formData = $db->doPreparedQuery("
+            SELECT
+                articlesid as id,
+                articlecategoriesid,
+                article_date,
+                display_from,
+                display_until,
+                headline,
+                subline,
+                teaser,
+                content,
+                customsort,
+                customflags,
+                published
+            FROM
+                articles
+            WHERE
+                articlesid = ?", [$this->route->getPathParameter('id')])->current();
 
         return new JsonResponse([
-            'form' => $formData ?? null,
-            'options' => [
-                'categories' => (array) $db->doPreparedQuery("SELECT articlecategoriesid AS " . $db->quoteIdentifier('key') . ", title AS label FROM articlecategories ORDER BY title")
-            ]
+            'form' => $formData
         ]);
     }
 
@@ -326,7 +321,7 @@ class ArticlesController extends Controller {
     protected function getLinkedFiles (): JsonResponse
     {
         try {
-            $article = Article::getInstance($this->request->query->getInt('article'));
+            $article = Article::getInstance($this->route->getPathParameter('id'));
         }
         catch (MetaFileException $e) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);

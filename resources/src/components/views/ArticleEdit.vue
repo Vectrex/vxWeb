@@ -8,10 +8,10 @@
   <div class="mb-4">
     <tabs :items="tabs.items" v-model:active-index="tabs.activeIndex" />
   </div>
-  <div v-show="tabs.activeIndex === 0">
-    <article-form  />
+  <div v-if="tabs.activeIndex === 0">
+    <article-form :id="id" />
   </div>
-  <div v-show="tabs.activeIndex === 1">
+  <div v-if="tabs.activeIndex === 1">
     <article-files />
   </div>
 </template>
@@ -20,18 +20,24 @@
 export default {
   name: "ArticleEdit",
   props: ['id'],
+  inject: ['api'],
   data () {
     return {
       tabs: {
-        activeIndex: null,
+        activeIndex: 0,
         items: [
           { name: 'Artikel' },
-          { name: 'Verlinkte Dateien',badge: 10 },
+          { name: 'Verlinkte Dateien', badge: 10 },
           { name: 'Sortierung und Sichtbarkeit verlinkter Dateien' },
         ]
-      },
-      form: {}
+      }
     }
   },
+  async created () {
+    if (this.id) {
+      const response = await this.$fetch(this.api + 'article/' + this.id + '/linked-files');
+      this.tabs.items[1].badge = response.files?.length || 0;
+    }
+  }
 }
 </script>

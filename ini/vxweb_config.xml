@@ -37,10 +37,12 @@
 		<route id="folder_rename" controller="admin/files" path="folder/{id}/rename" method="folderRename" auth="privileged" request_methods="PUT" />
 
 		<route id="articles" controller="admin/articles" path="articles" method="list" auth="privileged" request_methods="GET" />
+		<route id="article_get" controller="admin/articles" path="article/{id}" method="editInit" auth="privileged" request_methods="GET" />
 		<route id="article_del" controller="admin/articles" path="article/{id}" method="del" auth="privileged" request_methods="DELETE" />
 		<route id="article_publish" controller="admin/articles" path="article/{id}/publish" method="publish" auth="superadmin" request_methods="POST" />
 		<route id="article_unpublish" controller="admin/articles" path="article/{id}/unpublish" method="publish" auth="superadmin" request_methods="POST" />
 		<route id="article_categories" controller="admin/articles" path="article/categories" method="getCategories" auth="privileged" request_methods="GET" />
+		<route id="article_get_linked_files" controller="admin/articles" path="article/{id}/linked-files" method="getLinkedFiles" request_methods="GET" auth="privileged" />
 
 		<route id="pages" controller="admin/pages" auth="superadmin" />
 		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
@@ -57,12 +59,10 @@
 		<route id="inline_edit" controller="admin/pages" method="inlineEdit" path="pages/inline" auth="superadmin" request_methods="POST"/>
 
 		<route id="articles_init" controller="admin/articles" method="init" auth="privileged" />
-		<route id="article_init" controller="admin/articles" method="editInit" auth="privileged" />
 		<route id="article_add" controller="admin/articles" method="add" path="articles/add" auth="privileged" />
 		<route id="article_edit" controller="admin/articles" method="edit" path="articles/edit" auth="privileged" />
 		<route id="article_update" controller="admin/articles" method="update" auth="privileged" request_methods="POST" />
 		<route id="article_link_file" controller="admin/articles" method="fileLink" auth="privileged" request_methods="POST" />
-		<route id="get_linked_files" controller="admin/articles" method="getLinkedFiles" auth="privileged" />
 		<route id="update_linked_files" controller="admin/articles" method="updateLinkedFiles" auth="privileged" request_methods="POST" />
 		<route id="toggle_linked_files" controller="admin/articles" method="toggleLinkedFile" auth="privileged" request_methods="POST" />
 

@@ -56,6 +56,7 @@ export default {
   components: { datepicker: DatePicker, formSelect: FormSelect },
   name: "ArticleForm",
   inject: ['api'],
+  props: ['id'],
   data() {
     let datepickerAttrs = {
       placeholder: 'dd.mm.yyyy',
@@ -79,14 +80,25 @@ export default {
         { type: 'datepicker', model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}},
         { type: 'checkbox', model: 'customflags', label: 'Markiert' },
         { type: 'form-select', model: 'articlecategoriesid', label: 'Kategorie', required: true, options: this.categories, attrs: { 'class': 'w-64' } },
-        { type: 'text', model: 'title', label: 'Überschrift/Titel', required: true },
+        { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
         { type: 'text', model: 'subline', label: 'Unterüberschrift' },
         { type: 'textarea', model: 'teaser', label: 'Anrisstext' },
+        { type: 'textarea', model: 'content', label: 'Inhalt', required: true },
       ]
     }
   },
   async created () {
     this.options.articlecategoriesid = await this.$fetch(this.api +'article/categories');
+
+    if (this.id) {
+      let form = (await this.$fetch(this.api + 'article/' + this.id)).form;
+      this.elements.forEach(item => {
+        if(item.type === 'datepicker' && form[item.model]) {
+          form[item.model] = new Date(form[item.model]);
+        }
+      });
+      this.form = form;
+    }
   }
 }
 </script>
