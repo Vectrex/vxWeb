@@ -2,6 +2,8 @@
   import DatePicker from "@/components/vx-vue/datepicker.vue";
   import FormSelect from "@/components/vx-vue/form-select.vue";
   import SubmitButton from "@/components/app/SubmitButton.vue";
+  import tiptap from "@/components/misc/tiptap.vue";
+  import Tiptap from "@/components/misc/tiptap.vue";
 </script>
 
 <template>
@@ -42,6 +44,7 @@
           v-bind="element.attrs"
         />
       </div>
+      <tiptap v-model="form.content" />
 
       <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
     </div>
