@@ -1,10 +1,15 @@
 <script setup>
   import Tabs from "@/components/vx-vue/tabs.vue";
+  import Headline from "@/components/app/Headline.vue";
   import ArticleForm from "@/components/views/articles/ArticleForm.vue";
   import ArticleFiles from "@/components/views/articles/ArticleFiles.vue";
 </script>
 
 <template>
+  <teleport to="#tools">
+    <headline><span>Artikel {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
+  </teleport>
+
   <div class="mb-4">
     <tabs :items="tabs.items" v-model:active-index="tabs.activeIndex" />
   </div>

@@ -5,44 +5,46 @@
 </script>
 
 <template>
-  <div class="space-y-2">
-    <div class="flex space-x-2 items-center" v-for="element in elements" :key="element.model">
-      <label class="w-48" :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
-      <input
-        v-if="['text', 'number'].indexOf(element.type) !== -1"
-        :id="element.model"
-        v-model="form[element.model]"
-        :type="element.type"
-        class="form-input"
-        v-bind="element.attrs"
-      />
-      <input
-          v-else-if="element.type === 'checkbox'"
+  <div class="max-w-4xl py-4">
+    <div class="space-y-2">
+      <div class="flex items-center flex-wrap" v-for="element in elements" :key="element.model">
+        <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
+        <input
+          v-if="['text', 'number'].indexOf(element.type) !== -1"
           :id="element.model"
           v-model="form[element.model]"
           :type="element.type"
-          class="form-checkbox"
+          class="form-input w-full"
           v-bind="element.attrs"
-          :true-value="true"
-          :false-value="false"
-      />
-      <textarea
-          v-else-if="element.type === 'textarea'"
+        />
+        <input
+            v-else-if="element.type === 'checkbox'"
+            :id="element.model"
+            v-model="form[element.model]"
+            :type="element.type"
+            class="form-checkbox ml-2"
+            v-bind="element.attrs"
+            :true-value="true"
+            :false-value="false"
+        />
+        <textarea
+            v-else-if="element.type === 'textarea'"
+            :id="element.model"
+            v-model="form[element.model]"
+            class="form-textarea w-full"
+        />
+        <component
+          v-else
+          :is="element.type"
           :id="element.model"
+          :options="options[element.model] || []"
           v-model="form[element.model]"
-          class="form-textarea"
-      />
-      <component
-        v-else
-        :is="element.type"
-        :id="element.model"
-        :options="options[element.model] || []"
-        v-model="form[element.model]"
-        v-bind="element.attrs"
-      />
-    </div>
+          v-bind="element.attrs"
+        />
+      </div>
 
-    <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
+      <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
+    </div>
   </div>
 </template>
 
@@ -55,7 +57,7 @@ export default {
   data() {
     let datepickerAttrs = {
       placeholder: 'dd.mm.yyyy',
-          'class': "w-64 inline-block",
+          'class': "w-96 w-full",
           dayNames: 'So Mo Di Mi Do Fr Sa'.split(' '),
           startOfWeekIndex: 1,
           monthNames: 'Jänner,Februar,März,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember'.split(','),
@@ -74,7 +76,7 @@ export default {
         { type: 'datepicker', model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
         { type: 'datepicker', model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}},
         { type: 'checkbox', model: 'customflags', label: 'Markiert' },
-        { type: 'form-select', model: 'articlecategoriesid', label: 'Kategorie', required: true, options: this.categories, attrs: { 'class': 'w-64' } },
+        { type: 'form-select', model: 'articlecategoriesid', label: 'Kategorie', required: true, options: this.categories, attrs: { 'class': 'w-full' } },
         { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
         { type: 'text', model: 'subline', label: 'Unterüberschrift' },
         { type: 'textarea', model: 'teaser', label: 'Anrisstext' },
