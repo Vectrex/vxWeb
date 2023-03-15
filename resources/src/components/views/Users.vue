@@ -26,8 +26,8 @@
     >
       <template v-slot:action="slotProps">
         <div class="flex space-x-2 justify-end" v-if="currentUser.username !== slotProps.row.username">
-          <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.adminid)"><PencilSquareIcon class="w-5 h-5"/></a>
-          <a class="icon-link" href="#" @click.prevent="del(slotProps.row.adminid)"><TrashIcon class="w-5 h-5" /></a>
+          <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.id)"><PencilSquareIcon class="w-5 h-5"/></a>
+          <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
         </div>
       </template>
     </sortable>
@@ -45,7 +45,7 @@
       <user-form
           v-if="formShown"
           @cancel="formShown = null"
-          @notify="handleNotify"
+          @response-received="handleResponse"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
           class="z-20 fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0"
@@ -99,9 +99,9 @@ export default {
       this.editData.id = null;
       this.formShown = true;
     },
-    handleNotify (event) {
-      if (event.payload?.adminid) {
-        let ndx = this.users.findIndex(item => item.adminid === event.payload.adminid);
+    handleResponse (event) {
+      if (event.payload?.id) {
+        let ndx = this.users.findIndex(item => item.id === event.payload.id);
         if (ndx !== -1) {
           this.users[ndx] = event.payload;
         }
@@ -113,14 +113,9 @@ export default {
     },
     async del (id) {
       if (await this.$refs.delConfirm.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
-        try {
-          let response = await SimpleFetch(this.api + 'users/' + id, 'DELETE');
-        }
-        catch (e) {
-          console.log(e);
-        }
+        let response = await this.$fetch(this.api + 'users/' + id, 'DELETE');
         if (response.id) {
-          let ndx = this.users.findIndex(row => row.adminid === response.id);
+          let ndx = this.users.findIndex(row => row.id === response.id);
           if (ndx !== -1) {
             this.users.splice(ndx, 1);
             this.$emit('notify', { message: 'Benutzer wurde erfolgreich gelöscht.', success: true });

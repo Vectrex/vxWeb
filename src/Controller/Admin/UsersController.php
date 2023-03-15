@@ -31,7 +31,22 @@ class UsersController extends Controller
         $admin = $app->getCurrentUser();
         $db = $app->getVxPDO();
 
-        $users = $db->doPreparedQuery("SELECT a.*, ag.alias, a.adminid AS " . $db->quoteIdentifier('key') . " FROM " . $db->quoteIdentifier('admin') . " a LEFT JOIN admingroups ag ON ag.admingroupsID = a.admingroupsID", []);
+        $users = $db->doPreparedQuery(sprintf("
+                SELECT
+                    a.adminid AS %s,
+                    a.adminid AS %s,
+                    a.name,
+                    a.username,
+                    a.email,
+                    ag.admingroupsid,
+                    ag.alias
+                FROM
+                    %s a LEFT JOIN admingroups ag ON ag.admingroupsid = a.admingroupsid
+            ",
+            $db->quoteIdentifier('id'),
+            $db->quoteIdentifier('key'),
+            $db->quoteIdentifier('admin')
+        ), []);
 
         return new JsonResponse(['users' => (array) $users, 'currentUser' => ['username' => $admin->getUsername()]]);
     }
@@ -129,9 +144,28 @@ class UsersController extends Controller
                     $id = $db->insertRecord('admin', $v->all());
                 }
 
+                $user = $db->doPreparedQuery(sprintf("
+                SELECT
+                    a.adminid AS %s,
+                    a.adminid AS %s,
+                    a.name,
+                    a.username,
+                    a.email,
+                    ag.admingroupsid,
+                    ag.alias
+                FROM
+                    %s a LEFT JOIN admingroups ag ON ag.admingroupsid = a.admingroupsid
+                WHERE
+                    a.adminid = ?
+            ",
+                    $db->quoteIdentifier('id'),
+                    $db->quoteIdentifier('key'),
+                    $db->quoteIdentifier('admin')
+                ), [$id])->current();
+
                 return new JsonResponse([
                     'success' => true,
-                    'form' => [...array_diff_key($v->all(), ['new_PWD' => '', 'new_PWD_verify' => '']), 'adminid' => $id],
+                    'form' => (array) $user,
                     'message' => 'Daten erfolgreich übernommen.'
                 ]);
 

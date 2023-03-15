@@ -6,9 +6,9 @@
 </script>
 <template>
   <div>
-    <form-title @cancel="$emit('cancel')" class="w-sidebar">Benutzer anlegen/bearbeiten</form-title>
-    <div class="space-y-8 overflow-y-auto pt-8 px-4 pb-4">
-      <div class="space-y-4 pt-16">
+    <form-title @cancel="$emit('cancel')" class="w-sidebar">Benutzer {{ form.id ? 'bearbeiten' : 'anlegen' }}</form-title>
+    <div class="overflow-hidden h-[calc(100vh-6rem)]">
+      <div class="h-full overflow-y-auto px-4 pt-20 pb-4 space-y-4">
         <div v-for="field in fields">
           <label
               :class="{ 'text-error': errors[field.model], 'required': field.required }"
@@ -31,8 +31,8 @@
           />
           <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
         </div>
+        <submit-button :busy="busy" @submit="submit">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
       </div>
-      <submit-button :busy="busy" @submit="submit">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
     </div>
   </div>
 </template>
@@ -41,7 +41,7 @@
   export default {
     name: "CustomerForm",
     inject: ['api'],
-    emits: ['cancel', 'notify'],
+    emits: ['cancel', 'response-received'],
     components: {
       'form-select': FormSelect,
       'password-input': PasswordInput
@@ -92,16 +92,17 @@
     methods: {
       async submit() {
         this.busy = true;
-        let response = await this.$fetch(this.api + 'user/' + (this.id || ''), this.id ? 'PUT' : 'POST', {}, JSON.stringify(this.sanitizedForm));
+        let response = await this.$fetch(this.api + 'user/' + (this.form.id || ''), this.form.id ? 'PUT' : 'POST', {}, JSON.stringify(this.sanitizedForm));
         this.busy = false;
 
         if (response.success) {
           this.errors = {};
-          this.$emit('notify', { success: true, message: response.message, payload: response.form || null});
+          this.form = response.form;
+          this.$emit('response-received', { success: true, message: response.message, payload: Object.assign({}, response.form) || null });
         }
         else {
           this.errors = response.errors || {};
-          this.$emit('notify', { success: false, message: response.message });
+          this.$emit('response-received', { success: false, message: response.message });
         }
       }
     }
