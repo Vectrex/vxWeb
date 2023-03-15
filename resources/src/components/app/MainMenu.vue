@@ -12,7 +12,7 @@
         :to="{ name: route.name }"
         :class="[
             'flex items-center px-2 py-2 text-base font-medium rounded items-center space-x-2',
-            $route.name === route.name ? 'bg-slate-800 text-white' : 'text-slate-100 hover:bg-slate-600'
+            $route.name === route.name ? 'bg-vxvue-600 text-white' : 'text-slate-100 hover:bg-vxvue-700'
         ]"
     >
       <component :is="route.meta.icon" v-if="route.meta.icon" class="w-5 h-5" />

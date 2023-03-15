@@ -10,7 +10,7 @@
 
     <div class="min-h-screen flex w-64 flex-col" v-if="$route.name !== 'login'">
       <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue">
-        <div class="p-4 h-24 bg-vxvue-600">
+        <div class="pb-2 pl-4 pr-12 h-24 bg-vxvue-600 flex flex-col justify-end">
           <logo class="text-vxvue-500"/>
         </div>
         <div class="flex flex-1 flex-col">
@@ -23,7 +23,7 @@
     </div>
 
     <div class="flex-1 flex flex-col min-h-screen">
-      <div class="h-24 flex flex-1 items-center bg-white px-8 shadow" v-if="$route.name !== 'login'">
+      <div class="h-24 flex flex-1 items-end pb-2 bg-white px-8 shadow" v-if="$route.name !== 'login'">
         <headerbar />
       </div>
       <div :class="['overflow-hidden', $route.name === 'login' ? 'h-screen' : 'h-[calc(100vh-6rem)]']">
