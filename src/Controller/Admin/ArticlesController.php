@@ -292,20 +292,26 @@ class ArticlesController extends Controller {
         $rows = [];
 
         $visibleFiles = $article->getLinkedMetaFiles();
+        $host = $this->request->getSchemeAndHttpHost();
 
         foreach($article->getLinkedMetaFiles(true) as $mf) {
-            $rows[] = [
+            $row = [
                 'id' => $mf->getId(),
                 'folderid' => $mf->getMetaFolder()->getId(),
                 'filename' => $mf->getFilename(),
                 'isThumb' => $mf->isWebImage(),
-                'type' => $mf->isWebImage() ? $this->getThumbPath($mf) : $mf->getMimetype(),
+                'type' => $mf->getMimetype(),
                 'path' => $mf->getMetaFolder()->getRelativePath(),
                 'hidden' => !in_array($mf, $visibleFiles)
             ];
+            if ($mf->isWebImage()) {
+                $row['src'] = $host . $this->getThumbPath($mf);
+            }
+
+            $rows[] = $row;
         }
 
-        return new JsonResponse(['files' => $rows]);
+        return new JsonResponse($rows);
     }
 
     protected function updateLinkedFiles (): JsonResponse

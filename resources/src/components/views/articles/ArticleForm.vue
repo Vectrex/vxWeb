@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     async submit () {
-      this.busy = true;
+
       let form = {};
       Object.keys(this.form).forEach(key => {
         if (this.form[key] instanceof Date) {
@@ -113,12 +113,17 @@ export default {
         }
       });
 
+      this.busy = true;
       let response = await this.$fetch(this.api + 'article/' + (this.form.id || ''), this.form.id ? 'PUT' : 'POST', {}, JSON.stringify(form));
       this.busy = false;
 
       this.errors = response.errors || {};
-      this.form.id = response.id || this.form.id;
       this.$emit('response-received', { success: response.success, message: response.message });
+
+      if (!this.form.id) {
+        this.form.id = response.id;
+        this.$router.replace({ name: 'articleEdit', params: { id: response.id }});
+      }
     }
   }
 }

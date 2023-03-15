@@ -79,6 +79,9 @@
     .form-input {
         @apply text-vxvue-900
     }
+    .thumb {
+        @apply rounded-sm border-2 border-slate-500/20
+    }
 }
 
 /* define the default vx-vue color set */

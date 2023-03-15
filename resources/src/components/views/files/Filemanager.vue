@@ -147,7 +147,7 @@
       </template>
 
       <template v-slot:type="slotProps">
-        <img :src="slotProps.row.src" alt="" v-if="slotProps.row.image" class="rounded-sm border-2 border-slate-500/20">
+        <img :src="slotProps.row.src" alt="" v-if="slotProps.row.image" class="thumb">
         <span v-else>{{ slotProps.row.type }}</span>
       </template>
 
