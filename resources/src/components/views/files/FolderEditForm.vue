@@ -40,7 +40,7 @@
 export default {
   name: 'FolderEditForm',
   inject: ['api'],
-  emits: ['cancel', 'notify'],
+  emits: ['cancel', 'response-received'],
   props: {
     id: Number
   },
@@ -85,11 +85,11 @@ export default {
 
       if (response.success) {
         this.errors = {};
-        this.$emit('notify', { success: true, message: response.message, payload: response.form || null});
+        this.$emit('response-received', { success: true, message: response.message, payload: response.form || null});
       }
       else {
         this.errors = response.errors || {};
-        this.$emit('notify', { success: false, message: response.message });
+        this.$emit('response-received', { success: false, message: response.message });
       }
     }
   }

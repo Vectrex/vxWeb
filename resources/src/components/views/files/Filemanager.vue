@@ -147,7 +147,7 @@
       </template>
 
       <template v-slot:type="slotProps">
-        <img :src="slotProps.row.src" alt="" v-if="slotProps.row.image">
+        <img :src="slotProps.row.src" alt="" v-if="slotProps.row.image" class="rounded-sm border-2 border-slate-500/20">
         <span v-else>{{ slotProps.row.type }}</span>
       </template>
 
@@ -172,7 +172,7 @@
         :id="pickedId"
         v-if="formShown === 'editFolder'"
         @cancel="formShown = null"
-        @notify="$emit('response-received', $event)"
+        @response-received="$emit('response-received', $event)"
         class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
       />
     </transition>
@@ -182,7 +182,7 @@
         :id="pickedId"
         v-if="formShown === 'editFile'"
         @cancel="formShown = null"
-        @notify="$emit('response-received', $event)"
+        @response-received="$emit('response-received', $event)"
         class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
       />
     </transition>
