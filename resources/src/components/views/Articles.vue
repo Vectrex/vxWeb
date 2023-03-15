@@ -93,7 +93,7 @@ export default {
       ],
       initSort: {},
       filter: {
-        cat: '',
+        cat: 0,
         title: ''
       },
       entriesPerPage: 20,
@@ -140,7 +140,7 @@ export default {
     },
     async publish (row) {
       row.pub = !row.pub;
-      let response = await this.$fetch(this.api + 'article/' + row.id + (row.pub ? '/publish' : '/unpublish'), 'POST');
+      let response = await this.$fetch(this.api + 'article/' + row.id + (row.pub ? '/publish' : '/unpublish'), 'PUT');
       if(!response.success) {
         row.pub = !row.pub;
       }

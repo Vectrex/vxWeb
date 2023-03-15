@@ -2,6 +2,7 @@
   import DatePicker from "@/components/vx-vue/datepicker.vue";
   import FormSelect from "@/components/vx-vue/form-select.vue";
   import SubmitButton from "@/components/app/SubmitButton.vue";
+  import DateFunctions from "@/util/date-functions";
 </script>
 
 <template>
@@ -54,6 +55,7 @@ export default {
   name: "ArticleForm",
   inject: ['api'],
   props: ['id'],
+  emits: ['response-received'],
   data() {
     let datepickerAttrs = {
       placeholder: 'dd.mm.yyyy',
@@ -88,18 +90,35 @@ export default {
     this.options.articlecategoriesid = await this.$fetch(this.api +'article/categories');
 
     if (this.id) {
-      let form = (await this.$fetch(this.api + 'article/' + this.id)).form;
+      let form = (await this.$fetch(this.api + 'article/' + this.id));
       this.elements.forEach(item => {
         if(item.type === 'datepicker' && form[item.model]) {
           form[item.model] = new Date(form[item.model]);
         }
       });
       this.form = form;
+      this.form.id = this.id;
     }
   },
   methods: {
     async submit () {
       this.busy = true;
+      let form = {};
+      Object.keys(this.form).forEach(key => {
+        if (this.form[key] instanceof Date) {
+          form[key] = DateFunctions.formatDate(this.form[key],'y-mm-dd');
+        }
+        else {
+          form[key] = this.form[key];
+        }
+      });
+
+      let response = await this.$fetch(this.api + 'article/' + (this.form.id || ''), this.form.id ? 'PUT' : 'POST', {}, JSON.stringify(form));
+      this.busy = false;
+
+      this.errors = response.errors || {};
+      this.form.id = response.id || this.form.id;
+      this.$emit('response-received', { success: response.success, message: response.message });
     }
   }
 }

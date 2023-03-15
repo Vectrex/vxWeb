@@ -73,48 +73,11 @@ class ArticlesController extends Controller {
         ]);
     }
 
-    protected function edit (): Response
-    {
-        if(!($id = $this->request->query->getInt('id'))) {
-            return new Response('', Response::HTTP_NOT_FOUND);
-        }
-        try {
-            $article = Article::getInstance($id);
-        }
-        catch(ArticleException $e) {
-            return new Response('', Response::HTTP_NOT_FOUND);
-        }
-
-        // check permission of non superadmin
-
-        $admin = Application::getInstance()->getCurrentUser();
-
-        if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
-            return new Response('', Response::HTTP_FORBIDDEN);
-        }
-
-        MenuGenerator::setForceActiveMenu(true);
-
-        $uploadMaxFilesize = min(
-            $this->toBytes(ini_get('upload_max_filesize')),
-            $this->toBytes(ini_get('post_max_size'))
-        );
-        $maxExecutionTime = ini_get('max_execution_time');
-
-        return new Response(
-            SimpleTemplate::create('admin/articles_edit.php')
-                ->assign('upload_max_filesize', $uploadMaxFilesize)
-                ->assign('max_execution_time_ms', $maxExecutionTime * 900)// 10pct "safety margin"
-                ->assign('article', $article)
-                ->display()
-        );
-    }
-
-    protected function editInit(): JsonResponse
+    protected function get(): JsonResponse
     {
         $db = Application::getInstance()->getVxPDO();
 
-        $formData = $db->doPreparedQuery("
+        $articleData = $db->doPreparedQuery("
             SELECT
                 articlesid as id,
                 articlecategoriesid,
@@ -133,9 +96,7 @@ class ArticlesController extends Controller {
             WHERE
                 articlesid = ?", [$this->route->getPathParameter('id')])->current();
 
-        return new JsonResponse([
-            'form' => $formData
-        ]);
+        return new JsonResponse($articleData);
     }
 
     protected function getCategories (): JsonResponse
@@ -147,13 +108,13 @@ class ArticlesController extends Controller {
         );
     }
 
-    protected function update (): JsonResponse
+    protected function addOrUpdate (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
-        $id = $bag->getInt('id');
         $admin = Application::getInstance()->getCurrentUser();
 
-        if ($id) {
+        if ($this->route->getRouteId() === 'article_update') {
+            $id = $this->route->getPathParameter('id');
             try {
                 $article = Article::getInstance($id);
             }
@@ -168,6 +129,7 @@ class ArticlesController extends Controller {
             }
         }
         else {
+            $id = null;
             $article = new Article();
         }
 

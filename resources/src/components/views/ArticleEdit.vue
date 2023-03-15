@@ -14,7 +14,7 @@
     <tabs :items="tabs.items" v-model:active-index="tabs.activeIndex" />
   </div>
   <div v-if="tabs.activeIndex === 0">
-    <article-form :id="id" />
+    <article-form :id="id" @response-received="$emit('notify',$event)" />
   </div>
   <div v-if="tabs.activeIndex === 1">
     <article-files />
@@ -26,6 +26,7 @@ export default {
   name: "ArticleEdit",
   props: ['id'],
   inject: ['api'],
+  emits: ['notify'],
   data () {
     return {
       tabs: {
