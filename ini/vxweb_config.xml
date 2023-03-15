@@ -45,6 +45,8 @@
 		<route id="article_unpublish" controller="admin/articles" path="article/{id}/unpublish" method="publish" auth="superadmin" request_methods="PUT" />
 		<route id="article_categories" controller="admin/articles" path="article/categories" method="getCategories" auth="privileged" request_methods="GET" />
 		<route id="article_get_linked_files" controller="admin/articles" path="article/{id}/linked-files" method="getLinkedFiles" auth="privileged" request_methods="GET" />
+		<route id="article_update_linked_files" controller="admin/articles" path="article/{id}/linked-files" method="updateLinkedFiles" auth="privileged" request_methods="PUT" />
+		<route id="article_toggle_linked_files" controller="admin/articles" path="article/{id}/toggle-linked-file" method="toggleLinkedFile" auth="privileged" request_methods="PUT" />
 
 		<route id="pages" controller="admin/pages" auth="superadmin" />
 		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
@@ -61,8 +63,6 @@
 		<route id="inline_edit" controller="admin/pages" method="inlineEdit" path="pages/inline" auth="superadmin" request_methods="POST"/>
 
 		<route id="article_link_file" controller="admin/articles" method="fileLink" auth="privileged" request_methods="POST" />
-		<route id="update_linked_files" controller="admin/articles" method="updateLinkedFiles" auth="privileged" request_methods="POST" />
-		<route id="toggle_linked_files" controller="admin/articles" method="toggleLinkedFile" auth="privileged" request_methods="POST" />
 		<route id="article_file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
 		<route id="article_folder_read" controller="admin/files" method="folderRead" auth="privileged" />
 

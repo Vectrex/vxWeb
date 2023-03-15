@@ -19,7 +19,7 @@
           <component :is="item.hidden ? EyeIcon : EyeSlashIcon" class="h-5 w-5" />
         </button>
       </div>
-      <a class="w-96" :href="'#' + item.folderid" @click.prevent="gotoFolder(item.folderid)">{{ item.path }}</a>
+      <a class="w-96" :href="'#'" @click.prevent="gotoFolder(item.folderid)">{{ item.path }}</a>
     </slick-item>
   </slick-list>
 </template>
@@ -40,12 +40,18 @@ export default {
   },
   methods: {
     async saveSort() {
+      let ids = [];
+      this.linkedFiles.forEach(f => ids.push(f.id));
+      this.$fetch(this.api + 'article/' + this.articleId + '/linked-files', 'PUT', {}, JSON.stringify({ fileIds: ids }));
     },
     unlinkSort() {
 
     },
-    async toggleVisibility() {
-
+    async toggleVisibility(file) {
+      let response = await this.$fetch(this.api + 'article/' + this.articleId + '/toggle-linked-file', 'PUT', {}, JSON.stringify({ fileId: file.id }));
+      if (response.success) {
+        file.hidden = !!response.hidden;
+      }
     },
     gotoFolder() {
     }

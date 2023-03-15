@@ -317,7 +317,7 @@ class ArticlesController extends Controller {
     protected function updateLinkedFiles (): JsonResponse
     {
         try {
-            $article = Article::getInstance($this->request->query->getInt('article'));
+            $article = Article::getInstance($this->route->getPathParameter('id'));
         }
         catch (MetaFileException $e) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
@@ -343,7 +343,7 @@ class ArticlesController extends Controller {
     protected function toggleLinkedFile (): JsonResponse
     {
         try {
-            $article = Article::getInstance($this->request->query->getInt('article'));
+            $article = Article::getInstance($this->route->getPathParameter('id'));
         }
         catch (MetaFileException $e) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
