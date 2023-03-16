@@ -266,8 +266,8 @@ class ArticlesController extends Controller {
     protected function fileLink (): JsonResponse
     {
         try {
-            $article = Article::getInstance($this->request->query->getInt('article'));
-            $file = MetaFile::getInstance(null, $this->request->query->getInt('file'));
+            $article = Article::getInstance($this->route->getPathParameter('id'));
+            $file = MetaFile::getInstance(null, $this->request->query->getInt('fileId'));
         }
         catch(\Exception $e) {
             return new JsonResponse(null, Response::HTTP_BAD_REQUEST);

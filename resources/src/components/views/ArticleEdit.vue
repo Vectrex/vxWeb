@@ -17,8 +17,8 @@
   <div v-if="tabs.activeIndex === 0">
     <article-form :id="id" @response-received="$emit('notify', $event)" />
   </div>
-  <div v-if="tabs.activeIndex === 1">
-    <article-files />
+  <div v-if="tabs.activeIndex === 1 && id">
+    <article-files :article-id="id" />
   </div>
   <div v-if="tabs.activeIndex === 2 && id">
     <linked-files :article-id="id" />
