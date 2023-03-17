@@ -1,6 +1,7 @@
 <script setup>
   import Sortable from "@/components/vx-vue/sortable.vue";
   import Pagination from "@/components/vx-vue/pagination.vue";
+  import FormSwitch from "@/components/vx-vue/form-switch.vue";
   import FilterForm from "@/components/views/articles/FilterForm.vue";
   import Alert from "@/components/vx-vue/alert.vue";
   import Headline from "@/components/app/Headline.vue";
@@ -38,7 +39,7 @@
       {{ categories.find(c => c.id === slotProps.row.catId).label }}
     </template>
     <template v-slot:pub="slotProps">
-      <input type="checkbox" class="form-checkbox" :checked="slotProps.row.pub" @click="publish(slotProps.row)">
+      <form-switch :model-value="slotProps.row.pub" @update:model-value="publish(slotProps.row)" />
     </template>
     <template v-slot:marked="slotProps">
       <input type="checkbox" class="form-checkbox" disabled="disabled" :checked="slotProps.row.marked">

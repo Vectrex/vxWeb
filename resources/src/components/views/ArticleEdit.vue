@@ -18,10 +18,10 @@
     <article-form :id="id" @response-received="$emit('notify', $event)" />
   </div>
   <div v-if="tabs.activeIndex === 1 && id">
-    <article-files :article-id="id" @update-linked="getLinkedFiles" />
+    <article-files :article-id="id" @update-linked="getLinkedFiles" @notify="$emit('notify', $event)" />
   </div>
   <div v-if="tabs.activeIndex === 2 && id">
-    <linked-files :article-id="id" />
+    <linked-files :article-id="id" @update-linked="getLinkedFiles" />
   </div>
 </template>
 

@@ -1,5 +1,7 @@
 <script setup>
   import Filemanager from "@/components/views/files/Filemanager.vue";
+  import FormSwitch from "@/components/vx-vue/form-switch.vue";
+  import { PencilSquareIcon, TrashIcon, DocumentMinusIcon, PlayIcon, DocumentPlusIcon } from '@heroicons/vue/24/solid';
 </script>
 <template>
   <filemanager
@@ -7,10 +9,38 @@
     :init-sort="initSort"
     :request-parameters="{ articleId: articleId }"
     @response-received="handleReceivedResponse"
+    ref="fm"
   >
     <template v-slot:linked="slotProps">
-      <input v-if="!slotProps.row.isFolder" class="form-checkbox" type="checkbox" @click="handleLink(slotProps.row)" :checked="slotProps.row.linked" />
+      <form-switch v-if="!slotProps.row.isFolder" :model-value="slotProps.row.linked" @update:model-value="handleLink(slotProps.row)" />
     </template>
+
+    <template v-slot:action="slotProps">
+      <div class="flex items-center space-x-1">
+        <template v-if="slotProps.row.isFolder">
+          <button class="icon-link tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFolder(slotProps.row)">
+            <pencil-square-icon class="h-5 w-5" />
+          </button>
+          <button class="icon-link tooltip" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">
+            <trash-icon class="h-5 w-5" />
+          </button>
+        </template>
+        <template v-else>
+          <button class="icon-link tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFile(slotProps.row)">
+            <pencil-square-icon class="h-5 w-5" />
+          </button>
+          <button class="icon-link flex items-center tooltip" data-tooltip="Verschieben" type="button" @click="$refs.fm.moveFile(slotProps.row)">
+            <document-minus-icon class="h-5 w-5"/>
+            <play-icon class="h-3 w-3" />
+            <document-plus-icon class="h-5 w-5"/>
+          </button>
+          <button class="icon-link tooltip" data-tooltip="Löschen" type="button" @click="$refs.fm.delFile(slotProps.row)">
+            <trash-icon class="h-5 w-5" />
+          </button>
+        </template>
+      </div>
+    </template>
+
   </filemanager>
 </template>
 
