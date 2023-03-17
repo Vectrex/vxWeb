@@ -18,7 +18,7 @@
     <article-form :id="id" @response-received="$emit('notify', $event)" />
   </div>
   <div v-if="tabs.activeIndex === 1 && id">
-    <article-files :article-id="id" />
+    <article-files :article-id="id" @update-linked="getLinkedFiles" />
   </div>
   <div v-if="tabs.activeIndex === 2 && id">
     <linked-files :article-id="id" />
@@ -48,10 +48,15 @@ export default {
       return !this.id;
     }
   },
-  async created () {
-    if (this.id) {
-      const response = await this.$fetch(this.api + 'article/' + this.id + '/linked-files');
-      this.tabs.items[1].badge = response.length || 0;
+  created () {
+    this.getLinkedFiles();
+  },
+  methods: {
+    async getLinkedFiles() {
+      if (this.id) {
+        const response = await this.$fetch(this.api + 'article/' + this.id + '/linked-files');
+        this.tabs.items[1].badge = response.length || 0;
+      }
     }
   }
 }

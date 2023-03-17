@@ -5,6 +5,8 @@
   <filemanager
     :columns="cols"
     :init-sort="initSort"
+    :request-parameters="{ articleId: articleId }"
+    @response-received="handleReceivedResponse"
   >
     <template v-slot:linked="slotProps">
       <input v-if="!slotProps.row.isFolder" class="form-checkbox" type="checkbox" @click="handleLink(slotProps.row)" :checked="slotProps.row.linked" />
@@ -17,6 +19,7 @@ export default {
   name: "ArticleFiles",
   inject: ['api'],
   props: ['articleId'],
+  emits: ['notify', 'update-linked'],
   data () {
     return {
       cols: [
@@ -48,9 +51,16 @@ export default {
   },
   methods: {
     async handleLink (row) {
-      let response = this.$fetch(this.api + 'article/' + this.articleId + '/link-file', 'PUT', {}, JSON.encode({ fileId: row.id }));
+      let response = await this.$fetch(this.api + 'article/' + this.articleId + '/link-file', 'PUT', {}, JSON.stringify({ fileId: row.id }));
       if(response.success) {
         row.linked = response.status === 'linked';
+        this.$emit('update-linked');
+      }
+    },
+    handleReceivedResponse (event) {
+      this.$emit('notify', event);
+      if (['uploadFiles', 'delFile', 'delFolder', 'delSelection'].indexOf(event._method) !== -1) {
+        this.$emit('update-linked');
       }
     }
   }

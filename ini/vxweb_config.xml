@@ -60,13 +60,6 @@
 		<route id="page_revision_load" controller="admin/pages" auth="superadmin" method="loadRevision" />
 		<route id="page_revision_activate" controller="admin/pages" auth="superadmin" method="activateRevision" request_methods="POST" />
 		<route id="page_revision_delete" controller="admin/pages" auth="superadmin" method="deleteRevision" request_methods="DELETE" />
-
-		<route id="inline_edit" controller="admin/pages" method="inlineEdit" path="pages/inline" auth="superadmin" request_methods="POST"/>
-
-		<route id="article_file_upload" controller="admin/files" method="fileUpload" auth="privileged" request_methods="POST" />
-		<route id="article_folder_read" controller="admin/files" method="folderRead" auth="privileged" />
-
-		<route id="filepicker" controller="admin/files" auth="privileged" />
 	</routes>
 
 	<routes script="installer.php">

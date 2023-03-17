@@ -267,7 +267,8 @@ class ArticlesController extends Controller {
     {
         try {
             $article = Article::getInstance($this->route->getPathParameter('id'));
-            $file = MetaFile::getInstance(null, $this->request->query->getInt('fileId'));
+            $fileId = (new ParameterBag(json_decode($this->request->getContent(), true)))->get('fileId');
+            $file = MetaFile::getInstance(null, $fileId);
         }
         catch(\Exception $e) {
             return new JsonResponse(null, Response::HTTP_BAD_REQUEST);

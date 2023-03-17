@@ -57,7 +57,7 @@ class FilesController extends Controller
 
             return new JsonResponse([
                 'success' => true,
-                'files' => $this->getFileRows($folder, $this->request->query->get('filter')),
+                'files' => $this->getFileRows($folder),
                 'folders' => $this->getFolderRows($folder),
                 'breadcrumbs' => $this->getBreadcrumbs($folder),
                 'currentFolder' => ['key' => $folder->getId(), 'name' => $folder->getName()],
@@ -277,8 +277,8 @@ class FilesController extends Controller
 
             $mf = MetaFile::createMetaFile($file);
 
-            if($this->request->query->getInt('article')) {
-                Article::getInstance($this->request->query->getInt('article'))->linkMetaFile($mf)->save();
+            if($articleId = $this->request->query->getInt('articleId')) {
+                Article::getInstance($articleId)->linkMetaFile($mf)->save();
             }
         } catch (\Exception $e) {
             return new JsonResponse([
@@ -565,11 +565,14 @@ class FilesController extends Controller
         return preg_match('/<\?(?:php|=)/i', $string) === 1;
     }
 
-    private function getFileRows (MetaFolder $folder, $filter = ''): array
+    private function getFileRows (MetaFolder $folder): array
     {
+        $filter = $this->request->query->get('filter');
+        $articleId = $this->request->query->getInt('articleId');
+
         $route = Application::getInstance()->getCurrentRoute();
 
-        if(in_array($route->getRouteId(), ['article_files_init', 'article_folder_read', 'article_file_upload']) && ($articleId = $this->request->query->getInt('article'))) {
+        if($articleId) {
             try {
                 $linkedFiles = Article::getInstance($articleId)->getLinkedMetaFiles(true);
             }

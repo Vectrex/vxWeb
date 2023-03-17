@@ -225,7 +225,8 @@ export default {
   props: {
     columns: { type: Array, required: true },
     folder: { type: String, default: '' },
-    initSort: Object
+    initSort: Object,
+    requestParameters: { type: Object, default: {} }
   },
 
   data() {
@@ -270,18 +271,10 @@ export default {
       this.currentFolder = newValue;
     },
     checkedFiles (newValue) {
-      let filteredLength = this.checkedFolders.length + newValue.length;
-      if (!filteredLength) {
-        this.$refs.multiCheckbox.checked = false;
-      }
-      this.$refs.multiCheckbox.indeterminate = filteredLength && filteredLength !== this.files.length + this.folders.length;
+      this.setMultiCheckbox(this.checkedFolders.length + newValue.length);
     },
     checkedFolders (newValue) {
-      let filteredLength = this.checkedFiles.length + newValue.length;
-      if (!filteredLength) {
-        this.$refs.multiCheckbox.checked = false;
-      }
-      this.$refs.multiCheckbox.indeterminate = filteredLength && filteredLength !== this.files.length + this.folders.length;
+      this.setMultiCheckbox(this.checkedFiles.length + newValue.length);
     }
   },
 
@@ -297,12 +290,20 @@ export default {
   },
 
   methods: {
+    setMultiCheckbox (itemCount) {
+      if (this.$refs.multiCheckbox) {
+        if (!itemCount) {
+          this.$refs.multiCheckbox.checked = false;
+        }
+        this.$refs.multiCheckbox.indeterminate = itemCount && itemCount !== this.files.length + this.folders.length;
+      }
+    },
     handleBodyClick() {
       this.showAddActivities = false;
     },
     async readFolder(folder) {
 
-      let response = await this.$fetch(this.api + 'folder/' + (folder?.id || '-') + '/read');
+      let response = await this.$fetch(urlQueryCreate(this.api + 'folder/' + (folder?.id || '-') + '/read', this.requestParameters));
 
       if (response.success) {
         this.files = response.files || [];
@@ -315,7 +316,8 @@ export default {
     async delSelection() {
       let response = await this.$fetch(urlQueryCreate(this.api + "filesfolders/delete", {
         files: this.checkedFiles.map(({id}) => id).join(","),
-        folders: this.checkedFolders.map(({id}) => id).join(",")
+        folders: this.checkedFolders.map(({id}) => id).join(","),
+        ...this.requestParameters
       }), 'DELETE');
       if (response.success) {
         this.files = response.files || [];
@@ -324,17 +326,17 @@ export default {
         this.files = response.files || this.files;
         this.folders = response.folders || this.folders;
       }
-      this.$emit('response-received', response);
+      this.$emit('response-received', {...response, _method: 'delSelection' });
     },
     moveSelection() {
       this.formShown = 'folderTree';
       this.$nextTick(
         async () => {
-          let folder = await this.$refs['folderTree'].open(this.api + 'folders/tree', this.currentFolder);
+          let folder = await this.$refs['folderTree'].open(urlQueryCreate(this.api + 'folders/tree', this.requestParameters), this.currentFolder);
           this.formShown = null;
 
           if (folder !== false) {
-            let response = await this.$fetch(this.api + 'filesfolders/moveto/' + folder.id, 'PUT', {}, JSON.stringify({
+            let response = await this.$fetch(urlQueryCreate(this.api + 'filesfolders/moveto/' + folder.id , this.requestParameters), 'PUT', {}, JSON.stringify({
               files: this.checkedFiles.map(({id}) => id),
               folders: this.checkedFolders.map(({id}) => id)
             }));
@@ -346,7 +348,7 @@ export default {
               this.files = response.files || this.files;
               this.folders = response.folders || this.folders;
             }
-            this.$emit('response-received', response);
+            this.$emit('response-received', {...response, _method: 'moveSelection' });
           }
         }
       );
@@ -361,17 +363,17 @@ export default {
     },
     async delFile(row) {
       if (await this.$refs.confirm.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
-        let response = await this.$fetch(this.api + 'file/' + row.id, 'DELETE');
+        let response = await this.$fetch(urlQueryCreate(this.api + 'file/' + row.id, this.requestParameters), 'DELETE');
         if (response.success) {
           this.files.splice(this.files.findIndex(item => row === item), 1);
         }
-        this.$emit('response-received', response);
+        this.$emit('response-received', {...response, _method: 'delFile' });
       }
     },
     async rename(event, type) {
       let name = event.target.value.trim();
       if (name && this.toRename) {
-        let response = await this.$fetch(this.api + type + '/' + this.toRename.id + '/rename', 'PUT', {}, JSON.stringify({
+        let response = await this.$fetch(urlQueryCreate(this.api + type + '/' + this.toRename.id + '/rename', this.requestParameters), 'PUT', {}, JSON.stringify({
           name: name
         }));
         if (response.success) {
@@ -382,45 +384,44 @@ export default {
     },
     async delFolder(row) {
       if (await this.$refs.confirm.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?", {cancelLabel: "Abbrechen"})) {
-        let response = await this.$fetch(this.api + 'folder/' + row.id, 'DELETE');
+        let response = await this.$fetch(urlQueryCreate(this.api + 'folder/' + row.id, this.requestParameters), 'DELETE');
         if (response.success) {
           this.folders.splice(this.folders.findIndex(item => row === item), 1);
         }
-        this.$emit('response-received', response);
+        this.$emit('response-received', {...response, _method: 'delFolder' });
       }
     },
     async createFolder(name) {
       this.showAddActivities = false;
-      let response = await this.$fetch(this.api + 'folder', 'POST', {}, JSON.stringify({
+      let response = await this.$fetch(urlQueryCreate(this.api + 'folder', this.requestParameters), 'POST', {}, JSON.stringify({
         name: name,
         parent: this.currentFolder
       }));
       if (response.folder) {
         this.folders.push(response.folder);
       }
-      this.$emit('response-received', response);
+      this.$emit('response-received', {...response, _method: 'createFolder' });
     },
     moveFile(row) {
       this.formShown = 'folderTree';
       this.$nextTick(
           async () => {
-            let folder = await this.$refs.folderTree.open(this.api + 'folders/tree', this.currentFolder);
+            let folder = await this.$refs.folderTree.open(urlQueryCreate(this.api + 'folders/tree', this.requestParameters), this.currentFolder);
             this.formShown = null;
 
             if (folder !== false) {
-              let response = await this.$fetch(this.api + 'file/' + row.id + '/move', 'PUT', {}, JSON.stringify({
+              let response = await this.$fetch(urlQueryCreate(this.api + 'file/' + row.id + '/move', this.requestParameters), 'PUT', {}, JSON.stringify({
                 folderId: folder.id
               }));
               if (response.success) {
                 this.files.splice(this.files.findIndex(item => row === item), 1);
               }
-              this.$emit('response-received', response);
+              this.$emit('response-received', {...response, _method: 'moveFile' });
             }
           }
       );
     },
     uploadDraggedFiles(event) {
-      console.log(event);
       this.indicateDrag = false;
       this.uploadInputFiles(event.dataTransfer.files || []);
     },
@@ -443,7 +444,7 @@ export default {
         this.progress.file = file.name;
         try {
           response = await this.$promisedXhr(
-              this.api + "file?folder=" + this.currentFolder,
+              urlQueryCreate(this.api + "file?folder=" + this.currentFolder, this.requestParameters),
               'POST',
               {
                 'Content-type': file.type || 'application/octet-stream',
@@ -472,7 +473,7 @@ export default {
         }
 
         if (!response.success) {
-          this.$emit('response-received', response);
+          this.$emit('response-received', {...response, _method: 'uploadFiles' });
           this.upload.files = [];
           this.upload.progressing = false;
           return;
@@ -480,7 +481,7 @@ export default {
       }
       this.upload.progressing = false;
       if (response) {
-        this.$emit('response-received', { success: true, message: response.message || 'File upload successful' });
+        this.$emit('response-received', { success: true, message: response.message || 'File upload successful', _method: 'uploadFiles' });
       }
     },
     cancelUpload() {
