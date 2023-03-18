@@ -15,13 +15,21 @@
     <tabs :items="tabs.items" v-model:active-index="tabs.activeIndex" />
   </div>
   <div v-if="tabs.activeIndex === 0">
-    <article-form :id="id" @response-received="$emit('notify', $event)" />
+    <article-form
+        :id="id"
+        @response-received="$emit('notify', $event)"
+    />
   </div>
   <div v-if="tabs.activeIndex === 1 && id">
-    <article-files :article-id="id" @update-linked="getLinkedFiles" @notify="$emit('notify', $event)" />
+    <article-files
+        :article-id="id"
+        :selected-folder="selectedFolder"
+        @update-linked="getLinkedFiles"
+        @notify="$emit('notify', $event)"
+    />
   </div>
   <div v-if="tabs.activeIndex === 2 && id">
-    <linked-files :article-id="id" @update-linked="getLinkedFiles" />
+    <linked-files :article-id="id" @update-linked="getLinkedFiles" @goto-folder="gotoFolder" />
   </div>
 </template>
 
@@ -33,6 +41,7 @@ export default {
   emits: ['notify'],
   data () {
     return {
+      selectedFolder: null,
       tabs: {
         activeIndex: 0,
         items: [
@@ -57,6 +66,10 @@ export default {
         const response = await this.$fetch(this.api + 'article/' + this.id + '/linked-files');
         this.tabs.items[1].badge = response.length || 0;
       }
+    },
+    gotoFolder(folder) {
+      this.selectedFolder = folder;
+      this.tabs.activeIndex = 1;
     }
   }
 }

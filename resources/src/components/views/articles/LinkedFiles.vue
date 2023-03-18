@@ -6,7 +6,7 @@
   <slick-list v-model:list="linkedFiles" lock-axis="y" @update:list="saveSort" useDragHandle>
     <slick-item v-for="(item, ndx) in linkedFiles" :key="item.id" :index="ndx" class="w-full space-x-4 py-2 flex items-center border-b last:border-none">
       <drag-handle class="cursor-pointer"><bars4-icon class="h-5 w-5" /></drag-handle>
-      <div class="w-1/4">{{ item.filename }}</div>
+      <div :class="['w-1/4', { 'text-slate-400': item.hidden }]">{{ item.filename }}</div>
       <div class="w-24 flex justify-center items-center">
         <img :src="item.src" alt="" v-if="item.isThumb && item.src" class="thumb">
         <div class="overflow-ellipsis whitespace-nowrap overflow-hidden" v-else>{{ item.type }}</div>
@@ -19,7 +19,7 @@
           <component :is="item.hidden ? EyeIcon : EyeSlashIcon" class="h-5 w-5" />
         </button>
       </div>
-      <a class="w-1/2" :href="'#'" @click.prevent="gotoFolder(item.folderid)">{{ item.path }}</a>
+      <a class="w-1/2" :href="'#'+ item.folder.path" @click.prevent="$emit('goto-folder', item.folder)">{{ item.folder.path }}</a>
     </slick-item>
   </slick-list>
 </template>
@@ -29,6 +29,7 @@ export default {
   name: "LinkedFiles",
   components: { EyeIcon, EyeSlashIcon },
   inject: ['api'],
+  emits: ['goto-folder'],
   props: { articleId: { type: [Number, String], required: true }},
   data () {
     return {
@@ -56,8 +57,6 @@ export default {
       if (response.success) {
         file.hidden = !!response.hidden;
       }
-    },
-    gotoFolder() {
     }
   }
 }

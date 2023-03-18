@@ -224,7 +224,7 @@ export default {
   expose: ['delFile', 'delFolder', 'editFile', 'editFolder', 'moveFile'],
   props: {
     columns: { type: Array, required: true },
-    folder: { type: String, default: '' },
+    folder: { type: Object, default: {} },
     initSort: Object,
     requestParameters: { type: Object, default: {} }
   },
@@ -267,8 +267,12 @@ export default {
   },
 
   watch: {
-    folder(newValue) {
-      this.currentFolder = newValue;
+    folder: {
+      handler (newValue) {
+        this.readFolder(newValue);
+        this.currentFolder = newValue?.id;
+      },
+      immediate: true
     },
     checkedFiles (newValue) {
       this.setMultiCheckbox(this.checkedFolders.length + newValue.length);
@@ -276,10 +280,6 @@ export default {
     checkedFolders (newValue) {
       this.setMultiCheckbox(this.checkedFiles.length + newValue.length);
     }
-  },
-
-  created() {
-    this.readFolder();
   },
   mounted() {
     document.body.addEventListener('click', this.handleBodyClick);

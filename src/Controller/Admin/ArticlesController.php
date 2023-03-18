@@ -273,7 +273,7 @@ class ArticlesController extends Controller {
         catch(\Exception $e) {
             return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
         }
-        if (in_array($file, $article->getLinkedMetaFiles())) {
+        if (in_array($file, $article->getLinkedMetaFiles(true))) {
             $article->unlinkMetaFile($file)->save();
             return new JsonResponse(['success' => true, 'status' => 'unlinked']);
         }
@@ -298,11 +298,14 @@ class ArticlesController extends Controller {
         foreach($article->getLinkedMetaFiles(true) as $mf) {
             $row = [
                 'id' => $mf->getId(),
-                'folderid' => $mf->getMetaFolder()->getId(),
                 'filename' => $mf->getFilename(),
                 'isThumb' => $mf->isWebImage(),
                 'type' => $mf->getMimetype(),
-                'path' => $mf->getMetaFolder()->getRelativePath(),
+                'folder' => [
+                    'id' => $mf->getMetaFolder()->getId(),
+                    'name' => $mf->getMetaFolder()->getName(),
+                    'path' => $mf->getMetaFolder()->getRelativePath()
+                ],
                 'hidden' => !in_array($mf, $visibleFiles)
             ];
             if ($mf->isWebImage()) {

@@ -8,6 +8,7 @@
     :columns="cols"
     :init-sort="initSort"
     :request-parameters="{ articleId: articleId }"
+    :folder="selectedFolder"
     @response-received="handleReceivedResponse"
     ref="fm"
   >
@@ -48,7 +49,7 @@
 export default {
   name: "ArticleFiles",
   inject: ['api'],
-  props: ['articleId'],
+  props: ['articleId', 'selectedFolder'],
   emits: ['notify', 'update-linked'],
   data () {
     return {
