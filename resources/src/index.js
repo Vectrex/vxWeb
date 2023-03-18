@@ -6,7 +6,7 @@ import promisedXhr from '@/plugins/promisedXhr'
 import App from './App.vue'
 import { plugin as SlickSort } from 'vue-slicksort'
 
-const host = 'http://test.leia/admin/'
+const host = import.meta.env.VITE_API_ROOT;
 
 const app = createApp(App);
 app
