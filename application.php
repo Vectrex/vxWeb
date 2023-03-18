@@ -9,6 +9,13 @@ use vxPHP\Http\Exception\HttpException;
 use vxPHP\Template\SimpleTemplate;
 use vxPHP\Template\Exception\SimpleTemplateException;
 use vxPHP\Routing\Router;
+use vxPHP\Http\Request;
+
+// return empty response for OPTION request
+
+if (Request::createFromGlobals()->getMethod() === 'OPTIONS') {
+    return new Response();
+}
 
 // $loader is initialized in bootstrap.php
 // place additional libraries here
