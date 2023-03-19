@@ -118,6 +118,10 @@
     --header-height: 6rem;
 }
 
+.ProseMirror {
+    @apply p-2 border border-slate-200
+}
+
 /* animations */
 
 .fade-enter-from,

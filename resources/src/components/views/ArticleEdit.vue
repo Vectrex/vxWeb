@@ -12,7 +12,7 @@
   </teleport>
 
   <div class="mb-4">
-    <tabs :items="tabs.items" v-model:active-index="tabs.activeIndex" />
+    <tabs :items="disabledTabs" v-model:active-index="tabs.activeIndex" />
   </div>
   <div v-if="tabs.activeIndex === 0">
     <article-form
@@ -46,15 +46,17 @@ export default {
         activeIndex: 0,
         items: [
           { name: 'Artikel' },
-          { name: 'Verlinkte Dateien', badge: null, disabled: this.disableTabs },
-          { name: 'Sortierung und Sichtbarkeit verlinkter Dateien', disabled: this.disableTabs },
+          { name: 'Verlinkte Dateien', badge: null },
+          { name: 'Sortierung und Sichtbarkeit verlinkter Dateien' },
         ]
       }
     }
   },
   computed: {
-    disableTabs () {
-      return !this.id;
+    disabledTabs () {
+      let items = this.tabs.items;
+      items[1].disabled = items[2].disabled = !this.id;
+      return items;
     }
   },
   created () {

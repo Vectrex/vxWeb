@@ -21,7 +21,7 @@
       <button @click="editor.commands.undo()" :class="buttonClass()"><arrow-uturn-left-icon class="h-5 w-5" /></button>
       <button @click="editor.commands.redo()" :class="buttonClass()"><arrow-uturn-right-icon class="h-5 w-5" /></button>
     </div>
-    <editor-content :editor="editor" class="border-slate-300 border-2 p-2" />
+    <editor-content :editor="editor" />
   </div>
 </template>
 
