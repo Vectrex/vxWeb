@@ -7,7 +7,7 @@
 <template>
   <div>
     <form-title @cancel="cancel" class="w-sidebar">Zielordner wählen</form-title>
-    <div class="overflow-hidden h-[calc(100vh-6rem)]">
+    <div class="overflow-hidden h-[calc(100vh-var(--header-height))]">
       <div class="h-full overflow-y-auto">
         <div class="pt-20 px-4 pb-4">
           <simple-tree :branch="root" @branch-selected="folderSelected" />

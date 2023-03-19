@@ -7,7 +7,7 @@
 <template>
   <div>
     <form-title @cancel="$emit('cancel')" class="w-sidebar">{{ fileInfo.name }}</form-title>
-    <div class="overflow-hidden h-[calc(100vh-6rem)]">
+    <div class="overflow-hidden h-[calc(100vh-var(--header-height)]">
       <div class="h-full overflow-y-auto">
         <div class="pt-16 pb-4">
           <img :src="fileInfo.thumb" v-if="(fileInfo.mimetype || '').startsWith('image')" class="w-full">

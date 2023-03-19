@@ -7,7 +7,7 @@
 <template>
   <div>
     <form-title @cancel="$emit('cancel')" class="w-sidebar">Benutzer {{ form.id ? 'bearbeiten' : 'anlegen' }}</form-title>
-    <div class="overflow-hidden h-[calc(100vh-6rem)]">
+    <div class="overflow-hidden h-[calc(100vh-var(--header-height))]">
       <div class="h-full overflow-y-auto px-4 pt-20 pb-4 space-y-4">
         <div v-for="field in fields">
           <label
