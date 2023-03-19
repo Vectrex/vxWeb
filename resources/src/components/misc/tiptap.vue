@@ -4,10 +4,13 @@
 </script>
 
 <template>
-  <div class="flex">
-    <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'text-red-500': editor?.isActive('bold') }">bold</button>
+  <div>
+    <div class="flex space-x-1 items-center justify-start rounded-t p-1 bg-slate-200">
+      <button @click="editor.chain().focus().toggleBold().run()" :class="['icon-link font-bold w-12', { 'bg-slate-400': editor?.isActive('bold') }]">Ab</button>
+      <button @click="editor.chain().focus().toggleItalic().run()" :class="['icon-link italic w-12', { 'bg-slate-400': editor?.isActive('italic') }]">Ab</button>
+    </div>
+    <editor-content :editor="editor" class="border-slate-300 border-2 p-2" />
   </div>
-  <editor-content :editor="editor" />
 </template>
 
 <script>

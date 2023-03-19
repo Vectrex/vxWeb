@@ -44,7 +44,6 @@
           v-bind="element.attrs"
         />
       </div>
-      <tiptap v-model="form.content" />
 
       <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
     </div>
@@ -53,7 +52,7 @@
 
 <script>
 export default {
-  components: { datepicker: DatePicker, formSelect: FormSelect },
+  components: { datepicker: DatePicker, formSelect: FormSelect, tiptap: Tiptap },
   name: "ArticleForm",
   inject: ['api'],
   props: ['id'],
@@ -84,7 +83,7 @@ export default {
         { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
         { type: 'text', model: 'subline', label: 'Unterüberschrift' },
         { type: 'textarea', model: 'teaser', label: 'Anrisstext' },
-        { type: 'textarea', model: 'content', label: 'Inhalt', required: true },
+        { type: 'tiptap', model: 'content', label: 'Inhalt', required: true, attrs: { 'class': 'w-full' } },
       ]
     }
   },
