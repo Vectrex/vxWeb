@@ -11,7 +11,7 @@ const host = import.meta.env.VITE_API_ROOT;
 const app = createApp(App);
 app
     .use(router)
-    .use(fetch, { router: router, authFailureRoute: { name: 'login' } })
+    .use(fetch, { router: router, authFailureRoute: { name: 'authFailed' } })
     .use(promisedXhr)
     .use(SlickSort)
     .provide('api', host)

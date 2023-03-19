@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { UsersIcon, NewspaperIcon, DocumentIcon, PhotoIcon } from '@heroicons/vue/24/solid'
+
+const AuthFailed = () => import('@/components/views/AuthFailed.vue')
 const Login = () => import('@/components/views/Login.vue')
 const Profile  = () => import("@/components/views/Profile.vue")
 const Users  = () => import("@/components/views/Users.vue")
@@ -64,6 +66,10 @@ const router = createRouter({
                 label: 'Benutzer',
                 icon: UsersIcon
             }
+        },
+        {
+            name: 'authFailed',
+            component: AuthFailed
         }
     ]
 });
