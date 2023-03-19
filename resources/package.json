@@ -1,10 +1,10 @@
 {
   "name": "vxweb",
   "scripts": {
-    "serve": "vite preview",
-    "build": "vite build --mode production",
     "dev": "vite",
-    "dev-remote": "vite --mode remote"
+    "dev-remote": "vite --mode remote",
+    "build": "vite build --mode production",
+    "serve": "vite preview"
   },
   "dependencies": {
     "@heroicons/vue": "^2.0.16",
@@ -13,7 +13,16 @@
     "vue-slicksort": "^2.0.5",
     "@tiptap/pm": "^2.0.0-beta.220",
     "@tiptap/vue-3": "^2.0.0-beta.220",
-    "@tiptap/starter-kit": "^2.0.0-beta.220"
+    "@tiptap/extension-document": "^2.0.0-beta.220",
+    "@tiptap/extension-text": "^2.0.0-beta.220",
+    "@tiptap/extension-paragraph": "^2.0.0-beta.220",
+    "@tiptap/extension-hard-break": "^2.0.0-beta.220",
+    "@tiptap/extension-bold": "^2.0.0-beta.220",
+    "@tiptap/extension-italic": "^2.0.0-beta.220",
+    "@tiptap/extension-bullet-list": "^2.0.0-beta.220",
+    "@tiptap/extension-ordered-list": "^2.0.0-beta.220",
+    "@tiptap/extension-list-item": "^2.0.0-beta.220",
+    "@tiptap/extension-history": "^2.0.0-beta.220"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
