@@ -14,7 +14,7 @@
         font-style: normal;
         font-weight: 400;
         src: local(''),
-        url('@/assets/fonts/Inter/Inter.var.woff2') format('woff2');
+        url('@/assets/fonts/Inter/InterTight[wght].woff2') format('woff2');
     }
     @font-face {
         font-family: 'Inter';
@@ -22,14 +22,14 @@
         font-synthesis: none;
         font-weight: 400;
         src: local(''),
-        url('@/assets/fonts/Inter/Inter.var.woff2') format('woff2');
+        url('@/assets/fonts/Inter/InterTight-Italic[wght].woff2') format('woff2');
     }
     @font-face {
         font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
         src: local(''),
-        url('@/assets/fonts/Inter/Inter.var.woff2') format('woff2');
+        url('@/assets/fonts/Inter/InterTight[wght].woff2') format('woff2');
     }
     @font-face {
         font-family: 'Inter';
@@ -37,7 +37,7 @@
         font-weight: 700;
         font-synthesis: none;
         src: local(''),
-        url('@/assets/fonts/Inter/Inter.var.woff2') format('woff2');
+        url('@/assets/fonts/Inter/InterTight-Italic[wght].woff2') format('woff2');
     }
 }
 
