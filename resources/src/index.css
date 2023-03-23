@@ -14,28 +14,30 @@
         font-style: normal;
         font-weight: 400;
         src: local(''),
-        url('@/assets/fonts/Inter/Inter-Regular.woff2') format('woff2');
+        url('@/assets/fonts/Inter/Inter.var.woff2') format('woff2');
     }
     @font-face {
         font-family: 'Inter';
         font-style: italic;
+        font-synthesis: none;
         font-weight: 400;
         src: local(''),
-        url('@/assets/fonts/Inter/Inter-Italic.woff2') format('woff2');
+        url('@/assets/fonts/Inter/Inter.var.woff2') format('woff2');
     }
     @font-face {
         font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
         src: local(''),
-        url('@/assets/fonts/Inter/Inter-Bold.woff2') format('woff2');
+        url('@/assets/fonts/Inter/Inter.var.woff2') format('woff2');
     }
     @font-face {
         font-family: 'Inter';
         font-style: italic;
         font-weight: 700;
+        font-synthesis: none;
         src: local(''),
-        url('@/assets/fonts/Inter/Inter-BoldItalic.woff2') format('woff2');
+        url('@/assets/fonts/Inter/Inter.var.woff2') format('woff2');
     }
 }
 
