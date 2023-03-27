@@ -33,7 +33,6 @@
       :offset="(currentPage - 1) * entriesPerPage"
       :count="entriesPerPage"
       @after-sort="storeSort"
-      ref="sortable"
   >
     <template v-slot:catId="slotProps">
       {{ categories.find(c => c.id === slotProps.row.catId).label }}

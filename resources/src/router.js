@@ -8,6 +8,8 @@ const Users  = () => import("@/components/views/Users.vue")
 const Files  = () => import("@/components/views/Files.vue")
 const Articles  = () => import("@/components/views/Articles.vue")
 const ArticleEdit  = () => import("@/components/views/ArticleEdit.vue")
+const Pages = () => import("@/components/views/Pages.vue")
+const PageEdit = () => import("@/components/views/PageEdit.vue")
 
 const router = createRouter({
     history: createWebHistory(),
@@ -53,11 +55,18 @@ const router = createRouter({
         {
             name: 'pages',
             path: '/pages',
-            component: Users,
+            component: Pages,
             meta: {
                 label: 'Seiten',
-                icon: DocumentIcon
+                icon: DocumentIcon,
+                heading: 'Seiten'
             }
+        },
+        {
+            name: 'pageEdit',
+            path: '/page/:id?',
+            component: PageEdit,
+            props: true
         },
         {
             name: 'users',
