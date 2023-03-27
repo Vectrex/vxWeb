@@ -9,6 +9,7 @@
     :init-sort="initSort"
     :request-parameters="{ articleId: articleId }"
     :folder="selectedFolder"
+    @update:folder="handleFolderChange"
     @response-received="handleReceivedResponse"
     ref="fm"
   >
@@ -93,6 +94,9 @@ export default {
       if (['uploadFiles', 'delFile', 'delFolder', 'delSelection'].indexOf(event._method) !== -1) {
         this.$emit('update-linked');
       }
+    },
+    handleFolderChange (folder) {
+      this.$router.push( { name: 'articleEdit', params: { id: this.articleId, section: 'files', sectionId: folder.id }});
     }
   }
 }

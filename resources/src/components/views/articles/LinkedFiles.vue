@@ -19,7 +19,7 @@
           <component :is="item.hidden ? EyeIcon : EyeSlashIcon" class="h-5 w-5" />
         </button>
       </div>
-      <a class="w-1/2" :href="'#'+ item.folder.path" @click.prevent="$emit('goto-folder', item.folder)">{{ item.folder.path }}</a>
+      <a class="w-1/2" :href="'#'+ item.folder.path" @click.prevent="this.$emit('goto-folder', item.folder)">{{ item.folder.path }}</a>
     </slick-item>
   </slick-list>
 </template>
@@ -27,9 +27,9 @@
 <script>
 export default {
   name: "LinkedFiles",
+  emits: ['update-linked', 'goto-folder'],
   components: { EyeIcon, EyeSlashIcon },
   inject: ['api'],
-  emits: ['goto-folder'],
   props: { articleId: { type: [Number, String], required: true }},
   data () {
     return {

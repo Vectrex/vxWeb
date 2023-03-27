@@ -33,7 +33,11 @@
     />
   </div>
   <div v-if="activeTab === 'sort' && id">
-    <linked-files :article-id="id" @update-linked="getLinkedFiles" @goto-folder="gotoFolder" />
+    <linked-files
+        :article-id="id"
+        @update-linked="getLinkedFiles"
+        @goto-folder="gotoFolder"
+    />
   </div>
 </template>
 
@@ -75,7 +79,7 @@ export default {
         this.tabs.items[1].badge = response.length || 0;
       }
     },
-    gotoFolder(folder) {
+    gotoFolder (folder) {
       this.selectedFolder = folder;
       this.$router.push( { name: 'articleEdit', params: { id: this.id, section: 'files', sectionId: folder.id }});
     }

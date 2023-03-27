@@ -220,7 +220,7 @@
 export default {
   name: 'Filemanager',
   inject: ['api'],
-  emits: ['response-received', 'after-sort'],
+  emits: ['response-received', 'after-sort', 'update:folder'],
   expose: ['delFile', 'delFolder', 'editFile', 'editFolder', 'moveFile'],
   props: {
     columns: { type: Array, required: true },
@@ -311,6 +311,8 @@ export default {
         this.currentFolder = response.currentFolder?.key || null;
         this.breadcrumbs = response.breadcrumbs || this.breadcrumbs;
         this.limits = response.limits || this.limits;
+
+        this.$emit('update:folder', folder);
       }
     },
     async delSelection() {
