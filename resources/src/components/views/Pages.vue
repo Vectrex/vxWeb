@@ -24,8 +24,25 @@
       :columns="cols"
       :sort-prop="initSort.column"
       :sort-direction="initSort.dir"
-  />
+      key-property="id"
+  >
+    <template v-slot:action="slotProps">
+      <div class="flex space-x-2 justify-end">
+        <a class="icon-link" href="#" @click.prevent="$router.push({ name: 'pageEdit', params: { id: slotProps.row.id }})"><PencilSquareIcon class="w-5 h-5"/></a>
+        <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
+      </div>
+    </template>
+  </sortable>
 
+  <teleport to="body">
+    <alert
+        ref="delConfirm"
+        :buttons="[
+          { label: 'Löschen!', value: true, 'class': 'button alert' },
+          { label: 'Abbrechen', value: false, 'class': 'button' }
+        ]"
+    />
+  </teleport>
 </template>
 
 <script>
@@ -48,6 +65,19 @@ export default {
   },
   async created () {
     this.pages = await this.$fetch(this.api + 'pages');
+  },
+  methods: {
+    async del (id) {
+      if(await this.$refs.delConfirm.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?")) {
+        let response = await this.$fetch(this.api + 'page/' + id, 'DELETE');
+        if (response.success) {
+          this.pages.splice(this.pages.findIndex(item => id === item.id), 1);
+          this.$emit('notify', {message: 'Seite wurde erfolgreich gelöscht.', success: true});
+        } else {
+          this.$emit('notify', {message: response.message || 'Es ist ein Fehler aufgetreten!', success: false});
+        }
+      }
+    }
   }
 }
 </script>

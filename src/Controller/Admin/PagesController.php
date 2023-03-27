@@ -35,7 +35,7 @@ class PagesController extends Controller
 
         foreach($pages as $page) {
             $rows[] = [
-                'key' => $page->getId(),
+                'id' => $page->getId(),
                 'alias' => $page->getAlias(),
                 'template' => $page->getTemplate(),
                 'updated' => $page->getOldestRevision()->getLastUpdated()->format('Y-m-d H:i:s'),
@@ -101,16 +101,13 @@ class PagesController extends Controller
         ]);
     }
 
-    protected function del (): JsonResponse
+    protected function delPage (): JsonResponse
     {
-        if(!($id = $this->request->query->getInt('id'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
         try {
-            Page::getInstance($id)->delete();
-            return new JsonResponse(['success' => 1]);
+            Page::getInstance($this->route->getPathParameter('id'))->delete();
+            return new JsonResponse(['success' => true]);
         } catch (PageException $e) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
     }
 
