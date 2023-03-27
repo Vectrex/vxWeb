@@ -25,9 +25,9 @@
       <div class="flex items-center space-x-4">
         <filemanager-breadcrumbs
             :breadcrumbs="breadcrumbs"
-            :current-folder="currentFolder"
+            :current-folder="currentFolderId"
             :folders="folders"
-            @breadcrumb-clicked="readFolder"
+            @breadcrumb-clicked="readFolder($event.id)"
         />
         <div class="relative">
           <button
@@ -108,7 +108,7 @@
                 @blur="toRename = null"
             >
             <template v-else>
-              <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row)" class="link">{{ slotProps.row.name }}</a>
+              <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
               <button
                   class="icon-link opacity-0 group-hover:opacity-100 transition-opacity tooltip"
                   data-tooltip="Umbenennen"
@@ -212,7 +212,7 @@
     />
   </teleport>
 
-  <filemanager-search @folder-picked="readFolder($event)" :is-mounted="isMounted" />
+  <filemanager-search @folder-picked="readFolder($event.id)" :is-mounted="isMounted" />
 
 </template>
 
@@ -220,11 +220,11 @@
 export default {
   name: 'Filemanager',
   inject: ['api'],
-  emits: ['response-received', 'after-sort', 'update:folder'],
+  emits: ['response-received', 'after-sort', 'update:folder-id'],
   expose: ['delFile', 'delFolder', 'editFile', 'editFolder', 'moveFile'],
   props: {
     columns: { type: Array, required: true },
-    folder: { type: Object, default: {} },
+    folderId: { type: Number, default: null },
     initSort: Object,
     requestParameters: { type: Object, default: {} }
   },
@@ -233,7 +233,7 @@ export default {
     return {
       isMounted: false,
       limits: {},
-      currentFolder: null,
+      currentFolderId: null,
       files: [],
       folders: [],
       breadcrumbs: [],
@@ -267,10 +267,10 @@ export default {
   },
 
   watch: {
-    folder: {
+    folderId: {
       handler (newValue) {
         this.readFolder(newValue);
-        this.currentFolder = newValue?.id;
+        this.currentFolderId = newValue;
       },
       immediate: true
     },
@@ -298,24 +298,24 @@ export default {
         this.$refs.multiCheckbox.indeterminate = itemCount && itemCount !== this.files.length + this.folders.length;
       }
     },
-    handleBodyClick() {
+    handleBodyClick () {
       this.showAddActivities = false;
     },
-    async readFolder(folder) {
+    async readFolder (folderId) {
 
-      let response = await this.$fetch(urlQueryCreate(this.api + 'folder/' + (folder?.id || '-') + '/read', this.requestParameters));
+      let response = await this.$fetch(urlQueryCreate(this.api + 'folder/' + (folderId || '-') + '/read', this.requestParameters));
 
       if (response.success) {
         this.files = response.files || [];
         this.folders = response.folders || [];
-        this.currentFolder = response.currentFolder?.key || null;
+        this.currentFolderId = response.currentFolder?.key || null;
         this.breadcrumbs = response.breadcrumbs || this.breadcrumbs;
         this.limits = response.limits || this.limits;
 
-        this.$emit('update:folder', folder);
+        this.$emit('update:folder-id', folderId);
       }
     },
-    async delSelection() {
+    async delSelection () {
       let response = await this.$fetch(urlQueryCreate(this.api + "filesfolders/delete", {
         files: this.checkedFiles.map(({id}) => id).join(","),
         folders: this.checkedFolders.map(({id}) => id).join(","),
@@ -334,7 +334,7 @@ export default {
       this.formShown = 'folderTree';
       this.$nextTick(
         async () => {
-          let folder = await this.$refs['folderTree'].open(urlQueryCreate(this.api + 'folders/tree', this.requestParameters), this.currentFolder);
+          let folder = await this.$refs['folderTree'].open(urlQueryCreate(this.api + 'folders/tree', this.requestParameters), this.currentFolderId);
           this.formShown = null;
 
           if (folder !== false) {
@@ -397,7 +397,7 @@ export default {
       this.showAddActivities = false;
       let response = await this.$fetch(urlQueryCreate(this.api + 'folder', this.requestParameters), 'POST', {}, JSON.stringify({
         name: name,
-        parent: this.currentFolder
+        parent: this.currentFolderId
       }));
       if (response.folder) {
         this.folders.push(response.folder);
@@ -408,7 +408,7 @@ export default {
       this.formShown = 'folderTree';
       this.$nextTick(
           async () => {
-            let folder = await this.$refs.folderTree.open(urlQueryCreate(this.api + 'folders/tree', this.requestParameters), this.currentFolder);
+            let folder = await this.$refs.folderTree.open(urlQueryCreate(this.api + 'folders/tree', this.requestParameters), this.currentFolderId);
             this.formShown = null;
 
             if (folder !== false) {
@@ -446,7 +446,7 @@ export default {
         this.progress.file = file.name;
         try {
           response = await this.$promisedXhr(
-              urlQueryCreate(this.api + "file?folder=" + this.currentFolder, this.requestParameters),
+              urlQueryCreate(this.api + "file?folder=" + this.currentFolderId, this.requestParameters),
               'POST',
               {
                 'Content-type': file.type || 'application/octet-stream',

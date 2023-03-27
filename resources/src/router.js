@@ -27,8 +27,9 @@ const router = createRouter({
         },
         {
             name: 'files',
-            path: '/files/:path*',
+            path: '/files/:folderId?',
             component: Files,
+            props: true,
             meta: {
                 label: 'Dateien',
                 icon: PhotoIcon

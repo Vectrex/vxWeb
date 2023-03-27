@@ -27,7 +27,7 @@
   <div v-if="activeTab === 'files' && id">
     <article-files
         :article-id="id"
-        :selected-folder="selectedFolder"
+        :selected-folder="$route.params.sectionId"
         @update-linked="getLinkedFiles"
         @notify="$emit('notify', $event)"
     />
@@ -36,7 +36,7 @@
     <linked-files
         :article-id="id"
         @update-linked="getLinkedFiles"
-        @goto-folder="gotoFolder"
+        @goto-folder="$router.push( { name: 'articleEdit', params: { id: id, section: 'files', sectionId: $event.id }})"
     />
   </div>
 </template>
@@ -49,7 +49,6 @@ export default {
   emits: ['notify'],
   data () {
     return {
-      selectedFolder: null,
       tabs: {
         items: [
           { section: 'edit', name: 'Artikel' },
@@ -78,10 +77,6 @@ export default {
         const response = await this.$fetch(this.api + 'article/' + this.id + '/linked-files');
         this.tabs.items[1].badge = response.length || 0;
       }
-    },
-    gotoFolder (folder) {
-      this.selectedFolder = folder;
-      this.$router.push( { name: 'articleEdit', params: { id: this.id, section: 'files', sectionId: folder.id }});
     }
   }
 }

@@ -11,6 +11,8 @@
   <filemanager
     :columns="cols"
     :init-sort="initSort"
+    :folder-id="folderId"
+    @update:folder-id="$router.push({ name: 'files', params: { folderId: $event } })"
     @response-received="$emit('notify', $event)"
     @after-sort="storeSort"
     ref="fm"
@@ -46,6 +48,7 @@
 <script>
 export default {
   name: "Files",
+  props: ['folderId'],
   inject: ['api'],
   emits: ['notify'],
   data() {

@@ -8,8 +8,8 @@
     :columns="cols"
     :init-sort="initSort"
     :request-parameters="{ articleId: articleId }"
-    :folder="selectedFolder"
-    @update:folder="handleFolderChange"
+    :folder-id="selectedFolder"
+    @update:folder-id="handleFolderChange"
     @response-received="handleReceivedResponse"
     ref="fm"
   >
@@ -95,8 +95,8 @@ export default {
         this.$emit('update-linked');
       }
     },
-    handleFolderChange (folder) {
-      this.$router.push( { name: 'articleEdit', params: { id: this.articleId, section: 'files', sectionId: folder.id }});
+    handleFolderChange (folderId) {
+      this.$router.push( { name: 'articleEdit', params: { id: this.articleId, section: 'files', sectionId: folderId }});
     }
   }
 }
