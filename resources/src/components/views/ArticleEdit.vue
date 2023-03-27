@@ -12,15 +12,19 @@
   </teleport>
 
   <div class="mb-4">
-    <tabs :items="disabledTabs" v-model:active-index="tabs.activeIndex" />
+    <tabs
+      :items="disabledTabs"
+      :active-index="tabs.items.findIndex(item => item.section === activeTab)"
+      @update:active-index="$router.push({ name: 'articleEdit', params: { id: id, section: tabs.items[$event].section }})"
+    />
   </div>
-  <div v-if="tabs.activeIndex === 0">
+  <div v-if="activeTab === 'edit'">
     <article-form
         :id="id"
         @response-received="$emit('notify', $event)"
     />
   </div>
-  <div v-if="tabs.activeIndex === 1 && id">
+  <div v-if="activeTab === 'files' && id">
     <article-files
         :article-id="id"
         :selected-folder="selectedFolder"
@@ -28,7 +32,7 @@
         @notify="$emit('notify', $event)"
     />
   </div>
-  <div v-if="tabs.activeIndex === 2 && id">
+  <div v-if="activeTab === 'sort' && id">
     <linked-files :article-id="id" @update-linked="getLinkedFiles" @goto-folder="gotoFolder" />
   </div>
 </template>
@@ -36,18 +40,17 @@
 <script>
 export default {
   name: "ArticleEdit",
-  props: ['id'],
+  props: ['id', 'sectionId'],
   inject: ['api'],
   emits: ['notify'],
   data () {
     return {
       selectedFolder: null,
       tabs: {
-        activeIndex: 0,
         items: [
-          { name: 'Artikel' },
-          { name: 'Verlinkte Dateien', badge: null },
-          { name: 'Sortierung und Sichtbarkeit verlinkter Dateien' },
+          { section: 'edit', name: 'Artikel' },
+          { section: 'files', name: 'Verlinkte Dateien', badge: null },
+          { section: 'sort', name: 'Sortierung und Sichtbarkeit verlinkter Dateien' },
         ]
       }
     }
@@ -57,6 +60,9 @@ export default {
       let items = this.tabs.items;
       items[1].disabled = items[2].disabled = !this.id;
       return items;
+    },
+    activeTab () {
+      return this.$route.params.section || 'edit';
     }
   },
   created () {
@@ -71,7 +77,7 @@ export default {
     },
     gotoFolder(folder) {
       this.selectedFolder = folder;
-      this.tabs.activeIndex = 1;
+      this.$router.push( { name: 'articleEdit', params: { id: this.id, section: 'files', sectionId: folder.id }});
     }
   }
 }

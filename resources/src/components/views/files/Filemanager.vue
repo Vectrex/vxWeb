@@ -108,7 +108,7 @@
                 @blur="toRename = null"
             >
             <template v-else>
-              <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row)">{{ slotProps.row.name }}</a>
+              <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row)" class="link">{{ slotProps.row.name }}</a>
               <button
                   class="icon-link opacity-0 group-hover:opacity-100 transition-opacity tooltip"
                   data-tooltip="Umbenennen"
