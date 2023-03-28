@@ -23,7 +23,15 @@
 
   <div class="h-16 flex items-center justify-between">
     <filter-form v-model="filter" :options="{ categories: [ { key: 0, label: '(Alle Kategorien)' }, ...categories ] }" />
-    <pagination class="w-1/3" :total="filteredArticles.length" :per-page="pagination.entriesPerPage" v-model:page="pagination.page" marker-position="below" />
+    <pagination
+        class="w-1/4"
+        :total="filteredArticles.length"
+        :per-page="pagination.entriesPerPage"
+        next-text=""
+        prev-text=""
+        v-model:page="pagination.page"
+        marker-position="below"
+    />
   </div>
   <sortable
       :rows="paginatedArticles"

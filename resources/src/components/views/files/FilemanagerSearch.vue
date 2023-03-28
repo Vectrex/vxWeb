@@ -1,29 +1,33 @@
 <script setup>
   import Spinner from "@/components/misc/spinner.vue";
   import Modal from "@/components/vx-vue/modal.vue";
-  import FormTitle from "@/components/views/shared/FormTitle.vue";
-  import { EllipsisHorizontalIcon, FolderIcon } from "@heroicons/vue/24/solid";
-  import {urlQueryCreate} from "@/util/url-query";
+  import { Focus } from "@/directives/focus";
+  import { EllipsisHorizontalIcon, FolderIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/vue/24/solid";
+  import { urlQueryCreate } from "@/util/url-query";
 </script>
 
 <template>
   <teleport to="#search-input" v-if="isMounted">
-    <div class="flex items-center space-x-2">
-      <spinner class="h-5 w-5 text-vxvue" v-if="busy" />
-      <input
-          class="form-input"
-          :value="modelValue"
-          :placeholder="placeholder"
-          @keydown.esc="handleEsc"
-          @input="handleInput"
-          @focus="handleInput"
-      />
-    </div>
+    <button type="button" class="icon-link flex items-center" @click="showDialog = !showDialog"><magnifying-glass-icon class="h-5 w-5" /> Suchen...</button>
   </teleport>
 
-  <modal :show="folders.length > 0 || files.length > 0">
+  <modal :show="showDialog">
     <template #title>
-      <form-title @cancel="handleEsc" class="w-full">Gefundene Dateien und Ordner&hellip;</form-title>
+      <div class="fixed flex w-full justify-between items-center bg-vxvue-500 h-16 px-4">
+        <div class="flex items-center space-x-2 w-full">
+          <input
+              class="form-input w-1/2"
+              :value="modelValue"
+              :placeholder="placeholder"
+              @keydown.esc="handleEsc"
+              @input="handleInput"
+              @focus="handleInput"
+              v-focus
+          />
+          <spinner class="h-5 w-5 text-vxvue" v-if="busy" />
+        </div>
+        <a href="#" @click.prevent="handleEsc"><x-mark-icon class="w-5 h-5 text-white"/></a>
+      </div>
     </template>
 
     <template #default>
@@ -32,7 +36,7 @@
           <div class="flex items-center space-x-2">
             <folder-icon class="h-5 w-5" />
             <a
-                :href="'#' + folder.id"
+                :href="'#' + folder.path"
                 @click.prevent="pickFolder(folder)"
             >{{ folder.name }}</a>
           </div>
@@ -46,7 +50,7 @@
             <div class="w-1/2 flex items-center space-x-2">
               <folder-icon class="h-5 w-5" />
               <a
-                  :href="'#' + file.folder.path"
+                  :href="'/' + file.folder.path"
                   @click.prevent="pickFolder(file.folder)"
               >{{ file.folder.path }}</a>
             </div>
@@ -59,6 +63,8 @@
 </template>
 
 <script>
+import {Focus} from "@/directives/focus";
+
 export default {
   name: 'FilemanagerSearch',
   inject: ['api'],
@@ -69,7 +75,7 @@ export default {
       files: [],
       folders: [],
       busy: false,
-      hideDialog: false
+      showDialog: false
     }
   },
 
@@ -99,11 +105,15 @@ export default {
       this.modelValue = "";
       this.files = [];
       this.folders = [];
+      this.showDialog = false;
     },
     pickFolder (id) {
       this.$emit('folder-picked', id);
       this.handleEsc();
     }
+  },
+  directives: {
+    focus: Focus
   }
 }
 </script>
