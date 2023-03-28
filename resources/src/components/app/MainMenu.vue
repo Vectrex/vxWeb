@@ -15,7 +15,7 @@
             $route.name === route.name ? 'bg-vxvue-600 text-white' : 'text-slate-100 hover:bg-vxvue-700'
         ]"
     >
-      <component :is="route.meta.icon" v-if="route.meta.icon" class="w-5 h-5" />
+      <component :is="route.meta.icon" v-if="route.meta.icon" class="w-8 h-8" />
       <span>{{ route.meta.label }}</span>
     </router-link>
   </nav>

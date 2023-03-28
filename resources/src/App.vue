@@ -4,14 +4,16 @@
   import AccountInfo from "@/components/app/AccountInfo.vue";
   import Headerbar from "@/components/app/Headerbar.vue";
   import Logo from "@/components/misc/logo.vue";
+  import { Bars3Icon } from '@heroicons/vue/24/solid';
 </script>
 <template>
   <div class="flex w-full">
 
     <div class="min-h-screen flex w-64 flex-col" v-if="$route.name !== 'login'">
       <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue">
-        <div class="pb-2 pl-4 pr-12 h-24 bg-vxvue-600 flex flex-col justify-end">
-          <logo class="text-vxvue-500"/>
+        <div class="pb-2 pl-4 pr-12 h-24 bg-vxvue-600 flex items-end px-2 space-x-2">
+          <bars3-icon class="h-8 w-8 text-white" />
+          <logo class="text-vxvue-500 w-36" />
         </div>
         <div class="flex flex-1 flex-col">
           <main-menu class="flex-1 space-y-1 px-2 py-8" />
