@@ -28,7 +28,7 @@ export default {
   props: {
     breadcrumbs: Array,
     folders: Array,
-    currentFolder: Number
+    currentFolder: [Number, String]
   },
   watch: {
     breadcrumbs (newValue) {

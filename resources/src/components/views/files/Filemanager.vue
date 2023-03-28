@@ -224,7 +224,7 @@ export default {
   expose: ['delFile', 'delFolder', 'editFile', 'editFolder', 'moveFile'],
   props: {
     columns: { type: Array, required: true },
-    folderId: { type: Number, default: null },
+    folderId: { type: [Number, String], default: null },
     initSort: Object,
     requestParameters: { type: Object, default: {} }
   },
