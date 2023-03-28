@@ -27,7 +27,7 @@
             :breadcrumbs="breadcrumbs"
             :current-folder="currentFolderId"
             :folders="folders"
-            @breadcrumb-clicked="readFolder($event.id)"
+            @breadcrumb-clicked="$emit('update:folder-id', $event.id)"
         />
         <div class="relative">
           <button
@@ -108,7 +108,7 @@
                 @blur="toRename = null"
             >
             <template v-else>
-              <a :href="'#' + slotProps.row.id" @click.prevent="readFolder(slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
+              <a :href="'#' + slotProps.row.id" @click.prevent="$emit('update:folder-id', slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
               <button
                   class="icon-link opacity-0 group-hover:opacity-100 transition-opacity tooltip"
                   data-tooltip="Umbenennen"
@@ -212,7 +212,7 @@
     />
   </teleport>
 
-  <filemanager-search @folder-picked="readFolder($event.id)" :is-mounted="isMounted" />
+  <filemanager-search @folder-picked="$emit('update:folder-id', $event.id)" :is-mounted="isMounted" />
 
 </template>
 
@@ -224,7 +224,7 @@ export default {
   expose: ['delFile', 'delFolder', 'editFile', 'editFolder', 'moveFile'],
   props: {
     columns: { type: Array, required: true },
-    folderId: { type: [Number, String], default: null },
+    folderId: { type: [Number, String], default: '' },
     initSort: Object,
     requestParameters: { type: Object, default: {} }
   },
@@ -302,7 +302,6 @@ export default {
       this.showAddActivities = false;
     },
     async readFolder (folderId) {
-
       let response = await this.$fetch(urlQueryCreate(this.api + 'folder/' + (folderId || '-') + '/read', this.requestParameters));
 
       if (response.success) {
@@ -311,8 +310,6 @@ export default {
         this.currentFolderId = response.currentFolder?.key || null;
         this.breadcrumbs = response.breadcrumbs || this.breadcrumbs;
         this.limits = response.limits || this.limits;
-
-        this.$emit('update:folder-id', folderId);
       }
     },
     async delSelection () {
