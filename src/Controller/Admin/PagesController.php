@@ -26,7 +26,7 @@ class PagesController extends Controller
 		return new Response();
 	}
 
-	protected function getPages (): JsonResponse
+	protected function list (): JsonResponse
     {
         Template::syncTemplates();
         $pages = Page::getInstances() ?? [];
@@ -46,47 +46,10 @@ class PagesController extends Controller
         return new JsonResponse($rows);
     }
 
-    protected function edit (): Response
+    protected function get (): JsonResponse
     {
-        if(($id = $this->request->query->getInt('id'))) {
-
-            MenuGenerator::setForceActiveMenu(true);
-
-            return new Response(
-                SimpleTemplate::create('admin/page_edit.php')
-                    ->assign('id', $id)
-                    ->display()
-            );
-        }
-
-        return new Response(null, Response::HTTP_NOT_FOUND);
-    }
-
-    protected function add (): Response
-    {
-        MenuGenerator::setForceActiveMenu(true);
-
-        return new Response(
-            SimpleTemplate::create('admin/page_edit.php')->display()
-        );
-    }
-
-    protected function addInit (): JsonResponse
-    {
-        return new JsonResponse([
-            'form' => new \stdClass(),
-            'revisions' => []
-        ]);
-    }
-
-    protected function editInit (): JsonResponse
-    {
-        if(!($id = $this->request->query->getInt('id'))) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
-
         try {
-            $page = Page::getInstance($id);
+            $page = Page::getInstance($this->route->getPathParameter('id'));
             $revision = $page->getActiveRevision();
             if (!$revision) {
                 $revision = $page->getNewestRevision();
@@ -101,7 +64,7 @@ class PagesController extends Controller
         ]);
     }
 
-    protected function delPage (): JsonResponse
+    protected function del (): JsonResponse
     {
         try {
             Page::getInstance($this->route->getPathParameter('id'))->delete();

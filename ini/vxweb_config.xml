@@ -49,15 +49,11 @@
 		<route id="article_toggle_linked_files" controller="admin/articles" path="article/{id}/toggle-linked-file" method="toggleLinkedFile" auth="privileged" request_methods="PUT" />
 		<route id="article_link_file" controller="admin/articles" path="article/{id}/link-file" method="fileLink" auth="privileged" request_methods="PUT" />
 
-		<route id="pages" controller="admin/pages" path="pages" method="getPages" auth="superadmin" request_methods="GET" />
-		<route id="page_del" controller="admin/pages" path="page/{id}" method="delPage" auth="superadmin" request_methods="DELETE" />
-
+		<route id="pages" controller="admin/pages" path="pages" method="list" auth="superadmin" request_methods="GET" />
+		<route id="page_get" controller="admin/pages" path="page/{id}" method="get" auth="superadmin" request_methods="GET" />
+		<route id="page_del" controller="admin/pages" path="page/{id}" method="del" auth="superadmin" request_methods="DELETE" />
 
 		<route id="pages_init" controller="admin/pages" auth="superadmin" method="init" />
-		<route id="page_add" controller="admin/pages" auth="superadmin" method="add" />
-		<route id="page_add_init" controller="admin/pages" auth="superadmin" method="addInit" />
-		<route id="page_edit" controller="admin/pages" auth="superadmin" method="edit" />
-		<route id="page_init" controller="admin/pages" auth="superadmin" method="editInit" />
 		<route id="page_update" controller="admin/pages" auth="superadmin" method="update" request_methods="POST" />
 		<route id="page_revision_load" controller="admin/pages" auth="superadmin" method="loadRevision" />
 		<route id="page_revision_activate" controller="admin/pages" auth="superadmin" method="activateRevision" request_methods="POST" />

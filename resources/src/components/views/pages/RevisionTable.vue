@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <table>
+  <table class="w-1/3">
     <thead>
       <tr>
         <th>Angelegt um</th>

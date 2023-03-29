@@ -7,7 +7,7 @@
   <teleport to="#tools">
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
-  <page-form />
+  <page-form :id="id" />
 </template>
 
 <script>
