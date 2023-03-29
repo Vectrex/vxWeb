@@ -9,17 +9,17 @@
 <template>
   <div class="flex w-full">
 
-    <div class="min-h-screen flex w-64 flex-col" v-if="$route.name !== 'login'">
+    <div :class="['min-h-screen flex flex-col transition-all duration-75', sideBarExpanded ? 'w-64' : 'w-16']" v-if="$route.name !== 'login'">
       <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue">
-        <div class="pb-2 pl-4 pr-12 h-24 bg-vxvue-600 flex items-end px-2 space-x-2">
-          <bars3-icon class="h-8 w-8 text-white" />
-          <logo class="text-vxvue-500 w-36" />
+        <div class="pb-2 pl-4 h-24 bg-vxvue-600 flex items-end pr-2 space-x-2">
+          <a href="#" @click.prevent="sideBarExpanded = !sideBarExpanded"><bars3-icon class="h-8 w-8 text-white flex-shrink-0" /></a>
+          <logo class="text-vxvue-500 w-44" v-if="sideBarExpanded" />
         </div>
         <div class="flex flex-1 flex-col">
-          <main-menu class="flex-1 space-y-1 px-2 py-8" />
+          <main-menu class="flex-1 space-y-1 px-2 py-6" :expanded="sideBarExpanded" />
         </div>
         <div class="p-4 h-24 border-t border-t-white">
-          <account-info @authenticate="authenticate" :user="user" />
+          <account-info @authenticate="authenticate" :user="user" :expanded="sideBarExpanded" />
         </div>
       </div>
     </div>
@@ -57,6 +57,7 @@ export default {
   name: 'App',
   data() {
     return {
+      sideBarExpanded: true,
       user: {},
       toast: {},
       intId: null
