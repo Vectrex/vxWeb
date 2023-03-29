@@ -12,7 +12,7 @@
   <div class="space-y-4">
     <div class="space-y-4">
         <div v-for="field in fields">
-          <label :for="field.model + '-' + (field.type || 'input')" :class=" { required: field.required, 'text-red-600': errors[field.model] }">{{ field.label }}</label>
+          <label :for="field.model + '-' + (field.type || 'input')" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
           <div>
             <input
                 class="form-input w-96"
@@ -26,7 +26,7 @@
                 v-model="form[field.model]"
                 class="w-96"
             />
-            <p v-if="errors[field.model]" class="text-sm text-red-600">{{ errors[field.model] }}</p>
+            <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
           </div>
         </div>
       </div>

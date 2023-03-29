@@ -43,8 +43,8 @@
 
 <script>
 export default {
-  components: { datepicker: DatePicker, formSelect: FormSelect, formSwitch: FormSwitch, tiptap: Tiptap },
   name: "ArticleForm",
+  components: { datepicker: DatePicker, formSelect: FormSelect, formSwitch: FormSwitch, tiptap: Tiptap },
   inject: ['api'],
   props: ['id'],
   emits: ['response-received'],

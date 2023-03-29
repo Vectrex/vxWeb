@@ -1,12 +1,13 @@
 <script setup>
-  import Tabs from "@/components/vx-vue/tabs.vue";
   import Headline from "@/components/app/Headline.vue";
+  import PageForm from "@/components/views/pages/PageForm.vue";
 </script>
 
 <template>
   <teleport to="#tools">
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
+  <page-form />
 </template>
 
 <script>
