@@ -64,6 +64,23 @@ class PagesController extends Controller
         ]);
     }
 
+    protected function getRevisions (Page $page): array
+    {
+        $revisions = [];
+
+        foreach($page->getRevisions() as $revision) {
+            $revisions[] = [
+                'id' => $revision->getId(),
+                'authorId' => $revision->getAuthorId(),
+                'active' => $revision->isActive(),
+                'locale' => (string) $revision->getLocale(),
+                'firstCreated' => $revision->getFirstCreated()->format(\DateTime::W3C)
+            ];
+        }
+
+        return $revisions;
+    }
+
     protected function del (): JsonResponse
     {
         try {
@@ -216,22 +233,6 @@ class PagesController extends Controller
         }
         $revision->delete();
         return new JsonResponse(['success' => true, 'revisions' => $this->getRevisions($page)]);
-    }
-
-    private function getRevisions (Page $page): array
-    {
-        $revisions = [];
-
-        foreach($page->getRevisions() as $revision) {
-            $revisions[] = [
-                'id' => $revision->getId(),
-                'active' => $revision->isActive(),
-                'locale' => (string) $revision->getLocale(),
-                'firstCreated' => $revision->getFirstCreated()->format(\DateTime::W3C)
-            ];
-        }
-
-        return $revisions;
     }
 
     private function getPageData (Revision $revision): array
