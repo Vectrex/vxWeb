@@ -59,7 +59,8 @@ const router = createRouter({
             meta: {
                 label: 'Seiten',
                 icon: DocumentIcon,
-                heading: 'Seiten'
+                heading: 'Seiten',
+                roles: ['superadmin']
             }
         },
         {
@@ -74,7 +75,8 @@ const router = createRouter({
             component:  Users,
             meta: {
                 label: 'Benutzer',
-                icon: UsersIcon
+                icon: UsersIcon,
+                roles: ['superadmin']
             }
         },
         {

@@ -9,7 +9,7 @@
     <headline>{{ $route.meta?.heading }}</headline>
   </teleport>
 
-  <div class="space-y-4">
+  <div class="space-y-4 pb-4">
     <div class="space-y-4">
         <div v-for="field in fields">
           <label :for="field.model + '-' + (field.type || 'input')" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
