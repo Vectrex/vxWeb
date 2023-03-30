@@ -57,12 +57,17 @@ class LoginController extends Controller
 
             // create new JWT containing session id
 
+            $roles = [];
+            foreach ($admin->getRoles() as $role) {
+                $roles[] = $role->getRoleName();
+            }
+
             return new JsonResponse([
                 'bearerToken' => JWTSession::createToken(),
                 'user' => [
                     'username' => $admin->getUsername(),
                     'email' => $admin->getAttribute('email'),
-                    'roles' => $admin->getRoles()
+                    'roles' => $roles
                 ]
             ]);
         }
