@@ -18,7 +18,7 @@
         <div class="flex flex-1 flex-col">
           <main-menu class="flex-1 space-y-1 px-2 py-6" :expanded="sideBarExpanded" />
         </div>
-        <div class="p-4 h-24 border-t border-t-white">
+        <div class="p-4 h-32 border-t border-t-white">
           <account-info @authenticate="authenticate" :user="user" :expanded="sideBarExpanded" />
         </div>
       </div>

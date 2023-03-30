@@ -61,7 +61,8 @@ class LoginController extends Controller
                 'bearerToken' => JWTSession::createToken(),
                 'user' => [
                     'username' => $admin->getUsername(),
-                    'email' => $admin->getAttribute('email')
+                    'email' => $admin->getAttribute('email'),
+                    'roles' => $admin->getRoles()
                 ]
             ]);
         }
