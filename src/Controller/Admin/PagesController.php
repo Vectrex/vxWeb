@@ -59,7 +59,7 @@ class PagesController extends Controller
         }
 
         return new JsonResponse([
-            'form' => $this->getPageData($revision),
+            'current' => $this->getPageData($revision),
             'revisions' => $this->getRevisions($page)
         ]);
     }
@@ -242,7 +242,8 @@ class PagesController extends Controller
             'title' => $revision->getTitle(),
             'markup' => $revision->getMarkup(),
             'description' => $revision->getDescription(),
-            'keywords' => $revision->getKeywords()
+            'keywords' => $revision->getKeywords(),
+            'revisionId' => $revision->getId()
         ];
     }
 

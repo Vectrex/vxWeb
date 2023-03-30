@@ -15,15 +15,15 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="revision in sortedRevisions" :key="revision.id">
-        <td>{{ formatDateTime(revision.firstCreated, 'y-mm-dd h:i:s') }}</td>
-        <td>
+      <tr v-for="(revision, ndx) in sortedRevisions" :key="revision.id" :class="ndx % 2 ? 'bg-slate-200' : ''">
+        <td class="px-4 py-2">{{ formatDateTime(revision.firstCreated, 'y-mm-dd h:i:s') }}</td>
+        <td class="px-4 py-2">
           <button class="icon-link tooltip" type="button" data-tooltip="Ansicht" @click="$emit('load-revision', revision)"><eye-icon class="h-5 w-5" /></button>
         </td>
-        <td>
+        <td class="px-4 py-2">
           <form-switch @update:model-value="$emit('activate-revision', revision)" :disabled="revision.active" />
         </td>
-        <td>
+        <td class="px-4 py-2">
           <button class="icon-link tooltip" type="button" data-tooltip="Löschen" @click="$emit('delete-revision', revision)" v-if="!revision.active"><trash-icon class="h-5 w-5" /></button>
         </td>
       </tr>
@@ -34,7 +34,7 @@
 <script>
 export default {
   name: "RevisionTable",
-  emits: ['activate-revision', 'load-revision'],
+  emits: ['activate-revision', 'load-revision', 'delete-revision'],
   props: {
     revisions: {
       type: Array, default: []
