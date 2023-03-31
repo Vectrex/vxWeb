@@ -46,8 +46,8 @@ export default {
   name: "ArticleForm",
   components: { datepicker: DatePicker, formSelect: FormSelect, formSwitch: FormSwitch, tiptap: Tiptap },
   inject: ['api'],
-  props: ['id'],
   emits: ['response-received'],
+  props: ['id'],
   data() {
     let datepickerAttrs = {
       placeholder: 'dd.mm.yyyy',

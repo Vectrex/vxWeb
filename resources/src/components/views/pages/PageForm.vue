@@ -14,7 +14,7 @@
            :value="form.alias"
            @input="form.alias = $event.target.value.toUpperCase()"
            class="form-input w-full"
-           :disabled="form?.revisionId" maxlength="64"
+           :disabled="$route.params.id" maxlength="64"
       >
       <p v-if="errors.alias" class="text-sm text-error">{{ errors.alias }}</p>
     </div>
@@ -53,6 +53,7 @@ export default {
   name: "PageForm",
   components: { tiptap: Tiptap },
   inject: ['api'],
+  emits: ['response-received'],
   props: { initData: Object },
   data () {
     return {
@@ -83,6 +84,14 @@ export default {
   },
   methods: {
     async submit () {
+      const pageId = this.$route.params.id;
+
+      this.busy = true;
+      let response = await this.$fetch(this.api + 'page/' + (pageId || ''), pageId ? 'PUT' : 'POST', {}, JSON.stringify(this.form));
+      this.busy = false;
+
+      this.errors = response.errors || {};
+      this.$emit('response-received', response);
     }
   }
 }

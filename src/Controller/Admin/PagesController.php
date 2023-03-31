@@ -91,11 +91,11 @@ class PagesController extends Controller
         }
     }
 
-    protected function update (): JsonResponse
+    protected function addOrUpdate (): JsonResponse
     {
-        $id = $this->request->query->getInt('id');
         $bag = new ParameterBag(json_decode($this->request->getContent(), true));
         $form = $this->buildEditForm();
+        $id = $this->route->getPathParameter('id');
 
         $v = $form
             ->disableCsrfToken()
@@ -106,7 +106,7 @@ class PagesController extends Controller
 
         if ($id) {
             try {
-                $page = Page::getInstance($this->request->query->getInt('id'));
+                $page = Page::getInstance($this->route->getPathParameter('id'));
             } catch (PageException $e) {
                 return new JsonResponse(null, Response::HTTP_NOT_FOUND);
             }
@@ -145,13 +145,13 @@ class PagesController extends Controller
                     ->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
                     ->save();
                 $revisionToAdd->getPage()->exportActiveRevision();
-                return new JsonResponse(['success' => true, 'instanceId' => $page->getId(), 'revisions' => $this->getRevisions($page), 'message' => 'Neue Seite angelegt und Revisionierung aktiviert.']);
+                return new JsonResponse(['success' => true, 'id' => $page->getId(), 'revisions' => $this->getRevisions($page), 'message' => 'Neue Seite angelegt und Revisionierung aktiviert.']);
             }
         }
 
         // create new revision for existing page
 
-        if(!($errors = $form->getFormErrors())) {
+        if(!$errors) {
             $revision = $page->getActiveRevision() ?: $page->getNewestRevision();
 
             $revision

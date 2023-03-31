@@ -9,7 +9,7 @@
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
   <div class="flex w-full space-x-4 justify-start">
-    <page-form :init-data="form" class="w-2/3"/>
+    <page-form :init-data="form" class="w-2/3" @response-received="handleFormResponse($event)"/>
     <revision-table :revisions="revisions" class="w-1/3" />
   </div>
 </template>
@@ -37,6 +37,15 @@ export default {
     }
   },
   methods: {
+    handleFormResponse (response) {
+      if (response.revisions) {
+        this.revisions = response.revisions.map(item => {
+          item.firstCreated = new Date(item.firstCreated);
+          return item;
+        });
+      }
+      this.$emit('notify', response);
+    }
   }
 }
 </script>
