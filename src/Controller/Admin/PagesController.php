@@ -64,23 +64,6 @@ class PagesController extends Controller
         ]);
     }
 
-    protected function getRevisions (Page $page): array
-    {
-        $revisions = [];
-
-        foreach($page->getRevisions() as $revision) {
-            $revisions[] = [
-                'id' => $revision->getId(),
-                'authorId' => $revision->getAuthorId(),
-                'active' => $revision->isActive(),
-                'locale' => (string) $revision->getLocale(),
-                'firstCreated' => $revision->getFirstCreated()->format(\DateTime::W3C)
-            ];
-        }
-
-        return $revisions;
-    }
-
     protected function del (): JsonResponse
     {
         try {
@@ -145,7 +128,13 @@ class PagesController extends Controller
                     ->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
                     ->save();
                 $revisionToAdd->getPage()->exportActiveRevision();
-                return new JsonResponse(['success' => true, 'id' => $page->getId(), 'revisions' => $this->getRevisions($page), 'message' => 'Neue Seite angelegt und Revisionierung aktiviert.']);
+
+                return new JsonResponse([
+                    'success' => true,
+                    'id' => $page->getId(),
+                    'revisions' => $this->getRevisions($page),
+                    'message' => 'Neue Seite angelegt und Revisionierung aktiviert.'
+                ]);
             }
         }
 
@@ -200,13 +189,16 @@ class PagesController extends Controller
     protected function activateRevision (): JsonResponse
     {
         try {
-            $revision = Revision::getInstance($this->request->query->getInt('id'));
+            $revision = Revision::getInstance($this->route->getPathParameter('id'));
         }
         catch(\Exception $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
         if($revision->isActive()) {
-            return new JsonResponse(['success' => true]);
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Revision bereits aktiv.'
+            ]);
         }
 
         $revision->setActive(true);
@@ -214,25 +206,29 @@ class PagesController extends Controller
 
         return new JsonResponse([
             'success' => true,
-            'form' => $this->getPageData($revision),
+            'message' => 'Revision aktiviert.',
+            'current' => $this->getPageData($revision),
             'revisions' => $this->getRevisions($revision->getPage())
         ]);
     }
 
-    protected function deleteRevision (): JsonResponse
+    protected function delRevision (): JsonResponse
     {
         try {
-            $revision = Revision::getInstance($this->request->query->getInt('id'));
-            $page = $revision->getPage();
+            $revision = Revision::getInstance($this->route->getPathParameter('id'));
         }
         catch(\Exception $e) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
         if($revision->isActive()) {
-            return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['success' => false, 'message' => 'Revision ist noch aktiv.'], Response::HTTP_BAD_REQUEST);
         }
         $revision->delete();
-        return new JsonResponse(['success' => true, 'revisions' => $this->getRevisions($page)]);
+        return new JsonResponse([
+            'success' => true,
+            'current' => $this->getPageData($revision),
+            'revisions' => $this->getRevisions($revision->getPage())
+        ]);
     }
 
     private function getPageData (Revision $revision): array
@@ -247,7 +243,24 @@ class PagesController extends Controller
         ];
     }
 
-	private function buildEditForm(): HtmlForm
+    private function getRevisions (Page $page): array
+    {
+        $revisions = [];
+
+        foreach($page->getRevisions() as $revision) {
+            $revisions[] = [
+                'id' => $revision->getId(),
+                'authorId' => $revision->getAuthorId(),
+                'active' => $revision->isActive(),
+                'locale' => (string) $revision->getLocale(),
+                'firstCreated' => $revision->getFirstCreated()->format(\DateTime::W3C)
+            ];
+        }
+
+        return $revisions;
+    }
+
+    private function buildEditForm(): HtmlForm
     {
 		return HtmlForm::create()
 			->addElement(FormElementFactory::create('input', 'title', null, [], [], false, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))

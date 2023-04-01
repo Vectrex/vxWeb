@@ -21,7 +21,7 @@
           <button class="icon-link tooltip" type="button" data-tooltip="Ansicht" @click="$emit('load-revision', revision)"><eye-icon class="h-5 w-5" /></button>
         </td>
         <td class="px-4 py-2">
-          <form-switch @update:model-value="$emit('activate-revision', revision)" :disabled="revision.active" />
+          <form-switch @update:model-value="$emit('activate-revision', revision)" :model-value="revision.active" :disabled="revision.active" />
         </td>
         <td class="px-4 py-2">
           <button class="icon-link tooltip" type="button" data-tooltip="Löschen" @click="$emit('delete-revision', revision)" v-if="!revision.active"><trash-icon class="h-5 w-5" /></button>
