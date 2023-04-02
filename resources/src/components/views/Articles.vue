@@ -49,7 +49,7 @@
       <form-switch :model-value="slotProps.row.pub" @update:model-value="publish(slotProps.row)" />
     </template>
     <template v-slot:marked="slotProps">
-      <input type="checkbox" class="form-checkbox" disabled="disabled" :checked="slotProps.row.marked">
+      <input type="checkbox" class="form-checkbox text-slate-500" disabled="disabled" :checked="slotProps.row.marked">
     </template>
     <template v-slot:action="slotProps">
       <div class="flex items-center space-x-1 justify-end">

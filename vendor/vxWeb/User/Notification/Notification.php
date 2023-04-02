@@ -20,7 +20,7 @@ use vxPHP\User\User;
  *  
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.4.0 2021-05-22
+ * @version 0.4.1 2023-04-02
  * 
  */
 class Notification
@@ -234,7 +234,7 @@ class Notification
      */
 	public function notifies(User $user): bool
     {
-		return ($id = $user->getAttribute('id')) && in_array($id, $this->notifies, true);
+		return ($id = (int) $user->getAttribute('id')) && in_array($id, $this->notifies, true);
 	}
 
     /**
@@ -249,7 +249,7 @@ class Notification
      */
 	public function subscribe(User $user): Notification
     {
-		if(($id = $user->getAttribute('id')) && !in_array($id, $this->notifies, true)) {
+		if(($id = (int) $user->getAttribute('id')) && !in_array($id, $this->notifies, true)) {
 			
 			Application::getInstance()->getVxPDO()->insertRecord('admin_notifications', ['adminID' => $id, 'notificationsID' => $this->id]);
 			$this->notifies[] = $id;
@@ -271,7 +271,7 @@ class Notification
      */
 	public function unSubscribe(User $user): Notification
     {
-		if(($id = $user->getAttribute('id')) && in_array($id, $this->notifies, true)) {
+		if(($id = (int) $user->getAttribute('id')) && in_array($id, $this->notifies, true)) {
 				
 			Application::getInstance()->getVxPDO()->deleteRecord('admin_notifications', ['adminID' => $id, 'notificationsID' => $this->id]);
 			array_splice($this->notifies, array_search($id, $this->notifies, true));

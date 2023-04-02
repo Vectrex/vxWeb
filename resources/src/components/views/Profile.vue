@@ -33,7 +33,14 @@
 
       <template v-if="notifications.length">
 
-        <div>Benachrichtigungen</div>
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center" aria-hidden="true">
+            <div class="w-full border-t border-slate-300" />
+          </div>
+          <div class="relative flex justify-start">
+            <span class="bg-white pr-3 text-base font-semibold italic leading-6 text-slate-900">Benachrichtigungen</span>
+          </div>
+        </div>
 
         <div class="space-y-4">
           <div class="space-x-2" v-for="notification in notifications">
@@ -75,9 +82,6 @@ export default {
   computed: {
     errors () {
       return this.response ? (this.response.errors || {}) : {};
-    },
-    message () {
-      return this.response ? this.response.message : "";
     }
   },
 
@@ -93,6 +97,7 @@ export default {
       this.busy = true;
       this.response = await this.$fetch(this.api + 'profile_data', 'POST', {}, JSON.stringify(this.form));
       this.busy = false;
+      this.$emit('notify', this.response);
     }
   }
 }

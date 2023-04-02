@@ -119,12 +119,15 @@ class ProfileController extends Controller {
             }
         }
 
-        if($v['email'] !== $admin->getAttribute('email') && !Util::isAvailableEmail($v['email'])) {
-            $form->setError('email', null, 'Email wird bereits verwendet.');
-        }
 
-        if($v['username'] !== $admin->getUsername() && !Util::isAvailableUsername($v['username'])) {
-            $form->setError('username', null, 'Username wird bereits verwendet.');
+        if(!($errors = $form->getFormErrors())) {
+            if ($v['email'] !== $admin->getAttribute('email') && !Util::isAvailableEmail($v['email'])) {
+                $form->setError('email', null, 'Email wird bereits verwendet.');
+            }
+
+            if ($v['username'] !== $admin->getUsername() && !Util::isAvailableUsername($v['username'])) {
+                $form->setError('username', null, 'Username wird bereits verwendet.');
+            }
         }
 
         if(!($errors = $form->getFormErrors())) {

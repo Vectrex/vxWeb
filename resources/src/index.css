@@ -12,32 +12,17 @@
     @font-face {
         font-family: 'Inter';
         font-style: normal;
-        font-weight: 400;
-        src: local(''),
-        url('@/assets/fonts/Inter/InterTight[wght].woff2') format('woff2');
+        font-weight: 100 900;
+        font-display: optional;
+        src: local(''), url('@/assets/fonts/Inter/InterTight[wght].woff2') format('woff2');
     }
     @font-face {
         font-family: 'Inter';
         font-style: italic;
         font-synthesis: none;
-        font-weight: 400;
-        src: local(''),
-        url('@/assets/fonts/Inter/InterTight-Italic[wght].woff2') format('woff2');
-    }
-    @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 700;
-        src: local(''),
-        url('@/assets/fonts/Inter/InterTight[wght].woff2') format('woff2');
-    }
-    @font-face {
-        font-family: 'Inter';
-        font-style: italic;
-        font-weight: 700;
-        font-synthesis: none;
-        src: local(''),
-        url('@/assets/fonts/Inter/InterTight-Italic[wght].woff2') format('woff2');
+        font-weight: 100 900;
+        font-display: optional;
+        src: local(''), url('@/assets/fonts/Inter/InterTight-Italic[wght].woff2') format('woff2');
     }
 }
 
