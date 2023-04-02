@@ -1,5 +1,5 @@
 <script setup>
-  import SubmitButton from "@/components/app/SubmitButton.vue";
+  import SubmitButton from "@/components/misc/submit-button.vue";
   import FormTitle from "@/components/views/shared/FormTitle.vue";
 </script>
 <template>

@@ -1,7 +1,8 @@
 <script setup>
   import PasswordInput from "@/components/vx-vue/password-input.vue";
   import Headline from "@/components/app/Headline.vue";
-  import SubmitButton from "@/components/app/SubmitButton.vue";
+  import SubmitButton from "@/components/misc/submit-button.vue";
+  import Divider from "@/components/misc/divider.vue";
 </script>
 
 <template>
@@ -33,14 +34,7 @@
 
       <template v-if="notifications.length">
 
-        <div class="relative">
-          <div class="absolute inset-0 flex items-center" aria-hidden="true">
-            <div class="w-full border-t border-slate-300" />
-          </div>
-          <div class="relative flex justify-start">
-            <span class="bg-white pr-3 text-base font-semibold leading-6 text-slate-900">Benachrichtigungen</span>
-          </div>
-        </div>
+        <divider>Benachrichtigungen</divider>
 
         <div class="space-y-4">
           <div class="space-x-2" v-for="notification in notifications">

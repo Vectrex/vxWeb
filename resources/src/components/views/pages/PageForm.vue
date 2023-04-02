@@ -1,5 +1,5 @@
 <script setup>
-  import SubmitButton from "@/components/app/SubmitButton.vue";
+  import SubmitButton from "@/components/misc/submit-button.vue";
   import Tiptap from "@/components/misc/tiptap.vue";
 </script>
 

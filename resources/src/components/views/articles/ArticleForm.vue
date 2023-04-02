@@ -3,7 +3,7 @@
   import FormSelect from "@/components/vx-vue/form-select.vue";
   import FormSwitch from "@/components/vx-vue/form-switch.vue";
   import Tiptap from "@/components/misc/tiptap.vue";
-  import SubmitButton from "@/components/app/SubmitButton.vue";
+  import SubmitButton from "@/components/misc/submit-button.vue";
   import DateFunctions from "@/util/date-functions";
 </script>
 
