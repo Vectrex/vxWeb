@@ -38,7 +38,7 @@
             <div class="w-full border-t border-slate-300" />
           </div>
           <div class="relative flex justify-start">
-            <span class="bg-white pr-3 text-base font-semibold italic leading-6 text-slate-900">Benachrichtigungen</span>
+            <span class="bg-white pr-3 text-base font-semibold leading-6 text-slate-900">Benachrichtigungen</span>
           </div>
         </div>
 
