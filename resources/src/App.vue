@@ -1,5 +1,5 @@
 <script setup>
-  import MessageToast from "@/components/message-toast.vue";
+  import MessageToast from "@/components/vx-vue/message-toast.vue";
   import MainMenu from "@/components/app/MainMenu.vue";
   import AccountInfo from "@/components/app/AccountInfo.vue";
   import Headerbar from "@/components/app/Headerbar.vue";
