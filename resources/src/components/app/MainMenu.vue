@@ -2,7 +2,7 @@
   import { useRouter } from 'vue-router';
   const router = useRouter();
   const linkedRoutes = router.options.routes.filter(route => route.meta?.label);
-  const userRoles = JSON.parse(sessionStorage.getItem('currentUser')).roles || [];
+  const userRoles = JSON.parse(sessionStorage.getItem('currentUser'))?.roles || [];
 </script>
 
 <template>
