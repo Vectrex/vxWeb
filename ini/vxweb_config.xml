@@ -80,12 +80,4 @@
 			<parameter name="whitelisted_ips" value="127.0.0.1"/>
 		</service>
 	</services>
-
-	<!--
-	<templating>
-		<filters>
-			<filter id="admin_overlay" class="App/Filter/vxWeb/AdminOverlay"/>
-		</filters>
-	</templating>
-	-->
 </config>
