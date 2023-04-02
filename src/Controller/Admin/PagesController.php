@@ -178,12 +178,12 @@ class PagesController extends Controller
     protected function loadRevision (): JsonResponse
     {
         try {
-            $revision = Revision::getInstance($this->request->query->getInt('id'));
+            $revision = Revision::getInstance($this->route->getPathParameter('id'));
         }
         catch(\Exception $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
-        return new JsonResponse(['success' => true, 'form' => $this->getPageData($revision)]);
+        return new JsonResponse(['success' => true, 'current' => $this->getPageData($revision)]);
     }
 
     protected function activateRevision (): JsonResponse
@@ -207,8 +207,7 @@ class PagesController extends Controller
         return new JsonResponse([
             'success' => true,
             'message' => 'Revision aktiviert.',
-            'current' => $this->getPageData($revision),
-            'revisions' => $this->getRevisions($revision->getPage())
+            'current' => $this->getPageData($revision)
         ]);
     }
 
@@ -226,7 +225,7 @@ class PagesController extends Controller
         $revision->delete();
         return new JsonResponse([
             'success' => true,
-            'current' => $this->getPageData($revision),
+            'message' => 'Revision erfolgreich gelöscht.',
             'revisions' => $this->getRevisions($revision->getPage())
         ]);
     }

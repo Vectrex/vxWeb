@@ -54,10 +54,9 @@
 		<route id="page_get" controller="admin/pages" path="page/{id}" method="get" auth="superadmin" request_methods="GET" />
 		<route id="page_update" controller="admin/pages" path="page/{id}" method="addOrUpdate" auth="superadmin" request_methods="PUT" />
 		<route id="page_del" controller="admin/pages" path="page/{id}" method="del" auth="superadmin" request_methods="DELETE" />
-		<route id="revision_activate" controller="admin/pages" path="revision/{id}/activate" method="activateRevision" auth="superadmin" request_methods="PUT" />
+		<route id="revision_load" controller="admin/pages" path="revision/{id}" method="loadRevision" auth="superadmin" request_methods="GET" />
 		<route id="revision_delete" controller="admin/pages" path="revision/{id}" method="delRevision" auth="superadmin" request_methods="DELETE" />
-
-		<route id="page_revision_load" controller="admin/pages" auth="superadmin" method="loadRevision" />
+		<route id="revision_activate" controller="admin/pages" path="revision/{id}/activate" method="activateRevision" auth="superadmin" request_methods="PUT" />
 	</routes>
 
 	<routes script="installer.php">

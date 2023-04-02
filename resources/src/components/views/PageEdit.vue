@@ -9,13 +9,15 @@
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
   <div class="flex w-full space-x-4 justify-start">
-    <page-form :init-data="form" class="w-2/3" @response-received="handleFormResponse($event)"/>
-    <revision-table
-        :revisions="revisions" class="w-1/3"
-        @activate-revision="activateRevision"
-        @delete-revision="deleteRevision"
-        @load-revision="loadRevision"
-    />
+    <page-form :init-data="form" class="w-full" @response-received="handleFormResponse($event)"/>
+    <div class="w-1/3 flex-shrink-0 overflow-hidden h-[calc(100vh-var(--header-height)-1.5rem)]">
+      <revision-table
+          :revisions="revisions" class="w-full h-full overflow-y-auto"
+          @activate-revision="activateRevision"
+          @delete-revision="deleteRevision"
+          @load-revision="loadRevision"
+      />
+    </div>
   </div>
 </template>
 
@@ -37,7 +39,7 @@ export default {
     }
   },
   methods: {
-    handleFormResponse (response) {
+    handleFormResponse(response) {
       if (response.revisions) {
         this.revisions = response.revisions.map(item => {
           item.firstCreated = new Date(item.firstCreated);
@@ -45,34 +47,49 @@ export default {
         });
       }
       if (response.id && !this.id) {
-        this.$router.replace( { name: 'pageEdit', params: { id: response.id } });
+        this.$router.replace({name: 'pageEdit', params: {id: response.id}});
       }
       this.$emit('notify', response);
     },
-    async activateRevision (revision) {
+    async activateRevision(revision) {
       const response = await this.$fetch(this.api + 'revision/' + revision.id + '/activate', 'PUT');
       if (response.success) {
+        let active = this.revisions.find(item => item.active === true);
+        if (active) {
+          active.active = false;
+        }
+        active = this.revisions.find(item => item === revision);
+        if (active) {
+          active.active = true;
+        }
         this.handleResponse(response);
       }
       this.$emit('notify', response);
     },
-    async deleteRevision (revision) {
+    async deleteRevision(revision) {
       const response = await this.$fetch(this.api + 'revision/' + revision.id, 'DELETE');
       if (response.success) {
         this.handleResponse(response);
       }
       this.$emit('notify', response);
     },
-    async loadRevision (revision) {
-
+    async loadRevision(revision) {
+      const response = await this.$fetch(this.api + 'revision/' + revision.id);
+      if (response.success) {
+        this.handleResponse(response);
+      }
     },
-    handleResponse (response) {
+    handleResponse(response) {
+      if (response.current) {
         this.form = response.current;
-        this.revisions = (response.revisions || []).map(item => {
+      }
+      if (response.revisions) {
+        this.revisions = response.revisions.map(item => {
           item.firstCreated = new Date(item.firstCreated);
           return item;
         });
       }
     }
+  }
 }
 </script>
