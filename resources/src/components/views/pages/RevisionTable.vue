@@ -11,9 +11,9 @@
       <thead class="bg-slate-600 text-white sticky top-0 z-10">
         <tr>
           <th class="px-6 py-3 text-left">Angelegt um</th>
-          <th class="px-6 py-3"></th>
+          <th />
           <th class="px-6 py-3">aktiv</th>
-          <th class="px-6 py-3"></th>
+          <th />
         </tr>
       </thead>
       <tbody>

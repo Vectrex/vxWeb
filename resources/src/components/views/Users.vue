@@ -55,11 +55,12 @@
 
   <teleport to="body">
     <alert
-        ref="delConfirm"
+        ref="confirm"
+        header-class="bg-error text-white"
         :buttons="[
-          { label: 'Löschen!', value: true, 'class': 'button alert' },
-          { label: 'Abbrechen', value: false, 'class': 'button' }
-        ]"
+            { label: 'Löschen!', value: true, 'class': 'button alert' },
+            { label: 'Abbrechen', value: false, 'class': 'button cancel' }
+          ]"
     />
   </teleport>
 </template>
@@ -112,7 +113,7 @@ export default {
       this.$emit('notify', event);
     },
     async del (id) {
-      if (await this.$refs.delConfirm.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
+      if (await this.$refs.confirm.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
         let response = await this.$fetch(this.api + 'users/' + id, 'DELETE');
         if (response.id) {
           let ndx = this.users.findIndex(row => row.id === response.id);

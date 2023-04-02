@@ -36,11 +36,12 @@
 
   <teleport to="body">
     <alert
-        ref="delConfirm"
+        ref="confirm"
+        header-class="bg-error text-white"
         :buttons="[
-          { label: 'Löschen!', value: true, 'class': 'button alert' },
-          { label: 'Abbrechen', value: false, 'class': 'button' }
-        ]"
+            { label: 'Löschen!', value: true, 'class': 'button alert' },
+            { label: 'Abbrechen', value: false, 'class': 'button cancel' }
+          ]"
     />
   </teleport>
 </template>
@@ -68,7 +69,7 @@ export default {
   },
   methods: {
     async del (id) {
-      if(await this.$refs.delConfirm.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?")) {
+      if(await this.$refs.confirm.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?")) {
         let response = await this.$fetch(this.api + 'page/' + id, 'DELETE');
         if (response.success) {
           this.pages.splice(this.pages.findIndex(item => id === item.id), 1);

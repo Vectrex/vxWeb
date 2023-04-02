@@ -18,12 +18,12 @@
     ref="fm"
   >
     <template v-slot:action="slotProps">
-      <div class="flex items-center space-x-1">
+      <div class="flex items-center space-x-1 justify-end">
         <template v-if="slotProps.row.isFolder">
           <button class="icon-link tooltip" data-tooltip="Bearbeiten" type="button" @click="$refs.fm.editFolder(slotProps.row)">
             <pencil-square-icon class="h-5 w-5" />
           </button>
-          <button class="icon-link tooltip" data-tooltip="Ordner leeren und löschen" @click="$refs.fm.delFolder(slotProps.row)">
+          <button class="icon-link tooltip" data-tooltip="leeren &amp; löschen" @click="$refs.fm.delFolder(slotProps.row)">
             <trash-icon class="h-5 w-5" />
           </button>
         </template>

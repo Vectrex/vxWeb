@@ -9,7 +9,7 @@
 <template>
   <div class="flex w-full">
 
-    <div :class="['min-h-screen flex flex-col transition-all duration-75', sideBarExpanded ? 'w-64' : 'w-16']" v-if="$route.name !== 'login'">
+    <div :class="['min-h-screen flex flex-col transition-all duration-100', sideBarExpanded ? 'w-80' : 'w-16']" v-if="$route.name !== 'login'">
       <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue">
         <div class="pb-2 pl-4 h-24 bg-vxvue-600 flex items-end pr-2 space-x-2">
           <a href="#" @click.prevent="sideBarExpanded = !sideBarExpanded"><bars3-icon class="h-8 w-8 text-white flex-shrink-0" /></a>

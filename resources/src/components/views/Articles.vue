@@ -52,7 +52,7 @@
       <input type="checkbox" class="form-checkbox" disabled="disabled" :checked="slotProps.row.marked">
     </template>
     <template v-slot:action="slotProps">
-      <div class="flex items-center space-x-1">
+      <div class="flex items-center space-x-1 justify-end">
         <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link tooltip" data-tooltip="Bearbeiten">
           <pencil-square-icon class="h-5 w-5" />
         </router-link>

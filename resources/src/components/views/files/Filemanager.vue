@@ -19,7 +19,7 @@
       @drop.prevent.stop="uploadDraggedFiles"
       @dragover.prevent.stop="indicateDrag = true"
       @dragleave.prevent.stop="indicateDrag = false"
-      :class="{'border-4 border-vxvue-alt': indicateDrag }"
+      :class="{'border-2 border-dotted border-vxvue-alt -m-[2px]': indicateDrag }"
   >
     <div class="flex pb-4 justify-between items-center h-16">
       <div class="flex items-center space-x-4">
@@ -60,16 +60,18 @@
         />
       </div>
 
-      <div class="flex space-x-2 items-center" v-if="upload.progressing">
-        <button class="icon-link" data-tooltip="Abbrechen" type="button" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
-        <div class="flex flex-col items-center space-y-2">
-          <div class="text-sm">{{ progress.file }}</div>
-          <div class="w-64 bg-slate-200 rounded-full h-2">
-            <div class="bg-vxvue-500 rounded-full h-full" :style="{ width: (100 * progress.loaded / (progress.total || 1)) + '%' }" />
+      <div class="bg-slate-200 px-8 py-4 w-1/4 flex justify-center rounded-l rounded-r">
+        <div class="flex space-x-2 items-center" v-if="upload.progressing">
+          <button class="icon-link" data-tooltip="Abbrechen" type="button" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
+          <div class="flex flex-col items-center space-y-2">
+            <div class="text-sm">{{ progress.file }}</div>
+            <div class="w-64 bg-slate-200 rounded-full h-2">
+              <div class="bg-vxvue-500 rounded-full h-full" :style="{ width: (100 * progress.loaded / (progress.total || 1)) + '%' }" />
+            </div>
           </div>
         </div>
+        <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
       </div>
-      <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
 
       <div id="search-input" />
     </div>
