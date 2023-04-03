@@ -236,6 +236,7 @@ export default {
       isMounted: false,
       limits: {},
       currentFolderId: null,
+      parentId: null,
       files: [],
       folders: [],
       breadcrumbs: [],
@@ -261,10 +262,10 @@ export default {
       return [...folders, ...files];
     },
     checkedFiles () {
-      return this.files.filter(({checked}) => checked);
+      return this.files.filter(({ checked }) => checked);
     },
     checkedFolders () {
-      return this.folders.filter(({checked}) => checked);
+      return this.folders.filter(({ checked }) => checked);
     }
   },
 
@@ -307,6 +308,7 @@ export default {
       let response = await this.$fetch(urlQueryCreate(this.api + 'folder/' + (folderId || '-') + '/read', this.requestParameters));
 
       if (response.success) {
+        this.parentId = response.parendId;
         this.files = response.files || [];
         this.folders = response.folders || [];
         this.currentFolderId = response.currentFolder?.key || null;

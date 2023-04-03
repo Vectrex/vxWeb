@@ -61,6 +61,7 @@ class FilesController extends Controller
                 'folders' => $this->getFolderRows($folder),
                 'breadcrumbs' => $this->getBreadcrumbs($folder),
                 'currentFolder' => ['key' => $folder->getId(), 'name' => $folder->getName()],
+                'parentId' => $folder->getParentMetafolder()?->getId(),
                 'limits' => [
                     'maxUploadSize' => min(
                         $this->toBytes(ini_get('upload_max_filesize')),
