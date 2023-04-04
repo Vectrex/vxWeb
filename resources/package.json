@@ -7,22 +7,22 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@heroicons/vue": "^2.0.16",
+    "@heroicons/vue": "^2.0.17",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6",
     "vue-slicksort": "^2.0.5",
-    "@tiptap/pm": "^2.0.0-beta.220",
-    "@tiptap/vue-3": "^2.0.0-beta.220",
-    "@tiptap/extension-document": "^2.0.0-beta.220",
-    "@tiptap/extension-text": "^2.0.0-beta.220",
-    "@tiptap/extension-paragraph": "^2.0.0-beta.220",
-    "@tiptap/extension-hard-break": "^2.0.0-beta.220",
-    "@tiptap/extension-bold": "^2.0.0-beta.220",
-    "@tiptap/extension-italic": "^2.0.0-beta.220",
-    "@tiptap/extension-bullet-list": "^2.0.0-beta.220",
-    "@tiptap/extension-ordered-list": "^2.0.0-beta.220",
-    "@tiptap/extension-list-item": "^2.0.0-beta.220",
-    "@tiptap/extension-history": "^2.0.0-beta.220"
+    "@tiptap/pm": "^2.0.2",
+    "@tiptap/vue-3": "^2.0.2",
+    "@tiptap/extension-document": "^2.0.2",
+    "@tiptap/extension-text": "^2.0.2",
+    "@tiptap/extension-paragraph": "^2.0.2",
+    "@tiptap/extension-hard-break": "^2.0.2",
+    "@tiptap/extension-bold": "^2.0.2",
+    "@tiptap/extension-italic": "^2.0.2",
+    "@tiptap/extension-bullet-list": "^2.0.2",
+    "@tiptap/extension-ordered-list": "^2.0.2",
+    "@tiptap/extension-list-item": "^2.0.2",
+    "@tiptap/extension-history": "^2.0.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
@@ -31,7 +31,7 @@
     "@vue/compiler-sfc": "^3.2.47",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.21",
-    "tailwindcss": "^3.3.0",
+    "tailwindcss": "^3.3.1",
     "vite": "^4.2.1"
   }
 }
