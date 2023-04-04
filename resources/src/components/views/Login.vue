@@ -9,7 +9,7 @@
   <div class="min-h-screen bg-slate-200 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
 
     <transition name="appear" appear>
-      <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-xl shadow" @keydown.enter="submit">
+      <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-xl shadow ring-1 ring-black ring-opacity-5" @keydown.enter="submit">
 
         <div class="bg-vxvue px-10 pb-0 pt-16 text-white flex space-x-2 items-baseline rounded-t">
           <logo class="w-1/2" />
