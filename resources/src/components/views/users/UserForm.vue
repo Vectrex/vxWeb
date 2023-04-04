@@ -50,20 +50,32 @@
     props: {
       id: { type: String, default: null }
     },
-    data: () => ({
-        form: {},
-        errors: {},
-        options: {},
-        busy: false,
-        fields: [
-            { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
-            { model: 'email', label: 'E-Mail', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
-            { model: 'name', label: 'Name', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
-            { type: 'form-select', model: 'admingroupsid', label: 'Gruppe', required: true, options: [] },
-            { type: 'password-input', model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
-            { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
-        ]
-    }),
+    data () {
+        return {
+            form: {},
+            errors: {},
+            options: {},
+            busy: false,
+            fields: [
+                {model: 'username', label: 'Username', attrs: {maxlength: 128, autocomplete: "off"}, required: true},
+                {model: 'email', label: 'E-Mail', attrs: {maxlength: 128, autocomplete: "off"}, required: true},
+                {model: 'name', label: 'Name', attrs: {maxlength: 128, autocomplete: "off"}, required: true},
+                {type: 'form-select', model: 'admingroupsid', label: 'Gruppe', required: true, options: []},
+                {
+                    type: 'password-input',
+                    model: 'new_PWD',
+                    label: 'Neues Passwort',
+                    attrs: {maxlength: 128, autocomplete: "off"}
+                },
+                {
+                    type: 'password-input',
+                    model: 'new_PWD_verify',
+                    label: 'Passwort wiederholen',
+                    attrs: {maxlength: 128, autocomplete: "off"}
+                }
+            ]
+        }
+    },
     computed: {
       missingRequired () {
         return this.fields.some(item => item.required && (!this.form[item.prop] || !this.form[item.prop].trim()));
@@ -83,7 +95,7 @@
     watch: {
       id: {
         async handler(newValue) {
-          const response = await this.$fetch(this.api + 'user' + (newValue || ''));
+          const response = await this.$fetch(this.api + 'user/' + (newValue || ''));
           this.options = response.options || {};
           this.form = response.form || {};
         },
