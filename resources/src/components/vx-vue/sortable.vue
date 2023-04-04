@@ -1,36 +1,38 @@
 <template>
-  <table class="min-w-full divide-y divide-y-slate-900">
-    <thead class="bg-slate-600 text-white">
-    <tr>
-      <th
-          scope="col"
-          class="px-6 py-3 text-left"
-          v-for="column in columns"
-          :class="[
-                    { 'cursor-pointer' : column.sortable },
-                    column.cssClass
-                ]"
-          @click="column.sortable ? clickSort(column) : null"
-      >
-        <slot :name="column.prop + '-header'" :column="column" :sort-dir="sortDir" :sort-column="sortColumn">
-          <div class="flex items-center"><span>{{ column.label }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="column.sortable">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="sortDir === 'asc' ? 'M19 9l-7 7-7-7' : 'M5 15l7-7 7 7'" v-if="sortColumn === column" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" v-else />
-            </svg>
-          </div>
-        </slot>
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr v-for="row in sortedRows" :key="row[keyProperty]" :class="row.cssClass">
-      <td v-for="column in columns" class="px-6 py-3 whitespace-nowrap" :class="{ 'active': sortColumn === column }">
-        <slot :name="column.prop" :row="row">{{ row[column.prop] }}</slot>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="rounded overflow-hidden shadow ring-1 ring-slate-500 ring-opacity-5">
+    <table class="min-w-full divide-y divide-y-slate-900">
+      <thead class="bg-slate-700 text-white">
+      <tr>
+        <th
+            scope="col"
+            class="px-6 py-3 text-left"
+            v-for="column in columns"
+            :class="[
+                      { 'cursor-pointer': column.sortable, 'active': sortColumn === column },
+                      column.cssClass
+                  ]"
+            @click="column.sortable ? clickSort(column) : null"
+        >
+          <slot :name="column.prop + '-header'" :column="column" :sort-dir="sortDir" :sort-column="sortColumn">
+            <div class="flex items-center"><span>{{ column.label }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="column.sortable">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="sortDir === 'asc' ? 'M19 9l-7 7-7-7' : 'M5 15l7-7 7 7'" v-if="sortColumn === column" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" v-else />
+              </svg>
+            </div>
+          </slot>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="row in sortedRows" :key="row[keyProperty]" :class="row.cssClass">
+        <td v-for="column in columns" class="px-6 py-3 whitespace-nowrap" :class="{ 'active': sortColumn === column }">
+          <slot :name="column.prop" :row="row">{{ row[column.prop] }}</slot>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
@@ -144,5 +146,8 @@ tbody tr:nth-of-type(2n + 1) td.active {
 }
 tbody tr:nth-of-type(2n) td.active {
   @apply bg-amber-200 text-amber-800
+}
+thead th.active {
+    @apply bg-amber-800
 }
 </style>

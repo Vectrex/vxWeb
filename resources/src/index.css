@@ -67,7 +67,7 @@
         @apply text-vxvue-900
     }
     .thumb {
-        @apply rounded-sm border-2 border-slate-500/20
+        @apply rounded-sm shadow ring-1 ring-black ring-opacity-5
     }
     .link {
         @apply text-vxvue hover:text-vxvue-700 active:text-vxvue-700 hover:underline active:underline
