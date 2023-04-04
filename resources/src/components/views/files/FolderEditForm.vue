@@ -1,39 +1,37 @@
 <script setup>
   import SubmitButton from "@/components/misc/submit-button.vue";
-  import FormTitle from "@/components/views/shared/FormTitle.vue";
+  import FormDialog from "@/components/views/shared/FormDialog.vue";
 </script>
 <template>
-  <div>
-    <form-title @cancel="$emit('cancel')" class="w-sidebar">{{ form.path }}</form-title>
-    <div class="overflow-hidden h-[calc(100vh-var(--header-height))]">
-      <div class="h-full overflow-y-auto">
-        <div class="space-y-4 pt-20 pb-4 px-4">
-          <div v-for="field in fields">
-            <label
-                :class="{ 'text-error': errors[field.model], 'required': field.required }"
-                :for="field.model + '-' + field.type || 'input'"
-            >
-              {{ field.label }}
-            </label>
-            <input
-                v-if="!field.type"
-                :id="field.model + '-input'"
-                class="w-full form-input"
-                v-model="form[field.model]"
-            />
-            <textarea
-               v-else-if="field.type === 'textarea'"
-               class="w-full form-textarea"
-               :id="field.model + '-' + field.type"
-               v-model="form[field.model]"
-            />
-            <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
+  <form-dialog @cancel="$emit('cancel')">
+      <template #title>{{ form.path }}</template>
+      <template #content>
+          <div class="space-y-4 pt-20 pb-4 px-4">
+              <div v-for="field in fields">
+                  <label
+                          :class="{ 'text-error': errors[field.model], 'required': field.required }"
+                          :for="field.model + '-' + field.type || 'input'"
+                  >
+                      {{ field.label }}
+                  </label>
+                  <input
+                          v-if="!field.type"
+                          :id="field.model + '-input'"
+                          class="w-full form-input"
+                          v-model="form[field.model]"
+                  />
+                  <textarea
+                          v-else-if="field.type === 'textarea'"
+                          class="w-full form-textarea"
+                          :id="field.model + '-' + field.type"
+                          v-model="form[field.model]"
+                  />
+                  <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
+              </div>
+              <submit-button :busy="busy" @submit="submit">Daten übernehmen</submit-button>
           </div>
-          <submit-button :busy="busy" @submit="submit">Daten übernehmen</submit-button>
-        </div>
-      </div>
-    </div>
-  </div>
+      </template>
+  </form-dialog>
 </template>
 
 <script>

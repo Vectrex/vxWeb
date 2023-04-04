@@ -1,40 +1,41 @@
 <script setup>
   import SubmitButton from "@/components/misc/submit-button.vue";
-  import FormTitle from "@/components/views/shared/FormTitle.vue";
+  import FormDialog from "@/components/views/shared/FormDialog.vue";
   import FormSelect from "@/components/vx-vue/form-select.vue";
   import PasswordInput from "@/components/vx-vue/password-input.vue";
 </script>
 <template>
-  <div>
-    <form-title @cancel="$emit('cancel')" class="w-sidebar">Benutzer {{ form.id ? 'bearbeiten' : 'anlegen' }}</form-title>
-    <div class="overflow-hidden h-[calc(100vh-var(--header-height))]">
-      <div class="h-full overflow-y-auto px-4 pt-20 pb-4 space-y-4">
-        <div v-for="field in fields">
-          <label
-              :class="{ 'text-error': errors[field.model], 'required': field.required }"
-              :for="field.model + '-' + field.type || 'input'"
-          >
-            {{ field.label }}
-          </label>
-          <input
-              v-if="!field.type"
-              :id="field.model + '-input'"
-              class="w-full form-input"
-              v-model="form[field.model]"
-          />
-          <component :is="field.type"
-              v-else
-             class="w-full"
-              :id="field.model + '-' + field.type"
-              v-model="form[field.model]"
-              :options="options[field.model]"
-          />
-          <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
-        </div>
-        <submit-button :busy="busy" @submit="submit">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
-      </div>
-    </div>
-  </div>
+  <form-dialog @cancel="$emit('cancel')">
+      <template #title>Benutzer {{ form.id ? 'bearbeiten' : 'anlegen' }}</template>
+      <template #content>
+          <div class="px-4 pt-20 pb-4 space-y-4">
+              <div v-for="field in fields">
+                  <label
+                          :class="{ 'text-error': errors[field.model], 'required': field.required }"
+                          :for="field.model + '-' + field.type || 'input'"
+                  >
+                      {{ field.label }}
+                  </label>
+                  <input
+                          v-if="!field.type"
+                          :id="field.model + '-input'"
+                          class="w-full form-input"
+                          v-model="form[field.model]"
+                  />
+                  <component :is="field.type"
+                             v-else
+                             class="w-full"
+                             :id="field.model + '-' + field.type"
+                             v-model="form[field.model]"
+                             :options="options[field.model]"
+                  />
+                  <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
+              </div>
+              <submit-button :busy="busy" @submit="submit">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
+          </div>
+
+      </template>
+  </form-dialog>
 </template>
 
 <script>
