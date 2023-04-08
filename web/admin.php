@@ -3,9 +3,6 @@
 $assetsPath = getcwd();
 $rootPath = $assetsPath;
 
-header("Access-Control-Allow-Headers: authorization,content-type,x-file-name,x-file-size,x-file-type");
-header("Access-Control-Allow-Methods: GET,HEAD,POST,PUT,DELETE");
-
 if(file_exists($rootPath . DIRECTORY_SEPARATOR . 'bootstrap.php')) {
 	require 'bootstrap.php';
 }
