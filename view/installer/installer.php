@@ -13,6 +13,7 @@
 		<link rel='icon' type='image/x-icon' href='/favicon.ico'>
 
 		<link type='text/css' rel='stylesheet' href='<?= \vxPHP\Application\Application::getInstance()->asset('style.css') ?>'>
+        <script src="//unpkg.com/alpinejs" defer></script>
     </head>
 
 	<body class="min-h-screen w-full lg:w-1/2 lg:mx-auto px-1 py-4">
@@ -96,45 +97,113 @@
                 <?php endif; ?>
 
                 <?php if($this->db_settings_form): ?>
-                <div class="py-2 space-y-2">
-                    <div class="rounded px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-vxvue-500">
-                        <label for="form-host" class="block text-xs font-medium text-gray-900">Host</label>
-                        <input type="text" id="form-host" class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="localhost">
-                    </div>
-                    <div class="rounded px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-vxvue-500">
-                        <label for="form-port" class="block text-xs font-medium text-gray-900">Port</label>
-                        <input type="text" id="form-port" class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="3306">
-                    </div>
 
-                    <div class="form-group">
-                        <label class="form-label{error_port: text-error}">Port</label>
-                        {input:port {"maxlength": "5", "class": "form-input"} }
+                    <div class="py-2 space-y-2" x-data="dbform">
+                        <template x-for="field in fields" :key="field.name">
+                            <div class="rounded px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-vxvue-500">
+                                <label :for="'form-' + field.name" class="block text-xs font-medium text-gray-900" x-text="field.label"></label>
+                                <template x-if="!field.type">
+                                    <input
+                                        type="text"
+                                        :id="'form-' + field.name"
+                                        class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                        :placeholder="field.placeholder || ''"
+                                    >
+                                </template>
+                                <template x-if="field.type === 'select'">
+                                    <select
+                                        :id="'form-' + field.name"
+                                        class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                    >
+                                        <option x-if="field.placeholder" x-text="field.placeholder" value="" disabled selected></option>
+                                        <template x-for="option in field.options">
+                                            <option :value="option.value" x-text="option.label"></option>
+                                        </template>
+                                    </select>
+                                </template>
+                            </div>
+                        </template>
+
+                        <div class="py-2">
+                            <button class="button" type="button">Übernehmen</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label{error_dbname: text-error}">Name der Datenbank</label>
-                        {input:dbname {"maxlength": "128", "class": "form-input"} }
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label{error_user: text-error}">User</label>
-                        {input:user {"maxlength": "128", "class": "form-input"} }
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label{error_password: text-error}">Passwort</label>
-                        {input:password {"maxlength": "128", "class": "form-input"} }
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label{error_db_type: text-error}">Typ</label>
-                        {dropdown:db_type {"class": "form-select"} }
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-success" onclick="this.disabled = true;">Übernehmen</button>
-                    </div>
-                </div>
                 <?php endif; ?>
 
             <?php endif; ?>
 
         </div>
+        <script>
+            document.addEventListener('alpine:init', () => {
+              Alpine.data ('dbform', () => ({
+                  form: {},
+                  errors: [],
+                  busy: false,
+                  success: false,
+                  fields: [
+                      { name: 'host', label: 'Host', required: true, placeholder: 'localhost' },
+                      { name: 'port', label: 'Port', placeholder: '3306' },
+                      { name: 'dbname', label: 'Name der Datenbank', required: true },
+                      { name: 'user', label: 'Datenbankuser', required: true },
+                      { name: 'password', label: 'Passwort des Datenbankusers', required: true },
+                      {
+                          name: 'db_type',
+                          type: 'select',
+                          label: 'Typ',
+                          required: true,
+                          placeholder: 'MySQL oder PostgreSQL wählen...',
+                          options: [
+                              { value: 'mysql', label: 'MySQL/MariaDB' },
+                              { value: 'pgsql', label: 'PostgreSQL' },
+                          ]
+                      }
+                  ],
+                  init () {
+                      this.initForm();
+                  },
+                  initForm () {
+                      this.errors = [];
+                  },
+                  async submit () {
+                      if (this.busy) {
+                          return;
+                      }
+                      this.busy = true;
+                      this.success = false;
 
+                      let data = {}, errors = {};
+
+                      this.fields.forEach(field => {
+                          let fdata = this.form[field.name];
+                          if(field.required && (!fdata || (typeof fdata === 'string' && !fdata.trim()))) {
+                              errors[field.name] = true;
+                          }
+                          else {
+                              switch (typeof fdata) {
+                                  case 'undefined':
+                                      data[field.name] ='';
+                                      break;
+                                  case 'string':
+                                      data[field.name] = fdata.trim();
+                                      break;
+                              }
+                          }
+                      });
+
+                      this.errors = errors;
+
+                      if (!Object.keys(errors).length) {
+                          const responseJson = await fetch (window.location.origin + '/submit', { method: 'POST', body: JSON.stringify(data) });
+                          const response = await responseJson.json();
+                          this.success = !!response.success;
+                          if (this.success) {
+                              this.initForm();
+                          }
+                      }
+                      this.busy = false;
+                  }
+              }))
+            })
+        </script>
     </body>
 </html>
