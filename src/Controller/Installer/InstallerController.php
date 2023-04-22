@@ -3,11 +3,14 @@
 namespace App\Controller\Installer;
 
 use DOMDocument;
+use PHPUnit\Util\Json;
 use vxPHP\Application\Application;
 use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\HtmlForm;
+use vxPHP\Http\JsonResponse;
+use vxPHP\Http\ParameterBag;
 use vxPHP\Security\Password\PasswordEncrypter;
 use vxPHP\Security\Password\PasswordGenerator;
 use vxPHP\Template\SimpleTemplate;
@@ -15,10 +18,64 @@ use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Util\Rex;
 
-class InstallerController extends Controller {
-
-	protected function execute(): Response
+class InstallerController extends Controller
+{
+	protected function execute(): Response | JsonResponse
     {
+        if ($this->request->getMethod() === 'POST') {
+
+            try {
+                $form = HtmlForm::create()
+                    ->addElement(FormElementFactory::create('input', 'host', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+                    ->addElement(FormElementFactory::create('input', 'user', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+                    ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+                    ->addElement(FormElementFactory::create('input', 'port', '', [], [], false, ['trim'], [new RegularExpression('/^\d{2,5}$/')]))
+                    ->addElement(FormElementFactory::create('input', 'dbname', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+                    ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'pgsql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'))
+                    ->bindRequestParameters(new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR)))
+                    ->disableCsrfToken()
+                    ->validate()
+                ;
+                $errors = $form->getFormErrors();
+
+                if (!$errors) {
+                    $values = $form->getValidFormValues();
+                    switch ($values['db_type']) {
+                        case 'mysql':
+                            $port = $values['port'] ?: '3306';
+                            $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s', $values['host'], $port, $values['dbname']);
+                            $connection = new \PDO($dsn, $values['user'], $values['password']);
+                            break;
+                        case 'pgsql':
+                            $port = $values['port'] ?: '5432';
+                            $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', $values['host'], $port, $values['dbname']);
+                            $connection = new \PDO($dsn, $values['user'], $values['password']);
+                            break;
+                        default:
+                            throw new \InvalidArgumentException('Kein gültiger Datenbanktreiber angegeben.');
+                    }
+
+                    $this->writeDbStructure($connection);
+                    $adminPassword = PasswordGenerator::create();
+                    $this->writeDbData($connection, $adminPassword);
+                    $this->writeDbConfiguration(
+                        $this->createDbConfiguration(array_merge($values->all(), ['dsn' => $dsn])),
+                        Application::getInstance()->getRootPath() . 'ini/pdo_config.xml'
+                    );
+
+                    return new JsonResponse(['success' => true, 'message' => 'Datenbank erfolgreich angelegt.']);
+                }
+
+                return new JsonResponse(['success' => false, 'errors' => array_keys($errors)]);
+
+            } catch (\Exception $e) {
+                $errMsg = $e->getMessage();
+                return new JsonResponse(['success' => false, 'message' => $errMsg]);
+            }
+        }
+
+        // delete installer script
+
 	    $installerFile = Application::getInstance()->getRootPath() . 'web/installer.php';
 
 	    if(!is_null($this->request->query->get('delete'))) {
@@ -44,68 +101,13 @@ class InstallerController extends Controller {
 
         $pathsOk = count(array_filter($pathChecks, static function($p) { return $p['writable']; })) === count($paths);
 
-        if($pathsOk) {
-
-            // database credentials form
-
-            $form = HtmlForm::create('installer/db_settings.htm')
-                ->addElement(FormElementFactory::create('input', 'host', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-                ->addElement(FormElementFactory::create('input', 'user', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-                ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-                ->addElement(FormElementFactory::create('input', 'port', '', [], [], false, ['trim'], [new RegularExpression('/^\d{2,5}$/')]))
-                ->addElement(FormElementFactory::create('input', 'dbname', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-                ->addElement(FormElementFactory::create('select', 'db_type', null, [], ['mysql' => 'MySQL', 'pgsql' => 'PostgreSQL'], true, [], [], 'Es muss ein Datenbanktreiber gewählt werden.'));
-
-            if ($this->request->getMethod() === 'POST') {
-                $form->bindRequestParameters($this->request->request)->validate();
-
-                if (!$form->getFormErrors()) {
-                    $values = $form->getValidFormValues();
-
-                    try {
-                        switch ($values['db_type']) {
-                            case 'mysql':
-                            case 'pgsql':
-                                $dsn = sprintf('%s:host=%s%s;dbname=%s', $values['db_type'], $values['host'], $values['port'] ? (';port=' . $values['port']) : '', $values['dbname']);
-                                $connection = new \PDO($dsn, $values['user'], $values['password']);
-                                break;
-                            default:
-                                $connectionError = 'Kein gültiger Datenbanktreiber angegeben.';
-                        }
-
-                        if (isset($connection)) {
-                            $this->writeDbStructure($connection);
-                            $adminPassword = PasswordGenerator::create();
-                            $this->writeDbData($connection, $adminPassword);
-                            $this->writeDbConfiguration(
-                                $this->createDbConfiguration(array_merge($values->all(), ['dsn' => $dsn])),
-                                Application::getInstance()->getRootPath() . 'ini/pdo_config.xml'
-                            );
-
-                            $success = true;
-                        }
-
-                    } catch (\PDOException $e) {
-                        $connectionError = $e->getMessage();
-                    } catch (\Exception $e) {
-                        $miscError = $e->getMessage();
-                    }
-                }
-            }
-        }
-
         return new Response(
             SimpleTemplate::create('installer/installer.php')
                 ->assign('path_checks', $pathChecks)
                 ->assign('paths_ok', $pathsOk)
-                ->assign('db_settings_form', (!isset($form)) ? '' : $form->render())
-                ->assign('connection_error', $connectionError ?? '')
-                ->assign('misc_error', $miscError ?? '')
-                ->assign('success', $success ?? '')
-                ->assign('password', isset($success) ? $adminPassword : '')
-                ->assign('admin_url', isset($success) ? ($this->request->getSchemeAndHttpHost() . rtrim(dirname($this->request->getScriptName()), '/') . (Application::getInstance()->getRouter()->getServerSideRewrite() ? '/admin' : '/admin.php')) : '')
-                ->assign('installer_is_deletable', is_writable($installerFile))
-                ->assign('installer_file', $installerFile)
+//                ->assign('password', isset($success) ? $adminPassword : '')
+//                ->assign('installer_is_deletable', is_writable($installerFile))
+//                ->assign('installer_file', $installerFile)
                 ->display()
         );
 	}

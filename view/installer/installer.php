@@ -51,14 +51,6 @@
                     </div>
                 </div>
 
-            <?php elseif($this->success): ?>
-
-                <div class="toast toast-success my-2">
-                    <h2>Installation abgeschlossen</h2>
-                    <div>Für den Login wurde als Username <span class="label">admin</span> und das Passwort <span class="label"><?= $this->password ?></span> eingerichtet.<br>
-                    Es empfiehlt sich, dies nach dem erstmaligen Login zu ändern.</div>
-                </div>
-
                 <?php if($this->installer_is_deletable): ?>
                 <p class="my-2">
                     <a class="btn btn-success" href="installer.php?delete">Lösche Installer und gehe zum Admin Login</a>
@@ -96,39 +88,52 @@
                     <div class="toast toast-error"><?= $this->misc_error ?></div>
                 <?php endif; ?>
 
-                <?php if($this->db_settings_form): ?>
+                <div class="py-2 space-y-2" x-data="dbform">
+                    <template x-for="field in fields" :key="field.name">
+                        <div class="rounded px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-vxvue-500">
+                            <label
+                                :for="'form-' + field.name"
+                                :class="'block text-xs font-medium ' + (errors[field.name] ? 'text-red-500' : 'text-gray-900')"
+                                x-text="field.label">
+                            </label>
 
-                    <div class="py-2 space-y-2" x-data="dbform">
-                        <template x-for="field in fields" :key="field.name">
-                            <div class="rounded px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-vxvue-500">
-                                <label :for="'form-' + field.name" class="block text-xs font-medium text-gray-900" x-text="field.label"></label>
-                                <template x-if="!field.type">
-                                    <input
-                                        type="text"
-                                        :id="'form-' + field.name"
-                                        class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                        :placeholder="field.placeholder || ''"
-                                    >
-                                </template>
-                                <template x-if="field.type === 'select'">
-                                    <select
-                                        :id="'form-' + field.name"
-                                        class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                    >
-                                        <option x-if="field.placeholder" x-text="field.placeholder" value="" disabled selected></option>
-                                        <template x-for="option in field.options">
-                                            <option :value="option.value" x-text="option.label"></option>
-                                        </template>
-                                    </select>
-                                </template>
-                            </div>
-                        </template>
+                            <template x-if="!field.type">
+                                <input
+                                    type="text"
+                                    :id="'form-' + field.name"
+                                    class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                    :placeholder="field.placeholder || ''"
+                                    x-model="form[field.name]"
+                                >
+                            </template>
 
-                        <div class="py-2">
-                            <button class="button" type="button">Übernehmen</button>
+                            <template x-if="field.type === 'select'">
+                                <select
+                                    :id="'form-' + field.name"
+                                    class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                    x-model="form[field.name]"
+                                >
+                                    <template x-if="field.placeholder">
+                                        <option value="" disabled selected x-text="field.placeholder"></option>
+                                    </template>
+                                    <template x-for="option in field.options">
+                                        <option :value="option.value" x-text="option.label"></option>
+                                    </template>
+                                </select>
+                            </template>
                         </div>
+                    </template>
+
+                    <div class="py-2">
+                        <button class="button w-full" type="button" @click.prevent="submit">Übernehmen</button>
                     </div>
-                <?php endif; ?>
+
+                    <div class="bg-green-600 text-white font-medium px-8 py-4 rounded space-y-2" x-show="response.success">
+                        <h2 class="text-2xl">Installation abgeschlossen</h2>
+                        <div>Für den Login wurde als Username <pre class="inline-block bg-green-900 px-2 py-1 rounded-sm">admin</pre> und das Passwort <pre class="inline-block bg-green-900 px-2 py-1 rounded-sm" x-text=""></pre> eingerichtet.<br>
+                            Es empfiehlt sich, dies nach dem erstmaligen Login zu ändern.</div>
+                    </div>
+                </div>
 
             <?php endif; ?>
 
@@ -137,9 +142,9 @@
             document.addEventListener('alpine:init', () => {
               Alpine.data ('dbform', () => ({
                   form: {},
-                  errors: [],
+                  errors: {},
                   busy: false,
-                  success: false,
+                  response: {},
                   fields: [
                       { name: 'host', label: 'Host', required: true, placeholder: 'localhost' },
                       { name: 'port', label: 'Port', placeholder: '3306' },
@@ -162,14 +167,15 @@
                       this.initForm();
                   },
                   initForm () {
-                      this.errors = [];
+                      this.fields.forEach(item => this.form[item.name] = null);
+                      this.errors = {};
                   },
                   async submit () {
                       if (this.busy) {
                           return;
                       }
                       this.busy = true;
-                      this.success = false;
+                      this.response = {};
 
                       let data = {}, errors = {};
 
@@ -193,12 +199,20 @@
                       this.errors = errors;
 
                       if (!Object.keys(errors).length) {
-                          const responseJson = await fetch (window.location.origin + '/submit', { method: 'POST', body: JSON.stringify(data) });
-                          const response = await responseJson.json();
-                          this.success = !!response.success;
-                          if (this.success) {
-                              this.initForm();
+                          try {
+                              const responseJson = await fetch('installer.php', {
+                                  method: 'POST',
+                                  body: JSON.stringify(data)
+                              });
+                              this.response = await responseJson.json();
+                              if (this.response.success) {
+                                  this.initForm();
+                              }
+                              else {
+                                  (this.response.errors || []).forEach(err => this.errors[err] = true);
+                              }
                           }
+                          catch (e) {}
                       }
                       this.busy = false;
                   }

@@ -59,10 +59,6 @@
 		<route id="revision_activate" controller="admin/pages" path="revision/{id}/activate" method="activateRevision" auth="superadmin" request_methods="PUT" />
 	</routes>
 
-	<routes script="installer.php">
-		<route id="installer" controller="installer/installer"/>
-	</routes>
-
 	<paths>
 		<path id="mysql_log_path" subdir="log"/>
 		<path id="css_path" subdir="css"/>

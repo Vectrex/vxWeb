@@ -69,20 +69,6 @@ if(isset($loader)) {
     );
 }
 
-// set up routing
-
-$scriptName = basename($_SERVER['SCRIPT_NAME']);
-
-$router = new \vxPHP\Routing\Router($app->getConfig()->routes[$scriptName]);
-$app->setRouter($router);
-
-$route = $router->getRoute('installer');
-$app->setCurrentRoute($route);
-
 // render output
 
-\vxPHP\Controller\Controller::createControllerFromRoute(
-    $route,
-    $app->getApplicationNamespace(),
-    \vxPHP\Http\Request::createFromGlobals()
-)->renderResponse();
+(new \App\Controller\Installer\InstallerController())->setRequest(\vxPHP\Http\Request::createFromGlobals())->renderResponse();
