@@ -22,11 +22,15 @@ class InstallerController extends Controller
 {
 	protected function execute(): Response | JsonResponse
     {
+        if ($this->request->getMethod() === 'DELETE') {
+            return new JsonResponse(['success' => @unlink(Application::getInstance()->getRootPath() . 'web/installer.php')]);
+        }
+
         if ($this->request->getMethod() === 'POST') {
 
             try {
                 $form = HtmlForm::create()
-                    ->addElement(FormElementFactory::create('input', 'host', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+                    ->addElement(FormElementFactory::create('input', 'host', '', [], [], false, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
                     ->addElement(FormElementFactory::create('input', 'user', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
                     ->addElement(FormElementFactory::create('input', 'password', '', [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
                     ->addElement(FormElementFactory::create('input', 'port', '', [], [], false, ['trim'], [new RegularExpression('/^\d{2,5}$/')]))
@@ -40,15 +44,17 @@ class InstallerController extends Controller
 
                 if (!$errors) {
                     $values = $form->getValidFormValues();
+                    $host = $values['host'] ?: 'localhost';
+
                     switch ($values['db_type']) {
                         case 'mysql':
                             $port = $values['port'] ?: '3306';
-                            $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s', $values['host'], $port, $values['dbname']);
+                            $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s', $host, $port, $values['dbname']);
                             $connection = new \PDO($dsn, $values['user'], $values['password']);
                             break;
                         case 'pgsql':
                             $port = $values['port'] ?: '5432';
-                            $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', $values['host'], $port, $values['dbname']);
+                            $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', $host, $port, $values['dbname']);
                             $connection = new \PDO($dsn, $values['user'], $values['password']);
                             break;
                         default:
@@ -63,7 +69,12 @@ class InstallerController extends Controller
                         Application::getInstance()->getRootPath() . 'ini/pdo_config.xml'
                     );
 
-                    return new JsonResponse(['success' => true, 'message' => 'Datenbank erfolgreich angelegt.']);
+                    return new JsonResponse([
+                        'success' => true,
+                        'message' => 'Datenbank erfolgreich angelegt.',
+                        'adminPwd' => $adminPassword,
+                        'installerDeleteable' => $this->checkDeleteable(Application::getInstance()->getRootPath() . 'web/installer.php')
+                    ]);
                 }
 
                 return new JsonResponse(['success' => false, 'errors' => array_keys($errors)]);
@@ -73,20 +84,6 @@ class InstallerController extends Controller
                 return new JsonResponse(['success' => false, 'message' => $errMsg]);
             }
         }
-
-        // delete installer script
-
-	    $installerFile = Application::getInstance()->getRootPath() . 'web/installer.php';
-
-	    if(!is_null($this->request->query->get('delete'))) {
-
-	        if(!is_writable($installerFile)) {
-	            die(sprintf("Kann Datei '%s' nicht löschen.", $installerFile));
-            }
-
-	        unlink($installerFile);
-	        return $this->redirect($this->request->getSchemeAndHttpHost() . rtrim(dirname($this->request->getScriptName()), '/') . (Application::getInstance()->getRouter()->getServerSideRewrite() ? '/admin' : '/admin.php'));
-        };
 
 	    // check whether paths are writable
 
@@ -105,12 +102,14 @@ class InstallerController extends Controller
             SimpleTemplate::create('installer/installer.php')
                 ->assign('path_checks', $pathChecks)
                 ->assign('paths_ok', $pathsOk)
-//                ->assign('password', isset($success) ? $adminPassword : '')
-//                ->assign('installer_is_deletable', is_writable($installerFile))
-//                ->assign('installer_file', $installerFile)
                 ->display()
         );
 	}
+
+    private function checkDeleteable ($file): bool
+    {
+        return is_file($file) && is_writable($file);
+    }
 
 	private function checkWritable($dir): bool
     {
@@ -119,10 +118,8 @@ class InstallerController extends Controller
                 $objects = scandir($dir);
 
                 foreach ($objects as $object) {
-                    if ($object !== '.' && $object !== '..') {
-                        if (!$this->checkWritable($dir . DIRECTORY_SEPARATOR . $object)) {
-                            return false;
-                        }
+                    if ($object !== '.' && $object !== '..' && !$this->checkWritable($dir . DIRECTORY_SEPARATOR . $object)) {
+                        return false;
                     }
                 }
 
@@ -136,6 +133,8 @@ class InstallerController extends Controller
         else if(file_exists($dir)) {
             return (is_writable($dir));
         }
+
+        return false;
     }
 
     /**

@@ -30,12 +30,14 @@
             </div>
 
             <?php foreach($this->path_checks as $path => $check): ?>
+
             <div class="flex justify-between items-center py-2">
                 <span>Ordner <pre class="inline-block text-vxvue-alt-600 font-bold"><?= $path ?></pre> beschreibbar</span>
                 <span class="w-20 font-bold text-white text-center p-2 rounded <?= $check['writable']  ? 'bg-green-600' : 'bg-red-600' ?>">
                     <?= $check['writable']  ? 'ja' : 'nein' ?>
                 </span>
             </div>
+
             <?php endforeach; ?>
 
             <?php if(!$this->paths_ok): ?>
@@ -50,24 +52,6 @@
                         </div>
                     </div>
                 </div>
-
-                <?php if($this->installer_is_deletable): ?>
-                <p class="my-2">
-                    <a class="btn btn-success" href="installer.php?delete">Lösche Installer und gehe zum Admin Login</a>
-                    <a class="btn" href="<?= $this->admin_url?>" target="_blank">Gehe zum Admin Login ohne den Installer zu löschen</a>
-                </p>
-
-                <?php else: ?>
-
-                <div class="toast toast-error my-2">
-                       Das Installer Skript kann nicht gelöscht werden. Entferne die Datei<br><strong><?= $this->installer_file ?></strong><br>manuell.
-                </div>
-                <p class="my-2">
-                    <a class="btn" href="<?= $this->admin_url?>" target="_blank">Gehe zum Admin Login</a>
-                </p>
-
-                <?php endif; ?>
-
 
             <?php else: ?>
 
@@ -89,49 +73,71 @@
                 <?php endif; ?>
 
                 <div class="py-2 space-y-2" x-data="dbform">
-                    <template x-for="field in fields" :key="field.name">
-                        <div class="rounded px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-vxvue-500">
-                            <label
-                                :for="'form-' + field.name"
-                                :class="'block text-xs font-medium ' + (errors[field.name] ? 'text-red-500' : 'text-gray-900')"
-                                x-text="field.label">
-                            </label>
+                    <div x-show="!response.success">
+                        <template x-for="field in fields" :key="field.name">
+                            <div class="rounded px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-vxvue-500">
+                                <label
+                                    :for="'form-' + field.name"
+                                    :class="'block text-xs font-medium ' + (errors[field.name] ? 'text-red-500' : 'text-gray-900')"
+                                    x-text="field.label">
+                                </label>
 
-                            <template x-if="!field.type">
-                                <input
-                                    type="text"
-                                    :id="'form-' + field.name"
-                                    class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                    :placeholder="field.placeholder || ''"
-                                    x-model="form[field.name]"
-                                >
-                            </template>
+                                <template x-if="!field.type">
+                                    <input
+                                        type="text"
+                                        :id="'form-' + field.name"
+                                        class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                        :placeholder="field.placeholder || ''"
+                                        x-model="form[field.name]"
+                                    >
+                                </template>
 
-                            <template x-if="field.type === 'select'">
-                                <select
-                                    :id="'form-' + field.name"
-                                    class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                    x-model="form[field.name]"
-                                >
-                                    <template x-if="field.placeholder">
-                                        <option value="" disabled selected x-text="field.placeholder"></option>
-                                    </template>
-                                    <template x-for="option in field.options">
-                                        <option :value="option.value" x-text="option.label"></option>
-                                    </template>
-                                </select>
-                            </template>
+                                <template x-if="field.type === 'select'">
+                                    <select
+                                        :id="'form-' + field.name"
+                                        class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                        x-model="form[field.name]"
+                                    >
+                                        <template x-if="field.placeholder">
+                                            <option value="" disabled selected x-text="field.placeholder"></option>
+                                        </template>
+                                        <template x-for="option in field.options">
+                                            <option :value="option.value" x-text="option.label"></option>
+                                        </template>
+                                    </select>
+                                </template>
+                            </div>
+                        </template>
+
+                        <div class="py-2">
+                            <button class="button w-full" type="button" @click.prevent="submit">Übernehmen</button>
                         </div>
-                    </template>
 
-                    <div class="py-2">
-                        <button class="button w-full" type="button" @click.prevent="submit">Übernehmen</button>
+                        <div class="bg-red-600 text-white font-medium px-8 py-4 rounded space-y-2" x-show="response.success === false" x-cloak>
+                            <h2 class="text-2xl">Fehler bei Anlage der Datenbank</h2>
+                            <div>Die Anlage der Datenbank ist fehlgeschlagen. Der Server meldet<br />
+                                <pre class="block bg-red-900 px-2 py-1 rounded-sm" x-text="response.message"></pre>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="bg-green-600 text-white font-medium px-8 py-4 rounded space-y-2" x-show="response.success">
+                    <div class="bg-green-600 text-white font-medium px-8 py-4 rounded space-y-2" x-show="response.success" x-cloak>
                         <h2 class="text-2xl">Installation abgeschlossen</h2>
-                        <div>Für den Login wurde als Username <pre class="inline-block bg-green-900 px-2 py-1 rounded-sm">admin</pre> und das Passwort <pre class="inline-block bg-green-900 px-2 py-1 rounded-sm" x-text=""></pre> eingerichtet.<br>
+                        <div>Für den Login wurde als Username <pre class="inline-block bg-green-900 px-2 py-1 rounded-sm">admin</pre> und das Passwort <pre class="inline-block bg-green-900 px-2 py-1 rounded-sm" x-text="response.adminPwd"></pre> eingerichtet.<br>
                             Es empfiehlt sich, dies nach dem erstmaligen Login zu ändern.</div>
+                    </div>
+
+                    <div class="bg-orange-500 text-white font-medium px-8 py-4 rounded space-y-2" x-show="response.success" x-cloak>
+                        <template x-if="installerDeleted === null">
+                            <div x-show="response.installerDeleteable">Der Installer kann gelöscht werden. Um eine mißbräuchliche Neuinstallation zu vermeiden sollte das jetzt erfolgen. <button type="button" class="button inline-block" @click.prevent="deleteInstaller">Installer löschen</button></div>
+                            <div x-show="!response.installerDeleteable">Der Installer kann nicht automatisch gelöscht werden. Um eine mißbräuchliche Neuinstallation zu vermediden muss der Installer unter <pre class="inline-block px-2 rounded-sm bg-white text-red-600 font-bold">web/installer.php</pre> gelöscht werden.</div>
+                        </template>
+                        <template x-if="installerDeleted === true">
+                            <div>Der Installer wurde erfolgreich entfernt.</div>
+                        </template>
+                        <template x-if="installerDeleted === false">
+                            <div>Beim Entfernen des Installers ist ein Problem aufgetreten.</div>
+                        </template>
                     </div>
                 </div>
 
@@ -145,8 +151,9 @@
                   errors: {},
                   busy: false,
                   response: {},
+                  installerDeleted: null,
                   fields: [
-                      { name: 'host', label: 'Host', required: true, placeholder: 'localhost' },
+                      { name: 'host', label: 'Host', placeholder: 'localhost' },
                       { name: 'port', label: 'Port', placeholder: '3306' },
                       { name: 'dbname', label: 'Name der Datenbank', required: true },
                       { name: 'user', label: 'Datenbankuser', required: true },
@@ -171,50 +178,53 @@
                       this.errors = {};
                   },
                   async submit () {
-                      if (this.busy) {
-                          return;
+                      if (!this.busy) {
+                          this.busy = true;
+                          this.response = {};
+
+                          let data = {}, errors = {};
+
+                          this.fields.forEach(field => {
+                              let fdata = this.form[field.name];
+                              if (field.required && (!fdata || (typeof fdata === 'string' && !fdata.trim()))) {
+                                  errors[field.name] = true;
+                              } else {
+                                  switch (typeof fdata) {
+                                      case 'undefined':
+                                          data[field.name] = '';
+                                          break;
+                                      case 'string':
+                                          data[field.name] = fdata.trim();
+                                          break;
+                                  }
+                              }
+                          });
+
+                          this.errors = errors;
+
+                          if (!Object.keys(errors).length) {
+                              try {
+                                  const responseJson = await fetch('installer.php', { method: 'POST', body: JSON.stringify(data) });
+                                  this.response = await responseJson.json();
+                                  if (this.response.success) {
+                                      this.initForm();
+                                  } else {
+                                      (this.response.errors || []).forEach(err => this.errors[err] = true);
+                                  }
+                              } catch (e) {
+                              }
+                          }
+                          this.busy = false;
                       }
-                      this.busy = true;
-                      this.response = {};
-
-                      let data = {}, errors = {};
-
-                      this.fields.forEach(field => {
-                          let fdata = this.form[field.name];
-                          if(field.required && (!fdata || (typeof fdata === 'string' && !fdata.trim()))) {
-                              errors[field.name] = true;
-                          }
-                          else {
-                              switch (typeof fdata) {
-                                  case 'undefined':
-                                      data[field.name] ='';
-                                      break;
-                                  case 'string':
-                                      data[field.name] = fdata.trim();
-                                      break;
-                              }
-                          }
-                      });
-
-                      this.errors = errors;
-
-                      if (!Object.keys(errors).length) {
-                          try {
-                              const responseJson = await fetch('installer.php', {
-                                  method: 'POST',
-                                  body: JSON.stringify(data)
-                              });
-                              this.response = await responseJson.json();
-                              if (this.response.success) {
-                                  this.initForm();
-                              }
-                              else {
-                                  (this.response.errors || []).forEach(err => this.errors[err] = true);
-                              }
-                          }
-                          catch (e) {}
+                  },
+                  async deleteInstaller () {
+                      if (!this.busy) {
+                          this.busy = true;
+                          const responseJson = await fetch('installer.php', { method: 'DELETE' });
+                          const response = await responseJson.json();
+                          this.installerDeleted = response.success;
+                          this.busy = false;
                       }
-                      this.busy = false;
                   }
               }))
             })
