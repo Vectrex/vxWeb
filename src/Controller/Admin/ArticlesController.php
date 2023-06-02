@@ -13,13 +13,11 @@ use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 
 use vxWeb\Model\ArticleCategory\ArticleCategoryQuery;
-use vxWeb\Model\MetaFile\Exception\MetaFileException;
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\Article\ArticleQuery;
 use vxWeb\Model\Article\Article;
 use vxWeb\Model\Article\Exception\ArticleException;
 use vxWeb\Model\ArticleCategory\ArticleCategory;
-use vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException;
 
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
@@ -30,14 +28,9 @@ use vxPHP\Constraint\Validator\Date;
 use vxPHP\Application\Locale\Locale;
 use vxPHP\Constraint\Validator\RegularExpression;
 
-class ArticlesController extends Controller {
-
+class ArticlesController extends Controller
+{
     use AdminControllerTrait;
-
-    protected function execute(): Response
-    {
-        return new Response();
-	}
 
 	protected function list(): JsonResponse
     {
@@ -45,8 +38,9 @@ class ArticlesController extends Controller {
         $articles = [];
 
         foreach(ArticleCategoryQuery::create(Application::getInstance()->getVxPDO())->sortBy('customsort')->sortBy('title')->select() as $cat) {
-            $categories[$cat->getId()] = [
-                'id' => $cat->getId(),
+            $cId = $cat->getId();
+            $categories[$cId] = [
+                'id' => $cId,
                 'alias' => $cat->getAlias(),
                 'label' => $cat->getTitle()
             ];
@@ -110,7 +104,7 @@ class ArticlesController extends Controller {
 
     protected function addOrUpdate (): JsonResponse
     {
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $admin = Application::getInstance()->getCurrentUser();
 
         if ($this->route->getRouteId() === 'article_update') {
@@ -118,13 +112,13 @@ class ArticlesController extends Controller {
             try {
                 $article = Article::getInstance($id);
             }
-            catch(ArticleException $e) {
+            catch(ArticleException) {
                 return new JsonResponse(null, Response::HTTP_NOT_FOUND);
             }
 
             // check permission of non superadmin
 
-            if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
+            if(!$admin->hasRole('superadmin') && (int) $admin->getAttribute('id') !== (int) $article->getCreatedById()) {
                 return new JsonResponse(null, Response::HTTP_FORBIDDEN);
             }
         }
@@ -150,9 +144,9 @@ class ArticlesController extends Controller {
                 ->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])))
                 ->setHeadline($v['headline'])
                 ->setData($v->all() /* content, teaser, subline */)
-                ->setCustomSort($v->get('customsort'))
-                ->setCustomFlags($v->get('customflags'));
-
+                ->setCustomSort((int) $v->get('customsort'))
+                ->setCustomFlags((int) $v->get('customflags'))
+            ;
             if (!$id) {
                 $article->setCreatedById($admin->getAttribute('id'));
             } else {
@@ -195,7 +189,7 @@ class ArticlesController extends Controller {
         try {
             $article = Article::getInstance($id);
         }
-        catch(ArticleException $e) {
+        catch(ArticleException) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         if ($state) {
@@ -223,7 +217,7 @@ class ArticlesController extends Controller {
         try {
             $article = Article::getInstance($id);
         }
-        catch(ArticleException $e) {
+        catch(ArticleException) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
@@ -231,16 +225,11 @@ class ArticlesController extends Controller {
 
         $admin = Application::getInstance()->getCurrentUser();
 
-        if(!$admin->hasRole('superadmin') && $admin->getAttribute('id') != $article->getCreatedById()) {
+        if(!$admin->hasRole('superadmin') && (int) $admin->getAttribute('id') !== (int) $article->getCreatedById()) {
             return new JsonResponse(null, Response::HTTP_FORBIDDEN);
         }
 
-        try {
-            $article->delete();
-        }
-        catch(ArticleException $e) {
-            return new JsonResponse($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $article->delete();
 
         return new JsonResponse(['success' => true, 'message' => 'Artikel erfolgreich gelöscht.']);
     }
@@ -267,10 +256,10 @@ class ArticlesController extends Controller {
     {
         try {
             $article = Article::getInstance($this->route->getPathParameter('id'));
-            $fileId = (new ParameterBag(json_decode($this->request->getContent(), true)))->get('fileId');
+            $fileId = (new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR)))->get('fileId');
             $file = MetaFile::getInstance(null, $fileId);
         }
-        catch(\Exception $e) {
+        catch(\Exception) {
             return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
         }
         if (in_array($file, $article->getLinkedMetaFiles(true))) {
@@ -283,12 +272,7 @@ class ArticlesController extends Controller {
 
     protected function getLinkedFiles (): JsonResponse
     {
-        try {
-            $article = Article::getInstance($this->route->getPathParameter('id'));
-        }
-        catch (MetaFileException $e) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
+        $article = Article::getInstance($this->route->getPathParameter('id'));
 
         $rows = [];
 
@@ -320,14 +304,9 @@ class ArticlesController extends Controller {
 
     protected function updateLinkedFiles (): JsonResponse
     {
-        try {
-            $article = Article::getInstance($this->route->getPathParameter('id'));
-        }
-        catch (MetaFileException $e) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
+        $article = Article::getInstance($this->route->getPathParameter('id'));
 
-        $fileIds = (new ParameterBag(json_decode($this->request->getContent(), true)))->get('fileIds', []);
+        $fileIds = (new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR)))->get('fileIds', []);
 
         foreach ($article->getLinkedMetaFiles(true) as $linkedMf) {
             if (!in_array($linkedMf->getId(), $fileIds, true)) {
@@ -346,16 +325,11 @@ class ArticlesController extends Controller {
 
     protected function toggleLinkedFile (): JsonResponse
     {
-        try {
-            $article = Article::getInstance($this->route->getPathParameter('id'));
-        }
-        catch (MetaFileException $e) {
-            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
-        }
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $article = Article::getInstance($this->route->getPathParameter('id'));
+
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $fileId = $bag->get('fileId');
 
-        $linkedFiles = $article->getLinkedMetaFiles(true);
         foreach ($article->getLinkedMetaFiles(true) as $file) {
             if ($file->getId() === $fileId) {
                 $newState = !$article->getLinkedFileVisibility($file);
@@ -380,7 +354,6 @@ class ArticlesController extends Controller {
      * build edit form
      *
      * @return \vxPHP\Form\HtmlForm
-     * @throws ArticleCategoryException
      * @throws \vxPHP\Application\Exception\ApplicationException
      * @throws \vxPHP\Form\Exception\FormElementFactoryException
      * @throws \vxPHP\Form\Exception\HtmlFormException
@@ -396,7 +369,7 @@ class ArticlesController extends Controller {
 			->addElement(FormElementFactory::create('input', 'article_date', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum'))
 			->addElement(FormElementFactory::create('input', 'display_from', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum'))
 			->addElement(FormElementFactory::create('input', 'display_until', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT_EXCL_NULL)], 'Ungültiger Wert'))
+			->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)], 'Ungültiger Wert'))
             ->addElement(FormElementFactory::create('checkbox', 'customflags', 1))
         ;
 	}

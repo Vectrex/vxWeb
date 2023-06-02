@@ -2,14 +2,13 @@
 
 namespace App\Controller\Admin;
 
+use DateTimeInterface;
 use vxPHP\Http\ParameterBag;
-use vxPHP\Template\SimpleTemplate;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\JsonResponse;
-use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Util\Rex;
 use vxPHP\Application\Application;
@@ -21,11 +20,6 @@ use vxWeb\Model\Page\Revision;
 
 class PagesController extends Controller
 {
-	protected function execute(): Response
-    {
-		return new Response();
-	}
-
 	protected function list (): JsonResponse
     {
         Template::syncTemplates();
@@ -54,7 +48,7 @@ class PagesController extends Controller
             if (!$revision) {
                 $revision = $page->getNewestRevision();
             }
-        } catch (PageException $e) {
+        } catch (PageException) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
@@ -76,7 +70,7 @@ class PagesController extends Controller
 
     protected function addOrUpdate (): JsonResponse
     {
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $form = $this->buildEditForm();
         $id = $this->route->getPathParameter('id');
 
@@ -90,7 +84,7 @@ class PagesController extends Controller
         if ($id) {
             try {
                 $page = Page::getInstance($this->route->getPathParameter('id'));
-            } catch (PageException $e) {
+            } catch (PageException) {
                 return new JsonResponse(null, Response::HTTP_NOT_FOUND);
             }
         }
@@ -110,7 +104,7 @@ class PagesController extends Controller
                 try {
                     Page::getInstance($v['alias']);
                     $form->setError('alias', null, 'Ein Seite mit diesem Seitennamen existiert bereits.');
-                } catch (PageException $e) {}
+                } catch (PageException) {}
             }
 
             // set and export inital revision
@@ -252,7 +246,7 @@ class PagesController extends Controller
                 'authorId' => $revision->getAuthorId(),
                 'active' => $revision->isActive(),
                 'locale' => (string) $revision->getLocale(),
-                'firstCreated' => $revision->getFirstCreated()->format(\DateTime::W3C)
+                'firstCreated' => $revision->getFirstCreated()->format(DateTimeInterface::W3C)
             ];
         }
 

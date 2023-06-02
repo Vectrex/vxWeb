@@ -11,6 +11,7 @@
 namespace vxWeb\Model\Article;
 
 use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
 use vxPHP\File\Exception\FilesystemFileException;
 use vxPHP\File\Exception\FilesystemFolderException;
 use vxWeb\Model\Article\Exception\ArticleException;
@@ -28,7 +29,7 @@ use vxPHP\Database\Util;
  * Mapper class for articles, stored in table articles
  *
  * @author Gregor Kofler
- * @version 1.1.1 2021-05-21
+ * @version 1.2.0 2023-06-02
  */
 
 class Article implements PublisherInterface
@@ -38,65 +39,65 @@ class Article implements PublisherInterface
 	 * 
 	 * @var Article[]
 	 */
-	private static	$instancesById;
+	private static array $instancesById = [];
 
 	/**
 	 * cached instances identified by their alias
 	 * 
 	 * @var Article[]
 	 */
-	private static	$instancesByAlias;
+	private static	array $instancesByAlias = [];
 
 	/**
 	 * primary key
 	 * 
-	 * @var integer
+	 * @var integer|null
 	 */
-	private	$id;
+	private	?int $id = null;
 	
 	/**
 	 * unique alias
 	 * 
-	 * @var string
+	 * @var string|null
 	 */
-	private	$alias;
+	private	?string $alias = null;
 			
 	/**
 	 * headline of article
 	 * 
-	 * @var string
+	 * @var string|null
 	 */
-	private $headline;
+	private ?string $headline = null;
 			
 	/**
 	 * "other" data of article
 	 * 
 	 * @var array
 	 */
-	private	$data;
+	private	array $data = [];
 			
 	/**
 	 * arbitrary flags
 	 * controllers can decide how to interpret them
 	 * 
-	 * @var integer
+	 * @var integer|null
 	 */
-	private	$customFlags;
+	private	?int $customFlags = null;
 			
 	/**
 	 * numeric indicator that can be used by
 	 * controllers to enhance or override other sorting rules
 	 * 
-	 * @var integer
+	 * @var integer|null
 	 */
-	private	$customSort;
+	private	?int $customSort = null;
 
 	/**
 	 * flags an article as published
 	 * 
-	 * @var bool
+	 * @var bool|null
 	 */
-	private	$published;
+	private	?bool $published = null;
 	
 	/**
 	 * all files linked to this article
@@ -105,92 +106,92 @@ class Article implements PublisherInterface
 	 * 
 	 * @var array
 	 */
-	private	$linkedFiles;
+	private	array $linkedFiles = [];
 			
 	/**
 	 * flag which indicates that linked files need to be updated
 	 * 
-	 * @var boolean
+	 * @var boolean|null
 	 */
-	private	$updateLinkedFiles;
+	private	?bool $updateLinkedFiles = null;
 			
 	/**
 	 * stores previously saved attribute values of article
 	 * allows verification whether changes of article have occured
 	 * 
-	 * @var \StdClass
+	 * @var \StdClass|null
 	 */
-	private	$previouslySavedValues;
+	private	?\stdClass $previouslySavedValues = null;
 
 	/**
 	 * colunms which can be retrieved with the getData() method
 	 *  
 	 * @var array
 	 */
-	private	$dataCols = ['teaser', 'content', 'subline'];
+	private	array $dataCols = ['teaser', 'content', 'subline'];
 
 	/**
 	 * the category the article belongs to
 	 * 
-	 * @var ArticleCategory
+	 * @var ArticleCategory|null
 	 */
-	private	$category;
+	private	?ArticleCategory $category = null;
 
 	/**
 	 * the article date
 	 * 
-	 * @var \DateTime
+	 * @var \DateTime|null
 	 */
-	private	$articleDate;
+	private	?\DateTime $articleDate = null;
 
 	/**
 	 * optional date information which can be used by controllers 
 	 * 
-	 * @var \DateTime
+	 * @var \DateTime|null
 	 */
-	private	$displayFrom;
+	private	?\DateTime $displayFrom = null;
 
 	/**
 	 * optional date information which can be used by controllers 
 	 * 
-	 * @var \DateTime
+	 * @var \DateTime|null
 	 */
-	private	$displayUntil;
+	private	?\DateTime $displayUntil = null;
 
 	/**
 	 * timestamp of last update of article 
 	 * 
-	 * @var \DateTime
+	 * @var \DateTime|null
 	 */
-	private	$lastUpdated;
+	private	?\DateTime $lastUpdated = null;
 
 	/**
 	 * timestamp of article creation
 	 *  
-	 * @var \DateTime
+	 * @var \DateTime|null
 	 */
-	private	$firstCreated;
+	private	?\DateTime $firstCreated = null;
 
 	/**
 	 * the id of the user which created the article
 	 * 
-	 * @var integer
+	 * @var integer|null
 	 */
-	private	$createdById;
+	private	?int $createdById = null;
 
 	/**
 	 * the id of the user which caused the last update
 	 * 
-	 * @var integer
+	 * @var integer|null
 	 */
-	private	$updatedById;
+	private	?int $updatedById = null;
 
 	/**
 	 * the id of the user which published (or unpublished) the article
 	 *  
-	 * @var int
+	 * @var integer|null
 	 */
-	private	$publishedById;
+	private	?int $publishedById = null;
 
 	/**
 	 * these attributes do not indicate
@@ -199,7 +200,7 @@ class Article implements PublisherInterface
 	 * 
 	 * @var array
 	 */
-	private	$notIndicatingChange = [
+	private	array $notIndicatingChange = [
 		'published', 'publishedById'
 	];
 	
@@ -208,17 +209,16 @@ class Article implements PublisherInterface
 	 * 
 	 * @var array
 	 */
-	private $propertiesToReset = [
+	private array $propertiesToReset = [
 		'updatedById',
 		'id',
 		'alias'
 	];
 	
-	public function __construct() {
-	}
+	public function __construct() {}
 	
-	public function __clone() {
-		
+	public function __clone()
+    {
 		// link files, when necessary
 		
 		if(is_null($this->linkedFiles)) {
@@ -238,13 +238,11 @@ class Article implements PublisherInterface
 		// create new headline and therefore new alias
 
 		$this->headline = 'Copy: ' . $this->headline; 
-
 	}
 
-	public function __toString() {
-
-		return $this->alias;
-
+	public function __toString()
+    {
+		return $this->alias ?? '';
 	}
 
 	/**
@@ -301,7 +299,7 @@ class Article implements PublisherInterface
      * store new article in database or update changes to existing article
      *
      * @throws ArticleException
-     * @throws ApplicationException
+     * @throws ApplicationException|ConfigException
      * @todo consider transactions
      */
 	public function save(): void
@@ -324,7 +322,7 @@ class Article implements PublisherInterface
 
 		ArticleEvent::create(ArticleEvent::BEFORE_ARTICLE_SAVE, $this)->trigger();
 
-		// afterwards collect all current data in array
+		// afterward collect all current data in array
 
 		$cols = array_merge(
 			(array) $this->getData(),
@@ -471,7 +469,7 @@ class Article implements PublisherInterface
      * @throws FilesystemFileException
      * @throws FilesystemFolderException
      * @throws MetaFileException
-     * @throws MetaFolderException
+     * @throws MetaFolderException|ConfigException
      */
 	public function linkMetaFile(MetaFile $file, int $sortPosition = null): self
     {
@@ -485,7 +483,7 @@ class Article implements PublisherInterface
 
 			// append file when no sort position is set or sort position beyond linked files length
 
-			if(is_null($sortPosition) || !is_numeric($sortPosition) || (int) $sortPosition >= count($this->linkedFiles)) {
+			if(is_null($sortPosition) || $sortPosition >= count($this->linkedFiles)) {
 				$this->linkedFiles[] = ['file' => $file, 'rel' => ['hidden' => false]];
 			}
 			
@@ -511,7 +509,7 @@ class Article implements PublisherInterface
      * @throws FilesystemFileException
      * @throws FilesystemFolderException
      * @throws MetaFileException
-     * @throws MetaFolderException
+     * @throws MetaFolderException|ConfigException
      */
 	public function unlinkMetaFile(MetaFile $file): self
     {
@@ -542,7 +540,7 @@ class Article implements PublisherInterface
      * @throws FilesystemFileException
      * @throws FilesystemFolderException
      * @throws MetaFileException
-     * @throws MetaFolderException
+     * @throws MetaFolderException|ConfigException
      */
 	public function setCustomSortOfMetaFile(MetaFile $file, int $sortPosition): Article
     {
@@ -554,33 +552,31 @@ class Article implements PublisherInterface
 
 		// is $file linked?
 
-		if(($pos = array_search($file, array_column($this->linkedFiles, 'file'), true)) !== false) {
-		
-			// is $sortPosition valid and different from current position
+        // is $sortPosition valid and different from current position
+        if(
+            (($pos = array_search($file, array_column($this->linkedFiles, 'file'), true)) !== false) &&
+            $sortPosition !== $pos
+        ) {
+            // remove at old position
 
-			if(is_numeric($sortPosition) && (int) $sortPosition !== $pos) {
+            $item = array_splice($this->linkedFiles, $pos, 1);
 
-				// remove at old position
+            // insert at new position
 
-				$item = array_splice($this->linkedFiles, $pos, 1);
-				
-				// insert at new position
-				
-				array_splice($this->linkedFiles, $sortPosition, 0, $item);
+            array_splice($this->linkedFiles, $sortPosition, 0, $item);
 
-				$this->updateLinkedFiles = true;
-			}
-		}
+            $this->updateLinkedFiles = true;
+        }
 		
 		return $this;
 	}
 
-	/**
-	 * get numeric id (primary key in db) of article
-	 *
-	 * @return integer
-	 */
-	public function getId(): int
+    /**
+     * get numeric id (primary key in db) of article
+     *
+     * @return int|null
+     */
+	public function getId(): ?int
     {
 		return $this->id;
 	}
@@ -588,9 +584,9 @@ class Article implements PublisherInterface
 	/**
 	 * get alias of article
 	 *
-	 * @return string
+	 * @return string|null
 	 */
-	public function getAlias(): string
+	public function getAlias(): ?string
     {
 		return $this->alias;
 	}
@@ -613,7 +609,7 @@ class Article implements PublisherInterface
 	/**
 	 * get user id which created article
 	 *
-	 * @return integer
+	 * @return integer|null
 	 */
 	public function getCreatedById(): ?int
     {
@@ -635,9 +631,9 @@ class Article implements PublisherInterface
 	/**
 	 * get id of user which (last) updated article
 	 *
-	 * @return integer
+	 * @return integer|null
 	 */
-	public function getUpdatedById(): int
+	public function getUpdatedById(): ?int
     {
 		return $this->updatedById;
 	}
@@ -645,7 +641,7 @@ class Article implements PublisherInterface
 	/**
 	 * get id of user which (un)published article
 	 *
-	 * @return int
+	 * @return int|null
 	 */
 	public function getPublishedById(): ?int
     {
@@ -655,7 +651,7 @@ class Article implements PublisherInterface
 	/**
 	 * get timestamp of article creation
 	 *
-	 *  @return \DateTime
+	 *  @return \DateTime|null
 	 */
 	public function getFirstCreated(): ?\DateTime
     {
@@ -665,7 +661,7 @@ class Article implements PublisherInterface
 	/**
 	 * get timestamp of last article update
 	 *
-	 *  @return \DateTime
+	 *  @return \DateTime|null
 	 */
 	public function getLastUpdated(): ?\DateTime
     {
@@ -675,7 +671,7 @@ class Article implements PublisherInterface
 	/**
 	 * get custom sort value
 	 *
-	 * @return int
+	 * @return int|null
 	 */
 	public function getCustomSort(): ?int
     {
@@ -688,21 +684,16 @@ class Article implements PublisherInterface
 	 * @param mixed $ndx
 	 * @return self
 	 */
-	public function setCustomSort($ndx): self
+	public function setCustomSort(int $ndx): self
     {
-		if(is_numeric($ndx)) {
-			$this->customSort = (int) $ndx;
-		}
-		else {
-			$this->customSort = null;
-		}
+        $this->customSort = $ndx;
 		return $this;
 	}
 
     /**
      * get custom flags of article
      *
-     * @return int
+     * @return int|null
      */
     public function getCustomFlags(): ?int
     {
@@ -724,7 +715,7 @@ class Article implements PublisherInterface
     /**
 	 * get article date
 	 *
-	 * @return \DateTime
+	 * @return \DateTime|null
 	 */
 	public function getDate(): ?\DateTime
     {
@@ -746,7 +737,7 @@ class Article implements PublisherInterface
 	/**
 	 * get displayFrom date
 	 *
-	 * @return \DateTime
+	 * @return \DateTime|null
 	 */
 	public function getDisplayFrom(): ?\DateTime
     {
@@ -768,7 +759,7 @@ class Article implements PublisherInterface
 	/**
 	 * get displayUntil date
 	 *
-	 * @return \DateTime
+	 * @return \DateTime|null
 	 */
 	public function getDisplayUntil(): ?\DateTime
     {
@@ -803,7 +794,7 @@ class Article implements PublisherInterface
 	/**
 	 * get assigned category
 	 *
-	 * @return ArticleCategory
+	 * @return ArticleCategory|null
 	 */
 	public function getCategory(): ?ArticleCategory
     {
@@ -825,9 +816,9 @@ class Article implements PublisherInterface
 	/**
 	 * get headline
 	 *
-	 * @return string
+	 * @return string|null
 	 */
-	public function getHeadline(): string
+	public function getHeadline(): ?string
     {
 		return $this->headline;
 	}
@@ -839,7 +830,7 @@ class Article implements PublisherInterface
      * @param string|null $ndx
      * @return mixed
      */
-	public function getData(string $ndx = null)
+	public function getData(string $ndx = null): mixed
     {
 		if(is_null($ndx)) {
 			return $this->data;
@@ -858,7 +849,7 @@ class Article implements PublisherInterface
 	 */
 	public function setData(array $data): self
     {
-		$data = array_change_key_case($data, CASE_LOWER);
+		$data = array_change_key_case($data);
 
 		foreach($this->dataCols as $c) {
 			if(isset($data[$c])) {
@@ -878,7 +869,7 @@ class Article implements PublisherInterface
      * @throws FilesystemFileException
      * @throws FilesystemFolderException
      * @throws MetaFileException
-     * @throws MetaFolderException
+     * @throws MetaFolderException|ConfigException
      */
 	public function getLinkedMetaFiles(bool $includeHidden = false): array
     {
@@ -941,7 +932,7 @@ class Article implements PublisherInterface
      * @throws FilesystemFileException
      * @throws FilesystemFolderException
      * @throws MetaFileException
-     * @throws MetaFolderException
+     * @throws MetaFolderException|ConfigException
      */
 	public function getLinkedWebImages(bool $includeHidden = false): array
     {
@@ -1004,7 +995,7 @@ class Article implements PublisherInterface
      *
      * @param array $articleData
      * @return Article
-     * @throws ArticleCategoryException
+     * @throws ArticleCategoryException|ApplicationException
      */
 	private static function createInstance(array $articleData): Article
     {
@@ -1012,7 +1003,7 @@ class Article implements PublisherInterface
 		
 		// ensure lower case keys
 		
-		$articleData = array_change_key_case($articleData, CASE_LOWER);
+		$articleData = array_change_key_case($articleData);
 
 		// set identification
 
@@ -1082,13 +1073,13 @@ class Article implements PublisherInterface
     /**
      * returns article instance identified by numeric id or alias
      *
-     * @param mixed $id
+     * @param int|string $id
      * @return self
      * @throws ArticleException
      * @throws ApplicationException
-     * @throws ArticleCategoryException
+     * @throws ArticleCategoryException|ConfigException
      */
-	public static function getInstance($id): Article
+	public static function getInstance(int|string $id): Article
     {
 		$db = Application::getInstance()->getVxPDO();
 
@@ -1143,10 +1134,10 @@ class Article implements PublisherInterface
      * @return array
      * @throws ApplicationException
      * @throws ArticleCategoryException
-     * @throws ArticleException
+     * @throws ArticleException|ConfigException
      */
-	public static function getInstances(array $ids = null) {
-
+	public static function getInstances(array $ids = null): array
+    {
 		$db = Application::getInstance()->getVxPDO();
 
 		$articles = [];
@@ -1169,31 +1160,25 @@ class Article implements PublisherInterface
 				$articles[] = self::$instancesById[$row['articlesid']];
 			}
 		}
-
 		else {
 
-			$toRetrieveById		= [];
-			$toRetrieveByAlias	= [];
+			$toRetrieveById = [];
+			$toRetrieveByAlias = [];
 	
 			foreach($ids as $id) {
 	
 				if(is_numeric($id)) {
 					$id = (int) $id;
-	
-					if(!isset(self::$instancesById[$id])) {
+						if(!isset(self::$instancesById[$id])) {
 						$toRetrieveById[] = $id;
 					}
 				}
+				else if (!isset(self::$instancesByAlias[$id])) {
+                    $toRetrieveByAlias[] = $id;
+                }
+    		}
 	
-				else {
-					if(!isset(self::$instancesByAlias[$id])) {
-						$toRetrieveByAlias[] = $id;
-					}
-				}
-
-			}
-	
-			$where = array();
+			$where = [];
 
 			if(count($toRetrieveById)) {
 				$where[] = 'a.articlesid IN (' . implode(',', array_fill(0, count($toRetrieveById), '?')). ')';
@@ -1225,7 +1210,6 @@ class Article implements PublisherInterface
 		}
 
 		return $articles;
-
 	}
 
     /**
@@ -1234,10 +1218,10 @@ class Article implements PublisherInterface
      * @param ArticleCategory $category
      * @return array
      * @throws ApplicationException
-     * @throws ArticleCategoryException
+     * @throws ArticleCategoryException|ConfigException
      */
-	public static function getArticlesForCategory(ArticleCategory $category) {
-
+	public static function getArticlesForCategory(ArticleCategory $category): array
+    {
 		$articles = [];
 
 		$rows = Application::getInstance()->getVxPDO()->doPreparedQuery('SELECT * FROM articles WHERE articlecategoriesID = ?', array($category->getId()));
@@ -1249,8 +1233,8 @@ class Article implements PublisherInterface
 
 				$article = self::createInstance($r);
 
-				self::$instancesByAlias[$article->alias]	= $article;
-				self::$instancesById[$article->id]			= $article;
+				self::$instancesByAlias[$article->alias] = $article;
+				self::$instancesById[$article->id] = $article;
 			}
 
 			$articles[] = self::$instancesById[$r['articlesid']];
@@ -1268,7 +1252,7 @@ class Article implements PublisherInterface
      * @throws FilesystemFileException
      * @throws FilesystemFolderException
      * @throws MetaFileException
-     * @throws MetaFolderException
+     * @throws MetaFolderException|ConfigException
      */
     private function readFilesForArticle(): void
     {

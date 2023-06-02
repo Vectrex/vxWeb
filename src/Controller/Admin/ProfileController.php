@@ -5,13 +5,11 @@ namespace App\Controller\Admin;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\FormElement\CheckboxElement;
-use vxPHP\Form\FormElement\LabelElement;
 
 use vxPHP\Http\ParameterBag;
 use vxPHP\Util\Rex;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
-use vxPHP\Template\SimpleTemplate;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Constraint\Validator\Email;
@@ -22,13 +20,8 @@ use vxWeb\User\SessionUserProvider;
 use vxWeb\User\Util;
 use vxWeb\User\Notification\Notification;
 
-class ProfileController extends Controller {
-
-	public function execute(): Response
-    {
-        return new Response();
-	}
-
+class ProfileController extends Controller
+{
     protected function get(): JsonResponse
     {
         $admin = Application::getInstance()->getCurrentUser();
@@ -38,7 +31,7 @@ class ProfileController extends Controller {
 
         $notifications = array_filter(
             Notification::getAvailableNotifications($admin->getRoles()[0]->getRoleName()),
-            function($notification) {
+            static function ($notification) {
                 return !$notification->not_displayed;
             }
         );
@@ -59,9 +52,9 @@ class ProfileController extends Controller {
                 'notifications' => $notified
             ],
             'notifications' => array_values(
-                array_map(function($notfication) {
+                array_map(static function($notfication) {
 
-                        /* @var \vxWeb\User\Notification\Notification $notification */
+                        /* @var Notification $notification */
 
                         return [
                             'alias' => $notfication->alias,
@@ -78,7 +71,7 @@ class ProfileController extends Controller {
 
     protected function post(): JsonResponse
     {
-        $request = new ParameterBag(json_decode($this->request->getContent(), true));
+        $request = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $admin = Application::getInstance()->getCurrentUser();
         $availableNotifications = Notification::getAvailableNotifications($admin->getRoles()[0]->getRoleName());
 
@@ -86,7 +79,7 @@ class ProfileController extends Controller {
             ->addElement(FormElementFactory::create('input', 'username', $admin->getUsername(), [], [], true, ['trim', 'lowercase'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Ein Benutzername ist ein Pflichtfeld.'))
             ->addElement(FormElementFactory::create('input', 'email', $admin->getAttribute('email'), [], [], true, ['trim', 'lowercase'], [new Email()], 'Ungültige E-Mail Adresse.'))
             ->addElement(FormElementFactory::create('input', 'name', $admin->getAttribute('name'), [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))
-            ->addElement(FormElementFactory::create('password', 'new_PWD', '', [], [], false, [], [new RegularExpression('/^(|[^\s].{4,}[^\s])$/')], 'Das Passwort muss mindestens 6 Zeichen umfassen.'))
+            ->addElement(FormElementFactory::create('password', 'new_PWD', '', [], [], false, [], [new RegularExpression('/^(|\S.{4,}\S)$/')], 'Das Passwort muss mindestens 6 Zeichen umfassen.'))
             ->addElement(FormElementFactory::create('password', 'new_PWD_verify', ''))
         ;
 
@@ -107,20 +100,17 @@ class ProfileController extends Controller {
             ->getValidFormValues()
         ;
 
-        if(!isset($errors['new_PWD'])) {
-
-            if(!empty($v['new_PWD'])) {
-                if($v['new_PWD'] !== $v['new_PWD_verify']) {
-                    $form->setError('new_PWD_verify', null, 'Passwörter stimmen nicht überein.');
-                }
-                else {
-                    $v['pwd'] = (new PasswordEncrypter())->hashPassword($v['new_PWD']);
-                }
+        if(!isset($errors['new_PWD']) && !empty($v['new_PWD'])) {
+            if($v['new_PWD'] !== $v['new_PWD_verify']) {
+                $form->setError('new_PWD_verify', null, 'Passwörter stimmen nicht überein.');
+            }
+            else {
+                $v['pwd'] = (new PasswordEncrypter())->hashPassword($v['new_PWD']);
             }
         }
 
 
-        if(!($errors = $form->getFormErrors())) {
+        if(!$form->getFormErrors()) {
             if ($v['email'] !== $admin->getAttribute('email') && !Util::isAvailableEmail($v['email'])) {
                 $form->setError('email', null, 'Email wird bereits verwendet.');
             }

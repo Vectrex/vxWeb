@@ -12,12 +12,13 @@ namespace vxWeb\User;
 
 use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Application\Application;
+use vxPHP\Application\Exception\ConfigException;
 
 /**
  * simple class to store utility methods
  *
  * @author Gregor Kofler
- * @version 1.4.1 2018-07-14
+ * @version 1.4.2 2023-06-02
  */
 
 class Util
@@ -27,7 +28,7 @@ class Util
      *
      * @param string $email
      * @return boolean availability
-     * @throws ApplicationException
+     * @throws ApplicationException|ConfigException
      */
 	public static function isAvailableEmail(string $email): bool
     {
@@ -40,11 +41,11 @@ class Util
      *
      * @param string $username
      * @return boolean availability
-     * @throws ApplicationException
+     * @throws ApplicationException|ConfigException
      */
 	public static function isAvailableUsername(string $username): bool
     {
         $db = Application::getInstance()->getVxPDO();
-		return !($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE username = ?', array((string) $username))->count());
+		return !($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE username = ?', array($username))->count());
 	}
 }

@@ -11,6 +11,7 @@
 namespace vxWeb\Util;
 
 use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
 use vxPHP\File\Exception\FilesystemFileException;
 use vxPHP\File\FilesystemFolder;
 use vxPHP\File\Exception\FilesystemFolderException;
@@ -24,12 +25,12 @@ use vxWeb\Model\Page\Revision;
  * helper class to sync and update templates both in filesystem and database
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.6.0 2018-10-03
+ * @version 0.6.1 2023-06-02
  *
  */
 
-class Template {
-
+class Template
+{
 	/**
 	 * public function for
 	 * syncing file and db based templates
@@ -38,7 +39,7 @@ class Template {
 	 * else if db entry exists, but no file -> export
 	 * else if db entry and file exist ->
 	 * 		if filemtime is older than active db entry -> export
-	 * 		else if filemtime is newer than newest revision in db (not necessarily active) -> import and set active
+	 * 		else if filemtime is newer than the newest revision in db (not necessarily active) -> import and set active
 	 * 		else if filemtime between active revision and newest revision -> export active revision
 	 * 
 	 * manually edited and saved templates are only prioritized if they are newer than any db entry  
@@ -185,7 +186,7 @@ class Template {
 		$config = $app->getConfig();
 		
 		if(is_null($config->paths['editable_tpl_path'])) {
-			throw new \Exception('No path for templates defined.');
+			throw new \RuntimeException('No path for templates defined.');
 		}
 		
 		$ndx	= $locale ? $locale->getLocaleId() : 'universal';
@@ -205,7 +206,7 @@ class Template {
 			}
 		}
 
-		catch(FilesystemFolderException $e) {}
+		catch(FilesystemFolderException) {}
 	}
 
     /**
@@ -215,7 +216,7 @@ class Template {
      * @param array $data template data
      * @return void
      * @throws ApplicationException
-     * @throws PageException
+     * @throws PageException|ConfigException
      */
 	private static function createPage(array $data): void
     {

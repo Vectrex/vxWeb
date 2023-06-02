@@ -9,18 +9,19 @@ trait AdminControllerTrait
      * @param string $val
      * @return int
      */
-    private function toBytes($val): int
+    private function toBytes(string $val): int
     {
-
         $suffix = strtolower(substr(trim($val), -1));
 
         $v = (int) $val;
 
         switch ($suffix) {
             case 'g':
-                $v *= 1024;
+                $v *= 1024 * 1024 *1024;
+                break;
             case 'm':
-                $v *= 1024;
+                $v *= 1024 * 1024;
+                break;
             case 'k':
                 $v *= 1024;
         }

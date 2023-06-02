@@ -13,15 +13,15 @@ namespace vxWeb\User\Notification;
 
 use vxPHP\Application\Application;
 use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
 use vxPHP\User\User;
+use vxPHP\User\UserInterface;
 
 /**
  * A notification for users with a representation in the database
- *  
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.4.1 2023-04-02
- * 
+ * @version 0.5.0 2023-06-02
  */
 class Notification
 {
@@ -30,73 +30,73 @@ class Notification
 	 * 
 	 * @var integer
 	 */
-	private $id;
+	private int $id;
 	
 	/**
 	 * the alias name of the notification
 	 *
 	 * @var string
 	 */
-	private $alias;
+	private string $alias;
 
 	/**
 	 * the subject of the notification
 	 *
-	 * @var string
-	 */
-	private $subject;
+	 * @var string|null
+     */
+	private ?string $subject;
 
 	/**
 	 * the message body of the notification
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	private $message;
+	private ?string $message;
 	
 	/**
 	 * description of notification, serves labelling purposes
 	 *
-	 * @var string
-	 */
-	private $description;
+	 * @var string|null
+     */
+	private ?string $description;
 	
 	/**
 	 * list of attachments which are added to notification message
 	 * 
-	 * @var array
+	 * @var array|null
 	 */
-	private $attachment;
+	private ?array $attachment;
 	
 	/**
 	 * signature which is added to notification message 
 	 * 
-	 * @var string
+	 * @var string|null
 	 */
-	private $signature;
+	private ?string $signature;
 	
 	/**
 	 * the alias of the admin group the notification is tied to
 	 * 
-	 * @var string
+	 * @var string|null
 	 */
-	private $group_alias;
+	private ?string $group_alias;
 	
 	/**
 	 * flag which indicates whether the notification will be displayed
 	 * when editing user and notification data
 	 * 
-	 * @var boolean
+	 * @var int|null
 	 */
-	private $not_displayed;
+	private ?int $not_displayed;
 	
 	/**
 	 * the list of users who get notified by the notification
 	 * 
 	 * @var User[]
 	 */
-	private $notifies;
+	private array $notifies = [];
 
-	private static $cachedNotificationData;
+	private static array $cachedNotificationData;
 
 	/**
 	 * create a notification instance identified by its alias
@@ -229,10 +229,10 @@ class Notification
     /**
      * check whether a user will be notified by the notification
      *
-     * @param User $user
+     * @param UserInterface $user
      * @return bool
      */
-	public function notifies(User $user): bool
+	public function notifies(UserInterface $user): bool
     {
 		return ($id = (int) $user->getAttribute('id')) && in_array($id, $this->notifies, true);
 	}
@@ -241,13 +241,13 @@ class Notification
      * adds a user to the list of notified users by inserting a record
      * in admin_notifications table; table is left unchanged if user is
      * already on the list
-     * does no further checking of insertion result
+     * does not further check for insertion result
      *
-     * @param User $user
+     * @param UserInterface $user
      * @return Notification
-     * @throws ApplicationException
+     * @throws ApplicationException|ConfigException
      */
-	public function subscribe(User $user): Notification
+	public function subscribe(UserInterface $user): Notification
     {
 		if(($id = (int) $user->getAttribute('id')) && !in_array($id, $this->notifies, true)) {
 			
@@ -263,13 +263,13 @@ class Notification
      * adds a user to the list of notified users by inserting a record
      * in admin_notifications table; table is left unchanged if user is
      * already on the list
-     * does no further checking of insertion result
+     * does not further check for insertion result
      *
-     * @param User $user
+     * @param UserInterface $user
      * @return Notification
-     * @throws ApplicationException
+     * @throws ApplicationException|ConfigException
      */
-	public function unSubscribe(User $user): Notification
+	public function unSubscribe(UserInterface $user): Notification
     {
 		if(($id = (int) $user->getAttribute('id')) && in_array($id, $this->notifies, true)) {
 				

@@ -41,7 +41,7 @@ class vxWebRoleHierarchy extends RoleHierarchy
 	 *
 	 * {@inheritdoc}
 	 *
-	 * @see \vxPHP\User\RoleHierarchy::__construct()
+	 * @see RoleHierarchy::__construct
 	 */
 	public function __construct()
     {

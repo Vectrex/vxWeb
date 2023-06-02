@@ -3,7 +3,6 @@
 namespace App\Controller\Installer;
 
 use DOMDocument;
-use PHPUnit\Util\Json;
 use vxPHP\Application\Application;
 use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Constraint\Validator\RegularExpression;
@@ -125,12 +124,9 @@ class InstallerController extends Controller
 
                 return true;
             }
-            else{
-                return false;
-            }
-
+            return false;
         }
-        else if(file_exists($dir)) {
+        if(file_exists($dir)) {
             return (is_writable($dir));
         }
 
@@ -141,7 +137,7 @@ class InstallerController extends Controller
      * execute queries to create database structure
      *
      * @param \PDO $connection
-     * @throws \RuntimeException
+     * @throws \RuntimeException|ApplicationException
      */
     private function writeDbStructure(\PDO $connection): void
     {
@@ -187,6 +183,7 @@ class InstallerController extends Controller
      *
      * @param array $config
      * @return DOMDocument
+     * @throws \DOMException
      */
     private function createDbConfiguration(array $config): DOMDocument
     {

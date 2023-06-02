@@ -25,7 +25,7 @@ use vxPHP\User\SimpleSessionUserProvider;
  * session after initialization
  * 
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.5.2, 2021-05-22
+ * @version 0.5.3, 2023-06-02
  *        
  */
 class SessionUserProvider extends SimpleSessionUserProvider
@@ -33,7 +33,7 @@ class SessionUserProvider extends SimpleSessionUserProvider
 	/**
 	 * @var DatabaseInterface
 	 */
-	private $db;
+	private DatabaseInterface $db;
 
     /**
      * constructor
@@ -46,7 +46,7 @@ class SessionUserProvider extends SimpleSessionUserProvider
     /**
 	 * {@inheritdoc}
 	 *
-	 * @see \vxPHP\User\UserProviderInterface::refreshUser()
+	 * @see UserProviderInterface::refreshUser
 	 */
 	public function refreshUser(UserInterface $user): UserInterface
     {
@@ -76,11 +76,11 @@ class SessionUserProvider extends SimpleSessionUserProvider
 	 *
 	 * {@inheritdoc}
 	 *
-	 * @see \vxPHP\User\UserProviderInterface::instanceUserByUsername()
+	 * @see UserProviderInterface::instanceUserByUsername
 	 */
 	public function instanceUserByUsername($username): SessionUser
     {
-        $rows = $this->getUserRows($username, 'username');
+        $rows = $this->getUserRows($username);
 
         if(count($rows) !== 1) {
             throw new UserException(sprintf("User identified by username '%s' not found or not unique.", $username));

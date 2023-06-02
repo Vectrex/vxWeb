@@ -3,6 +3,8 @@
 namespace App\Service\vxWeb;
 
 use vxPHP\Application\Application;
+use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
 use vxPHP\Constraint\Validator\Ip;
 use vxPHP\Service\ServiceInterface;
 
@@ -14,7 +16,7 @@ use vxPHP\Service\ServiceInterface;
  * @see <https://github.com/nextcloud/server/blob/master/lib/private/User/Session.php>
  *
  * @author Gregor Kofler
- * @version 0.2.0 2021-10-17
+ * @version 0.3.0 2023-06-02
  */
 
 class BruteforceThrottler implements ServiceInterface
@@ -34,7 +36,7 @@ class BruteforceThrottler implements ServiceInterface
     /**
      *
      *
-     * @param \DateInterval
+     * @param \DateInterval $cutoff
      */
     protected \DateInterval $cutoff;
 
@@ -88,13 +90,11 @@ class BruteforceThrottler implements ServiceInterface
         if(isset($parameters['cutoff'])) {
             $this->cutoff = new \DateInterval(sprintf("PT%dS", $parameters['cutoff']));
         }
-
         else {
 
             // cutoff defaults to 6 hour
 
             $this->cutoff = new \DateInterval('PT6H');
-
         }
     }
 
@@ -105,8 +105,8 @@ class BruteforceThrottler implements ServiceInterface
      * @param string $ip
      * @param string $action
      * @return BruteforceThrottler
-     * @throws \vxPHP\Application\Exception\ApplicationException
-     * @throws \vxPHP\Application\Exception\ConfigException
+     * @throws ApplicationException
+     * @throws ConfigException
      */
     public function throttle(string $ip, string $action = 'admin_login'): self
     {
@@ -179,16 +179,16 @@ class BruteforceThrottler implements ServiceInterface
      * @param string $ip
      * @param mixed $data
      * @return BruteforceThrottler
-     * @throws \vxPHP\Application\Exception\ApplicationException
-     * @throws \vxPHP\Application\Exception\ConfigException
+     * @throws ApplicationException
+     * @throws ConfigException|\JsonException
      */
-    public function registerAttempt(string $ip, $data): self
+    public function registerAttempt(string $ip, mixed $data): self
     {
         Application::getInstance()->getVxPDO()->insertRecord('bruteforce_attempts', [
             'ip' => $ip,
             'action' => 'admin_login',
             'when' => time(),
-            'data' => $data ? json_encode($data): null,
+            'data' => $data ? json_encode($data, JSON_THROW_ON_ERROR) : null,
         ]);
 
         return $this;
@@ -200,8 +200,8 @@ class BruteforceThrottler implements ServiceInterface
      * @param string $ip
      * @param string $action
      * @return BruteforceThrottler
-     * @throws \vxPHP\Application\Exception\ApplicationException
-     * @throws \vxPHP\Application\Exception\ConfigException
+     * @throws ApplicationException
+     * @throws ConfigException
      */
     public function clearAttempts(string $ip, string $action): self
     {
@@ -219,22 +219,18 @@ class BruteforceThrottler implements ServiceInterface
      * @param string $ip
      * @param string $action
      * @return int
-     * @throws \vxPHP\Application\Exception\ApplicationException
-     * @throws \vxPHP\Application\Exception\ConfigException
+     * @throws ApplicationException
+     * @throws ConfigException
      */
     public function getAttempts(string $ip, string $action = 'admin_login'): int
     {
         $db = Application::getInstance()->getVxPDO();
         $params = [$ip, $action];
 
-        // only observe attempts dating back a specified time when cutoff is set
-
-        if($this->cutoff) {
-            $where =  'AND ' . $db->quoteIdentifier('when') . ' > ?';
-            $now = new \DateTime();
-            $cutoffDT = clone $now;
-            $params[] = $cutoffDT->sub($this->cutoff)->getTimestamp();
-        }
+        $where = 'AND ' . $db->quoteIdentifier('when') . ' > ?';
+        $now = new \DateTime();
+        $cutoffDT = clone $now;
+        $params[] = $cutoffDT->sub($this->cutoff)->getTimestamp();
 
         // return record count satisfying conditions
 
@@ -247,6 +243,6 @@ class BruteforceThrottler implements ServiceInterface
             ip = ?
             AND action = ?
             %s
-        ", $where ?? ''), $params)->current()['cnt'];
+        ", $where), $params)->current()['cnt'];
     }
 }

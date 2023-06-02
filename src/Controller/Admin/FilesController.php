@@ -31,17 +31,6 @@ class FilesController extends Controller
     private const FILE_ATTRIBUTES = ['title', 'subtitle', 'description', 'customsort'];
     private const FOLDER_ATTRIBUTES = ['title', 'description'];
 
-    /**
-     * depending on route fill response with appropriate template
-     *
-     * (non-PHPdoc)
-     * @see \vxPHP\Controller\Controller::execute()
-     */
-    protected function execute(): Response
-    {
-        return new Response();
-    }
-
     protected function folderRead (): JsonResponse
     {
         $id = $this->route->getPathParameter('id');
@@ -164,7 +153,7 @@ class FilesController extends Controller
 
     protected function fileUpdate (): JsonResponse
     {
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
 
         try {
             $file = MetaFile::getInstance(null, $this->route->getPathParameter('id'));
@@ -179,7 +168,7 @@ class FilesController extends Controller
 
     protected function fileMove (): JsonResponse
     {
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
 
         if (!($folderId = $bag->getInt('folderId'))) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
@@ -211,7 +200,7 @@ class FilesController extends Controller
 
     protected function fileRename (): JsonResponse
     {
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
 
         try {
             $name = trim($bag->get('name'));
@@ -323,7 +312,7 @@ class FilesController extends Controller
 
     protected function folderUpdate (): JsonResponse
     {
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
 
         try {
             $mf = MetaFolder::getInstance(null, $this->route->getPathParameter('id'));
@@ -338,7 +327,7 @@ class FilesController extends Controller
 
     protected function folderRename (): JsonResponse
     {
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $id = $this->route->getPathParameter('id');
 
         try {
@@ -358,7 +347,7 @@ class FilesController extends Controller
 
     protected function folderAdd (): JsonResponse
     {
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true));
+        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
 
         if(!($parent = $bag->getInt('parent'))) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
@@ -399,7 +388,7 @@ class FilesController extends Controller
             try {
                 $currentFolder = MetaFolder::getInstance(null, $id);
             }
-            catch (\Exception $e) {
+            catch (\Exception) {
                 return new JsonResponse(null, Response::HTTP_NOT_FOUND);
             }
         }
@@ -492,11 +481,11 @@ class FilesController extends Controller
         try {
             $destinationFolder = MetaFolder::getInstance(null, $destination);
         }
-        catch (MetaFolderException $e) {
+        catch (MetaFolderException) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
-        $bag = new ParameterBag(json_decode($this->getRequest()->getContent(), true));
+        $bag = new ParameterBag(json_decode($this->getRequest()->getContent(), true, 512, JSON_THROW_ON_ERROR));
 
         $fileIds = $bag->get('files', []);
         $folderIds = $bag->get('folders', []);
@@ -516,13 +505,13 @@ class FilesController extends Controller
         try {
             $files = MetaFile::getInstancesByIds($fileIds);
         }
-        catch (MetaFileException $e) {
+        catch (MetaFileException) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         try {
             $folders = MetaFolder::getInstancesByIds($folderIds);
         }
-        catch (MetaFolderException $e) {
+        catch (MetaFolderException) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
@@ -571,13 +560,11 @@ class FilesController extends Controller
         $filter = $this->request->query->get('filter');
         $articleId = $this->request->query->getInt('articleId');
 
-        $route = Application::getInstance()->getCurrentRoute();
-
         if($articleId) {
             try {
                 $linkedFiles = Article::getInstance($articleId)->getLinkedMetaFiles(true);
             }
-            catch (ArticleException $e) {
+            catch (ArticleException) {
                 $linkedFiles = [];
             }
         }

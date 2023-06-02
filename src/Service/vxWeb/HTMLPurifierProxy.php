@@ -14,8 +14,8 @@ use vxPHP\Application\Application;
  * @author Gregor Kofler
  * @version 0.2.0 2015-07-09
  */
-class HTMLPurifierProxy extends Service {
-	
+class HTMLPurifierProxy extends Service
+{
 	protected $htmlPurifierInstance;
 
 	public function __construct() {
@@ -40,7 +40,5 @@ class HTMLPurifierProxy extends Service {
 		}
 		
 		return $this->htmlPurifierInstance->purify($html);
-		
 	}
-	
 }

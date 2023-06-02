@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use vxPHP\Http\ParameterBag;
-use vxPHP\Template\SimpleTemplate;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Controller\Controller;
@@ -11,20 +10,15 @@ use vxPHP\Http\Response;
 use vxPHP\Application\Application;
 use vxPHP\Util\Rex;
 use vxPHP\Http\JsonResponse;
-use vxPHP\Webpage\MenuGenerator;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Constraint\Validator\Email;
 use vxPHP\Security\Password\PasswordEncrypter;
 
+use vxWeb\Model\Article\Exception\ArticleException;
 use vxWeb\User\Util;
 
 class UsersController extends Controller
 {
-	protected function execute(): Response
-    {
-        return new Response();
-	}
-
     protected function init (): JsonResponse
     {
         $app = Application::getInstance();
@@ -46,7 +40,7 @@ class UsersController extends Controller
             $db->quoteIdentifier('id'),
             $db->quoteIdentifier('key'),
             $db->quoteIdentifier('admin')
-        ), []);
+        ));
 
         return new JsonResponse(['users' => (array) $users, 'currentUser' => ['username' => $admin->getUsername()]]);
     }
@@ -55,15 +49,10 @@ class UsersController extends Controller
     {
         $id = (int) $this->route->getPathParameter('id');
 
-        try {
-            if(Application::getInstance()->getCurrentUser()->getAttribute('adminid') === $id) {
-                return new JsonResponse(null, Response::HTTP_FORBIDDEN);
-            }
-            Application::getInstance()->getVxPDO()->deleteRecord('admin', $id);
+        if(Application::getInstance()->getCurrentUser()->getAttribute('adminid') === $id) {
+            return new JsonResponse(null, Response::HTTP_FORBIDDEN);
         }
-        catch(ArticleException $e) {
-            return new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        Application::getInstance()->getVxPDO()->deleteRecord('admin', $id);
 
         return new JsonResponse(['success' => true, 'id' => $id]);
     }
@@ -86,7 +75,7 @@ class UsersController extends Controller
 
     protected function update (): JsonResponse
     {
-        $request = new ParameterBag(json_decode($this->request->getContent(), true));
+        $request = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $id = $request->get('id');
 
         $db = Application::getInstance()->getVxPDO();
@@ -95,8 +84,8 @@ class UsersController extends Controller
             ->addElement(FormElementFactory::create('input', 'username', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Benutzername ist ein Pflichtfeld.'))
             ->addElement(FormElementFactory::create('input', 'email', null, [], [], true, ['trim', 'lowercase'], [new Email()], 'Ungültige E-Mail Adresse.'))
             ->addElement(FormElementFactory::create('input', 'name', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))
-            ->addElement(FormElementFactory::create('password', 'new_PWD', null, [], [], !$request->get('id'), [], [new RegularExpression('/^[^\s].{4,}[^\s]$/')], 'Das Passwort muss mindestens 6 Zeichen umfassen.'))
-            ->addElement(FormElementFactory::create('password', 'new_PWD_verify', null))
+            ->addElement(FormElementFactory::create('password', 'new_PWD', null, [], [], !$request->get('id'), [], [new RegularExpression('/^\S.{4,}\S$/')], 'Das Passwort muss mindestens 6 Zeichen umfassen.'))
+            ->addElement(FormElementFactory::create('password', 'new_PWD_verify'))
             ->addElement(FormElementFactory::create('select', 'admingroupsid', null, [], [], true, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Eine Benutzergruppe muss zugewiesen werden.'))
         ;
 
@@ -109,15 +98,12 @@ class UsersController extends Controller
 
         $errors = $form->getFormErrors();
 
-        if(!isset($errors['new_PWD'])) {
-
-            if(!empty($v['new_PWD'])) {
-                if($v['new_PWD'] !== $v['new_PWD_verify']) {
-                    $form->setError('new_PWD_verify', null, 'Passwörter stimmen nicht überein.');
-                }
-                else {
-                    $v['pwd'] = (new PasswordEncrypter())->hashPassword($v['new_PWD']);
-                }
+        if(!isset($errors['new_PWD']) && !empty($v['new_PWD'])) {
+            if($v['new_PWD'] !== $v['new_PWD_verify']) {
+                $form->setError('new_PWD_verify', null, 'Passwörter stimmen nicht überein.');
+            }
+            else {
+                $v['pwd'] = (new PasswordEncrypter())->hashPassword($v['new_PWD']);
             }
         }
 
@@ -129,7 +115,7 @@ class UsersController extends Controller
             }
         }
 
-        if(!isset($errors['email']) && (!$id || $v['email'] != strtolower($userRow['email'])) && !Util::isAvailableEmail($v['email'])) {
+        if(!isset($errors['email']) && (!$id || $v['email'] !== strtolower($userRow['email'])) && !Util::isAvailableEmail($v['email'])) {
             $form->setError('email', null, 'Email wird bereits verwendet.');
         }
         if(!isset($errors['username']) && (!$id || $v['username'] !== $userRow['username']) && !Util::isAvailableUsername($v['username'])) {

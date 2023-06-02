@@ -10,11 +10,16 @@
 
 namespace vxWeb\Util;
 
+use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
+use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\File\FilesystemFolder;
 use vxPHP\File\Exception\FilesystemFileException;
 use vxPHP\File\FilesystemFile;
 use vxPHP\File\UploadedFile;
 use vxPHP\Application\Application;
+use vxWeb\Model\MetaFile\Exception\MetaFileException;
+use vxWeb\Model\MetaFile\Exception\MetaFolderException;
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\MetaFile\MetaFolder;
 
@@ -24,7 +29,7 @@ use vxWeb\Model\MetaFile\MetaFolder;
  *
  * @author Gregor Kofler, info@gregorkofler.com
  * 
- * @version 0.4.0, 2017-03-10
+ * @version 0.4.1, 2023-06-02
  *
  */
 class File
@@ -37,10 +42,10 @@ class File
      * @param MetaFolder $metaFolder the folder which will be cleaned up
      * @return void
      * @throws FilesystemFileException
-     * @throws \vxPHP\Application\Exception\ApplicationException
-     * @throws \vxPHP\File\Exception\FilesystemFolderException
-     * @throws \vxWeb\Model\MetaFile\Exception\MetaFileException
-     * @throws \vxWeb\Model\MetaFile\Exception\MetaFolderException
+     * @throws ApplicationException
+     * @throws FilesystemFolderException
+     * @throws MetaFileException
+     * @throws MetaFolderException|ConfigException
      */
 	public static function cleanupMetaFolder(MetaFolder $metaFolder): void
     {
@@ -86,7 +91,7 @@ class File
 			MetaFolder::createMetaFolder($d);
 		}
 
-		$mFiles = $db->doPreparedQuery('SELECT filesID, COALESCE(Obscured_Filename, File) AS Filename FROM files f WHERE f.foldersID = ?', [(int) $metaFolder->getId()]);
+		$mFiles = $db->doPreparedQuery('SELECT filesID, COALESCE(Obscured_Filename, File) AS Filename FROM files f WHERE f.foldersID = ?', [$metaFolder->getId()]);
 		$existing = [];
 
 		// delete orphaned metafile entries
@@ -114,31 +119,34 @@ class File
      * turns uploaded file into metafile, avoiding filename collisions
      *
      * @param MetaFolder $metaFolder
-     * @param UploadedFile $upload
-     * @param array metadata
+     * @param UploadedFile $uploadFile
+     * @param array $metaData
      * @param boolean $unpackArchives unpack zip|gzip files when true
      * @return MetaFile[] | boolean false when failure
      * @throws FilesystemFileException
-     * @throws \Exception
+     * @throws ApplicationException
+     * @throws FilesystemFolderException
+     * @throws MetaFileException
+     * @throws MetaFolderException
      */
-	public static function processFileUpload(MetaFolder $metaFolder, UploadedFile $upload, array $metaData = [], $unpackArchives = false)
+	public static function processFileUpload(MetaFolder $metaFolder, UploadedFile $uploadFile, array $metaData = [], bool $unpackArchives = false): array|bool
     {
 		$metafiles = [];
 
 		// check for archive
 
-		if(preg_match('~^application/.*?(gz|zip|compressed)~', $upload->getMimeType()) && $unpackArchives) {
+		if($unpackArchives && preg_match('~^application/.*?(gz|zip|compressed)~', $uploadFile->getMimeType())) {
 			try {
-				$uploads = self::extractZip($upload->getPath(), $metaFolder->getFilesystemFolder());
-				$upload->delete();
+				$uploads = self::extractZip($uploadFile->getPath(), $metaFolder->getFilesystemFolder());
+                $uploadFile->delete();
 			}
-			catch(\Exception $e) {
+			catch(\Exception) {
 				return false;
 			}
 		}
 
 		else {
-			$uploads = [$upload];
+			$uploads = [$uploadFile];
 		}
 
 		foreach($uploads as $upload) {
@@ -160,7 +168,7 @@ class File
 				if($e->getCode() === FilesystemFileException::METAFILE_ALREADY_EXISTS) {
 
 					preg_match('~^(.*?)(\((\d+)\))?(.[a-z0-9]*)?$~i', $upload->getFilename(), $matches);
-					$matches[2] = $matches[2] === '' ? 2 : $matches[2] + 1;
+					$matches[2] = $matches[2] === '' ? 2 : ((int) $matches[2] + 1);
 
 					// check for both alternative filesystem filename and metafile filename
 
@@ -187,7 +195,7 @@ class File
 
 			// other upload problem
 
-			catch(\Exception $e) {
+			catch(\Exception) {
 				return false;
 			}
 
@@ -206,20 +214,20 @@ class File
      * @return FilesystemFile[]
      * @throws \Exception
      */
-    public static function extractZip($zipFilename, FilesystemFolder $folder)
+    public static function extractZip(string $zipFilename, FilesystemFolder $folder): array
     {
         $zip = new \ZipArchive();
         $files = [];
 
         if (true !== ($status = $zip->open($zipFilename))) {
-            throw new \Exception(sprintf("Archive file reports error: '%s'.", $status));
+            throw new \RuntimeException(sprintf("Archive file reports error: '%s'.", $status));
         }
 
         for ($i = 0; $i < $zip->numFiles; ++$i) {
 
             $name = $zip->getNameIndex($i);
 
-            if (substr($name, -1) === '/') {
+            if (str_ends_with($name, '/')) {
                 continue;
             }
 
@@ -250,7 +258,7 @@ class File
 
         try {
             $i = new \DirectoryIterator($dir);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return null;
         }
 
