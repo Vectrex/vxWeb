@@ -277,6 +277,7 @@ class ArticlesController extends Controller
         $rows = [];
 
         $visibleFiles = $article->getLinkedMetaFiles();
+
         $host = $this->request->getSchemeAndHttpHost();
 
         foreach($article->getLinkedMetaFiles(true) as $mf) {

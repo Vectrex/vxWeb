@@ -29,7 +29,7 @@ use vxPHP\Database\Util;
  * Mapper class for articles, stored in table articles
  *
  * @author Gregor Kofler
- * @version 1.2.0 2023-06-02
+ * @version 1.2.1 2023-06-06
  */
 
 class Article implements PublisherInterface
@@ -104,9 +104,9 @@ class Article implements PublisherInterface
      * array items contain both the metafile reference and additional
      * relation specific information (e.g. visibility)
 	 * 
-	 * @var array
+	 * @var array|null
 	 */
-	private	array $linkedFiles = [];
+	private	?array $linkedFiles = null;
 			
 	/**
 	 * flag which indicates that linked files need to be updated
@@ -1282,7 +1282,6 @@ class Article implements PublisherInterface
                 ]
             ];
         }
-
         $this->linkedFiles = $result;
     }
 }
