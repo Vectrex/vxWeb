@@ -589,6 +589,7 @@ class FilesController extends Controller
                 'modified' => (new \DateTime())->setTimestamp($f->getFileInfo()->getMTime())->format('Y-m-d H:i:s'),
                 'type' => $f->getMimetype(),
                 'path' => '/'. $f->getRelativePath(),
+                'url' => $host . '/'. $f->getRelativePath(),
                 'linked' => in_array($f, $linkedFiles, true)
             ];
 

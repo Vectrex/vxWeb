@@ -24,9 +24,9 @@ use vxPHP\Http\JsonResponse;
 
 use vxPHP\Application\Application;
 use vxPHP\Webpage\MenuGenerator;
-use vxPHP\Constraint\Validator\Date;
 use vxPHP\Application\Locale\Locale;
 use vxPHP\Constraint\Validator\RegularExpression;
+use vxPHP\Constraint\Validator\Date;
 
 class ArticlesController extends Controller
 {
@@ -367,10 +367,10 @@ class ArticlesController extends Controller
             ->addElement(FormElementFactory::create('input', 'subline', null, [], [], false, ['trim']))
 			->addElement(FormElementFactory::create('textarea', 'teaser', null, [], [], false, ['trim', 'strip_tags']))
 			->addElement(FormElementFactory::create('textarea', 'content', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt einen Inhalt.'))
-			->addElement(FormElementFactory::create('input', 'article_date', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'display_from', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'display_until', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum'))
-			->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)], 'Ungültiger Wert'))
+			->addElement(FormElementFactory::create('input', 'article_date', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum.'))
+			->addElement(FormElementFactory::create('input', 'display_from', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum.'))
+			->addElement(FormElementFactory::create('input', 'display_until', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum.'))
+			->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)], 'Ungültiger Wert.'))
             ->addElement(FormElementFactory::create('checkbox', 'customflags', 1))
         ;
 	}
