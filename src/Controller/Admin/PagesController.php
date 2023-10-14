@@ -62,7 +62,7 @@ class PagesController extends Controller
     {
         try {
             Page::getInstance($this->route->getPathParameter('id'))->delete();
-            return new JsonResponse(['success' => true]);
+            return new JsonResponse(['success' => true, 'message' => 'Seite erfolgreich gelöscht.']);
         } catch (PageException $e) {
             return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
