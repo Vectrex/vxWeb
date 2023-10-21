@@ -133,6 +133,11 @@ class FilesController extends Controller
                     }
                     $imgEdit->export($dest);
                 }
+                $imageInfo = getimagesize($fsf->getPath());
+                $mappedImageInfo = [];
+                foreach([0 => 'w', 1 => 'h', 'bits' => 'bits', 'mime' => 'mime'] as $ndx => $key) {
+                    $mappedImageInfo[$key] = $imageInfo[$ndx] ?? null;
+                }
             }
 
             return new JsonResponse([
@@ -142,7 +147,8 @@ class FilesController extends Controller
                     'url' => $host . '/' . $mf->getRelativePath(),
                     'name' => $mf->getFilename(),
                     'thumb' => isset($dest) ? $host . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) : null,
-                    'cache' => $mf->getFilesystemFile()->getCacheInfo()
+                    'cache' => $mf->getFilesystemFile()->getCacheInfo(),
+                    'imageInfo' => $mappedImageInfo ?? null
                 ]
             ]);
         }
