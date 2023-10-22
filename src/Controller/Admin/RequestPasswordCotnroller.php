@@ -16,37 +16,40 @@ EOD;
 
     protected function execute(): JsonResponse
     {
-        $origin = $this->request->server->get('HTTP_ORIGIN');
-        $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
-        $receiver = $bag->get('email');
-        $email = new Email();
-        if (!$email->getMailer()) {
-            return new JsonResponse(['success' => false, 'message' => 'Keine Mailingfunktion konfiguriert.']);
-        }
-        if (($user = Application::getInstance()->getCurrentUser()) && $user->getAttribute('email') === $email) {
-            return new JsonResponse(['success' => false, 'message' => 'Bereits eingeloggt.']);
-        }
+        try {
+            $origin = $this->request->server->get('HTTP_ORIGIN');
+            $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
+            $receiver = $bag->get('email');
 
-        // sleep one to two secs
+            if (is_null(Application::getInstance()->getConfig()->mail->mailer)) {
+                return new JsonResponse(['success' => false, 'message' => 'Keine Mailingfunktion konfiguriert.']);
+            }
+            if (($user = Application::getInstance()->getCurrentUser()) && $user->getAttribute('email') === $receiver) {
+                return new JsonResponse(['success' => false, 'message' => 'Bereits eingeloggt.']);
+            }
 
-        $hash = strstr(base64_encode(random_bytes(32)), '+/=', '._-');
-        $pdo = Application::getInstance()->getVxPDO();
-        $row = $pdo->doPreparedQuery("SELECT adminid FROM admin WHERE email = ?", [$receiver])->current();
+            // sleep one to two secs
 
-        if (!$row) {
-            usleep(1e6 + random_int(0, 1000) * 1000);
+            $hash = strtr(base64_encode(random_bytes(32)), '+/=', '._-');
+            $pdo = Application::getInstance()->getVxPDO();
+            $row = $pdo->doPreparedQuery("SELECT adminid FROM admin WHERE email = ?", [$receiver])->current();
+
+            if (!$row) {
+                usleep(random_int(500, 1500) * 1000);
+            } else {
+                $pdo->updateRecord('admin', $row['adminid'], ['temporary_hash' => $hash]);
+                $url = $origin . '/reset-password/' . $hash;
+                (new Email())
+                    ->setReceiver($receiver)
+                    ->setSubject('Passwort zurücksetzen')
+                    ->setMailText(sprintf(self::MAILTEXT, $url))
+                    ->send();
+            }
+
+            return new JsonResponse(['success' => true, 'message' => 'Falls die E-Mail Adresse zugeordnet werden konnte wurde an diese eine Link zum Neusetzen des Passwortes geschickt.']);
         }
-        else {
-            $pdo->updateRecord('admin', $row['adminid'], ['temporary_hash' => $hash]);
-            $url = $origin . '/reset-password/' . $hash;
-            $email
-                ->setReceiver($receiver)
-                ->setSubject('Passwort zurücksetzen')
-                ->setMailText(sprintf(self::MAILTEXT, $url))
-                ->send()
-            ;
+        catch (\Exception $e) {
+            return new JsonResponse(['success' => false, 'exception' => $e]);
         }
-
-        return new JsonResponse(['success' => true, 'message' => 'Falls die E-Mail Adresse zugeordnet werden konnte wurde an diese eine Link zum Neusetzen des Passwortes geschickt.']);
     }
 }
