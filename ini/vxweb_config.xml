@@ -7,6 +7,7 @@
 
 		<route id="login" controller="admin/login" request_methods="POST" />
 		<route id="request_password" path="request-password" controller="admin/requestPassword" request_methods="PUT" />
+		<route id="set_password" path="set-password/{hash=}" controller="admin/setPassword" request_methods="PUT" />
 
 		<route id="profile_data_get" path="profile_data" controller="admin/profile" auth="observe_row" method="get" request_methods="GET" />
 		<route id="profile_data_post" path="profile_data" controller="admin/profile" auth="observe_row" method="post" request_methods="POST" />
