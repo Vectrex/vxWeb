@@ -13,7 +13,7 @@ class SetPasswordController extends Controller
 {
     protected function execute (): JsonResponse
     {
-        $hash = $this->route->getPathParameter('auth');
+        $hash = $this->route->getPathParameter('hash');
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
 
         $pwd = $bag->get('password');
@@ -24,7 +24,7 @@ class SetPasswordController extends Controller
         $pdo = Application::getInstance()->getVxPDO();
         $row = $pdo->doPreparedQuery("SELECT adminid FROM admin WHERE temporary_hash = ?", [$hash])->current();
         if (!$row) {
-            return new JsonResponse(['success' => false, 'message' => 'Ungültiger Code.'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['success' => false, 'message' => 'Ungültiger Code.']);
         }
         $pdo->updateRecord('admin', $row['adminid'], [
             'pwd' => (new PasswordEncrypter())->hashPassword($pwd),
