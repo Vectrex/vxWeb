@@ -49,7 +49,7 @@ EOD;
             return new JsonResponse(['success' => true, 'message' => 'Falls die E-Mail Adresse zugeordnet werden konnte wurde an diese eine Link zum Neusetzen des Passwortes geschickt.']);
         }
         catch (\Exception $e) {
-            return new JsonResponse(['success' => false, 'exception' => $e]);
+            return new JsonResponse(['success' => false, 'exception' => $e->getMessage()]);
         }
     }
 }
