@@ -11,13 +11,16 @@ use vxPHP\Mail\Email;
 class RequestPasswordController extends Controller
 {
     protected const MAILTEXT = <<<'EOD'
-URL %s
+Unter der folgenden URL kann ein neues Passwort gesetzt werden.
+Diese URL kann nur einmal zum Setzen eines neuen Passwortes verwendet werden. Jede weitere Änderung muss durch eine neue Anfrage initiiert werden.
+
+%s
 EOD;
 
     protected function execute(): JsonResponse
     {
         try {
-            $origin = $this->request->server->get('HTTP_ORIGIN');
+            $origin = $this->request->server->get('HTTP_REFERER');
             $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
             $receiver = $bag->get('email');
 
@@ -30,18 +33,18 @@ EOD;
 
             // sleep one to two secs
 
-            $hash = strtr(base64_encode(random_bytes(32)), '+/=', '._-');
+            $hash = preg_replace('/[^a-z0-9]*$/i', '', strtr(base64_encode(random_bytes(16)), '+/=', '._-'));
             $pdo = Application::getInstance()->getVxPDO();
             $row = $pdo->doPreparedQuery("SELECT adminid FROM admin WHERE email = ?", [$receiver])->current();
 
             if (!$row) {
-                usleep(random_int(500, 1500) * 1000);
+                usleep(random_int(500, 1000) * 1000);
             } else {
                 $pdo->updateRecord('admin', $row['adminid'], ['temporary_hash' => $hash]);
-                $url = $origin . '/reset-password/' . $hash;
+                $url = rtrim($origin, '/') . '/reset-password/' . $hash;
                 (new Email())
                     ->setReceiver($receiver)
-                    ->setSubject('Passwort zurücksetzen')
+                    ->setSubject(sprintf("[%s] Passwort zurücksetzen", $this->request->server->get('HTTP_HOST')))
                     ->setMailText(sprintf(self::MAILTEXT, $url))
                     ->send();
             }
