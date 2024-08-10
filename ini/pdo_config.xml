@@ -3,11 +3,14 @@
 <vxpdo>
 	<datasource name="vxweb">
 		<!-- currently pgsql or mysql -->
-		<driver>pgsql</driver>
-		<host>host</host>
-		<user>user</user>
-		<password>password</password>
-		<dbname>database_name</dbname>
-		<dsn>dsn</dsn>
+		<driver>mysql</driver>
+		<user>{ $env(db_user) }</user>
+		<password>{ $env(db_password) }</password>
+		<dsn>{ $env(dsn) }</dsn>
+		<!-- or host and database name -->
+		<!--
+			<host>host</host>
+			<dbname>database_name</dbname>
+		-->
 	</datasource>
 </vxpdo>

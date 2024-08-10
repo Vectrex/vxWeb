@@ -25,9 +25,9 @@
 		"ext-json": "*",
 		"ext-curl": "*",
 		"ext-mbstring": "*",
-		"vectrex/vxphp": "^v2.8.0",
-		"firebase/php-jwt": "^v6.3.2",
-		"ivopetkov/html5-dom-document-php": "^v2.5.0"
+		"vectrex/vxphp": "^v2.9.3",
+		"firebase/php-jwt": "^v6.10.1",
+		"ivopetkov/html5-dom-document-php": "^v2.7.0"
     },
 	"require-dev": {
 		"roave/security-advisories": "dev-master"

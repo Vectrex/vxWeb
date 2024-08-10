@@ -2,6 +2,6 @@
 !.gitignore
 vendor
 !vendor/vxWeb
-resources/node_modules
-resources/package-lock.json
+resources/**/node_modules
+resources/**/package-lock.json
 resources/dist/*
