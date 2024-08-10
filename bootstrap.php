@@ -34,35 +34,39 @@ if(!file_exists($configFilename)) {
 
 if(file_exists($cachedConfigFilename)) {
 
-	/*
-	 * check whether cached file is outdated
-	 * 
-	 * checks all XML files in the ini folder tree (whether they are relevant or not)
-	 * does not consider any included XML files outside the ini folder
-	 */
+    /*
+     * check whether cached file is outdated
+     *
+     * checks .env file in root path
+     * checks all XML files in the ini folder tree (whether they are relevant or not)
+     * does not consider any included XML files outside the ini folder
+     */
+    $cachedFileTimestamp = filemtime($cachedConfigFilename);
+    $cachedIsValid = true;
 
-	$cachedFileTimestamp = filemtime($cachedConfigFilename);
-	$cachedIsValid = true;
+    if (file_exists($rootPath . '/.env') && filemtime($rootPath . '/.env') > $cachedFileTimestamp) {
+        $cachedIsValid = false;
+    }
+    else {
+        foreach (
+            new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator(
+                    $iniPath,
+                    FilesystemIterator::SKIP_DOTS
+                ),
+                RecursiveIteratorIterator::CHILD_FIRST
+            ) as $f) {
 
-	foreach(
-		new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator(
-				$iniPath,
-				FilesystemIterator::SKIP_DOTS
-			),
-			RecursiveIteratorIterator::CHILD_FIRST
-		) as $f) {
-		
-		if($f->getMTime() > $cachedFileTimestamp && strtolower($f->getExtension()) === 'xml') {
-			$cachedIsValid = false;
-			break;
-		}
-	}
-	
-	if($cachedIsValid) {
-		$config = unserialize(file_get_contents($cachedConfigFilename), ['allowed_classes' => true]);
-	}
+            if ($f->getMTime() > $cachedFileTimestamp && strtolower($f->getExtension()) === 'xml') {
+                $cachedIsValid = false;
+                break;
+            }
+        }
+    }
 
+    if($cachedIsValid) {
+        $config = unserialize(file_get_contents($cachedConfigFilename), ['allowed_classes' => true]);
+    }
 }
 
 // cached config was either not found or is outdated 
