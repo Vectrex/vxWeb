@@ -1,9 +1,10 @@
 <?php
 
-// enable error reporting (might be disabled at end of bootstrap)
-
+use vxPHP\Application\Config\DotEnvReader;
 use vxPHP\Application\Exception\ConfigException;
 use vxWeb\Config\Parser\CustomVxweb;
+
+// enable error reporting (might be disabled at end of bootstrap)
 
 ini_set('display_errors', true);
 error_reporting(E_ALL & ~(E_STRICT|E_DEPRECATED));
