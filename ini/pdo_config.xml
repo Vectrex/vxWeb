@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <vxpdo>
-	<datasource name="vxweb">
+	<datasource name="default">
 		<!-- currently pgsql or mysql -->
 		<driver>mysql</driver>
 		<user>{ $env(db_user) }</user>
