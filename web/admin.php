@@ -39,7 +39,12 @@ require $rootPath . DIRECTORY_SEPARATOR . 'application.php';
 // render output
 
 try {
+    /* @var \vxPHP\Routing\Router $router */
+
     $route = $router->getRouteFromPathInfo(Request::createFromGlobals());
+
+    /* @var \vxPHP\Application\Application $app */
+
     $app->setCurrentRoute($route);
 
     Controller::createControllerFromRoute(

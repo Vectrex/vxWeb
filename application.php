@@ -10,7 +10,8 @@ use vxPHP\Http\Request;
 // return empty response for OPTION request
 
 if (Request::createFromGlobals()->getMethod() === 'OPTIONS') {
-    return new Response();
+    (new Response())->send();
+    exit();
 }
 
 // $loader is initialized in bootstrap.php
