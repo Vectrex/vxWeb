@@ -8,21 +8,16 @@ use vxWeb\Config\Parser\CustomVxweb;
 ini_set('display_errors', true);
 error_reporting(E_ALL & ~(E_STRICT|E_DEPRECATED));
 
-// package was installed with composer?
-
-if(file_exists($rootPath . '/vendor/autoload.php')) {
-	require_once $rootPath . '/vendor/autoload.php';
+if(!file_exists($rootPath . '/vendor/autoload.php')) {
+    die ('No autoloader found. Please run "composer install".');
 }
 
-// if not set up own autoloaders
+require_once $rootPath . '/vendor/autoload.php';
 
-else {
-	require_once $rootPath . '/vendor/vxPHP/Autoload/Psr4.php';
-	
-	$loader = new vxPHP\Autoload\Psr4();
-	$loader->register();
-	
-	$loader->addPrefix('vxPHP', $rootPath . '/vendor/vxPHP');
+// populate $_ENV
+
+if (file_exists($rootPath . '/.env')) {
+    (new DotEnvReader($rootPath . '/.env'))->read();
 }
 
 $iniPath = $rootPath . DIRECTORY_SEPARATOR . 'ini' . DIRECTORY_SEPARATOR;
