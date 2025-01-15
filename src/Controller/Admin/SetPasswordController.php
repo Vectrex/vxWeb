@@ -6,7 +6,6 @@ use vxPHP\Application\Application;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Http\ParameterBag;
-use vxPHP\Http\Response;
 use vxPHP\Security\Password\PasswordEncrypter;
 
 class SetPasswordController extends Controller

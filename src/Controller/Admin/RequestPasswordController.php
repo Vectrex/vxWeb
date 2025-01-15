@@ -10,7 +10,7 @@ use vxPHP\Mail\Email;
 
 class RequestPasswordController extends Controller
 {
-    protected const MAILTEXT = <<<'EOD'
+    protected const string MAILTEXT = <<<'EOD'
 Unter der folgenden URL kann ein neues Passwort gesetzt werden.
 Diese URL kann nur einmal zum Setzen eines neuen Passwortes verwendet werden. Jede weitere Änderung muss durch eine neue Anfrage initiiert werden.
 

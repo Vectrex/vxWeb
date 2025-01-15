@@ -28,8 +28,8 @@ class FilesController extends Controller
 {
     use AdminControllerTrait;
 
-    private const FILE_ATTRIBUTES = ['title', 'subtitle', 'description', 'customsort'];
-    private const FOLDER_ATTRIBUTES = ['title', 'description'];
+    private const array FILE_ATTRIBUTES = ['title', 'subtitle', 'description', 'customsort'];
+    private const array FOLDER_ATTRIBUTES = ['title', 'description'];
 
     protected function folderRead (): JsonResponse
     {
