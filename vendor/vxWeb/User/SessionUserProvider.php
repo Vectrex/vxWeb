@@ -23,17 +23,17 @@ use vxPHP\User\SimpleSessionUserProvider;
 /**
  * represents users within a vxWeb application, which are stored in the
  * session after initialization
- * 
+ *
  * @author Gregor Kofler, info@gregorkofler.com
  * @version 0.5.3, 2023-06-02
- *        
+ *
  */
 class SessionUserProvider extends SimpleSessionUserProvider
 {
-	/**
-	 * @var DatabaseInterface
-	 */
-	private DatabaseInterface $db;
+    /**
+     * @var DatabaseInterface
+     */
+    private DatabaseInterface $db;
 
     /**
      * constructor
@@ -44,45 +44,44 @@ class SessionUserProvider extends SimpleSessionUserProvider
     }
 
     /**
-	 * {@inheritdoc}
-	 *
-	 * @see UserProviderInterface::refreshUser
-	 */
-	public function refreshUser(UserInterface $user): UserInterface
+     * {@inheritdoc}
+     *
+     * @see UserProviderInterface::refreshUser
+     */
+    public function refreshUser(UserInterface $user): UserInterface
     {
-	    $u = $this->getUserRows($user->getUsername())->current();
+        $u = $this->getUserRows($user->getUsername())->current();
 
-		if(!$u) {
-			throw new UserException(sprintf("User '%s' no longer exists.", $user->getUsername()));
-		}
+        if (!$u) {
+            throw new UserException(sprintf("User '%s' no longer exists.", $user->getUsername()));
+        }
 
-		$user
-			->setHashedPassword($u['pwd'])
-			->setRoles([new Role($u['group_alias'])])
-			->replaceAttributes([
-				'email' => $u['email'],
-				'name' => $u['name'],
-				'misc_data' => $u['misc_data'],
-				'table_access' => $u['table_access'],
-				'row_access' => $u['row_access'],
-				'id' => $u['adminid'],
-			])
-		;
+        $user
+            ->setHashedPassword($u['pwd'])
+            ->setRoles([new Role($u['group_alias'])])
+            ->replaceAttributes([
+                'email' => $u['email'],
+                'name' => $u['name'],
+                'misc_data' => $u['misc_data'],
+                'table_access' => $u['table_access'],
+                'row_access' => $u['row_access'],
+                'id' => $u['adminid'],
+            ]);
 
-		return $user;
-	}
-	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 * @see UserProviderInterface::instanceUserByUsername
-	 */
-	public function instanceUserByUsername($username): SessionUser
+        return $user;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     *
+     * @see UserProviderInterface::instanceUserByUsername
+     */
+    public function instanceUserByUsername($username): SessionUser
     {
         $rows = $this->getUserRows($username);
 
-        if(count($rows) !== 1) {
+        if (count($rows) !== 1) {
             throw new UserException(sprintf("User identified by username '%s' not found or not unique.", $username));
         }
 
@@ -94,11 +93,11 @@ class SessionUserProvider extends SimpleSessionUserProvider
      * @return SessionUser
      * @throws UserException
      */
-	public function instanceUserByEmail (string $email): SessionUser
+    public function instanceUserByEmail(string $email): SessionUser
     {
         $rows = $this->getUserRows($email, 'email');
 
-        if(count($rows) !== 1) {
+        if (count($rows) !== 1) {
             throw new UserException(sprintf("User identified by e-mail '%s' not found or not unique.", $email));
         }
 
@@ -113,7 +112,7 @@ class SessionUserProvider extends SimpleSessionUserProvider
      * @param string $column
      * @return RecordsetIteratorInterface
      */
-	private function getUserRows(string $value, string $column = 'username'): RecordsetIteratorInterface
+    private function getUserRows(string $value, string $column = 'username'): RecordsetIteratorInterface
     {
         return $this->db->doPreparedQuery(sprintf("
 			SELECT
@@ -135,7 +134,7 @@ class SessionUserProvider extends SimpleSessionUserProvider
      * @return SessionUser
      * @throws \Exception
      */
-    private function createUser (array $row): SessionUser
+    private function createUser(array $row): SessionUser
     {
         return new SessionUser(
             $row['username'],

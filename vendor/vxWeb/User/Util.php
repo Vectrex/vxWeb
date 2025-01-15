@@ -20,7 +20,6 @@ use vxPHP\Application\Exception\ConfigException;
  * @author Gregor Kofler
  * @version 1.4.2 2023-06-02
  */
-
 class Util
 {
     /**
@@ -30,11 +29,11 @@ class Util
      * @return boolean availability
      * @throws ApplicationException|ConfigException
      */
-	public static function isAvailableEmail(string $email): bool
+    public static function isAvailableEmail(string $email): bool
     {
-	    $db = Application::getInstance()->getVxPDO();
-		return !($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE LOWER(email) = ?', array(strtolower($email)))->count());
-	}
+        $db = Application::getInstance()->getVxPDO();
+        return !($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE LOWER(email) = ?', [strtolower($email)])->count());
+    }
 
     /**
      * check whether a username is already assigned
@@ -43,9 +42,9 @@ class Util
      * @return boolean availability
      * @throws ApplicationException|ConfigException
      */
-	public static function isAvailableUsername(string $username): bool
+    public static function isAvailableUsername(string $username): bool
     {
         $db = Application::getInstance()->getVxPDO();
-		return !($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE username = ?', array($username))->count());
-	}
+        return !($db->doPreparedQuery('SELECT adminID FROM ' . $db->quoteIdentifier('admin') . ' WHERE username = ?', [$username])->count());
+    }
 }
