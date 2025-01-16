@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use vxPHP\Application\Application;
+use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\Response;
 use vxPHP\Http\Exception\HttpException;
@@ -17,7 +18,11 @@ use IvoPetkov\HTML5DOMDocument;
 
 class DefaultController extends Controller
 {
-	protected function execute(): Response
+    /**
+     * @return Response
+     * @throws ApplicationException
+     */
+    protected function execute(): Response
     {
         if(stripos($this->getRequest()->headers->get('accept'), 'text/html') !== 0) {
             throw new HttpException(Response::HTTP_NOT_FOUND);
@@ -63,7 +68,7 @@ class DefaultController extends Controller
                 try {
                     $page = Page::getInstance($pageAlias);
                 }
-                catch (PageException $e) {
+                catch (PageException) {
 				    $page = null;
                 }
 
@@ -111,18 +116,25 @@ class DefaultController extends Controller
             );
 		}
 
-		catch(SimpleTemplateException $e) {
+		catch(SimpleTemplateException) {
 			throw new HttpException(Response::HTTP_NOT_FOUND); 
 		}
 	}
 
-	private function insertInlineEditor(SimpleTemplate $include, array $parameters): string
+    /**
+     * @param SimpleTemplate $include
+     * @param array $parameters
+     * @return string
+     * @throws ApplicationException
+     * @throws SimpleTemplateException
+     */
+    private function insertInlineEditor (SimpleTemplate $include, array $parameters): string
     {
 	    $parentTemplate = SimpleTemplate::create($include->getParentTemplateFilename() ?? 'layout.php');
 
         // remove a possible extend-comment to avoid cascaded inclusion
 
-        $include->setRawContents(preg_replace('~<!--\s*\{\s*extend:\s*([\w./-]+)\s*@\s*([\w-]+)\s*\}\s*-->~', '', $include->getRawContents()));
+        $include->setRawContents(preg_replace('~<!--\s*\{\s*extend:\s*([\w./-]+)\s*@\s*([\w-]+)\s*}\s*-->~', '', $include->getRawContents()));
 
         $markup = $parentTemplate
             ->assign('route', $parameters['pageAlias'] ?? null)
@@ -138,7 +150,7 @@ class DefaultController extends Controller
 
         foreach($xpath->query('//comment()') as $item) {
 
-            if(preg_match('/\{\s*block:\s*content_block\s*\}/i', trim($item->data))) {
+            if(preg_match('/\{\s*block:\s*content_block\s*}/i', trim($item->data))) {
                 $node = $item->parentNode;
                 break;
             }
