@@ -2,42 +2,54 @@
 
 namespace App\Controller\Admin;
 
-use vxPHP\Http\ParameterBag;
-use vxPHP\Util\Rex;
-
-use vxPHP\Image\ImageModifierFactory;
-use vxPHP\Template\SimpleTemplate;
+use vxPHP\Application\Application;
+use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
+use vxPHP\Application\Locale\Locale;
+use vxPHP\Constraint\Validator\Date;
+use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Controller\Controller;
-
-use vxPHP\Form\HtmlForm;
+use vxPHP\File\Exception\FilesystemFileException;
+use vxPHP\File\Exception\FilesystemFolderException;
+use vxPHP\Form\Exception\FormElementFactoryException;
+use vxPHP\Form\Exception\HtmlFormException;
 use vxPHP\Form\FormElement\FormElementFactory;
-
-use vxWeb\Model\ArticleCategory\ArticleCategoryQuery;
-use vxWeb\Model\MetaFile\MetaFile;
-use vxWeb\Model\Article\ArticleQuery;
+use vxPHP\Form\HtmlForm;
+use vxPHP\Http\JsonResponse;
+use vxPHP\Http\ParameterBag;
+use vxPHP\Http\Response;
+use vxPHP\Image\ImageModifierFactory;
+use vxPHP\Security\Csrf\Exception\CsrfTokenException;
+use vxPHP\Template\Exception\SimpleTemplateException;
+use vxPHP\Template\SimpleTemplate;
+use vxPHP\Util\Rex;
+use vxPHP\Webpage\MenuGenerator;
 use vxWeb\Model\Article\Article;
+use vxWeb\Model\Article\ArticleQuery;
 use vxWeb\Model\Article\Exception\ArticleException;
 use vxWeb\Model\ArticleCategory\ArticleCategory;
-
-use vxPHP\Http\Response;
-use vxPHP\Http\JsonResponse;
-
-use vxPHP\Application\Application;
-use vxPHP\Webpage\MenuGenerator;
-use vxPHP\Application\Locale\Locale;
-use vxPHP\Constraint\Validator\RegularExpression;
-use vxPHP\Constraint\Validator\Date;
+use vxWeb\Model\ArticleCategory\ArticleCategoryQuery;
+use vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException;
+use vxWeb\Model\MetaFile\Exception\MetaFileException;
+use vxWeb\Model\MetaFile\Exception\MetaFolderException;
+use vxWeb\Model\MetaFile\MetaFile;
 
 class ArticlesController extends Controller
 {
     use AdminControllerTrait;
 
-	protected function list(): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     * @throws ApplicationException
+     * @throws ConfigException
+     */
+    protected function list(): JsonResponse
     {
         $categories = [];
         $articles = [];
 
-        foreach(ArticleCategoryQuery::create(Application::getInstance()->getVxPDO())->sortBy('customsort')->sortBy('title')->select() as $cat) {
+        foreach (ArticleCategoryQuery::create(Application::getInstance()->getVxPDO())->sortBy('customsort')->sortBy('title')->select() as $cat) {
             $cId = $cat->getId();
             $categories[$cId] = [
                 'id' => $cId,
@@ -46,7 +58,7 @@ class ArticlesController extends Controller
             ];
         }
 
-        foreach(ArticleQuery::create(Application::getInstance()->getVxPDO())->select() as $article) {
+        foreach (ArticleQuery::create(Application::getInstance()->getVxPDO())->select() as $article) {
             $articles[] = [
                 'id' => $article->getId(),
                 'title' => $article->getHeadline(),
@@ -67,6 +79,12 @@ class ArticlesController extends Controller
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ConfigException
+     * @throws \Throwable
+     */
     protected function get(): JsonResponse
     {
         $db = Application::getInstance()->getVxPDO();
@@ -93,16 +111,35 @@ class ArticlesController extends Controller
         return new JsonResponse($articleData);
     }
 
-    protected function getCategories (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ConfigException
+     * @throws \Throwable
+     */
+    protected function getCategories(): JsonResponse
     {
         $db = Application::getInstance()->getVxPDO();
 
         return new JsonResponse(
-            (array) $db->doPreparedQuery("SELECT articlecategoriesid AS " . $db->quoteIdentifier('key') . ", title AS label FROM articlecategories ORDER BY title")
+            (array)$db->doPreparedQuery("SELECT articlecategoriesid AS " . $db->quoteIdentifier('key') . ", title AS label FROM articlecategories ORDER BY title")
         );
     }
 
-    protected function addOrUpdate (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ArticleException
+     * @throws ConfigException
+     * @throws \DateMalformedStringException
+     * @throws \JsonException
+     * @throws \Throwable
+     * @throws FormElementFactoryException
+     * @throws HtmlFormException
+     * @throws CsrfTokenException
+     * @throws ArticleCategoryException
+     */
+    protected function addOrUpdate(): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $admin = Application::getInstance()->getCurrentUser();
@@ -111,18 +148,16 @@ class ArticlesController extends Controller
             $id = $this->route->getPathParameter('id');
             try {
                 $article = Article::getInstance($id);
-            }
-            catch(ArticleException) {
+            } catch (ArticleException) {
                 return new JsonResponse(null, Response::HTTP_NOT_FOUND);
             }
 
             // check permission of non superadmin
 
-            if(!$admin->hasRole('superadmin') && (int) $admin->getAttribute('id') !== (int) $article->getCreatedById()) {
+            if (!$admin->hasRole('superadmin') && (int)$admin->getAttribute('id') !== (int)$article->getCreatedById()) {
                 return new JsonResponse(null, Response::HTTP_FORBIDDEN);
             }
-        }
-        else {
+        } else {
             $id = null;
             $article = new Article();
         }
@@ -131,9 +166,8 @@ class ArticlesController extends Controller
         $form
             ->disableCsrfToken()
             ->bindRequestParameters($bag)
-            ->validate()
-        ;
-        if(!$form->getFormErrors()) {
+            ->validate();
+        if (!$form->getFormErrors()) {
             $v = $form->getValidFormValues();
 
             $article->setDate($v['article_date'] ? new \DateTime($v['article_date']) : null);
@@ -144,9 +178,8 @@ class ArticlesController extends Controller
                 ->setCategory($this->validateArticleCategory(ArticleCategory::getInstance($v['articlecategoriesid'])))
                 ->setHeadline($v['headline'])
                 ->setData($v->all() /* content, teaser, subline */)
-                ->setCustomSort((int) $v->get('customsort'))
-                ->setCustomFlags((int) $v->get('customflags'))
-            ;
+                ->setCustomSort((int)$v->get('customsort'))
+                ->setCustomFlags((int)$v->get('customflags'));
             if (!$id) {
                 $article->setCreatedById($admin->getAttribute('id'));
             } else {
@@ -172,24 +205,31 @@ class ArticlesController extends Controller
                 'message' => 'Keine Aktualisierung notwendig.'
             ]);
         }
-        $response = [];
 
-        foreach($form->getFormErrors() as $element => $error) {
-            $response[$element] = $error->getErrorMessage();
-        }
-        return new JsonResponse(['success' => false, 'errors' => $response, 'message' => 'Formulardaten unvollständig oder fehlerhaft.']);
+        return new JsonResponse([
+            'success' => false,
+            'errors' => array_map(fn($error) => $error->getMessage(), $form->getFormErrors()),
+            'message' => 'Formulardaten unvollständig oder fehlerhaft.'
+        ]);
     }
 
-	protected function publish (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ArticleCategoryException
+     * @throws ArticleException
+     * @throws ConfigException
+     * @throws \Throwable
+     */
+    protected function publish(): JsonResponse
     {
-		$id = $this->route->getPathParameter('id');
-		$state = $this->route->getRouteId() === 'article_publish';
-		$admin = Application::getInstance()->getCurrentUser();
+        $id = $this->route->getPathParameter('id');
+        $state = $this->route->getRouteId() === 'article_publish';
+        $admin = Application::getInstance()->getCurrentUser();
 
         try {
             $article = Article::getInstance($id);
-        }
-        catch(ArticleException) {
+        } catch (ArticleException) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
         if ($state) {
@@ -198,8 +238,7 @@ class ArticlesController extends Controller
 
             $article->publish($admin->getAttribute('id'))->save();
             $message = 'Artikel freigegeben.';
-        }
-        else {
+        } else {
 
             // unpublish sets publishedById to null
 
@@ -208,16 +247,22 @@ class ArticlesController extends Controller
         }
 
         return new JsonResponse(['success' => true, 'message' => $message]);
-	}
+    }
 
-	protected function del (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ArticleCategoryException
+     * @throws ConfigException
+     * @throws \Throwable
+     */
+    protected function del(): JsonResponse
     {
         $id = $this->route->getPathParameter('id');
 
         try {
             $article = Article::getInstance($id);
-        }
-        catch(ArticleException) {
+        } catch (ArticleException) {
             return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
 
@@ -225,7 +270,7 @@ class ArticlesController extends Controller
 
         $admin = Application::getInstance()->getCurrentUser();
 
-        if(!$admin->hasRole('superadmin') && (int) $admin->getAttribute('id') !== (int) $article->getCreatedById()) {
+        if (!$admin->hasRole('superadmin') && (int)$admin->getAttribute('id') !== (int)$article->getCreatedById()) {
             return new JsonResponse(null, Response::HTTP_FORBIDDEN);
         }
 
@@ -234,7 +279,12 @@ class ArticlesController extends Controller
         return new JsonResponse(['success' => true, 'message' => 'Artikel erfolgreich gelöscht.']);
     }
 
-    protected function add (): Response
+    /**
+     * @return Response
+     * @throws ApplicationException
+     * @throws SimpleTemplateException
+     */
+    protected function add(): Response
     {
         MenuGenerator::setForceActiveMenu(true);
 
@@ -252,14 +302,24 @@ class ArticlesController extends Controller
         );
     }
 
-    protected function fileLink (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ArticleException
+     * @throws ConfigException
+     * @throws \Throwable
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     * @throws MetaFileException
+     * @throws MetaFolderException
+     */
+    protected function fileLink(): JsonResponse
     {
         try {
             $article = Article::getInstance($this->route->getPathParameter('id'));
             $fileId = (new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR)))->get('fileId');
             $file = MetaFile::getInstance(null, $fileId);
-        }
-        catch(\Exception) {
+        } catch (\Exception) {
             return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
         }
         if (in_array($file, $article->getLinkedMetaFiles(true))) {
@@ -270,7 +330,19 @@ class ArticlesController extends Controller
         return new JsonResponse(['success' => true, 'status' => 'linked']);
     }
 
-    protected function getLinkedFiles (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ArticleCategoryException
+     * @throws ArticleException
+     * @throws ConfigException
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     * @throws MetaFileException
+     * @throws MetaFolderException
+     * @throws \Throwable
+     */
+    protected function getLinkedFiles(): JsonResponse
     {
         $article = Article::getInstance($this->route->getPathParameter('id'));
 
@@ -280,7 +352,7 @@ class ArticlesController extends Controller
 
         $host = $this->request->getSchemeAndHttpHost();
 
-        foreach($article->getLinkedMetaFiles(true) as $mf) {
+        foreach ($article->getLinkedMetaFiles(true) as $mf) {
             $row = [
                 'id' => $mf->getId(),
                 'filename' => $mf->getFilename(),
@@ -303,7 +375,20 @@ class ArticlesController extends Controller
         return new JsonResponse($rows);
     }
 
-    protected function updateLinkedFiles (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ArticleCategoryException
+     * @throws ArticleException
+     * @throws ConfigException
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     * @throws MetaFileException
+     * @throws MetaFolderException
+     * @throws \JsonException
+     * @throws \Throwable
+     */
+    protected function updateLinkedFiles(): JsonResponse
     {
         $article = Article::getInstance($this->route->getPathParameter('id'));
 
@@ -315,7 +400,7 @@ class ArticlesController extends Controller
             }
         }
 
-        foreach(MetaFile::getInstancesByIds($fileIds) as $ndx => $mf) {
+        foreach (MetaFile::getInstancesByIds($fileIds) as $ndx => $mf) {
             $article->setCustomSortOfMetaFile($mf, $ndx);
         }
 
@@ -324,7 +409,20 @@ class ArticlesController extends Controller
         return new JsonResponse(['success' => true]);
     }
 
-    protected function toggleLinkedFile (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ArticleCategoryException
+     * @throws ArticleException
+     * @throws ConfigException
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     * @throws MetaFileException
+     * @throws MetaFolderException
+     * @throws \JsonException
+     * @throws \Throwable
+     */
+    protected function toggleLinkedFile(): JsonResponse
     {
         $article = Article::getInstance($this->route->getPathParameter('id'));
 
@@ -342,14 +440,14 @@ class ArticlesController extends Controller
         return new JsonResponse(null, Response::HTTP_NOT_FOUND);
     }
 
-	/**
-	 * @param ArticleCategory $cat
-	 * @return ArticleCategory
-	 */
-	private function validateArticleCategory(ArticleCategory $cat): ArticleCategory
+    /**
+     * @param ArticleCategory $cat
+     * @return ArticleCategory
+     */
+    private function validateArticleCategory(ArticleCategory $cat): ArticleCategory
     {
-		return $cat;
-	}
+        return $cat;
+    }
 
     /**
      * build edit form
@@ -359,57 +457,56 @@ class ArticlesController extends Controller
      * @throws \vxPHP\Form\Exception\FormElementFactoryException
      * @throws \vxPHP\Form\Exception\HtmlFormException
      */
-	private function buildEditForm(): HtmlForm
+    private function buildEditForm(): HtmlForm
     {
-		return HtmlForm::create()
-			->addElement(FormElementFactory::create('select', 'articlecategoriesid', null, [], [], true, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Es muss eine Artikelkategorie gewählt werden.'))
-			->addElement(FormElementFactory::create('input', 'headline', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt eine Überschrift.'))
+        return HtmlForm::create()
+            ->addElement(FormElementFactory::create('select', 'articlecategoriesid', null, [], [], true, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Es muss eine Artikelkategorie gewählt werden.'))
+            ->addElement(FormElementFactory::create('input', 'headline', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt eine Überschrift.'))
             ->addElement(FormElementFactory::create('input', 'subline', null, [], [], false, ['trim']))
-			->addElement(FormElementFactory::create('textarea', 'teaser', null, [], [], false, ['trim', 'strip_tags']))
-			->addElement(FormElementFactory::create('textarea', 'content', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt einen Inhalt.'))
-			->addElement(FormElementFactory::create('input', 'article_date', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum.'))
-			->addElement(FormElementFactory::create('input', 'display_from', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum.'))
-			->addElement(FormElementFactory::create('input', 'display_until', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum.'))
-			->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)], 'Ungültiger Wert.'))
-            ->addElement(FormElementFactory::create('checkbox', 'customflags', 1))
-        ;
-	}
+            ->addElement(FormElementFactory::create('textarea', 'teaser', null, [], [], false, ['trim', 'strip_tags']))
+            ->addElement(FormElementFactory::create('textarea', 'content', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Artikel benötigt einen Inhalt.'))
+            ->addElement(FormElementFactory::create('input', 'article_date', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum.'))
+            ->addElement(FormElementFactory::create('input', 'display_from', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum.'))
+            ->addElement(FormElementFactory::create('input', 'display_until', null, [], [], false, ['trim'], [new Date(['locale' => new Locale('iso')])], 'Ungültiges Datum.'))
+            ->addElement(FormElementFactory::create('input', 'customsort', null, [], [], false, ['trim'], [new RegularExpression(Rex::EMPTY_OR_INT)], 'Ungültiger Wert.'))
+            ->addElement(FormElementFactory::create('checkbox', 'customflags', 1));
+    }
 
     /**
      * @param MetaFile $f
      * @return string
      * @throws \vxPHP\File\Exception\FilesystemFolderException
      */
-	private function getThumbPath(MetaFile $f): string
+    private function getThumbPath(MetaFile $f): string
     {
-		// check and - if required - generate thumbnail
+        // check and - if required - generate thumbnail
 
-		$fi			= $f->getFileInfo();
-		$actions	= ['crop 1', 'resize 0 40'];
-		$dest		=
-			$f->getMetaFolder()->getFilesystemFolder()->createCache() .
-			$fi->getFilename() .
-			'@' .
-			implode('|', $actions) .
-			'.'.
-			pathinfo($fi->getFilename(), PATHINFO_EXTENSION);
+        $fi = $f->getFileInfo();
+        $actions = ['crop 1', 'resize 0 40'];
+        $dest =
+            $f->getMetaFolder()->getFilesystemFolder()->createCache() .
+            $fi->getFilename() .
+            '@' .
+            implode('|', $actions) .
+            '.' .
+            pathinfo($fi->getFilename(), PATHINFO_EXTENSION);
 
-		if(!file_exists($dest)) {
-			$imgEdit = ImageModifierFactory::create($f->getFilesystemFile()->getPath());
+        if (!file_exists($dest)) {
+            $imgEdit = ImageModifierFactory::create($f->getFilesystemFile()->getPath());
 
-			foreach($actions as $a) {
-				$params = preg_split('~\s+~', $a);
+            foreach ($actions as $a) {
+                $params = preg_split('~\s+~', $a);
 
-				$method = array_shift($params);
+                $method = array_shift($params);
 
-				if(method_exists($imgEdit, $method)) {
-					call_user_func_array([$imgEdit, $method], $params);
-				}
-			}
+                if (method_exists($imgEdit, $method)) {
+                    call_user_func_array([$imgEdit, $method], $params);
+                }
+            }
 
-			$imgEdit->export($dest);
-		}
+            $imgEdit->export($dest);
+        }
 
-		return str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest);
-	}
+        return str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest);
+    }
 }

@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use vxPHP\Application\Application;
+use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
 use vxPHP\Controller\Controller;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Http\ParameterBag;
@@ -10,7 +12,14 @@ use vxPHP\Security\Password\PasswordEncrypter;
 
 class SetPasswordController extends Controller
 {
-    protected function execute (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws \JsonException
+     * @throws \Throwable
+     * @throws ApplicationException
+     * @throws ConfigException
+     */
+    protected function execute(): JsonResponse
     {
         $hash = $this->route->getPathParameter('hash');
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));

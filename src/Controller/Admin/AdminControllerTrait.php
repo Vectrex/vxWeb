@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller\Admin;
 
 trait AdminControllerTrait
@@ -13,11 +14,11 @@ trait AdminControllerTrait
     {
         $suffix = strtolower(substr(trim($val), -1));
 
-        $v = (int) $val;
+        $v = (int)$val;
 
         switch ($suffix) {
             case 'g':
-                $v *= 1024 * 1024 *1024;
+                $v *= 1024 * 1024 * 1024;
                 break;
             case 'm':
                 $v *= 1024 * 1024;

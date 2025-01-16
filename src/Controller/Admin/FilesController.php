@@ -4,6 +4,10 @@ namespace App\Controller\Admin;
 
 /* @TODO sanitize metadata */
 
+use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
+use vxPHP\File\Exception\FilesystemFileException;
+use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\Http\ParameterBag;
 use vxPHP\File\FilesystemFile;
 use vxPHP\Image\ImageModifierFactory;
@@ -13,6 +17,7 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxWeb\Model\Article\Article;
 use vxWeb\Model\Article\Exception\ArticleException;
+use vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException;
 use vxWeb\Model\MetaFile\Exception\MetaFileException;
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\MetaFile\MetaFolder;
@@ -31,6 +36,10 @@ class FilesController extends Controller
     private const array FILE_ATTRIBUTES = ['title', 'subtitle', 'description', 'customsort'];
     private const array FOLDER_ATTRIBUTES = ['title', 'description'];
 
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     */
     protected function folderRead (): JsonResponse
     {
         $id = $this->route->getPathParameter('id');
@@ -63,6 +72,17 @@ class FilesController extends Controller
             return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * @return JsonResponse
+     * @throws MetaFileException
+     * @throws MetaFolderException
+     * @throws \Throwable
+     * @throws ApplicationException
+     * @throws ConfigException
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     */
     protected function search (): JsonResponse
     {
         $search = $this->request->query->get('search');
@@ -103,6 +123,10 @@ class FilesController extends Controller
         return new JsonResponse(['folders' => $folders, 'files' => $files]);
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     */
     protected function fileGet (): JsonResponse
     {
         $host = $this->request->getSchemeAndHttpHost();
@@ -157,6 +181,11 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \JsonException
+     * @throws \Throwable
+     */
     protected function fileUpdate (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
@@ -172,6 +201,11 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \JsonException
+     * @throws \Throwable
+     */
     protected function fileMove (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
@@ -190,6 +224,10 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     */
     protected function fileDel (): JsonResponse
     {
         if(!($id = $this->route->getPathParameter('id'))) {
@@ -204,6 +242,11 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \JsonException
+     * @throws \Throwable
+     */
     protected function fileRename (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
@@ -223,6 +266,13 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws FilesystemFolderException
+     * @throws MetaFolderException
+     * @throws \Throwable
+     */
     protected function fileUpload (): JsonResponse
     {
         $id = $this->request->query->get('folder');
@@ -290,6 +340,10 @@ class FilesController extends Controller
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     */
     protected function folderDel (): JsonResponse
     {
         try {
@@ -301,6 +355,10 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     */
     protected function folderGet (): JsonResponse
     {
         try {
@@ -316,6 +374,11 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \JsonException
+     * @throws \Throwable
+     */
     protected function folderUpdate (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
@@ -331,6 +394,11 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \JsonException
+     * @throws \Throwable
+     */
     protected function folderRename (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
@@ -351,6 +419,11 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws \JsonException
+     * @throws \Throwable
+     */
     protected function folderAdd (): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
@@ -386,6 +459,14 @@ class FilesController extends Controller
         }
     }
 
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ConfigException
+     * @throws FilesystemFolderException
+     * @throws MetaFolderException
+     * @throws \Throwable
+     */
     protected function getFoldersTree (): JsonResponse
     {
         $id = $this->request->query->getInt('folder');
@@ -434,6 +515,15 @@ class FilesController extends Controller
         return new JsonResponse($trees[0]);
     }
 
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ConfigException
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     * @throws MetaFolderException
+     * @throws \Throwable
+     */
     protected function selectionDel (): JsonResponse
     {
         $files = $this->request->query->get('files');
@@ -480,6 +570,16 @@ class FilesController extends Controller
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws ConfigException
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     * @throws MetaFolderException
+     * @throws \JsonException
+     * @throws \Throwable
+     */
     protected function selectionMove (): JsonResponse
     {
         $destination = $this->route->getPathParameter('id');
@@ -561,6 +661,17 @@ class FilesController extends Controller
         return preg_match('/<\?(?:php|=)/i', $string) === 1;
     }
 
+    /**
+     * @param MetaFolder $folder
+     * @return array
+     * @throws ApplicationException
+     * @throws ConfigException
+     * @throws FilesystemFileException
+     * @throws FilesystemFolderException
+     * @throws MetaFileException
+     * @throws MetaFolderException
+     * @throws ArticleCategoryException
+     */
     private function getFileRows (MetaFolder $folder): array
     {
         $filter = $this->request->query->get('filter');
@@ -632,6 +743,14 @@ class FilesController extends Controller
         return $files;
     }
 
+    /**
+     * @param MetaFolder $folder
+     * @return array
+     * @throws ApplicationException
+     * @throws ConfigException
+     * @throws FilesystemFolderException
+     * @throws MetaFolderException
+     */
     private function getFolderRows (MetaFolder $folder): array
     {
         $folders = [];
@@ -647,6 +766,13 @@ class FilesController extends Controller
         return $folders;
     }
 
+    /**
+     * @param MetaFolder $folder
+     * @return array[]
+     * @throws ApplicationException
+     * @throws FilesystemFolderException
+     * @throws MetaFolderException
+     */
     private function getBreadcrumbs (MetaFolder $folder): array
     {
         $breadcrumbs = [['id' => $folder->getId(), 'name' => $folder->getName(), 'path' => trim($folder->getRelativePath(), '/')]];

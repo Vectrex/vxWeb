@@ -17,6 +17,10 @@ Diese URL kann nur einmal zum Setzen eines neuen Passwortes verwendet werden. Je
 %s
 EOD;
 
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     */
     protected function execute(): JsonResponse
     {
         try {

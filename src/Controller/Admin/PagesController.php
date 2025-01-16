@@ -3,31 +3,40 @@
 namespace App\Controller\Admin;
 
 use DateTimeInterface;
-use vxPHP\Http\ParameterBag;
-use vxPHP\Form\HtmlForm;
-use vxPHP\Form\FormElement\FormElementFactory;
-use vxPHP\Controller\Controller;
-use vxPHP\Http\Response;
-use vxPHP\Http\JsonResponse;
-use vxPHP\Constraint\Validator\RegularExpression;
-use vxPHP\Util\Rex;
 use vxPHP\Application\Application;
-
-use vxWeb\Util\Template;
+use vxPHP\Application\Exception\ApplicationException;
+use vxPHP\Application\Exception\ConfigException;
+use vxPHP\Constraint\Validator\RegularExpression;
+use vxPHP\Controller\Controller;
+use vxPHP\Form\Exception\FormElementFactoryException;
+use vxPHP\Form\Exception\HtmlFormException;
+use vxPHP\Form\FormElement\FormElementFactory;
+use vxPHP\Form\HtmlForm;
+use vxPHP\Http\JsonResponse;
+use vxPHP\Http\ParameterBag;
+use vxPHP\Http\Response;
+use vxPHP\Security\Csrf\Exception\CsrfTokenException;
+use vxPHP\Util\Rex;
 use vxWeb\Model\Page\Page;
 use vxWeb\Model\Page\PageException;
 use vxWeb\Model\Page\Revision;
+use vxWeb\Util\Template;
 
 class PagesController extends Controller
 {
-	protected function list (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     * @throws ApplicationException
+     */
+    protected function list(): JsonResponse
     {
         Template::syncTemplates();
         $pages = Page::getInstances() ?? [];
 
         $rows = [];
 
-        foreach($pages as $page) {
+        foreach ($pages as $page) {
             $rows[] = [
                 'id' => $page->getId(),
                 'alias' => $page->getAlias(),
@@ -40,7 +49,12 @@ class PagesController extends Controller
         return new JsonResponse($rows);
     }
 
-    protected function get (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws \Throwable
+     */
+    protected function get(): JsonResponse
     {
         try {
             $page = Page::getInstance($this->route->getPathParameter('id'));
@@ -58,7 +72,12 @@ class PagesController extends Controller
         ]);
     }
 
-    protected function del (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws \Throwable
+     */
+    protected function del(): JsonResponse
     {
         try {
             Page::getInstance($this->route->getPathParameter('id'))->delete();
@@ -68,7 +87,17 @@ class PagesController extends Controller
         }
     }
 
-    protected function addOrUpdate (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws PageException
+     * @throws \JsonException
+     * @throws \Throwable
+     * @throws ConfigException
+     * @throws HtmlFormException
+     * @throws CsrfTokenException
+     */
+    protected function addOrUpdate(): JsonResponse
     {
         $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $form = $this->buildEditForm();
@@ -78,8 +107,7 @@ class PagesController extends Controller
             ->disableCsrfToken()
             ->bindRequestParameters($bag)
             ->validate()
-            ->getValidFormValues()
-        ;
+            ->getValidFormValues();
 
         if ($id) {
             try {
@@ -98,18 +126,18 @@ class PagesController extends Controller
             // check for valid alias
 
             if (!$v['alias']) {
-                $form->setError('alias', null,'Ein eindeutiger Seitenname ist erforderlich.');
-            }
-            else {
+                $form->setError('alias', null, 'Ein eindeutiger Seitenname ist erforderlich.');
+            } else {
                 try {
                     Page::getInstance($v['alias']);
                     $form->setError('alias', null, 'Ein Seite mit diesem Seitennamen existiert bereits.');
-                } catch (PageException) {}
+                } catch (PageException) {
+                }
             }
 
             // set and export inital revision
 
-            if(!$errors = $form->getFormErrors()) {
+            if (!$errors = $form->getFormErrors()) {
                 Application::getInstance()->getVxPDO()->execute('INSERT INTO pages (alias, template) VALUES (?, ?)', [$v['alias'], strtolower($v['alias']) . '.php']);
                 $page = Page::getInstance($v['alias']);
                 $revisionToAdd = new Revision($page);
@@ -134,7 +162,7 @@ class PagesController extends Controller
 
         // create new revision for existing page
 
-        if(!$errors) {
+        if (!$errors) {
             $revision = $page->getActiveRevision() ?: $page->getNewestRevision();
 
             $revision
@@ -151,8 +179,7 @@ class PagesController extends Controller
                 $revisionToAdd
                     ->setActive(true)
                     ->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
-                    ->save()
-                ;
+                    ->save();
                 $revisionToAdd->getPage()->exportActiveRevision();
 
                 return new JsonResponse(['success' => true, 'revisions' => $this->getRevisions($page), 'message' => 'Aktualisierte Revision gespeichert und aktiviert.']);
@@ -160,35 +187,41 @@ class PagesController extends Controller
             return new JsonResponse(['success' => true, 'revisions' => $this->getRevisions($page), 'message' => 'Keine Änderungen erkannt, keine aktualisierte Revision gespeichert.']);
         }
 
-        $err = [];
-
-        foreach($errors as $element => $error) {
-            $err[$element] = $error->getErrorMessage();
-        }
-
-        return new JsonResponse(['success' => false, 'errors' => $err, 'message' => 'Formulardaten unvollständig oder fehlerhaft.']);
+        return new JsonResponse([
+            'success' => false,
+            'errors' => array_map(fn($error) => $error->getMessage(), $form->getFormErrors()),
+            'message' => 'Formulardaten unvollständig oder fehlerhaft.'
+        ]);
     }
 
-    protected function loadRevision (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    protected function loadRevision(): JsonResponse
     {
         try {
             $revision = Revision::getInstance($this->route->getPathParameter('id'));
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
         return new JsonResponse(['success' => true, 'current' => $this->getPageData($revision)]);
     }
 
-    protected function activateRevision (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws ApplicationException
+     * @throws PageException
+     * @throws \Throwable
+     */
+    protected function activateRevision(): JsonResponse
     {
         try {
             $revision = Revision::getInstance($this->route->getPathParameter('id'));
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
-        if($revision->isActive()) {
+        if ($revision->isActive()) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Revision bereits aktiv.'
@@ -205,15 +238,18 @@ class PagesController extends Controller
         ]);
     }
 
-    protected function delRevision (): JsonResponse
+    /**
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    protected function delRevision(): JsonResponse
     {
         try {
             $revision = Revision::getInstance($this->route->getPathParameter('id'));
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
-        if($revision->isActive()) {
+        if ($revision->isActive()) {
             return new JsonResponse(['success' => false, 'message' => 'Revision ist noch aktiv.'], Response::HTTP_BAD_REQUEST);
         }
         $revision->delete();
@@ -224,7 +260,11 @@ class PagesController extends Controller
         ]);
     }
 
-    private function getPageData (Revision $revision): array
+    /**
+     * @param Revision $revision
+     * @return array
+     */
+    private function getPageData(Revision $revision): array
     {
         return [
             'alias' => $revision->getPage()->getAlias(),
@@ -236,16 +276,21 @@ class PagesController extends Controller
         ];
     }
 
-    private function getRevisions (Page $page): array
+    /**
+     * @param Page $page
+     * @return array
+     * @throws ApplicationException
+     */
+    private function getRevisions(Page $page): array
     {
         $revisions = [];
 
-        foreach($page->getRevisions() as $revision) {
+        foreach ($page->getRevisions() as $revision) {
             $revisions[] = [
                 'id' => $revision->getId(),
                 'authorId' => $revision->getAuthorId(),
                 'active' => $revision->isActive(),
-                'locale' => (string) $revision->getLocale(),
+                'locale' => (string)$revision->getLocale(),
                 'firstCreated' => $revision->getFirstCreated()->format(DateTimeInterface::W3C)
             ];
         }
@@ -253,14 +298,18 @@ class PagesController extends Controller
         return $revisions;
     }
 
+    /**
+     * @return HtmlForm
+     * @throws HtmlFormException
+     * @throws FormElementFactoryException
+     */
     private function buildEditForm(): HtmlForm
     {
-		return HtmlForm::create()
-			->addElement(FormElementFactory::create('input', 'title', null, [], [], false, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
-			->addElement(FormElementFactory::create('input', 'alias', null, [], [], false, ['trim', 'uppercase'], [new RegularExpression('/^[a-z][a-z0-9_-]+$/i')], 'Der Name muss mit einem Buchstaben beginnen und darf nur die Zeichen A-Z, 0-9, sowie "_" und "-" enthalten.'))
-			->addElement(FormElementFactory::create('textarea', 'keywords', null, [], [], false, ['trim']))
-			->addElement(FormElementFactory::create('textarea', 'description', null, [], [], false, ['trim']))
-			->addElement(FormElementFactory::create('textarea', 'markup', null, [], [], false, ['trim']))
-        ;
-	}
+        return HtmlForm::create()
+            ->addElement(FormElementFactory::create('input', 'title', null, [], [], false, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+            ->addElement(FormElementFactory::create('input', 'alias', null, [], [], false, ['trim', 'uppercase'], [new RegularExpression('/^[a-z][a-z0-9_-]+$/i')], 'Der Name muss mit einem Buchstaben beginnen und darf nur die Zeichen A-Z, 0-9, sowie "_" und "-" enthalten.'))
+            ->addElement(FormElementFactory::create('textarea', 'keywords', null, [], [], false, ['trim']))
+            ->addElement(FormElementFactory::create('textarea', 'description', null, [], [], false, ['trim']))
+            ->addElement(FormElementFactory::create('textarea', 'markup', null, [], [], false, ['trim']));
+    }
 }
