@@ -189,7 +189,7 @@ class PagesController extends Controller
 
         return new JsonResponse([
             'success' => false,
-            'errors' => array_map(fn($error) => $error->getMessage(), $form->getFormErrors()),
+            'errors' => array_map(static fn($error) => $error->getErrorMessage(), $form->getFormErrors()),
             'message' => 'Formulardaten unvollständig oder fehlerhaft.'
         ]);
     }
