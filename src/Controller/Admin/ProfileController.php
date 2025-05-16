@@ -152,11 +152,11 @@ class ProfileController extends Controller
 
                 $userProvider = new SessionUserProvider();
 
-                // refresh user data if username hasn't changed
+                // refresh user data if the username hasn't changed
 
                 if ($v['username'] === $admin->getUsername()) {
 
-                    // a changed password sets User::authenticated to false
+                    // changed password sets User::authenticated to false
 
                     $userProvider->refreshUser($admin);
                 } else {
@@ -165,7 +165,7 @@ class ProfileController extends Controller
                 }
                 $admin->setAuthenticated(true);
 
-                return new JsonResponse(['success' => true, 'message' => 'Daten erfolgreich übernommen.']);
+                return new JsonResponse(['success' => true, 'message' => 'Daten erfolgreich übernommen.', 'payload' => ['username' => $admin->getUsername(), 'email' => $admin->getAttribute('email')]]);
 
             } catch (\Exception $e) {
                 return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
@@ -174,7 +174,7 @@ class ProfileController extends Controller
 
         return new JsonResponse([
             'success' => false,
-            'errors' => array_map(static fn($error) => $error->getMessage(), $form->getFormErrors()),
+            'errors' => array_map(static fn($error) => $error->getErrorMessage(), $form->getFormErrors()),
             'message' => 'Formulardaten unvollständig oder fehlerhaft.'
         ]);
     }
