@@ -122,6 +122,7 @@ CREATE TABLE "admin" (
 "misc_data" varchar(510) COLLATE "default" DEFAULT NULL::character varying,
 "table_access" varchar(128) COLLATE "default" DEFAULT NULL::character varying,
 "row_access" varchar(128) COLLATE "default" DEFAULT NULL::character varying,
+"last_login" timestamp (6),
 "lastupdated" timestamp(6) DEFAULT now() NOT NULL,
 "firstcreated" timestamp(6)
 )

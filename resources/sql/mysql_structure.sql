@@ -14,6 +14,7 @@ CREATE TABLE `admin` (
   `misc_data` varchar(255) DEFAULT NULL,
   `table_access` varchar(64) DEFAULT NULL,
   `row_access` varchar(64) DEFAULT NULL,
+  `last_login` timestamp NULL DEFAULT NULL,
   `lastUpdated` timestamp DEFAULT CURRENT_TIMESTAMP,
   `firstCreated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`adminID`),
