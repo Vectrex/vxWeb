@@ -33,14 +33,14 @@ class SessionUserProvider extends SimpleSessionUserProvider
     /**
      * @var DatabaseInterface
      */
-    private DatabaseInterface $db;
+    private DatabaseInterface $vxPDO;
 
     /**
      * constructor
      */
     public function __construct()
     {
-        $this->db = Application::getInstance()->getVxPDO();
+        $this->vxPDO = Application::getInstance()->getVxPDO();
     }
 
     /**
@@ -105,7 +105,7 @@ class SessionUserProvider extends SimpleSessionUserProvider
     }
 
     /**
-     * returns data row of user identified by $value in $column
+     * returns a data row of user identified by $value in $column
      * false if no user is found
      *
      * @param string $value
@@ -114,18 +114,18 @@ class SessionUserProvider extends SimpleSessionUserProvider
      */
     private function getUserRows(string $value, string $column = 'username'): RecordsetIteratorInterface
     {
-        return $this->db->doPreparedQuery(sprintf("
+        return $this->vxPDO->doPreparedQuery(sprintf("
 			SELECT
 				a.*,
 				ag.privilege_Level,
 				ag.admingroupsID as groupid,
 				LOWER(ag.alias) as group_alias
 			FROM
-				" . $this->db->quoteIdentifier('admin') . " a
+				" . $this->vxPDO->quoteIdentifier('admin') . " a
 				LEFT JOIN admingroups ag on a.admingroupsID = ag.admingroupsID
 		
 			WHERE
-				%s = ?", $this->db->quoteIdentifier($column)), [$value]
+				%s = ?", $this->vxPDO->quoteIdentifier($column)), [$value]
         );
     }
 

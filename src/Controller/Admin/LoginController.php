@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Service\vxWeb\BruteforceThrottler;
+use DateTime;
 use vxPHP\Application\Application;
 use vxPHP\Application\Exception\ApplicationException;
 use vxPHP\Application\Exception\ConfigException;
@@ -61,6 +62,10 @@ class LoginController extends Controller
             foreach ($admin->getRoles() as $role) {
                 $roles[] = $role->getRoleName();
             }
+
+            // log last login timestamp
+
+            $app->getVxPDO()->updateRecord('admin', ['username' => $admin->getUsername()], ['last_login' => (new DateTime())->format('Y-m-d H:i:s')]);
 
             return new JsonResponse([
                 'bearerToken' => JWTSession::createToken(),
