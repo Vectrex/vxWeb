@@ -57,20 +57,18 @@ class ProfileController extends Controller
                 'username' => $admin->getUsername(),
                 'email' => $admin->getAttribute('email'),
                 'name' => $admin->getAttribute('name'),
-                'notifications' => $notified
+                'misc' => $admin->getAttribute('misc') ? json_decode($admin->getAttribute('misc'), true, 512, JSON_THROW_ON_ERROR) : null,
+                'notifications' => $notified,
             ],
             'notifications' => array_values(
-                array_map(static function ($notfication) {
+                array_map(static fn ($notfication) => [
 
                     /* @var Notification $notification */
 
-                    return [
                         'alias' => $notfication->alias,
                         'label' => $notfication->description,
                         'id' => $notfication->id
-                    ];
-
-                },
+                    ],
                     $notifications
                 )
             )
@@ -87,19 +85,19 @@ class ProfileController extends Controller
      * @throws HtmlFormException
      * @throws CsrfTokenException
      */
-    protected function post(): JsonResponse
+    protected function update(): JsonResponse
     {
         $request = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $admin = Application::getInstance()->getCurrentUser();
         $availableNotifications = Notification::getAvailableNotifications($admin->getRoles()[0]->getRoleName());
 
         $form = HtmlForm::create()
-            ->addElement(FormElementFactory::create('input', 'username', $admin->getUsername(), [], [], true, ['trim', 'lowercase'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Ein Benutzername ist ein Pflichtfeld.'))
-            ->addElement(FormElementFactory::create('input', 'email', $admin->getAttribute('email'), [], [], true, ['trim', 'lowercase'], [new Email()], 'Ungültige E-Mail Adresse.'))
-            ->addElement(FormElementFactory::create('input', 'name', $admin->getAttribute('name'), [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))
-            ->addElement(FormElementFactory::create('password', 'new_PWD', '', [], [], false, [], [new RegularExpression('/^(|\S.{4,}\S)$/')], 'Das Passwort muss mindestens 6 Zeichen umfassen.'))
-            ->addElement(FormElementFactory::create('password', 'new_PWD_verify', ''));
-
+            ->addElement(FormElementFactory::create(type: 'input', name: 'username', value: $admin->getUsername(), required: true, modifiers: ['trim', 'lowercase'], validators: [new RegularExpression(Rex::NOT_EMPTY_TEXT)], validationErrorMessage: 'Ein Benutzername ist ein Pflichtfeld.'))
+            ->addElement(FormElementFactory::create(type: 'input', name: 'email', value: $admin->getAttribute('email'), required: true, modifiers: ['trim', 'lowercase'], validators: [new Email()], validationErrorMessage: 'Ungültige E-Mail Adresse.'))
+            ->addElement(FormElementFactory::create(type: 'input', name: 'name', value: $admin->getAttribute('name'), required: true, modifiers: ['trim'], validators: [new RegularExpression(Rex::NOT_EMPTY_TEXT)], validationErrorMessage: 'Der Name ist ein Pflichtfeld.'))
+            ->addElement(FormElementFactory::create(type: 'password', name: 'new_PWD', value: '', validators: [new RegularExpression('/^(|\S.{4,}\S)$/')], validationErrorMessage: 'Das Passwort muss mindestens 6 Zeichen umfassen.'))
+            ->addElement(FormElementFactory::create(type: 'password', name: 'new_PWD_verify', value: ''))
+        ;
         $checkboxes = [];
 
         foreach ($availableNotifications as $n) {
@@ -114,8 +112,8 @@ class ProfileController extends Controller
             ->disableCsrfToken()
             ->bindRequestParameters($request)
             ->validate()
-            ->getValidFormValues();
-
+            ->getValidFormValues()
+        ;
         if (!isset($errors['new_PWD']) && !empty($v['new_PWD'])) {
             if ($v['new_PWD'] !== $v['new_PWD_verify']) {
                 $form->setError('new_PWD_verify', null, 'Passwörter stimmen nicht überein.');
@@ -123,7 +121,6 @@ class ProfileController extends Controller
                 $v['pwd'] = (new PasswordEncrypter())->hashPassword($v['new_PWD']);
             }
         }
-
 
         if (!$form->getFormErrors()) {
             if ($v['email'] !== $admin->getAttribute('email') && !Util::isAvailableEmail($v['email'])) {
@@ -135,10 +132,10 @@ class ProfileController extends Controller
             }
         }
 
-        if (!($errors = $form->getFormErrors())) {
-
+        if (!$form->getFormErrors()) {
+            $miscData = $request->get('misc');
             try {
-                Application::getInstance()->getVxPDO()->updateRecord('admin', ['username' => $admin->getUsername()], $v->all());
+                Application::getInstance()->getVxPDO()->updateRecord('admin', ['username' => $admin->getUsername()], [...$v->all(), 'misc' => $miscData ? json_encode($miscData, JSON_THROW_ON_ERROR) : null]);
 
                 $notifications = $v->get('notifications', []);
 
