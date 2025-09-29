@@ -25,7 +25,7 @@ use vxPHP\User\SimpleSessionUserProvider;
  * session after initialization
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.5.3, 2023-06-02
+ * @version 0.5.4, 2025-09-29
  *
  */
 class SessionUserProvider extends SimpleSessionUserProvider
@@ -149,6 +149,7 @@ class SessionUserProvider extends SimpleSessionUserProvider
                 'table_access' => $row['table_access'],
                 'row_access' => $row['row_access'],
                 'id' => $row['adminid'],
+                'last_login' => $row['last_login'],
             ]
         );
     }
