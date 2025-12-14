@@ -14,10 +14,6 @@
 		</locales>
  	</site>
 
-	<!-- db setting(s) are deprecated and will be replaced by vxpdo settings -->
-
-	<!-- <include>db_config.xml</include> -->
-
 	<!-- configuration of vxPDO datasources -->
 
 	<include>pdo_config.xml</include>
