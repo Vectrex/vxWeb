@@ -17,7 +17,7 @@
 	"license": "MIT",
 	"name": "vectrex/vxweb",
 	"require": {
-		"php": ">=8.3.0",
+		"php": ">=8.4.0",
 		"ext-pdo": "*",
 		"ext-zip": "*",
 		"ext-gd": "*",

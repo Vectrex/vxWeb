@@ -136,27 +136,7 @@ class FilesController extends Controller
 
             if($mf->isWebImage()) {
                 $fsf = $mf->getFilesystemFile();
-                $actions = ['resize 480 0'];
-                $dest = sprintf('%s%s@%s.%s',
-                    $fsf->getFolder()->createCache(),
-                    $fsf->getFilename(),
-                    implode('|', $actions),
-                    pathinfo($fsf->getFilename(), PATHINFO_EXTENSION)
-                );
-
-                if (!file_exists($dest)) {
-                    $imgEdit = ImageModifierFactory::create($fsf->getPath());
-
-                    foreach ($actions as $a) {
-                        $params = preg_split('~\s+~', $a);
-
-                        $method = array_shift($params);
-                        if (method_exists($imgEdit, $method)) {
-                            call_user_func_array([$imgEdit, $method], $params);
-                        }
-                    }
-                    $imgEdit->export($dest);
-                }
+                $thumb = $this->createThumbnail(file: $fsf, actions: ['resize 480 0']);
                 $imageInfo = getimagesize($fsf->getPath());
                 $mappedImageInfo = [];
                 foreach([0 => 'w', 1 => 'h', 'bits' => 'bits', 'mime' => 'mime'] as $ndx => $key) {
@@ -170,7 +150,7 @@ class FilesController extends Controller
                     'mimetype' => $mf->getMimetype(),
                     'url' => $host . '/' . $mf->getRelativePath(),
                     'name' => $mf->getFilename(),
-                    'thumb' => isset($dest) ? $host . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest)) : null,
+                    'thumb' => isset($thumb) ? $host . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $thumb)) : null,
                     'cache' => $mf->getFilesystemFile()->getCacheInfo(),
                     'imageInfo' => $mappedImageInfo ?? null
                 ]
@@ -439,10 +419,8 @@ class FilesController extends Controller
             $name = preg_replace('~[^a-z0-9_-]~i', '_', $name);
             $parentFolder = MetaFolder::getInstance(null, $parent);
 
-            foreach ($parentFolder->getMetaFolders() as $subFolder) {
-                if ($subFolder->getName() === $name) {
-                    return new JsonResponse(['error' => 1, 'message' => sprintf("Verzeichnis '%s' existiert bereits.", $name)]);
-                }
+            if (array_any($parentFolder->getMetaFolders(), static fn($subFolder) => $subFolder->getName() === $name)) {
+                return new JsonResponse(['error' => 1, 'message' => sprintf("Verzeichnis '%s' existiert bereits.", $name)]);
             }
             $folder = $parentFolder->createFolder($name);
             return new JsonResponse([
@@ -703,7 +681,7 @@ class FilesController extends Controller
                 'title' => $metaData['title'],
                 'image' => $f->isWebImage(),
                 'size' => $f->getFileInfo()->getSize(),
-                'modified' => (new \DateTime())->setTimestamp($f->getFileInfo()->getMTime())->format('Y-m-d H:i:s'),
+                'modified' => new \DateTime()->setTimestamp($f->getFileInfo()->getMTime())->format('Y-m-d H:i:s'),
                 'type' => $f->getMimetype(),
                 'path' => '/'. $f->getRelativePath(),
                 'url' => $host . '/'. $f->getRelativePath(),
@@ -712,29 +690,8 @@ class FilesController extends Controller
 
             if($row['image']) {
                 $fsf = $f->getFilesystemFile();
-                $actions = ['crop 1', 'resize 48 0'];
-                $dest = sprintf('%s%s@%s.%s',
-                    $fsf->getFolder()->createCache(),
-                    $fsf->getFilename(),
-                    implode('|', $actions),
-                    pathinfo($fsf->getFilename(), PATHINFO_EXTENSION)
-                );
-
-                if (!file_exists($dest)) {
-                    $imgEdit = ImageModifierFactory::create($fsf->getPath());
-
-                    foreach ($actions as $a) {
-                        $params = preg_split('~\s+~', $a);
-
-                        $method = array_shift($params);
-                        if (method_exists($imgEdit, $method)) {
-                            call_user_func_array([$imgEdit, $method], $params);
-                        }
-                    }
-                    $imgEdit->export($dest);
-                }
-
-                $row['src'] = $host . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $dest));
+                $thumb = $this->createThumbnail(file: $fsf, actions: ['crop 1', 'resize 48 0']);
+                $row['src'] = $host . htmlspecialchars(str_replace(rtrim($this->request->server->get('DOCUMENT_ROOT'), DIRECTORY_SEPARATOR), '', $thumb));
             }
 
             $files[] = $row;
@@ -782,5 +739,40 @@ class FilesController extends Controller
         }
 
         return $breadcrumbs;
+    }
+
+    /**
+     * Creates a thumbnail of the given file based on specified actions.
+     *
+     * @param FilesystemFile $file The file for which the thumbnail will be created.
+     * @param array $actions An array of actions to be applied to the file, where each action is a string
+     *                       representing a method name and its parameters separated by spaces.
+     *
+     * @return string The path to the generated thumbnail.
+     * @throws FilesystemFolderException
+     */
+    private function createThumbnail (FilesystemFile $file, array $actions): string
+    {
+        $dest = sprintf('%s%s@%s.%s',
+            $file->getFolder()->createCache(),
+            $file->getFilename(),
+            implode('|', $actions),
+            pathinfo($file->getFilename(), PATHINFO_EXTENSION)
+        );
+
+        if (!file_exists($dest)) {
+            $imgEdit = ImageModifierFactory::create($file->getPath());
+
+            foreach ($actions as $a) {
+                $params = preg_split('~\s+~', $a);
+
+                $method = array_shift($params);
+                if (method_exists($imgEdit, $method)) {
+                    call_user_func_array([$imgEdit, $method], $params);
+                }
+            }
+            $imgEdit->export($dest);
+        }
+        return $dest;
     }
 }
