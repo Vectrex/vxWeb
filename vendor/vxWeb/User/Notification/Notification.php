@@ -61,14 +61,14 @@ class Notification
     private ?string $description;
 
     /**
-     * list of attachments which are added to notification message
+     * list of attachments which are added to the notification message
      *
      * @var array|null
      */
     private ?array $attachment;
 
     /**
-     * signature which is added to notification message
+     * signature which is added to the notification message
      *
      * @var string|null
      */
@@ -238,15 +238,15 @@ class Notification
 
     /**
      * adds a user to the list of notified users by inserting a record
-     * in admin_notifications table; table is left unchanged if user is
+     * in the admin_notifications table; table is left unchanged if the user is
      * already on the list
-     * does not further check for insertion result
+     * does not further check for the insertion result
      *
      * @param UserInterface $user
      * @return Notification
      * @throws ApplicationException|ConfigException
      */
-    public function subscribe(UserInterface $user): Notification
+    public function subscribe(UserInterface $user): self
     {
         if (($id = (int)$user->getAttribute('id')) && !in_array($id, $this->notifies, true)) {
 
@@ -260,15 +260,15 @@ class Notification
 
     /**
      * adds a user to the list of notified users by inserting a record
-     * in admin_notifications table; table is left unchanged if user is
+     * in the admin_notifications table; table is left unchanged if the user is
      * already on the list
-     * does not further check for insertion result
+     * does not further check for the insertion result
      *
      * @param UserInterface $user
      * @return Notification
      * @throws ApplicationException|ConfigException
      */
-    public function unSubscribe(UserInterface $user): Notification
+    public function unSubscribe(UserInterface $user): self
     {
         if (($id = (int)$user->getAttribute('id')) && in_array($id, $this->notifies, true)) {
 
@@ -281,8 +281,8 @@ class Notification
     }
 
     /**
-     * fill placeholders in notification message
-     * returns message
+     * fill placeholders in the notification message
+     * returns the message
      *
      * @param array $fieldValues
      * @return string
