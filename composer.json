@@ -26,7 +26,7 @@
 		"ext-curl": "*",
 		"ext-mbstring": "*",
 		"vectrex/vxphp": "^3.0.0",
-		"firebase/php-jwt": "^v6.10.2",
+		"firebase/php-jwt": "^v7.0.0",
 		"ivopetkov/html5-dom-document-php": "^v2.8.0"
     },
 	"require-dev": {
