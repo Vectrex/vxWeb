@@ -47,9 +47,9 @@
         /**
          * unique alias of category
          *
-         * @var string
+         * @var string|null
          */
-        private string $alias;
+        private ?string $alias;
 
         /**
          * nesting information of category
@@ -70,9 +70,9 @@
         /**
          * an optional value, which can be used for sorting
          *
-         * @var int
+         * @var int|null
          */
-        private int $customSort;
+        private ?int $customSort;
 
         /**
          * articles belonging to the category
@@ -100,11 +100,6 @@
         {
             $this->parentCategory = $parentCategory;
             $this->title = $title;
-        }
-
-        public function __toString()
-        {
-            return $this->alias;
         }
 
         public function __destruct()
