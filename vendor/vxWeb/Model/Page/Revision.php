@@ -48,7 +48,7 @@
          * locale of template
          * @var Locale|null
          */
-        private ?Locale $locale;
+        private ?Locale $locale = null;
 
         /**
          * @var \DateTime|null
