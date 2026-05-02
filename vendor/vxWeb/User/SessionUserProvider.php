@@ -25,7 +25,7 @@ use vxPHP\User\SimpleSessionUserProvider;
  * session after initialization
  *
  * @author Gregor Kofler, info@gregorkofler.com
- * @version 0.5.4, 2025-09-29
+ * @version 0.5.4, 2026-04-12
  *
  */
 class SessionUserProvider extends SimpleSessionUserProvider
@@ -56,18 +56,12 @@ class SessionUserProvider extends SimpleSessionUserProvider
             throw new UserException(sprintf("User '%s' no longer exists.", $user->getUsername()));
         }
 
+        $attrs = array_diff_key($u, array_flip(array_diff(Application::getInstance()->getVxPDO()->getColumnNames('admin'), ['username', 'pwd', 'adminid', 'secret'])));
         $user
             ->setHashedPassword($u['pwd'])
             ->setRoles([new Role($u['group_alias'])])
-            ->replaceAttributes([
-                'email' => $u['email'],
-                'name' => $u['name'],
-                'misc_data' => $u['misc_data'],
-                'table_access' => $u['table_access'],
-                'row_access' => $u['row_access'],
-                'id' => $u['adminid'],
-            ]);
-
+            ->replaceAttributes([...$attrs, 'id' => $u['adminid']])
+        ;
         return $user;
     }
 
@@ -136,21 +130,14 @@ class SessionUserProvider extends SimpleSessionUserProvider
      */
     private function createUser(array $row): SessionUser
     {
+        $attrs = array_diff_key($row, array_flip(array_diff(Application::getInstance()->getVxPDO()->getColumnNames('admin'), ['username', 'pwd', 'adminid', 'secret'])));
         return new SessionUser(
             $row['username'],
             $row['pwd'],
             [
                 new Role($row['group_alias'])
             ],
-            [
-                'email' => $row['email'],
-                'name' => $row['name'],
-                'misc_data' => $row['misc_data'],
-                'table_access' => $row['table_access'],
-                'row_access' => $row['row_access'],
-                'id' => $row['adminid'],
-                'last_login' => $row['last_login'],
-            ]
+            [...$attrs, 'id' => $row['adminid']]
         );
     }
 }

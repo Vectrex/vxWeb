@@ -306,7 +306,7 @@ class PagesController extends Controller
     private function buildEditForm(): HtmlForm
     {
         return HtmlForm::create()
-            ->addElement(FormElementFactory::create('input', 'title', null, [], [], false, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
+            ->addElement(FormElementFactory::create('input', 'title', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)]))
             ->addElement(FormElementFactory::create('input', 'alias', null, [], [], false, ['trim', 'uppercase'], [new RegularExpression('/^[a-z][a-z0-9_-]+$/i')], 'Der Name muss mit einem Buchstaben beginnen und darf nur die Zeichen A-Z, 0-9, sowie "_" und "-" enthalten.'))
             ->addElement(FormElementFactory::create('textarea', 'keywords', null, [], [], false, ['trim']))
             ->addElement(FormElementFactory::create('textarea', 'description', null, [], [], false, ['trim']))
