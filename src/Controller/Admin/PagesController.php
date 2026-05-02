@@ -143,8 +143,8 @@ class PagesController extends Controller
                 $revisionToAdd = new Revision($page);
                 $revisionToAdd
                     ->setTitle($v['title'])
-                    ->setDescription($v['description'])
-                    ->setKeywords($v['keywords'])
+                    ->setDescription($v['description'] ?? '')
+                    ->setKeywords($v['keywords'] ?? '')
                     ->setMarkup($v['markup'])
                     ->setActive(true)
                     ->setAuthorId(Application::getInstance()->getCurrentUser()->getAttribute('id'))
@@ -167,8 +167,8 @@ class PagesController extends Controller
 
             $revision
                 ->setTitle($v['title'])
-                ->setDescription($v['description'])
-                ->setKeywords($v['keywords'])
+                ->setDescription($v['description'] ?? '')
+                ->setKeywords($v['keywords'] ?? '')
                 ->setMarkup($v['markup']);
 
             if ($revision->wasChanged()) {
