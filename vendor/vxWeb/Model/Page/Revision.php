@@ -9,7 +9,7 @@
      * Mapper class for page revisions, stored in table `revisions`
      *
      * @author Gregor Kofler
-     * @version 0.6.0 2026-01-28
+     * @version 0.6.1 2026-05-03
      *
      * @todo retrieve and save locale
      * @todo attribute sanitation
@@ -28,7 +28,7 @@
 
         /**
          * primary key of record
-         * @var null|int
+         * @var int|null
          */
         private ?int $id;
 
@@ -40,51 +40,51 @@
 
         /**
          * user id which authored/updated this revision
-         * @var null|int
+         * @var int|null
          */
         private ?int $authorId;
 
         /**
          * locale of template
-         * @var Locale
+         * @var Locale|null
          */
-        private Locale $locale;
+        private ?Locale $locale;
 
         /**
-         * @var null|\DateTime
+         * @var \DateTime|null
          */
         private ?\DateTime $lastUpdated;
 
         /**
-         * @var null|\DateTime
+         * @var \DateTime|null
          */
         private ?\DateTime $firstCreated;
 
         /**
          * flag which indicates whether the revision is currently active
-         * @var bool
+         * @var bool|null
          */
-        private bool $active;
+        private ?bool $active;
 
         /**
-         * @var null|string
+         * @var string|null
          */
         private ?string $title;
 
         /**
-         * @var null|string
+         * @var string|null
          */
         private ?string $keywords;
 
         /**
-         * @var null|string
+         * @var string|null
          */
         private ?string $description;
 
         /**
-         * @var string
+         * @var string|null
          */
-        private string $markup;
+        private ?string $markup;
 
         /**
          * @var array
@@ -96,7 +96,7 @@
          *
          * @var string
          */
-        private string $savedDataHash;
+        private string $savedDataHash = '';
 
         /**
          * set to TRUE when markup contains server-side code

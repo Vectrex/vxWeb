@@ -19,7 +19,7 @@
      * Mapper class for articlecategories, stored in table `articlecategories`
      *
      * @author Gregor Kofler
-     * @version 0.7.0 2026-01-27
+     * @version 0.7.1 2026-05-03
      */
     class ArticleCategory
     {
