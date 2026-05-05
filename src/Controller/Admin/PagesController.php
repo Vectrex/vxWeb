@@ -278,7 +278,7 @@ class PagesController extends Controller
             'keywords' => $revision->getKeywords(),
             'revisionId' => $revision->getId(),
             'template' => $page->getTemplate(),
-            'blocks' => (new SimpleTemplate())->setRawContents($revision->getMarkup())->getBlocks()
+            'blocks' => new SimpleTemplate()->setRawContents($revision->getMarkup())->getBlocks()
         ];
     }
 
