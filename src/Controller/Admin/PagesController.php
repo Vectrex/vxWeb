@@ -16,6 +16,8 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\Http\ParameterBag;
 use vxPHP\Http\Response;
 use vxPHP\Security\Csrf\Exception\CsrfTokenException;
+use vxPHP\Template\Exception\SimpleTemplateException;
+use vxPHP\Template\SimpleTemplate;
 use vxPHP\Util\Rex;
 use vxWeb\Model\Page\Page;
 use vxWeb\Model\Page\PageException;
@@ -263,16 +265,20 @@ class PagesController extends Controller
     /**
      * @param Revision $revision
      * @return array
+     * @throws SimpleTemplateException
      */
     private function getPageData(Revision $revision): array
     {
+        $page = $revision->getPage();
         return [
             'alias' => $revision->getPage()->getAlias(),
             'title' => $revision->getTitle(),
             'markup' => $revision->getMarkup(),
             'description' => $revision->getDescription(),
             'keywords' => $revision->getKeywords(),
-            'revisionId' => $revision->getId()
+            'revisionId' => $revision->getId(),
+            'template' => $page->getTemplate(),
+            'blocks' => (new SimpleTemplate())->setRawContents($revision->getMarkup())->getBlocks()
         ];
     }
 
