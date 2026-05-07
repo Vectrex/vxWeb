@@ -25,39 +25,41 @@ class UsersController extends Controller
     /**
      * @return JsonResponse
      * @throws \Throwable
-     * @throws ApplicationException
-     * @throws ConfigException
      */
     protected function init(): JsonResponse
     {
         $app = Application::getInstance();
         $admin = $app->getCurrentUser();
-        $db = $app->getVxPDO();
+        $pdo = $app->getVxPDO();
 
-        $users = $db->doPreparedQuery(sprintf("
+        $users = (array) $pdo->doPreparedQuery(sprintf("
                 SELECT
                     a.adminid AS %s,
                     a.adminid AS %s,
                     a.name,
                     a.username,
                     a.email,
+                    a.misc_data,
                     ag.admingroupsid,
                     ag.alias
                 FROM
                     %s a LEFT JOIN admingroups ag ON ag.admingroupsid = a.admingroupsid
             ",
-            $db->quoteIdentifier('id'),
-            $db->quoteIdentifier('key'),
-            $db->quoteIdentifier('admin')
+            $pdo->quoteIdentifier('id'),
+            $pdo->quoteIdentifier('key'),
+            $pdo->quoteIdentifier('admin')
         ));
-
-        return new JsonResponse(['users' => (array)$users, 'currentUser' => ['username' => $admin->getUsername()]]);
+        array_walk($users, callback: static function(&$user) {
+           if ($user['misc_data']) {
+               $user['misc'] = json_decode($user['misc_data']);
+           }
+           unset($user['misc_data']);
+        });
+        return new JsonResponse(['users' => $users, 'currentUser' => ['username' => $admin->getUsername()]]);
     }
 
     /**
      * @return JsonResponse
-     * @throws ApplicationException
-     * @throws ConfigException
      * @throws \Throwable
      */
     protected function del(): JsonResponse
@@ -74,56 +76,57 @@ class UsersController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws ApplicationException
-     * @throws ConfigException
      * @throws \Throwable
      */
     protected function editInit(): JsonResponse
     {
-        $db = Application::getInstance()->getVxPDO();
+        $pdo = Application::getInstance()->getVxPDO();
 
         if ($id = (int)$this->route->getPathParameter('id')) {
-            $formData = $db->doPreparedQuery("SELECT adminid as id, username, email, name, admingroupsid FROM " . $db->quoteIdentifier('admin') . " WHERE adminid = ?", [$id])->current();
+            $formData = $pdo->doPreparedQuery("SELECT adminid as id, username, email, name, admingroupsid, misc_data FROM " . $pdo->quoteIdentifier('admin') . " WHERE adminid = ?", [$id])->current();
+
+            if (!$formData) {
+                return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+            }
+            if ($formData['misc_data']) {
+                $formData['misc'] = json_decode($formData['misc_data'], false, 512, JSON_THROW_ON_ERROR);
+                unset($formData['misc_data']);
+            }
         }
 
         return new JsonResponse([
             'form' => $formData ?? null,
             'options' => [
-                'admingroupsid' => (array)$db->doPreparedQuery("SELECT admingroupsid AS " . $db->quoteIdentifier('key') . ", name AS label FROM admingroups ORDER BY privilege_level")
+                'admingroupsid' => (array)$pdo->doPreparedQuery("SELECT admingroupsid AS " . $pdo->quoteIdentifier('key') . ", name AS label FROM admingroups ORDER BY privilege_level")
             ]
         ]);
     }
 
     /**
      * @return JsonResponse
-     * @throws ApplicationException
-     * @throws ConfigException
-     * @throws \JsonException
      * @throws \Throwable
-     * @throws FormElementFactoryException
-     * @throws HtmlFormException
-     * @throws CsrfTokenException
      */
     protected function update(): JsonResponse
     {
         $request = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
         $id = $request->get('id');
 
-        $db = Application::getInstance()->getVxPDO();
+        $pdo = Application::getInstance()->getVxPDO();
 
         $form = HtmlForm::create()
-            ->addElement(FormElementFactory::create('input', 'username', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Benutzername ist ein Pflichtfeld.'))
-            ->addElement(FormElementFactory::create('input', 'email', null, [], [], true, ['trim', 'lowercase'], [new Email()], 'Ungültige E-Mail Adresse.'))
-            ->addElement(FormElementFactory::create('input', 'name', null, [], [], true, ['trim'], [new RegularExpression(Rex::NOT_EMPTY_TEXT)], 'Der Name ist ein Pflichtfeld.'))
-            ->addElement(FormElementFactory::create('password', 'new_PWD', null, [], [], !$request->get('id'), [], [new RegularExpression('/^\S.{4,}\S$/')], 'Das Passwort muss mindestens 6 Zeichen umfassen.'))
-            ->addElement(FormElementFactory::create('password', 'new_PWD_verify'))
-            ->addElement(FormElementFactory::create('select', 'admingroupsid', null, [], [], true, [], [new RegularExpression(Rex::INT_EXCL_NULL)], 'Eine Benutzergruppe muss zugewiesen werden.'));
+            ->addElement(FormElementFactory::create(type: 'input', name: 'username', required: true, modifiers: ['trim'], validators: [new RegularExpression(Rex::NOT_EMPTY_TEXT)], validationErrorMessage: 'Der Benutzername ist ein Pflichtfeld.'))
+            ->addElement(FormElementFactory::create(type: 'input', name: 'email', required: true, modifiers: ['trim', 'lowercase'], validators: [new Email()], validationErrorMessage: 'Ungültige E-Mail Adresse.'))
+            ->addElement(FormElementFactory::create(type: 'input', name: 'name', required: true, modifiers: ['trim'], validators: [new RegularExpression(Rex::NOT_EMPTY_TEXT)], validationErrorMessage: 'Der Name ist ein Pflichtfeld.'))
+            ->addElement(FormElementFactory::create(type: 'password', name: 'new_PWD', required: !$request->get('id'), validators: [new RegularExpression('/^\S.{4,}\S$/')], validationErrorMessage: 'Das Passwort muss mindestens 6 Zeichen umfassen.'))
+            ->addElement(FormElementFactory::create(type: 'password', name: 'new_PWD_verify'))
+            ->addElement(FormElementFactory::create(type: 'select', name: 'admingroupsid', required: true, validators: [new RegularExpression(Rex::INT_EXCL_NULL)], validationErrorMessage: 'Eine Benutzergruppe muss zugewiesen werden.'));
 
         $v = $form
             ->disableCsrfToken()
             ->bindRequestParameters($request)
             ->validate()
-            ->getValidFormValues();
+            ->getValidFormValues()
+        ;
 
         $errors = $form->getFormErrors();
 
@@ -136,7 +139,7 @@ class UsersController extends Controller
         }
 
         if ($id) {
-            $userRow = $db->doPreparedQuery("SELECT * FROM " . $db->quoteIdentifier('admin') . " WHERE adminid = ?", [$id])->current();
+            $userRow = $pdo->doPreparedQuery("SELECT * FROM " . $pdo->quoteIdentifier('admin') . " WHERE adminid = ?", [$id])->current();
 
             if (!$userRow) {
                 return new JsonResponse('', Response::HTTP_FORBIDDEN);
@@ -151,14 +154,19 @@ class UsersController extends Controller
         }
 
         if (!$form->getFormErrors()) {
+
+            // stringify misc data
+
+            $v->set('misc_data', json_encode($request->get('misc', new \stdClass()), JSON_THROW_ON_ERROR));
+
             try {
                 if ($id) {
-                    $db->updateRecord('admin', $id, $v->all());
+                    $pdo->updateRecord('admin', $id, $v->all());
                 } else {
-                    $id = $db->insertRecord('admin', $v->all());
+                    $id = $pdo->insertRecord('admin', $v->all());
                 }
 
-                $user = $db->doPreparedQuery(sprintf("
+                $user = $pdo->doPreparedQuery(sprintf("
                 SELECT
                     a.adminid AS %s,
                     a.adminid AS %s,
@@ -172,9 +180,9 @@ class UsersController extends Controller
                 WHERE
                     a.adminid = ?
             ",
-                    $db->quoteIdentifier('id'),
-                    $db->quoteIdentifier('key'),
-                    $db->quoteIdentifier('admin')
+                    $pdo->quoteIdentifier('id'),
+                    $pdo->quoteIdentifier('key'),
+                    $pdo->quoteIdentifier('admin')
                 ), [$id])->current();
 
                 return new JsonResponse([
