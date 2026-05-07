@@ -4,10 +4,6 @@ namespace App\Controller\Admin;
 
 /* @TODO sanitize metadata */
 
-use vxPHP\Application\Exception\ApplicationException;
-use vxPHP\Application\Exception\ConfigException;
-use vxPHP\File\Exception\FilesystemFileException;
-use vxPHP\File\Exception\FilesystemFolderException;
 use vxPHP\Http\ParameterBag;
 use vxPHP\File\FilesystemFile;
 use vxPHP\Image\ImageModifierFactory;
@@ -17,7 +13,6 @@ use vxPHP\Http\JsonResponse;
 use vxPHP\Application\Application;
 use vxWeb\Model\Article\Article;
 use vxWeb\Model\Article\Exception\ArticleException;
-use vxWeb\Model\ArticleCategory\Exception\ArticleCategoryException;
 use vxWeb\Model\MetaFile\Exception\MetaFileException;
 use vxWeb\Model\MetaFile\MetaFile;
 use vxWeb\Model\MetaFile\MetaFolder;
@@ -75,13 +70,7 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws MetaFileException
-     * @throws MetaFolderException
      * @throws \Throwable
-     * @throws ApplicationException
-     * @throws ConfigException
-     * @throws FilesystemFileException
-     * @throws FilesystemFolderException
      */
     protected function search (): JsonResponse
     {
@@ -163,7 +152,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws \JsonException
      * @throws \Throwable
      */
     protected function fileUpdate (): JsonResponse
@@ -183,7 +171,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws \JsonException
      * @throws \Throwable
      */
     protected function fileMove (): JsonResponse
@@ -224,7 +211,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws \JsonException
      * @throws \Throwable
      */
     protected function fileRename (): JsonResponse
@@ -248,9 +234,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws ApplicationException
-     * @throws FilesystemFolderException
-     * @throws MetaFolderException
      * @throws \Throwable
      */
     protected function fileUpload (): JsonResponse
@@ -356,7 +339,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws \JsonException
      * @throws \Throwable
      */
     protected function folderUpdate (): JsonResponse
@@ -376,7 +358,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws \JsonException
      * @throws \Throwable
      */
     protected function folderRename (): JsonResponse
@@ -401,7 +382,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws \JsonException
      * @throws \Throwable
      */
     protected function folderAdd (): JsonResponse
@@ -439,10 +419,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws ApplicationException
-     * @throws ConfigException
-     * @throws FilesystemFolderException
-     * @throws MetaFolderException
      * @throws \Throwable
      */
     protected function getFoldersTree (): JsonResponse
@@ -495,11 +471,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws ApplicationException
-     * @throws ConfigException
-     * @throws FilesystemFileException
-     * @throws FilesystemFolderException
-     * @throws MetaFolderException
      * @throws \Throwable
      */
     protected function selectionDel (): JsonResponse
@@ -550,12 +521,6 @@ class FilesController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws ApplicationException
-     * @throws ConfigException
-     * @throws FilesystemFileException
-     * @throws FilesystemFolderException
-     * @throws MetaFolderException
-     * @throws \JsonException
      * @throws \Throwable
      */
     protected function selectionMove (): JsonResponse
@@ -642,13 +607,7 @@ class FilesController extends Controller
     /**
      * @param MetaFolder $folder
      * @return array
-     * @throws ApplicationException
-     * @throws ConfigException
-     * @throws FilesystemFileException
-     * @throws FilesystemFolderException
-     * @throws MetaFileException
-     * @throws MetaFolderException
-     * @throws ArticleCategoryException
+     * @throws \Throwable
      */
     private function getFileRows (MetaFolder $folder): array
     {
@@ -703,10 +662,7 @@ class FilesController extends Controller
     /**
      * @param MetaFolder $folder
      * @return array
-     * @throws ApplicationException
-     * @throws ConfigException
-     * @throws FilesystemFolderException
-     * @throws MetaFolderException
+     * @throws \Throwable
      */
     private function getFolderRows (MetaFolder $folder): array
     {
@@ -725,10 +681,8 @@ class FilesController extends Controller
 
     /**
      * @param MetaFolder $folder
-     * @return array[]
-     * @throws ApplicationException
-     * @throws FilesystemFolderException
-     * @throws MetaFolderException
+     * @return array
+     * @throws \Throwable
      */
     private function getBreadcrumbs (MetaFolder $folder): array
     {
@@ -749,7 +703,7 @@ class FilesController extends Controller
      *                       representing a method name and its parameters separated by spaces.
      *
      * @return string The path to the generated thumbnail.
-     * @throws FilesystemFolderException
+     * @throws \Throwable
      */
     private function createThumbnail (FilesystemFile $file, array $actions): string
     {

@@ -3,20 +3,15 @@
 namespace App\Controller\Admin;
 
 use vxPHP\Application\Application;
-use vxPHP\Application\Exception\ApplicationException;
-use vxPHP\Application\Exception\ConfigException;
 use vxPHP\Constraint\Validator\Email;
 use vxPHP\Constraint\Validator\RegularExpression;
 use vxPHP\Controller\Controller;
-use vxPHP\Form\Exception\FormElementFactoryException;
-use vxPHP\Form\Exception\HtmlFormException;
 use vxPHP\Form\FormElement\CheckboxElement;
 use vxPHP\Form\FormElement\FormElementFactory;
 use vxPHP\Form\HtmlForm;
 use vxPHP\Http\JsonResponse;
 use vxPHP\Http\ParameterBag;
 use vxPHP\Http\Response;
-use vxPHP\Security\Csrf\Exception\CsrfTokenException;
 use vxPHP\Security\Password\PasswordEncrypter;
 use vxPHP\Util\Rex;
 use vxWeb\User\Notification\Notification;
@@ -28,7 +23,6 @@ class ProfileController extends Controller
     /**
      * @return JsonResponse
      * @throws \Throwable
-     * @throws ApplicationException
      */
     protected function get(): JsonResponse
     {
@@ -77,13 +71,7 @@ class ProfileController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws ApplicationException
-     * @throws \JsonException
      * @throws \Throwable
-     * @throws ConfigException
-     * @throws FormElementFactoryException
-     * @throws HtmlFormException
-     * @throws CsrfTokenException
      */
     protected function update(): JsonResponse
     {
