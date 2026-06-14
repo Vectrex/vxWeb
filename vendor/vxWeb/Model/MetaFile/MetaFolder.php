@@ -81,7 +81,7 @@
         /**
          * flag to indicate that contained files should be obscured
          *
-         * @var boolean
+         * @var bool
          */
         private bool $obscureFiles;
 
@@ -196,7 +196,7 @@
             $this->level = $this->data['level'];
             $this->l = $this->data['l'];
             $this->r = $this->data['r'];
-            $this->obscureFiles = (boolean)$this->data['obscure_files'];
+            $this->obscureFiles = (bool)$this->data['obscure_files'];
             $this->name = basename($this->fullPath);
 
             self::$instancesByPath[$this->fullPath] = $this;
@@ -325,7 +325,7 @@
         }
 
         /**
-         * @return boolean
+         * @return bool
          */
         public function obscuresFiles(): bool
         {
@@ -334,7 +334,7 @@
 
         /**
          * returns the path relative to the root path of the application
-         * @param boolean $force
+         * @param bool $force
          *
          * @return string
          * @throws ApplicationException
@@ -347,7 +347,7 @@
         /**
          * return all metafiles within this folder
          *
-         * @param boolean $force forces re-reading of metafolder
+         * @param bool $force forces re-reading of metafolder
          *
          * @return MetaFile[]
          * @throws \Throwable
@@ -450,7 +450,7 @@
          *
          * warning: any reference to this instance still exists and will yield invalid results
          *
-         * @param boolean $keepFilesystemFiles
+         * @param bool $keepFilesystemFiles
          * @throws \Throwable
          */
         public function delete(bool $keepFilesystemFiles = false): void
@@ -619,7 +619,7 @@
          * retrieves all currently in the database stored metafolders
          * main purpose is reduction of db queries
          *
-         * @param boolean $force forces re-reading of metafolders
+         * @param bool $force forces re-reading of metafolders
          * @return array|MetaFolder[]
          * @throws MetaFolderException
          * @throws ApplicationException

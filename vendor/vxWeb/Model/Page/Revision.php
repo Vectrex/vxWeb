@@ -494,7 +494,7 @@
 
         /**
          * get active status of revision
-         * @return null|boolean
+         * @return null|bool
          */
         public function isActive(): ?bool
         {
@@ -503,7 +503,7 @@
 
         /**
          * activate or deactivate revision
-         * @param boolean $active
+         * @param bool $active
          * @return Revision
          */
         public function setActive(bool $active): self
@@ -518,7 +518,7 @@
 
         /**
          * returns TRUE when markup contains PHP code
-         * @return boolean
+         * @return bool
          */
         public function containsPHP(): bool
         {
@@ -648,7 +648,7 @@
          * of an already saved revision was changed
          * check is done by calculating and comparing a hash
          *
-         * @return boolean
+         * @return bool
          */
         public function wasChanged(): bool
         {

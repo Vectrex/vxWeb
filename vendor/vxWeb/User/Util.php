@@ -26,7 +26,7 @@ class Util
      * check whether a user email is already assigned
      *
      * @param string $email
-     * @return boolean availability
+     * @return bool availability
      * @throws ApplicationException|ConfigException
      */
     public static function isAvailableEmail(string $email): bool
@@ -39,7 +39,7 @@ class Util
      * check whether a username is already assigned
      *
      * @param string $username
-     * @return boolean availability
+     * @return bool availability
      * @throws ApplicationException|ConfigException
      */
     public static function isAvailableUsername(string $username): bool

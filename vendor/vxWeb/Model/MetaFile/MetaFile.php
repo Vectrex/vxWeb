@@ -286,7 +286,7 @@
          *
          * @param string $filename
          * @param MetaFolder $f
-         * @return boolean is_available
+         * @return bool is_available
          * @throws \Throwable
          */
         public static function isFilenameAvailable(string $filename, MetaFolder $f): bool
@@ -447,7 +447,7 @@
          * (i.e. image/jpeg, image/gif, image/png)
          *
          * @param bool $force forces re-read of the mime type
-         * @return boolean
+         * @return bool
          */
         public function isWebImage(bool $force = false): bool
         {
@@ -481,7 +481,7 @@
          * returns the path relative to assets path root
          * NULL if the file is outside the assets path
          *
-         * @param boolean $force
+         * @param bool $force
          * @return string
          * @throws ApplicationException
          */
@@ -607,7 +607,7 @@
          * deletes both filesystem file and metafile and removes instance from the lookup array
          * filesystem file will be kept when $keepFilesystemFile is TRUE
          *
-         * @param boolean $keepFilesystemFile
+         * @param bool $keepFilesystemFile
          *
          * @throws \Throwable
          */

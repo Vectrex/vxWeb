@@ -111,8 +111,8 @@
          * @param MetaFolder $metaFolder
          * @param UploadedFile $uploadFile
          * @param array $metaData
-         * @param boolean $unpackArchives unpack zip|gzip files when true
-         * @return MetaFile[] | boolean false when failure
+         * @param bool $unpackArchives unpack zip|gzip files when true
+         * @return MetaFile[] | bool false when failure
          * @throws \Throwable
          */
         public static function processFileUpload(MetaFolder $metaFolder, UploadedFile $uploadFile, array $metaData = [], bool $unpackArchives = false): array|bool
