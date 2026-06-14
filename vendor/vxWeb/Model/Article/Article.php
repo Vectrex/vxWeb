@@ -21,7 +21,7 @@
      * Mapper class for articles, stored in table articles
      *
      * @author Gregor Kofler
-     * @version 1.3.0 2026-01-27
+     * @version 1.3.1 2026-06-14
      */
     class Article implements PublisherInterface
     {
@@ -102,7 +102,7 @@
         /**
          * flag which indicates that linked files need to be updated
          *
-         * @var boolean|null
+         * @var bool|null
          */
         private ?bool $updateLinkedFiles = null;
 
@@ -243,9 +243,9 @@
          * evaluating to TRUE for a new article
          * if $evaluateAll is TRUE, attributes in notIndicatingChange are still checked
          *
-         * @param boolean $evaluateAll
+         * @param bool $evaluateAll
          *
-         * @return boolean
+         * @return bool
          * @todo changes of linked files are currently ignored
          *
          */
@@ -950,11 +950,11 @@
         /**
          * get state of published flag
          *
-         * @return boolean
+         * @return bool
          */
         public function isPublished(): bool
         {
-            return (boolean)$this->published;
+            return (bool) $this->published;
         }
 
         /**
@@ -1233,7 +1233,7 @@
                 $result[] = [
                     'file' => MetaFile::getInstance(null, $row['filesid']),
                     'rel' => [
-                        'hidden' => (boolean)$row['hidden']
+                        'hidden' => (bool) $row['hidden']
                     ]
                 ];
             }
