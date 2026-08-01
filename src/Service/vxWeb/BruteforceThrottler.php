@@ -16,7 +16,7 @@ use vxPHP\Service\ServiceInterface;
  * @see <https://github.com/nextcloud/server/blob/master/lib/private/User/Session.php>
  *
  * @author Gregor Kofler
- * @version 0.3.0 2023-06-02
+ * @version 0.3.1 2026-08-01
  */
 
 class BruteforceThrottler implements ServiceInterface
@@ -24,10 +24,10 @@ class BruteforceThrottler implements ServiceInterface
     /**
      * the maximum throttling delay in seconds
      */
-    public const MAX_THROTTLE_DELAY = 30;
+    public const int MAX_THROTTLE_DELAY = 30;
 
     /**
-     * white listed IPs won't be throttled
+     * whitelisted IPs won't be throttled
      *
      * @var array
      */
@@ -92,7 +92,7 @@ class BruteforceThrottler implements ServiceInterface
         }
         else {
 
-            // cutoff defaults to 6 hour
+            // cutoff defaults to 6 hours
 
             $this->cutoff = new \DateInterval('PT6H');
         }
@@ -105,8 +105,7 @@ class BruteforceThrottler implements ServiceInterface
      * @param string $ip
      * @param string $action
      * @return BruteforceThrottler
-     * @throws ApplicationException
-     * @throws ConfigException
+     * @throws \Throwable
      */
     public function throttle(string $ip, string $action = 'admin_login'): self
     {
@@ -219,8 +218,7 @@ class BruteforceThrottler implements ServiceInterface
      * @param string $ip
      * @param string $action
      * @return int
-     * @throws ApplicationException
-     * @throws ConfigException
+     * @throws \Throwable
      */
     public function getAttempts(string $ip, string $action = 'admin_login'): int
     {
