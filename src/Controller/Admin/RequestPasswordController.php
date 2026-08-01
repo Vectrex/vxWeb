@@ -24,15 +24,18 @@ EOD;
     protected function execute(): JsonResponse
     {
         try {
-            $origin = $this->request->server->get('HTTP_REFERER');
             $bag = new ParameterBag(json_decode($this->request->getContent(), true, 512, JSON_THROW_ON_ERROR));
             $receiver = $bag->get('email');
+            $url = parse_url($bag->get('href', $this->request->server->get('HTTP_REFERER')));
 
             if (is_null(Application::getInstance()->getConfig()->mail->mailer)) {
                 return new JsonResponse(['success' => false, 'message' => 'Keine Mailingfunktion konfiguriert.']);
             }
             if (($user = Application::getInstance()->getCurrentUser()) && $user->getAttribute('email') === $receiver) {
                 return new JsonResponse(['success' => false, 'message' => 'Bereits eingeloggt.']);
+            }
+            if (!$url) {
+                return new JsonResponse(['success' => false, 'message' => 'Ungültige Redirect-URL.']);
             }
 
             // sleep one to two secs
@@ -45,12 +48,20 @@ EOD;
                 usleep(random_int(500, 1000) * 1000);
             } else {
                 $pdo->updateRecord('admin', $row['adminid'], ['temporary_hash' => $hash]);
-                $url = rtrim($origin, '/') . '/reset-password/' . $hash;
-                (new Email())
+                $path = preg_replace('~/login$~', '', trim($url['path'], '/'));
+                $redirect = sprintf(
+                    "%s://%s/%s/%s",
+                    $url['scheme'],
+                    $url['host'],
+                    ($path ? $path . '/' : '') . 'reset-password',
+                    $hash
+                );
+                new Email()
                     ->setReceiver($receiver)
-                    ->setSubject(sprintf("[%s] Passwort zurücksetzen", $this->request->server->get('HTTP_HOST')))
-                    ->setMailText(sprintf(self::MAILTEXT, $url))
-                    ->send();
+                    ->setSubject(sprintf("[%s] Passwort zurücksetzen", $url['host']))
+                    ->setMailText(sprintf(self::MAILTEXT, $redirect))
+                    ->send()
+                ;
             }
 
             return new JsonResponse(['success' => true, 'message' => 'Falls die E-Mail Adresse zugeordnet werden konnte wurde an diese eine Link zum Neusetzen des Passwortes geschickt.']);
