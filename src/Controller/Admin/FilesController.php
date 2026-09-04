@@ -627,7 +627,7 @@ class FilesController extends Controller
         }
 
         $files = [];
-        $host = $this->request->getSchemeAndHttpHost();
+        $host = Application::getInstance()->getConfig()?->site?->site_url ?? $this->request->getSchemeAndHttpHost();
 
         foreach (MetaFile::getMetaFilesInFolder($folder) as $f) {
             if ($filter === 'image' && !$f->isWebImage()) {

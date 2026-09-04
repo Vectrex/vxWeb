@@ -28,7 +28,7 @@ EOD;
             $receiver = $bag->get('email');
             $url = parse_url($bag->get('href', $this->request->server->get('HTTP_REFERER')));
 
-            if (is_null(Application::getInstance()->getConfig()->mail->mailer)) {
+        if (!Application::getInstance()->getConfig()?->mail?->mailer) {
                 return new JsonResponse(['success' => false, 'message' => 'Keine Mailingfunktion konfiguriert.']);
             }
             if (($user = Application::getInstance()->getCurrentUser()) && $user->getAttribute('email') === $receiver) {
